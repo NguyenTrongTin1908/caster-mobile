@@ -16,7 +16,7 @@ function App(): React.ReactElement {
     try {
       // show welcome screen
       // not sure why ios doesn't work, we need to recheck and fix it later
-      if (isAndroid()) await SplashScreen.show();
+      // if (isAndroid()) await SplashScreen.show();
       // bootstrap
       await initApp();
       await new Promise(resolve => setTimeout(resolve, 2000));
@@ -24,7 +24,6 @@ function App(): React.ReactElement {
       // TODO - show alert and other info here
       console.log('err', e);
     } finally {
-      // if (isAndroid()) await SplashScreen.hide();
       await SplashScreen.hide();
       setAppIsReady(true);
     }
