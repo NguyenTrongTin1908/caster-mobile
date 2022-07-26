@@ -191,17 +191,18 @@ const Login = ({ handleLogin, handleResetLogin, authLogin }: Props): React.React
                       Forgot Password?
                     </Text>
                   </Link>
+                  <Link alignSelf="center" onPress={(): void => navigation.navigate('IntroNav/Register')}>
+                    <Text fontSize={12} color={colors.primary}>
+                      CREATE AN ACCOUNT
+                    </Text>
+                  </Link>
                 </VStack>
               </Box>
             </LinearGradient>
           </ImageBackground>
         </KeyboardAvoidingView>
 
-        <Link alignSelf="center" onPress={(): void => navigation.navigate('IntroNav/Register')}>
-          <Text fontSize={12} color={colors.primary}>
-            CREATE AN ACCOUNT
-          </Text>
-        </Link>
+
       </VStack>
     </KeyboardDismiss>
   );

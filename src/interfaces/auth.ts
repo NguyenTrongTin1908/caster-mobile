@@ -7,7 +7,7 @@ export interface IUserRegister {
   username: string;
   email: string;
   password: string;
-  type: string;
+  // type: string;
 }
 
 export interface IForgotPassword {

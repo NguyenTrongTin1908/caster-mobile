@@ -21,7 +21,7 @@ export class AuthService extends APIRequest {
   }
 
   userRegister(data: IUserRegister): Promise<IApiResponse> {
-    return this.post('/auth/register', data);
+    return this.post('/auth/users/register', data);
   }
 
   updateProfile(data: IUserUpdate): Promise<IApiResponse> {
@@ -29,7 +29,7 @@ export class AuthService extends APIRequest {
   }
 
   forgotPassword(data: IForgotPassword): Promise<IApiResponse> {
-    return this.post('/auth/forgot', data);
+    return this.post('/auth/users/forgot', data);
   }
 
   updatePassword(body: IUpdatePasswordFormData) {
