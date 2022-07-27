@@ -8,17 +8,19 @@ interface IProps {
   content: string;
   fontSize?: any;
   fontWeight?: string;
+  alignSelf?: string;
 }
 
 const BadgeText = ({
-  bgColor = colors.primary,
+  bgColor = colors.danger,
   color = colors.light,
   content,
   fontSize = 'md',
-  fontWeight = '700'
+  fontWeight = '700',
+  alignSelf = 'center'
 }: IProps) => (
   <Box py={3} px={4} shadow={3} bg={bgColor} m={2}>
-    <Text fontWeight={fontWeight} fontSize={fontSize} color={color}>
+    <Text fontWeight={fontWeight} fontSize={fontSize} color={color} alignSelf={alignSelf}>
       {content}
     </Text>
   </Box>

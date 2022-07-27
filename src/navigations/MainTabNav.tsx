@@ -6,6 +6,8 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import React from 'react';
 import Home from 'screens/browse/Home';
 import Meet from 'screens/meet/Meet';
+import LiveNow from 'screens/live/LiveNow';
+
 import PrivateChatList from 'screens/chat/PrivateChatList';
 import TokenPackage from 'screens/token-package/TokenPackage';
 import Profile from 'screens/profile/Profile';
@@ -18,14 +20,14 @@ export const MainTabNav = (): JSX.Element => (
     initialRouteName="MainTab/Home"
     screenOptions={{
       tabBarActiveTintColor: colors.light,
-      tabBarInactiveTintColor: colors.active,
-      tabBarActiveBackgroundColor: colors.active
+      tabBarInactiveTintColor: colors.secondary,
+      tabBarActiveBackgroundColor: colors.secondary
     }}>
     <Tab.Screen
       name="MainTab/Home"
       component={Home}
       options={{
-        tabBarLabel: 'Start',
+        tabBarLabel: 'Home',
         tabBarShowLabel: true,
         tabBarIcon: ({ color, size }) => <AntDesign name="home" size={size} color={color} />,
         headerShown: false
@@ -35,9 +37,9 @@ export const MainTabNav = (): JSX.Element => (
       name="MainTab/Meet"
       component={Meet}
       options={{
-        tabBarLabel: 'Rooms',
+        tabBarLabel: 'Trending',
         tabBarShowLabel: true,
-        tabBarIcon: ({ color, size }) => <Feather name="search" size={size} color={color} />
+        tabBarIcon: ({ color, size }) => <Feather name="trending-up" size={size} color={color} />
       }}
     />
     <Tab.Screen
@@ -45,18 +47,18 @@ export const MainTabNav = (): JSX.Element => (
       component={PrivateChatList}
       options={{
         unmountOnBlur: true,
-        tabBarLabel: 'Chats',
+        tabBarLabel: 'Post Video',
         tabBarShowLabel: true,
-        tabBarIcon: ({ color, size }) => <Ionicons name="chatbubble-ellipses-outline" size={size} color={color} />
+        tabBarIcon: ({ color, size }) => <Ionicons name="add-circle" size={size} color={color} />
       }}
     />
     <Tab.Screen
       name="MainTab/TokenPackage"
       component={TokenPackage}
       options={{
-        tabBarLabel: 'Tokens',
+        tabBarLabel: 'Notifications',
         tabBarShowLabel: true,
-        tabBarIcon: ({ color, size }) => <AntDesign name="gift" size={size} color={color} />
+        tabBarIcon: ({ color, size }) => <Ionicons name="notifications" size={size} color={color} />
       }}
     />
     <Tab.Screen

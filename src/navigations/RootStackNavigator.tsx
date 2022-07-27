@@ -16,6 +16,7 @@ import PrivateChatDetail from 'screens/chat/PrivateChatDetail';
 import PerformerDetail from 'screens/performer/PerformerDetail';
 import Call from 'screens/call/Call';
 import Calling from 'screens/call/Calling';
+import LiveNow from 'screens/live/LiveNow';
 import { IPerformer } from 'interfaces/performer';
 
 export type RootStackParamList = {
@@ -24,6 +25,7 @@ export type RootStackParamList = {
   MainTabNav: undefined;
   Call: undefined;
   Calling: undefined;
+  LiveNow: undefined;
   ChatRoom: { performer: IPerformer };
   PrivateChatDetail: { performer: IPerformer; conversationId: string };
   PerformerDetail: { username: string };
@@ -31,7 +33,7 @@ export type RootStackParamList = {
 
 export type RootStackNavigationProps<
   T extends keyof RootStackParamList = 'default'
-> = StackNavigationProp<RootStackParamList, T>;
+  > = StackNavigationProp<RootStackParamList, T>;
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -106,6 +108,11 @@ function RootNavigator({ loggedIn }): React.ReactElement {
           options={{ headerShown: false, gestureEnabled: false }}
           name="PerformerDetail"
           component={PerformerDetail}
+        />
+        <Stack.Screen
+          options={{ headerShown: false, gestureEnabled: false }}
+          name="LiveNow"
+          component={LiveNow}
         />
       </Stack.Navigator>
     </NavigationContainer>

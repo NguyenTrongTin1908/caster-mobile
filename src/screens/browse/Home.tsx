@@ -84,7 +84,7 @@ const Home = ({ current, handleGetFeeds, handleGetMore, feeds }: IProps): React.
   }
 
   const handleRedirect = () => {
-    navigation.navigate('/')
+    navigation.navigate('LiveNow')
   }
 
 

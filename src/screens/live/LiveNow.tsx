@@ -3,8 +3,8 @@ import { Box, Heading } from 'native-base';
 import { useNavigation } from '@react-navigation/core';
 import { colors } from 'utils/theme';
 import SearchInput from 'components/uis/SearchInput';
-import FemalePerformerList from './component/FemalePerformerList';
-import MalePerformerList from './component/MalePerformerList';
+import PublicLive from './component/PublicLive';
+import PrivateLive from './component/PrivateLive';
 import TabView from 'components/uis/TabView';
 
 const LiveNow = (): React.ReactElement => {
@@ -25,25 +25,22 @@ const LiveNow = (): React.ReactElement => {
         letterSpacing={-1}
         color={colors.darkText}
         bold>
-        Rooms
+        Live Now
       </Heading>
 
-      <SearchInput
-        onSearch={onSearch}
-        placeHolder="Models, creators, studios"
-      />
+
       <TabView
         scenes={[
           {
-            key: 'femaleList',
-            title: 'Females',
-            sence: FemalePerformerList,
+            key: 'publicList',
+            title: 'Public Live',
+            sence: PublicLive,
             params: { q }
           },
           {
-            key: 'maleList',
-            title: 'Males',
-            sence: MalePerformerList,
+            key: 'privateList',
+            title: 'Private Live',
+            sence: PrivateLive,
             params: { q }
           }
         ]}

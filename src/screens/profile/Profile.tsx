@@ -5,11 +5,13 @@ import {
   Flex,
   ScrollView,
   Heading,
-  Text,
   VStack,
   useToast,
-  Image
+  Image,
+  View,
+  Text
 } from 'native-base';
+import { SafeAreaView, StyleSheet, ImageBackground } from 'react-native';
 import { useForm } from 'react-hook-form';
 import KeyboardDismiss from 'components/uis/KeyboardDismiss';
 import { colors } from 'utils/theme';
@@ -20,6 +22,10 @@ import { logout } from 'services/redux/auth/actions';
 import UpdateProfileForm from './component/UpdateProfileForm';
 import { authService } from 'services/auth.service';
 import { IUser } from 'interfaces/user';
+import TabView from 'components/uis/TabView';
+import Photo from './component/Photo';
+import Video from './component/Video';
+import styles from './style'
 
 interface Props {
   current: IUser;
@@ -28,11 +34,13 @@ interface Props {
 }
 const Profile = ({ current, handleLogout }: Props): React.ReactElement => {
   const navigation = useNavigation() as any;
+  const [q, setQ] = useState('');
+
   useEffect(() => {
     navigation.setOptions({
-      headerShown: false,
+      headerShown: true,
       headerTitleAlign: 'center',
-      title: null,
+      title: 'Profile',
       headerLeft: () => <BackButton />,
       headerRight: null
     });
@@ -115,57 +123,54 @@ const Profile = ({ current, handleLogout }: Props): React.ReactElement => {
   };
 
   return (
-    <ScrollView>
-      <Box safeAreaX={4} safeAreaY={12} flex={1}>
-        <VStack space={1} alignSelf="center" mb={6}>
-          <Image
-            size={100}
-            resizeMode={'contain'}
-            borderRadius={100}
-            source={current?.avatar ? { uri: current?.avatar } : require('assets/icon.png')}
-            alt="My Avatar"
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <Image source={current?.avatar ? { uri: current?.avatar } : require('assets/icon.png')} style={styles.converPhoto} />
+        <View style={styles.avContainer}>
+
+
+          <View style={styles.avBlueRound}>
+            <Image
+              source={current?.avatar ? { uri: current?.avatar } : require('assets/icon.png')}
+              alt={'avatar'}
+              size={140}
+              borderRadius={80}
+              resizeMode="cover"
+            />
+            <View style={styles.activeNowTick}></View>
+
+          </View>
+
+
+        </View>
+        <Text flex={1} color={colors.dark} marginTop={77} fontSize={'3xl'} fontWeight={'bold'} alignSelf="center">{current.username}</Text>
+        <View style={styles.listFeeds}>
+          <TabView
+            scenes={[
+              {
+                key: 'videoList',
+                title: 'Video',
+                sence: Video,
+                params: { q }
+              },
+              {
+                key: 'photoList',
+                title: 'Photo',
+                sence: Photo,
+                params: { q }
+              }
+            ]}
           />
-          <Heading
-            textAlign="center"
-            color={colors.darkText}
-            fontSize={24}
-            bold
-            letterSpacing={-1}>
-            {current?.username}
-          </Heading>
-          <Text
-            textAlign="center"
-            color={'#C4C4C4'}
-            fontSize={15}
-            letterSpacing={-0.2}>
-            {current.balance && current.balance > 1
-              ? `${current.balance} tokens`
-              : `${current.balance} token`}
-          </Text>
-        </VStack>
-        <KeyboardDismiss>
-          <UpdateProfileForm
-            control={control}
-            formErrors={errors}
-            onSubmit={handleSubmit(onUpdatePassword)}
-            submitting={submitting}
-          />
-        </KeyboardDismiss>
-        <Flex alignSelf="center" my={5}>
-          <Button
-            colorScheme="tertiary"
-            onPress={() => {
-              handleLogout();
-              navigation.navigate('IntroNav', { screen: 'IntroNav/Login' });
-            }}
-            disabled={false}
-            label="Logout"
-          />
-        </Flex>
-      </Box>
-    </ScrollView>
+
+        </View>
+
+
+      </View>
+    </SafeAreaView>
   );
 };
+
+
 
 const mapStateToProp = (state: any): any => ({
   ...state.user,
