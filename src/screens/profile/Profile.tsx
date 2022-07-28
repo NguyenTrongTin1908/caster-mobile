@@ -9,9 +9,9 @@ import {
   useToast,
   Image,
   View,
-  Text
+
 } from 'native-base';
-import { SafeAreaView, StyleSheet, ImageBackground } from 'react-native';
+import { SafeAreaView, StyleSheet, ImageBackground, Text } from 'react-native';
 import { useForm } from 'react-hook-form';
 import KeyboardDismiss from 'components/uis/KeyboardDismiss';
 import { colors } from 'utils/theme';
@@ -63,25 +63,7 @@ const Profile = ({ current, handleLogout }: Props): React.ReactElement => {
   const [submitting, setSubmitting] = useState(false);
   const toast = useToast();
 
-  // todo - handle update profile status from redux
-  // useEffect((): any => {
-  //   const { success, error } = updateProfile;
-  //   if (!success && !error) return;
-  //   if (error) {
-  //     return Alert.alert(
-  //       error?.data?.message || 'An error occurred, please try again!'
-  //     );
-  //   }
 
-  //   if (success) {
-  //     toast.show({
-  //       title: 'Success',
-  //       status: 'success',
-  //       description: 'Update profile successfully!'
-  //     });
-  //     setSubmitting(false);
-  //   }
-  // }, [updateProfile.success, updateProfile.error]);
 
   const onUpdatePassword = async ({
     password,
@@ -125,15 +107,15 @@ const Profile = ({ current, handleLogout }: Props): React.ReactElement => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
-        <Image source={current?.avatar ? { uri: current?.avatar } : require('assets/icon.png')} style={styles.converPhoto} />
+        <Image source={current?.cover ? { uri: current?.cover } : require('assets/icon.png')} style={styles.converPhoto} />
         <View style={styles.avContainer}>
 
 
           <View style={styles.avBlueRound}>
             <Image
-              source={current?.avatar ? { uri: current?.avatar } : require('assets/icon.png')}
+              source={current?.avatar ? { uri: current?.avatar } : { uri: '' }}
               alt={'avatar'}
-              size={140}
+              size={100}
               borderRadius={80}
               resizeMode="cover"
             />
@@ -143,8 +125,20 @@ const Profile = ({ current, handleLogout }: Props): React.ReactElement => {
 
 
         </View>
-        <Text flex={1} color={colors.dark} marginTop={77} fontSize={'3xl'} fontWeight={'bold'} alignSelf="center">{current.username}</Text>
+        <Text style={styles.textName}>Fanso</Text>
+
+        {/* <Text flex={1} color={colors.dark} marginTop={77} fontSize={'3xl'} fontWeight={'bold'} alignSelf="center"  >fAnso</Text> */}
         <View style={styles.listFeeds}>
+
+          {/* <Button
+            colorScheme="tertiary"
+            onPress={() => {
+              handleLogout();
+              navigation.navigate('IntroNav', { screen: 'IntroNav/Login' });
+            }}
+            disabled={false}
+            label="Logout"
+          /> */}
           <TabView
             scenes={[
               {
@@ -163,6 +157,8 @@ const Profile = ({ current, handleLogout }: Props): React.ReactElement => {
           />
 
         </View>
+
+
 
 
       </View>

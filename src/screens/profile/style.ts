@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { colors, Fonts, Sizes } from 'utils/theme';
 import { Dimensions} from "react-native";
-import { background } from 'native-base/lib/typescript/theme/styled-system';
+import { background, color } from 'native-base/lib/typescript/theme/styled-system';
 
 const { width, height } = Dimensions.get('window');
 
@@ -19,13 +19,22 @@ container: {
   flex: 1,
 },
 
+textName:{
+  color:colors.dark,
+  marginTop:40.0,
+  alignSelf: 'center',
+  fontSize: 30.0,
+  fontWeight: 'bold',
+
+},
+
 converPhoto: {
   width: '100%',
   height: 130,
 },
 avContainer: {
-  height: 180,
-  width: 180,
+  height: 120,
+  width: 120,
   borderRadius: 200,
   backgroundColor: 'white',
   position: 'absolute',
@@ -35,8 +44,8 @@ avContainer: {
   justifyContent: 'center',
 },
 avBlueRound: {
-  height: '85%',
-  width: '85%',
+  height: '90%',
+  width: '90%',
   borderRadius: 200,
   borderWidth: 5,
   borderColor: 'blue',
@@ -52,8 +61,8 @@ bgImage: {
   justifyContent: 'center',
 },
 activeNowTick: {
-  height: 30,
-  width: 30,
+  height: 20,
+  width: 20,
   backgroundColor: 'green',
   borderRadius: 30,
   position: 'absolute',
@@ -66,7 +75,6 @@ activeNowTick: {
 listFeeds: {
   height: '100%',
   width: '100%',
-  marginTop: 35
 
 }
 

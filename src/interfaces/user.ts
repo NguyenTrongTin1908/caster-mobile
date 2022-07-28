@@ -8,6 +8,7 @@ export interface IUser {
   type: string;
   avatar: string;
   balance?: number;
+  cover:string;
   city?: string;
   state?: string;
   country?: string;

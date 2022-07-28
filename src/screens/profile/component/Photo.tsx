@@ -1,14 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { View, Text } from 'react-native';
 import { Box, Button, FlatList } from 'native-base';
-import PerformerCard from 'components/message/PerformerCard';
-import { performerService } from 'services/perfomer.service';
-import { IPerformer } from 'interfaces/performer';
+import FeedCard from './ProfilePackageCard';
+import { FeedService } from 'services/feed.service';
+import { IFeed } from 'interfaces/Feed';
 import BadgeText from 'components/uis/BadgeText';
 import LoadingSpinner from 'components/uis/LoadingSpinner';
+import { feedService } from 'services/feed.service';
+import { connect } from 'react-redux';
+
+
 import styles from './style';
-import { tokenPackageService } from 'services/token-package.service';
-import ModelPackageCard from './scrollListModel'
+
+import ProfilePackageCard from './ProfilePackageCard'
+import { ScrollView } from 'react-native-gesture-handler';
 
 
 
@@ -20,52 +25,81 @@ interface IProps {
     title: string;
     params: { q: string };
   };
+  current: IFeed
 }
 
-const Photo = (props: IProps): React.ReactElement => {
-  const { q: qString } = props.route.params;
+const Photo = (props: IProps) => {
 
-  // const [refreshing, setRefreshing] = useState(false);
+  const [feeds, setfeeds] = useState([] as Array<IFeed>);
+  const [feedLoading, setfeedLoading] = useState(true);
   const [page, setPage] = useState(0);
-  const [moreable, setMoreable] = useState(true);
 
-  const [packages, setPackages] = useState([] as Array<any>);
-  const [packageLoading, setPackageLoading] = useState(false);
+  useEffect(() => {
 
-  const loadPackages = async () => {
-    setPackageLoading(true);
-    const { data } = await tokenPackageService.search({
-      sortBy: 'ordering',
-      sort: 'asc'
+
+  }, [useContext]);
+
+
+  const loadfeeds = async (more = false, q = '', refresh = false) => {
+    setfeedLoading(true);
+    const newPage = more ? page + 1 : page;
+    setPage(refresh ? 0 : newPage);
+
+    const { data } = await feedService.userSearch({
+      offset: refresh ? 0 : newPage * 10,
+      limit: 10,
+      performerId: props.current?._id,
+      type: 'photo'
+
+
     });
 
-    setPackages(data);
-    setPackageLoading(false);
+
+    setfeeds(refresh ? data.data : feeds.concat(data.data));
+    setfeedLoading(false);
   };
 
-
+  const renderEmpty = () => (
+    <View>
+      {!feedLoading && !feeds.length && (
+        <BadgeText content={'There is no feed available!'} />
+      )}
+    </View>
+  );
   useEffect(() => {
-    loadPackages();
+    loadfeeds();
   }, []);
 
-  useEffect(() => {
-    loadPackages();
-  }, [qString]);
+
+
+
+
+  if (feedLoading) return <LoadingSpinner />
+
 
   return (
-    <Box flex={1} mx="auto" w="100%">
+    <Box flex={1} mx="auto" w="96%">
+      <ScrollView>
 
-      <FlatList
-        data={packages}
-        renderItem={({ item }) => <ModelPackageCard key={item._id} />}
-        keyExtractor={(item, index) => item._id + '_' + index}
-        style={styles.listModel}
-        onEndReachedThreshold={0.5}
-        onEndReached={() => loadPackages()}
 
-      />
+
+        {!feedLoading &&
+          feeds?.length > 0 &&
+          feeds.map((item) => (
+            <ProfilePackageCard key={item._id} item={item} />
+          ))}
+        {feedLoading && <LoadingSpinner />}
+      </ScrollView>
+
     </Box>
   );
 };
 
-export default Photo;
+const mapStateToProp = (state: any): any => ({
+
+  current: state.user.current
+})
+
+const mapDispatch = {}
+
+export default connect(mapStateToProp, mapDispatch)(Photo);
