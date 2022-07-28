@@ -10,14 +10,12 @@ import {
   moreFeedsFail,
   moreFeedsSuccess,
   removeFeedSuccess,
-
   getFollowingFeeds,
   getFollowingFeedsSuccess,
   getFollowingFeedsFail,
   moreFollowingFeeds,
   moreFollowingFeedsSuccess,
   moreFollowingFeedsFail,
-
   getTrendingFeeds,
   getTrendingFeedsSuccess,
   getTrendingFeedsFail,
@@ -299,16 +297,13 @@ const feedReducers = [
     }
   },
 
-
-
-
   {
     on: removeFeedSuccess,
     reducer(prevState: any, data: any) {
       const { feed } = data.payload;
       const { items } = prevState.feeds || [];
       items.splice(
-        items.findIndex((f) => f._id === feed._id),
+        items.findIndex(f => f._id === feed._id),
         1
       );
       return {
@@ -319,8 +314,7 @@ const feedReducers = [
         }
       };
     }
-  },
-
+  }
 ];
 
 export default merge({}, createReducers('feed', [feedReducers], initialState));

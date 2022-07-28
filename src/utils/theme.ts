@@ -7,7 +7,7 @@ const COLOR_PRIMARY = '#A742AA';
 const COLOR_SECONDARY = '#FF6534';
 const COLOR_TERTIARY = '#000';
 const COLOR_DANGER = '#f43f5e';
-const APP_BG = '#ffffff';
+const APP_BG = '#000';
 
 export const colors = {
   //singletons
@@ -25,6 +25,7 @@ export const colors = {
   darkText: '#000',
   lightTitle: 'rgba(60, 60, 67, 0.6)',
   divider: 'rgba(0, 0, 0, 0.12)',
+  gray: '#CCCCCC',
 
   //input
   inpBorderColor: '#C9C9C9',

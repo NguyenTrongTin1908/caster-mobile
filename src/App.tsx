@@ -7,7 +7,6 @@ import { Socket } from './socket';
 import Welcome from 'components/welcome/welcome';
 import { StatusBar } from 'native-base';
 import MainDrawer from './navigations/MainDrawer';
-import { isAndroid } from './utils/common';
 
 function App(): React.ReactElement {
   const [appIsReady, setAppIsReady] = useState(false);

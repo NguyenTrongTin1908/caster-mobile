@@ -19,9 +19,10 @@ export const MainTabNav = (): JSX.Element => (
   <Tab.Navigator
     initialRouteName="MainTab/Home"
     screenOptions={{
-      tabBarActiveTintColor: colors.light,
-      tabBarInactiveTintColor: colors.secondary,
-      tabBarActiveBackgroundColor: colors.secondary
+      tabBarActiveTintColor: colors.lightText,
+      tabBarInactiveTintColor: colors.gray,
+      tabBarActiveBackgroundColor: colors.dark,
+      tabBarInactiveBackgroundColor: colors.dark
     }}>
     <Tab.Screen
       name="MainTab/Home"
