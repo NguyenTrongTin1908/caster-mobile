@@ -10,25 +10,27 @@ import {
   Image,
   View,
 
+
 } from 'native-base';
-import { SafeAreaView, StyleSheet, ImageBackground, Text } from 'react-native';
+import { SafeAreaView, StyleSheet, ImageBackground, Text, TouchableOpacity } from 'react-native';
 import { useForm } from 'react-hook-form';
 import KeyboardDismiss from 'components/uis/KeyboardDismiss';
-import { colors } from 'utils/theme';
 import { useNavigation } from '@react-navigation/core';
 import Button from 'components/uis/Button';
 import BackButton from 'components/uis/BackButton';
 import { logout } from 'services/redux/auth/actions';
 import UpdateProfileForm from './component/UpdateProfileForm';
 import { authService } from 'services/auth.service';
-import { IUser } from 'interfaces/user';
+import { IPerformer } from 'interfaces/performer';
 import TabView from 'components/uis/TabView';
+import { colors, Fonts, Sizes } from 'utils/theme';
+
 import Photo from './component/Photo';
 import Video from './component/Video';
 import styles from './style'
 
 interface Props {
-  current: IUser;
+  current: IPerformer;
   isLoggedIn: boolean;
   handleLogout: Function;
 }
@@ -103,11 +105,14 @@ const Profile = ({ current, handleLogout }: Props): React.ReactElement => {
         setSubmitting(false);
       });
   };
+  console.log('data', current);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
-        <Image source={current?.cover ? { uri: current?.cover } : require('assets/icon.png')} style={styles.converPhoto} />
+
+
+        <Image source={current?.cover ? { uri: current?.cover } : { uri: '' }} style={styles.converPhoto} />
         <View style={styles.avContainer}>
 
 
@@ -125,9 +130,27 @@ const Profile = ({ current, handleLogout }: Props): React.ReactElement => {
 
 
         </View>
-        <Text style={styles.textName}>Fanso</Text>
+        <Text style={styles.textName}>Modell
+        </Text>
 
-        {/* <Text flex={1} color={colors.dark} marginTop={77} fontSize={'3xl'} fontWeight={'bold'} alignSelf="center"  >fAnso</Text> */}
+
+        <View style={{ flexDirection: 'row', alignSelf: 'center', marginTop: 5 }}>
+          <TouchableOpacity
+            activeOpacity={0.9}
+            style={styles.editProfileButtonStyle}
+          >
+            <Text style={styles.subText}>
+              Edit Profile
+            </Text>
+          </TouchableOpacity>
+          <Image
+            source={require('../../assets/images/insta.png')}
+            style={{ marginLeft: Sizes.fixPadding + 5.0, marginTop: 3, width: 33.0, height: 33.0, }}
+            resizeMode="contain"
+          />
+        </View>
+
+
         <View style={styles.listFeeds}>
 
           {/* <Button
@@ -141,15 +164,10 @@ const Profile = ({ current, handleLogout }: Props): React.ReactElement => {
           /> */}
           <TabView
             scenes={[
-              {
-                key: 'videoList',
-                title: 'Video',
-                sence: Video,
-                params: { q }
-              },
+
               {
                 key: 'photoList',
-                title: 'Photo',
+                title: '',
                 sence: Photo,
                 params: { q }
               }
@@ -162,8 +180,11 @@ const Profile = ({ current, handleLogout }: Props): React.ReactElement => {
 
 
       </View>
-    </SafeAreaView>
+    </SafeAreaView >
   );
+
+
+
 };
 
 

@@ -1,132 +1,130 @@
-import { IStats } from './utils';
-
-export declare type GENDER = 'female' | 'male' | 'transgender';
-
-export interface ValueSchedule {
-  start: string;
-  end: string;
-  closed: boolean;
-}
-
-export interface ISchedule {
-  mon: ValueSchedule;
-  tue: ValueSchedule;
-  wed: ValueSchedule;
-  thu: ValueSchedule;
-  fri: ValueSchedule;
-  sat: ValueSchedule;
-  sun: ValueSchedule;
-}
-
 export interface IPerformer {
-  _id?: string;
-  avatar?: string;
-  name?: string;
-  email: string;
-  country: string;
-  gender?: GENDER;
-  sexualReference?: string;
+  map(arg0: (performer: any) => JSX.Element): import('react').ReactNode;
+  length: number;
+  _id: string;
+  performerId: string;
+  isFollowed: boolean;
+  canLive;
+  canPrivateChat;
+  name: string;
   firstName: string;
   lastName: string;
-  roles?: Array<string>;
-  isFavorite: boolean;
-  isBlocked?: boolean;
-  bio?: string;
-  tags?: string[];
-  schedule?: ISchedule;
-  username?: string;
-  address?: string;
-  zipcode?: string;
-  state?: string;
-  status?: string;
-  phone?: string;
-  city?: string;
-  timezone?: string;
-  dateOfBirth: string;
-  hair?: string;
-  eyes?: string;
-  weight?: string;
-  height?: string;
-  ethnicity?: string;
-  pubicHair?: string;
-  bust?: string;
-  aboutMe?: string;
-  avatarId?: string;
-  avatarPath?: string;
-  idVerificationId?: string;
-  documentVerificationId?: string;
-  releaseFormId?: string;
-  idVerification?: any;
-  documentVerification?: any;
-  releaseForm?: any;
-  languages?: string[];
-  categoryIds?: string[];
-  categories?: string[];
+  username: string;
+  email: string;
+  phone: string;
+  phoneCode: string;
+  avatarPath: string;
+  avatar: any;
+  coverPath: string;
+  cover: any;
+  gender: string;
+  country: string;
+  city: string;
+  state: string;
+  zipcode: string;
+  address: string;
+  languages: string[];
+  studioId: string;
+  categoryIds: string[];
+  timezone: string;
+  noteForUser: string;
+  height: string;
+  weight: string;
+  bio: string;
+  eyes: string;
+  sexualOrientation: string;
+  isFreeSubscription: boolean;
+  durationFreeSubscriptionDays: number;
+  monthlyPrice: number;
+  yearlyPrice: number;
+  stats: {
+    likes: number;
+    subscribers: number;
+    views: number;
+    totalVideos: number;
+    totalPhotos: number;
+    totalGalleries: number;
+    totalProducts: number;
+    totalFeeds: number;
+    totalStories: number;
+    totalBlogs: number;
+    totalRating: number;
+    avgRating: number;
+    totalFollower: number;
+    totalFollowing: number;
+  };
+  score: number;
+  bankingInformation: IBanking;
+  stripeAccount: any;
+  paypalSetting: any;
+  blockCountries: IBlockCountries;
+  createdBy: string;
   createdAt: Date;
-  products?: string[];
-  videos?: string[];
-  photos?: string[];
-  galleries?: string[];
-  relatedPerformers?: IPerformer[];
-  bankTransferOption?: IPerformerPaymentInfo;
-  directDeposit?: IPerformerDirectDeposit;
-  paxum?: IPerformerPaxum;
-  bitpay?: IPerformerBitpay;
-  sessionId?: string;
-  streamingStatus?: string;
-  streamingTitle?: string;
+  updatedAt: Date;
+  isOnline: number;
+  verifiedAccount: boolean;
+  verifiedEmail: boolean;
+  verifiedDocument: boolean;
+  twitterConnected: boolean;
+  googleConnected: boolean;
+  welcomeVideoId: string;
+  welcomeVideoPath: string;
+  welcomeVideoName: string;
+  activateWelcomeVideo: boolean;
+  isBookMarked: boolean;
+  isSubscribed: boolean;
+  live: number;
+  privateChat: number;
+  streamingStatus: string;
+  ethnicity: string;
+  butt: string;
+  hair: string;
+  pubicHair: string;
+  idVerification: any;
+  documentVerification: any;
+  bodyType: string;
+  dateOfBirth: Date;
+  publicChatPrice: number;
+  groupChatPrice: number;
+  privateChatPrice: number;
+  rubyBalance: number;
   balance: number;
-  isStreaming?: boolean;
-  socials?: any;
-  stats?: IStats;
-  privateCallPrice?: number;
-  groupCallPrice?: number;
-  maxParticipantsAllowed?: number;
-  isOnline?: number;
-  lastStreamingTime?: Date;
-  role?: string;
-  offlineAt?: string | Date;
+  socialsLink: {
+    facebook: string;
+    google: string;
+    instagram: string;
+    twitter: string;
+    linkedIn: string;
+  };
+  isPerformer: boolean;
 }
 
-export interface IPerformerPaymentInfo {
-  type: string;
-  withdrawCurrency: string;
-  taxPayer: string;
+export interface IBanking {
+  firstName: string;
+  lastName: string;
+  SSN: string;
   bankName: string;
-  bankAddress: string;
-  bankCity: string;
-  bankState: string;
-  bankZip: string;
-  bankCountry: string;
-  bankAcountNumber: string;
-  bankSWIFTBICABA: string;
-  holderOfBankAccount: string;
-  additionalInformation: string;
-  payPalAccount: string;
-  checkPayable: string;
-  payoneer: string;
+  bankAccount: string;
+  bankRouting: string;
+  bankSwiftCode: string;
+  address: string;
+  city: string;
+  state: string;
+  country: string;
+  performerId: string;
 }
 
-export interface IPerformerPaxum {
-  paxumName: string;
-  paxumEmail: string;
-  paxumAdditionalInformation: string;
+export interface IPerformerStats {
+  totalGrossPrice: number;
+  totalSiteCommission: number;
+  totalNetPrice: number;
 }
 
-export interface IPerformerBitpay {
-  bitpayName: string;
-  bitpayEmail: string;
-  bitpayAdditionalInformation: string;
+export interface IBlockCountries {
+  countryCodes: string[];
 }
 
-export declare type DirectDepositAccountType = 'credit' | 'savings';
-
-export interface IPerformerDirectDeposit {
-  depositFirstName: string;
-  depositLastName: string;
-  accountingEmail: string;
-  directBankName: string;
-  accountType: DirectDepositAccountType;
-  accountNumber: string;
-  routingNumber: string;
+export interface IBlockedByPerformer {
+  userId: string;
+  description: string;
 }

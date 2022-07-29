@@ -20,10 +20,18 @@ container: {
 },
 
 textName:{
-  color:colors.dark,
+  color:colors.lightText,
   marginTop:40.0,
   alignSelf: 'center',
-  fontSize: 30.0,
+  fontSize: 23.0,
+  fontWeight: 'bold',
+
+},
+
+subText:{
+  color:colors.lightText,
+  alignSelf: 'center',
+
   fontWeight: 'bold',
 
 },
@@ -66,10 +74,41 @@ activeNowTick: {
   backgroundColor: 'green',
   borderRadius: 30,
   position: 'absolute',
-  right: 0,
-  bottom: 20,
+  right: -5,
+  bottom: 15,
   borderWidth: 3,
   borderColor: 'white',
+},
+postImageStyle: {
+  // width: '100%',
+  alignSelf: 'center',
+  height: 130,
+  borderRadius: Sizes.fixPadding - 5.0,
+  marginTop: Sizes.fixPadding - 5.0,
+  // width: width / 3.3,
+  flexDirection: 'row',
+  justifyContent: 'center',
+  marginHorizontal: Sizes.fixPadding - 8.0,
+
+  width : Math.floor(
+    (width - ((Sizes.fixPadding - 8.0)+(Sizes.fixPadding - 5.0)) * (3 - 1)) / 3
+  )
+},
+editProfileButtonStyle: {
+  borderColor: colors.secondary,
+  borderWidth: 2.0,
+  borderRadius: Sizes.fixPadding - 5.0,
+  alignItems: 'center',
+  justifyContent: 'center',
+  paddingVertical: Sizes.fixPadding - 3.0,
+  paddingHorizontal: Sizes.fixPadding * 2.0,
+},
+profileImageStyle: {
+  width: 90.0,
+  height: 90.0,
+  borderWidth: 2.0,
+  borderColor: colors.light,
+  borderRadius: 45.0,
 },
 
 listFeeds: {

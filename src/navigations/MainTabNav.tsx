@@ -5,12 +5,16 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import React from 'react';
 import Home from 'screens/browse/Home';
-import Meet from 'screens/meet/Meet';
+// import Meet from 'screens/meet/Meet';
 import LiveNow from 'screens/live/LiveNow';
+import Trending from 'screens/trending/Trending';
 
 import PrivateChatList from 'screens/chat/PrivateChatList';
 import TokenPackage from 'screens/token-package/TokenPackage';
 import Profile from 'screens/profile/Profile';
+
+
+import Notifications from 'screens/notifications/notificationsScreen';
 import { colors } from 'utils/theme';
 
 const Tab = createBottomTabNavigator();
@@ -19,9 +23,10 @@ export const MainTabNav = (): JSX.Element => (
   <Tab.Navigator
     initialRouteName="MainTab/Home"
     screenOptions={{
-      tabBarActiveTintColor: colors.light,
-      tabBarInactiveTintColor: colors.secondary,
-      tabBarActiveBackgroundColor: colors.secondary
+      tabBarActiveTintColor: colors.lightText,
+      tabBarInactiveTintColor: colors.gray,
+      tabBarActiveBackgroundColor: colors.dark,
+      tabBarInactiveBackgroundColor: colors.dark
     }}>
     <Tab.Screen
       name="MainTab/Home"
@@ -34,8 +39,8 @@ export const MainTabNav = (): JSX.Element => (
       }}
     />
     <Tab.Screen
-      name="MainTab/Meet"
-      component={Meet}
+      name="MainTab/Trending"
+      component={Trending}
       options={{
         tabBarLabel: 'Trending',
         tabBarShowLabel: true,
@@ -44,7 +49,7 @@ export const MainTabNav = (): JSX.Element => (
     />
     <Tab.Screen
       name="MainTab/Messages"
-      component={PrivateChatList}
+      component={TokenPackage}
       options={{
         unmountOnBlur: true,
         tabBarLabel: 'Post Video',
@@ -53,7 +58,7 @@ export const MainTabNav = (): JSX.Element => (
       }}
     />
     <Tab.Screen
-      name="MainTab/TokenPackage"
+      name="MainTab/Notification"
       component={TokenPackage}
       options={{
         tabBarLabel: 'Notifications',

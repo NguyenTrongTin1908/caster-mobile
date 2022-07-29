@@ -25,14 +25,14 @@ const TabViewComponent = ({ scenes }: IProps): JSX.Element => {
     return (
       <HStack alignSelf="center">
         {props.navigationState.routes.map((route, i) => {
-          const color = index === i ? colors.darkText : '#979797';
+          const color = index === i ? colors.lightText : '#979797';
           const borderColor = index === i ? colors.primary : 'transparent';
 
           return (
             <Box
               key={route.title}
               borderBottomWidth={2}
-              borderColor={borderColor}
+              // borderColor={borderColor}
               p={3}>
               <Text
                 textAlign="center"

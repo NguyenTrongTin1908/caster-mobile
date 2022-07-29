@@ -1,7 +1,7 @@
 import { IPerformer } from './performer';
 
 export interface IFeed {
-  _id?: string;
+  _id: string;
   type: string;
   fromRef: string;
   refId: string;
@@ -33,5 +33,5 @@ export interface IFeed {
   isPinned: boolean;
   pinnedAt: Date;
   pollDescription: string;
-  stats:any
+  stats: any;
 }

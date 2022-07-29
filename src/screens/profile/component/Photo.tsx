@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Image } from 'react-native';
 import { Box, Button, FlatList } from 'native-base';
 import FeedCard from './ProfilePackageCard';
 import { FeedService } from 'services/feed.service';
@@ -8,6 +8,8 @@ import BadgeText from 'components/uis/BadgeText';
 import LoadingSpinner from 'components/uis/LoadingSpinner';
 import { feedService } from 'services/feed.service';
 import { connect } from 'react-redux';
+import { Colors, Fonts, Sizes } from "../../../constants/styles";
+
 
 
 import styles from './style';
@@ -78,20 +80,19 @@ const Photo = (props: IProps) => {
 
 
   return (
-    <Box flex={1} mx="auto" w="96%">
-      <ScrollView>
+    <ScrollView>
+      <View style={{ marginHorizontal: Sizes.fixPadding - 15.0, flexDirection: 'row', flexWrap: 'wrap' }}>
+        {feeds.map((item, index) => (
+          <View key={item._id}>
+            <Image
+              style={styles.postImageStyle}
+              source={{ uri: item.files[0].url }}
+            />
+          </View>
+        ))}
+      </View>
+    </ScrollView>
 
-
-
-        {!feedLoading &&
-          feeds?.length > 0 &&
-          feeds.map((item) => (
-            <ProfilePackageCard key={item._id} item={item} />
-          ))}
-        {feedLoading && <LoadingSpinner />}
-      </ScrollView>
-
-    </Box>
   );
 };
 

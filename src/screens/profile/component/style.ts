@@ -20,6 +20,18 @@ const styles = StyleSheet.create({
 
 },
 
+postImageStyle: {
+  // width: '100%',
+  alignSelf: 'center',
+  height: 130,
+  borderRadius: Sizes.fixPadding - 5.0,
+  marginTop: Sizes.fixPadding - 5.0,
+  width: width / 3.1,
+  flexDirection: 'row',
+  justifyContent: 'center',
+  marginHorizontal: Sizes.fixPadding - 8.0,
+},
+
   listModel: {
     marginTop: 15,
   },
