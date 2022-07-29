@@ -144,7 +144,7 @@ const Profile = ({ current, handleLogout }: Props): React.ReactElement => {
             </Text>
           </TouchableOpacity>
           <Image
-            source={require('../../assets/images/insta.png')}
+            source={require('../../assets/insta.png')}
             style={{ marginLeft: Sizes.fixPadding + 5.0, marginTop: 3, width: 33.0, height: 33.0, }}
             resizeMode="contain"
           />

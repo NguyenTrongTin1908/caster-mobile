@@ -8,10 +8,8 @@ import Home from 'screens/browse/Home';
 // import Meet from 'screens/meet/Meet';
 import LiveNow from 'screens/live/LiveNow';
 import Trending from 'screens/trending/Trending';
-
-import PrivateChatList from 'screens/chat/PrivateChatList';
-import TokenPackage from 'screens/token-package/TokenPackage';
 import Profile from 'screens/profile/Profile';
+import Blank from 'screens/blank';
 
 
 import Notifications from 'screens/notifications/notificationsScreen';
@@ -56,18 +54,17 @@ export const MainTabNav = (): JSX.Element => (
       }}
     />
     <Tab.Screen
-      name="MainTab/Messages"
-      component={TokenPackage}
+      name="Messages"
+      component={Blank}
       options={{
-        unmountOnBlur: true,
         tabBarLabel: 'Post Video',
         tabBarShowLabel: true,
         tabBarIcon: ({ color, size }) => <Ionicons name="add-circle" size={size} color={color} />
       }}
     />
     <Tab.Screen
-      name="MainTab/Notification"
-      component={TokenPackage}
+      name="Notification"
+      component={Blank}
       options={{
         tabBarLabel: 'Notifications',
         tabBarShowLabel: true,

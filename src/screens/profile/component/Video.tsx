@@ -8,6 +8,8 @@ import LoadingSpinner from 'components/uis/LoadingSpinner';
 import styles from './style';
 import { connect } from 'react-redux';
 import ProfilePackageCard from './ProfilePackageCard'
+import { ScrollView } from 'react-native-gesture-handler';
+
 
 
 interface IProps {
@@ -76,14 +78,18 @@ const Video = (props: IProps) => {
 
 
   return (
-    <Box flex={1} mx="auto" w="100%">
+    <Box flex={1} mx="auto" w="96%">
+      <ScrollView>
 
 
-      {/* {!feedLoading &&
-        feeds?.length > 0 &&
-        feeds.map((item) => (
-          <ProfilePackageCard key={item._id} item={item} />
-        ))} */}
+        {!feedLoading &&
+          feeds?.length > 0 &&
+          feeds.map((item) => (
+            <ProfilePackageCard key={item._id} item={item} />
+          ))}
+
+      </ScrollView>
+
 
       {feedLoading && <LoadingSpinner />}
     </Box>

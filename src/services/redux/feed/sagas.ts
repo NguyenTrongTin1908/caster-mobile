@@ -66,7 +66,7 @@ const performerSagas = [
       try {
         const resp = yield feedService.trendingSearch(data.payload);
         yield put(getTrendingFeedsSuccess(resp.data));
-        yield put(getFeedsSuccess(resp.data));
+        // yield put(getFeedsSuccess(resp.data));
       } catch (e) {
         const error = yield Promise.resolve(e);
         yield put(moreTrendingFeedsFail(error));
