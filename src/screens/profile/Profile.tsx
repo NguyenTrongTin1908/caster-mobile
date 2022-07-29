@@ -105,16 +105,12 @@ const Profile = ({ current, handleLogout }: Props): React.ReactElement => {
         setSubmitting(false);
       });
   };
-  console.log('data', current);
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
 
-
-        <Image source={current?.cover ? { uri: current?.cover } : { uri: '' }} style={styles.converPhoto} />
+        <Image source={current?.cover ? { uri: current?.cover } : { uri: '' }} style={styles.converPhoto} alt="cover" />
         <View style={styles.avContainer}>
-
 
           <View style={styles.avBlueRound}>
             <Image
@@ -130,7 +126,8 @@ const Profile = ({ current, handleLogout }: Props): React.ReactElement => {
 
 
         </View>
-        <Text style={styles.textName}>Modell
+        <Text style={styles.textName}>{(current.name != " ") ? `${(current.name)}` : `${(current.username)}`}
+
         </Text>
 
 
@@ -175,9 +172,6 @@ const Profile = ({ current, handleLogout }: Props): React.ReactElement => {
           />
 
         </View>
-
-
-
 
       </View>
     </SafeAreaView >

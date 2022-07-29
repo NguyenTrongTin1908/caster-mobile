@@ -10,7 +10,7 @@ import TabView from 'components/uis/TabView';
 const LiveNow = (): React.ReactElement => {
   const navigation = useNavigation() as any;
   useEffect(() => {
-    navigation.setOptions({ headerShown: false });
+    navigation.setOptions({ headerShown: true });
   }, [useContext]);
   const [q, setQ] = useState('');
 
@@ -23,7 +23,7 @@ const LiveNow = (): React.ReactElement => {
         mb={4}
         fontSize={40}
         letterSpacing={-1}
-        color={colors.darkText}
+        color={colors.lightText}
         bold>
         Live Now
       </Heading>
