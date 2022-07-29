@@ -16,6 +16,7 @@ import Profile from 'screens/profile/Profile';
 
 import Notifications from 'screens/notifications/notificationsScreen';
 import { colors } from 'utils/theme';
+import { Platform } from 'react-native';
 
 const Tab = createBottomTabNavigator();
 
@@ -26,7 +27,14 @@ export const MainTabNav = (): JSX.Element => (
       tabBarActiveTintColor: colors.lightText,
       tabBarInactiveTintColor: colors.gray,
       tabBarActiveBackgroundColor: colors.dark,
-      tabBarInactiveBackgroundColor: colors.dark
+      tabBarInactiveBackgroundColor: colors.dark,
+      tabBarStyle: {
+        height: Platform.OS === 'ios' ? 90 : 60,
+        padding: 0,
+        margin: 0,
+        backgroundColor: colors.dark
+      },
+      tabBarLabelStyle: { fontWeight: 'bold' }
     }}>
     <Tab.Screen
       name="MainTab/Home"

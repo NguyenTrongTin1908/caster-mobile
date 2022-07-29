@@ -14,7 +14,11 @@ import {
   View,
   Image,
   Text,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  SafeAreaView,
+  StatusBar,
+  Platform,
+  NativeModules
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -23,6 +27,10 @@ import styles from './style';
 import FeedCard from 'components/feed/feed-card';
 import { Button } from 'native-base';
 import { IFeed } from 'interfaces/feed';
+let deviceH = Dimensions.get('screen').height;
+let bottomNavBarH = deviceH - height;
+
+console.log(Platform.OS, height, deviceH, bottomNavBarH);
 
 interface IProps {
   current: IUser;
@@ -41,11 +49,8 @@ const Home = ({ handleGetFeeds, feedState }: IProps): React.ReactElement => {
   const [feedPage, setfeedPage] = useState(0);
   const [orientation, setOrientation] = useState('');
   const [keyword, setKeyword] = useState('');
-
   const mediaRefs = useRef([]) as any;
-
   const spinValue = new Animated.Value(0);
-
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
     getFeeds();
@@ -96,7 +101,7 @@ const Home = ({ handleGetFeeds, feedState }: IProps): React.ReactElement => {
     return (
       <View
         style={[
-          { flex: 1, height: height - 79 },
+          { height: Platform.OS === 'ios' ? deviceH - (90 + 47) : deviceH - (bottomNavBarH + 60) },
           index % 2 == 0 ? { backgroundColor: '#000000' } : { backgroundColor: '#000000' }
         ]}>
         <TouchableWithoutFeedback
@@ -182,92 +187,31 @@ const Home = ({ handleGetFeeds, feedState }: IProps): React.ReactElement => {
             </View>
           </View>
         </TouchableWithoutFeedback>
-        {/* <TouchableWithoutFeedback
-          onPress={() =>
-            !mediaRefs.current[item._id].playing
-              ? mediaRefs.current[item._id].play()
-              : mediaRefs.current[item._id].pause()
-          }>
-          <View style={{ flex: 1 }}>
-            <FeedCard feed={item} ref={FeedRef => (mediaRefs.current[item._id] = FeedRef)} />
-            <View style={styles.uiContainer}>
-              <View style={styles.rightContainer}>
-                <View
-                  style={{
-                    marginRight: Sizes.fixPadding - 5.0,
-                    marginBottom: Sizes.fixPadding + 14.0,
-                    alignItems: 'center'
-                  }}>
-                  <TouchableOpacity
-                    activeOpacity={0.9}
-                    // onPress={() => this.props.navigation.push('VideoMakerProfile')}
-                  >
-                    <Image style={styles.profilePicture} source={item?.performer.avatar} />
-                  </TouchableOpacity>
-                  <View style={styles.profilePictureAddButtonWrapStyle}>
-                    <MaterialIcons name="add" color={colors.light} size={18} />
-                  </View>
-                </View>
-
-                <View
-                  style={{
-                    marginRight: Sizes.fixPadding - 5.0,
-                    marginVertical: Sizes.fixPadding + 2.0,
-                    alignItems: 'center'
-                  }}>
-                  <Button size={44} backgroundColor="orange.400" onPress={handleRedirect}>
-                    Live Now
-                  </Button>
-                </View>
-                <View
-                  style={{
-                    marginRight: Sizes.fixPadding,
-                    marginVertical: Sizes.fixPadding + 2.0,
-                    alignItems: 'center'
-                  }}>
-                  <MaterialIcons name="bookmark" color={colors.light} size={28} />
-                  <Text style={{ marginTop: Sizes.fixPadding - 7.0, color: colors.lightText }}>
-                    {item.stats.comments}
-                  </Text>
-                </View>
-                <View
-                  style={{ marginRight: Sizes.fixPadding, marginTop: Sizes.fixPadding + 2.0, alignItems: 'center' }}>
-                  <MaterialIcons name="visibility" color={colors.light} size={28} />
-                  <Text style={{ marginTop: Sizes.fixPadding - 7.0, color: colors.lightText }}>{item.stats.views}</Text>
-                </View>
-              </View>
-
-              <View style={styles.bottomContainer}>
-                <View style={styles.postSongImageWrapStyle}>
-                  <MaterialCommunityIcons name="comment-processing" color={colors.light} size={28} />
-                </View>
-              </View>
-            </View>
-          </View>
-        </TouchableWithoutFeedback> */}
       </View>
     );
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <FlatList
         data={feedState.items}
         renderItem={renderItem}
         pagingEnabled={true}
         keyExtractor={item => item._id}
-        decelerationRate={'fast'}
+        decelerationRate={'normal'}
         showsVerticalScrollIndicator={false}
         onViewableItemsChanged={onViewableItemsChange.current}
         windowSize={2}
         initialNumToRender={1}
         maxToRenderPerBatch={2}
         removeClippedSubviews
+        // snapToInterval={deviceH - (bottomNavBarH + 60)}
         viewabilityConfig={{
           itemVisiblePercentThreshold: 100
         }}
+        // snapToAlignment={'start'}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
