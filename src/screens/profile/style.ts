@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { colors, Fonts, Sizes } from 'utils/theme';
 import { Dimensions} from "react-native";
-import { background } from 'native-base/lib/typescript/theme/styled-system';
+import { background, color } from 'native-base/lib/typescript/theme/styled-system';
 
 const { width, height } = Dimensions.get('window');
 
@@ -19,13 +19,30 @@ container: {
   flex: 1,
 },
 
+textName:{
+  color:colors.lightText,
+  marginTop:40.0,
+  alignSelf: 'center',
+  fontSize: 23.0,
+  fontWeight: 'bold',
+
+},
+
+subText:{
+  color:colors.lightText,
+  alignSelf: 'center',
+
+  fontWeight: 'bold',
+
+},
+
 converPhoto: {
   width: '100%',
   height: 130,
 },
 avContainer: {
-  height: 180,
-  width: 180,
+  height: 120,
+  width: 120,
   borderRadius: 200,
   backgroundColor: 'white',
   position: 'absolute',
@@ -35,8 +52,8 @@ avContainer: {
   justifyContent: 'center',
 },
 avBlueRound: {
-  height: '85%',
-  width: '85%',
+  height: '90%',
+  width: '90%',
   borderRadius: 200,
   borderWidth: 5,
   borderColor: 'blue',
@@ -52,21 +69,51 @@ bgImage: {
   justifyContent: 'center',
 },
 activeNowTick: {
-  height: 30,
-  width: 30,
+  height: 20,
+  width: 20,
   backgroundColor: 'green',
   borderRadius: 30,
   position: 'absolute',
-  right: 0,
-  bottom: 20,
+  right: -5,
+  bottom: 15,
   borderWidth: 3,
   borderColor: 'white',
+},
+postImageStyle: {
+  // width: '100%',
+  alignSelf: 'center',
+  height: 130,
+  borderRadius: Sizes.fixPadding - 5.0,
+  marginTop: Sizes.fixPadding - 5.0,
+  // width: width / 3.3,
+  flexDirection: 'row',
+  justifyContent: 'center',
+  marginHorizontal: Sizes.fixPadding - 8.0,
+
+  width : Math.floor(
+    (width - ((Sizes.fixPadding - 8.0)+(Sizes.fixPadding - 5.0)) * (3 - 1)) / 3
+  )
+},
+editProfileButtonStyle: {
+  borderColor: colors.secondary,
+  borderWidth: 2.0,
+  borderRadius: Sizes.fixPadding - 5.0,
+  alignItems: 'center',
+  justifyContent: 'center',
+  paddingVertical: Sizes.fixPadding - 3.0,
+  paddingHorizontal: Sizes.fixPadding * 2.0,
+},
+profileImageStyle: {
+  width: 90.0,
+  height: 90.0,
+  borderWidth: 2.0,
+  borderColor: colors.light,
+  borderRadius: 45.0,
 },
 
 listFeeds: {
   height: '100%',
   width: '100%',
-  marginTop: 35
 
 }
 

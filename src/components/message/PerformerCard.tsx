@@ -51,11 +51,11 @@ const PerformerCard = ({
               fontSize={17}
               w="100%"
               fontWeight={500}
-              color={colors.darkText}>
-              {performer.name || performer.username}
+              color={colors.lightText}>
+              {(performer.name != " ") ? `${(performer.name)}` : `${(performer.username)}`}
             </Heading>
 
-            <Text fontSize={14} color={colors.secondaryText}>
+            <Text fontSize={14} color={colors.lightText}>
               {performer.dateOfBirth && getBirthday(performer.dateOfBirth)}
               {performer.dateOfBirth &&
                 `, ${formatZodiac(performer.dateOfBirth)}`}
@@ -71,8 +71,8 @@ const PerformerCard = ({
             {performer.isOnline
               ? 'Online'
               : performer.offlineAt
-              ? formatDateFromnow(performer.offlineAt)
-              : 'Few days ago'}
+                ? formatDateFromnow(performer.offlineAt)
+                : 'Few days ago'}
           </Text>
         </HStack>
       </TouchableOpacity>

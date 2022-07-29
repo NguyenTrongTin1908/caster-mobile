@@ -9,26 +9,28 @@ import {
   useToast,
   Image,
   View,
-  Text
+
+
 } from 'native-base';
-import { SafeAreaView, StyleSheet, ImageBackground } from 'react-native';
+import { SafeAreaView, StyleSheet, ImageBackground, Text, TouchableOpacity } from 'react-native';
 import { useForm } from 'react-hook-form';
 import KeyboardDismiss from 'components/uis/KeyboardDismiss';
-import { colors } from 'utils/theme';
 import { useNavigation } from '@react-navigation/core';
 import Button from 'components/uis/Button';
 import BackButton from 'components/uis/BackButton';
 import { logout } from 'services/redux/auth/actions';
 import UpdateProfileForm from './component/UpdateProfileForm';
 import { authService } from 'services/auth.service';
-import { IUser } from 'interfaces/user';
+import { IPerformer } from 'interfaces/performer';
 import TabView from 'components/uis/TabView';
+import { colors, Fonts, Sizes } from 'utils/theme';
+
 import Photo from './component/Photo';
 import Video from './component/Video';
 import styles from './style'
 
 interface Props {
-  current: IUser;
+  current: IPerformer;
   isLoggedIn: boolean;
   handleLogout: Function;
 }
@@ -63,25 +65,7 @@ const Profile = ({ current, handleLogout }: Props): React.ReactElement => {
   const [submitting, setSubmitting] = useState(false);
   const toast = useToast();
 
-  // todo - handle update profile status from redux
-  // useEffect((): any => {
-  //   const { success, error } = updateProfile;
-  //   if (!success && !error) return;
-  //   if (error) {
-  //     return Alert.alert(
-  //       error?.data?.message || 'An error occurred, please try again!'
-  //     );
-  //   }
 
-  //   if (success) {
-  //     toast.show({
-  //       title: 'Success',
-  //       status: 'success',
-  //       description: 'Update profile successfully!'
-  //     });
-  //     setSubmitting(false);
-  //   }
-  // }, [updateProfile.success, updateProfile.error]);
 
   const onUpdatePassword = async ({
     password,
@@ -121,19 +105,18 @@ const Profile = ({ current, handleLogout }: Props): React.ReactElement => {
         setSubmitting(false);
       });
   };
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
-        <Image source={current?.avatar ? { uri: current?.avatar } : require('assets/icon.png')} style={styles.converPhoto} />
-        <View style={styles.avContainer}>
 
+        <Image source={current?.cover ? { uri: current?.cover } : { uri: '' }} style={styles.converPhoto} alt="cover" />
+        <View style={styles.avContainer}>
 
           <View style={styles.avBlueRound}>
             <Image
-              source={current?.avatar ? { uri: current?.avatar } : require('assets/icon.png')}
+              source={current?.avatar ? { uri: current?.avatar } : { uri: '' }}
               alt={'avatar'}
-              size={140}
+              size={100}
               borderRadius={80}
               resizeMode="cover"
             />
@@ -143,19 +126,45 @@ const Profile = ({ current, handleLogout }: Props): React.ReactElement => {
 
 
         </View>
-        <Text flex={1} color={colors.dark} marginTop={77} fontSize={'3xl'} fontWeight={'bold'} alignSelf="center">{current.username}</Text>
+        <Text style={styles.textName}>{(current.name != " ") ? `${(current.name)}` : `${(current.username)}`}
+
+        </Text>
+
+
+        <View style={{ flexDirection: 'row', alignSelf: 'center', marginTop: 5 }}>
+          <TouchableOpacity
+            activeOpacity={0.9}
+            style={styles.editProfileButtonStyle}
+          >
+            <Text style={styles.subText}>
+              Edit Profile
+            </Text>
+          </TouchableOpacity>
+          <Image
+            source={require('../../assets/insta.png')}
+            style={{ marginLeft: Sizes.fixPadding + 5.0, marginTop: 3, width: 33.0, height: 33.0, }}
+            resizeMode="contain"
+          />
+        </View>
+
+
         <View style={styles.listFeeds}>
+
+          {/* <Button
+            colorScheme="tertiary"
+            onPress={() => {
+              handleLogout();
+              navigation.navigate('IntroNav', { screen: 'IntroNav/Login' });
+            }}
+            disabled={false}
+            label="Logout"
+          /> */}
           <TabView
             scenes={[
-              {
-                key: 'videoList',
-                title: 'Video',
-                sence: Video,
-                params: { q }
-              },
+
               {
                 key: 'photoList',
-                title: 'Photo',
+                title: '',
                 sence: Photo,
                 params: { q }
               }
@@ -164,10 +173,12 @@ const Profile = ({ current, handleLogout }: Props): React.ReactElement => {
 
         </View>
 
-
       </View>
-    </SafeAreaView>
+    </SafeAreaView >
   );
+
+
+
 };
 
 

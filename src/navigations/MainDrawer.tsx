@@ -103,7 +103,7 @@ export const MainDrawer = ({
       <Box safeAreaTop bgColor={colors.primary} px={4} py={4}>
         <HStack space={3}>
           <Image
-            source={{ uri: user?.avatarUrl }}
+            source={{ uri: user?.avatar }}
             alt="user-avatar"
             width={60}
             height={60}

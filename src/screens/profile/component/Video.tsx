@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { View, Text } from 'react-native';
 import { Box, FlatList, Button } from 'native-base';
-import PerformerCard from 'components/message/PerformerCard';
-import { performerService } from 'services/perfomer.service';
-import { IPerformer } from 'interfaces/performer';
+import { feedService } from 'services/feed.service';
+import { IFeed } from 'interfaces/feed';
 import BadgeText from 'components/uis/BadgeText';
 import LoadingSpinner from 'components/uis/LoadingSpinner';
 import styles from './style';
+import { connect } from 'react-redux';
+import ProfilePackageCard from './ProfilePackageCard'
+import { ScrollView } from 'react-native-gesture-handler';
+
+
 
 interface IProps {
   route: {
@@ -14,27 +18,34 @@ interface IProps {
     title: string;
     params: { q: string };
   };
+  current: IFeed;
 }
 
-const Video = (props: IProps): React.ReactElement => {
-  const { q: qString } = props.route.params;
-  const [performers, setPerformers] = useState([] as Array<IPerformer>);
-  const [performerLoading, setPerformerLoading] = useState(true);
+const Video = (props: IProps) => {
+  const [feeds, setfeeds] = useState([] as Array<IFeed>);
+  const [feedLoading, setfeedLoading] = useState(true);
   // const [refreshing, setRefreshing] = useState(false);
   const [page, setPage] = useState(0);
   const [moreable, setMoreable] = useState(true);
 
-  const loadPerformers = async (more = false, q = '', refresh = false) => {
+
+  useEffect(() => {
+
+  }, [useContext]);
+
+
+  const loadfeeds = async (more = false, q = '', refresh = false) => {
     if (more && !moreable) return;
-    setPerformerLoading(true);
+    setfeedLoading(true);
     const newPage = more ? page + 1 : page;
     setPage(refresh ? 0 : newPage);
 
-    const { data } = await performerService.search({
+    const { data } = await feedService.userSearch({
       offset: refresh ? 0 : newPage * 10,
       limit: 10,
-      privateChat: 1,
-      isOnline: 1
+      performerId: props.current?._id,
+      type: 'video'
+
 
     });
 
@@ -44,54 +55,52 @@ const Video = (props: IProps): React.ReactElement => {
     if (refresh && !moreable) {
       setMoreable(true);
     }
-    setPerformers(refresh ? data : performers.concat(data));
-    setPerformerLoading(false);
+    setfeeds(refresh ? data.data : feeds.concat(data.data));
+    setfeedLoading(false);
   };
 
   const renderEmpty = () => (
     <View>
-      {!performerLoading && !performers.length && (
-        <BadgeText content={'There is no performer available!'} />
+      {!feedLoading && !feeds.length && (
+        <BadgeText content={'There is no feed available!'} />
       )}
     </View>
   );
-
-  // const wait = (timeout) => {
-  //   return new Promise((resolve) => setTimeout(resolve, timeout));
-  // };
-
-  // const onRefresh = useCallback(async () => {
-  //   setRefreshing(true);
-  //   wait(1000).then(() => setRefreshing(false));
-  //   await loadPerformers(false);
-  // }, []);
-
   useEffect(() => {
-    loadPerformers();
+    loadfeeds();
   }, []);
 
-  useEffect(() => {
-    loadPerformers(false, qString, true);
-  }, [qString]);
+
+
+
+
+  if (feedLoading) return <LoadingSpinner />
+
 
   return (
-    <Box flex={1} mx="auto" w="100%">
+    <Box flex={1} mx="auto" w="96%">
+      <ScrollView>
 
-      <FlatList
-        data={performers}
-        style={styles.listModel}
 
-        renderItem={({ item }) => <PerformerCard performer={item} />}
-        keyExtractor={(item, index) => item._id + '_' + index}
-        onEndReachedThreshold={0.5}
-        onEndReached={() => loadPerformers(true, qString, false)}
-        ListEmptyComponent={renderEmpty()}
-      // onRefresh={onRefresh}
-      // refreshing={refreshing}
-      />
-      {performerLoading && <LoadingSpinner />}
+        {!feedLoading &&
+          feeds?.length > 0 &&
+          feeds.map((item) => (
+            <ProfilePackageCard key={item._id} item={item} />
+          ))}
+
+      </ScrollView>
+
+
+      {feedLoading && <LoadingSpinner />}
     </Box>
   );
 };
 
-export default Video;
+const mapStateToProp = (state: any): any => ({
+
+  current: state.user.current
+})
+
+const mapDispatch = {}
+
+export default connect(mapStateToProp, mapDispatch)(Video);
