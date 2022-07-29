@@ -28,16 +28,15 @@ export const FeedCard = forwardRef(({ resizeMode, feed: { files, thumbnail } }: 
   }, []);
 
   useEffect(() => {
-    console.log('readyForPlay>>>>', readyForPlay, viewable, playing);
-    if (!playing && viewable && readyForPlay) {
+    if (!playing && viewable) {
       play();
     } else {
       pause();
     }
-  }, [readyForPlay, viewable]);
+  }, [viewable]);
 
   const play = async () => {
-    if (!playing && readyForPlay) {
+    if (!playing) {
       setPlaying(true);
     }
   };
@@ -57,7 +56,7 @@ export const FeedCard = forwardRef(({ resizeMode, feed: { files, thumbnail } }: 
   return (
     <Video
       ref={ref}
-      source={{ uri: files[0]?.url }} // Can be a URL or a local file.
+      source={{ uri: files[0]?.url }} // Can be a URL or a local file. files[0]?.url
       style={styles.container}
       resizeMode={resizeMode || 'cover'}
       paused={playing ? false : true}
@@ -67,7 +66,7 @@ export const FeedCard = forwardRef(({ resizeMode, feed: { files, thumbnail } }: 
         (files?.length > 0 && files[0].thumbnails && files[0].thumbnails.length > 0 && files[0].thumbnails[0])
       }
       posterResizeMode={'cover'}
-      onReadyForDisplay={ready => onReady()}
+      onReadyForDisplay={onReady}
     />
   );
 });

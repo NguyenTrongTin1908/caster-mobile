@@ -121,6 +121,9 @@ def jscFlavor = 'org.webkit:android-jsc:+'
 def enableHermes = project.ext.react.get("enableHermes", false);
 
 android {
+    lintOptions {
+        checkReleaseBuilds false
+    }
     ndkVersion rootProject.ext.ndkVersion
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -152,6 +155,14 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+
+        release {
+            storeFile file('keystore.keystore')
+            storePassword 'Minhphan1704'
+            keyAlias 'key0'
+            keyPassword 'Minhphan1704@'
+        }
+
     }
     buildTypes {
         debug {
@@ -160,7 +171,7 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
@@ -215,9 +226,9 @@ dependencies {
 
     implementation project(':react-native-config')
     implementation project(':react-native-vector-icons')
-    compile project(':WebRTCModule')
+    implementation project(':WebRTCModule')
 
-    compile project(':react-native-video')
+    implementation project(':react-native-video')
     implementation "androidx.appcompat:appcompat:1.0.0"
 }
 
