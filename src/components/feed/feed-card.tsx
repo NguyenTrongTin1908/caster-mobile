@@ -1,74 +1,39 @@
 import { View } from 'native-base';
-import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import React, { forwardRef } from 'react';
 import { TouchableWithoutFeedback } from 'react-native';
-import Video from 'react-native-video';
 import { IFeed } from 'interfaces/feed';
-import styles from './style';
+import FeedStats from './component/feed-stats';
+import VideoCard from './component/video-card';
+
 
 interface IProps {
-  resizeMode?: string;
-  ref?: any;
+
   feed: IFeed;
+  mediaRefs: any;
 }
 
-export const FeedCard = forwardRef(({ resizeMode, feed: { files, thumbnail } }: IProps, parentRef) => {
-  const [playing, setPlaying] = useState(false);
-  const [readyForPlay, setReady] = useState(false);
-  const [viewable, setIsViewable] = useState(false);
-  const ref = useRef(null) as any;
-  useImperativeHandle(parentRef, () => ({
-    play,
-    pause,
-    setStatus,
-    playing
-  }));
+export const FeedCard = forwardRef(({ feed, mediaRefs }: IProps, parentRef) => {
 
-  useEffect(() => {
-    return () => ref.current.seek(0);
-  }, []);
 
-  useEffect(() => {
-    if (!playing && viewable) {
-      play();
-    } else {
-      pause();
-    }
-  }, [viewable]);
-
-  const play = async () => {
-    if (!playing) {
-      setPlaying(true);
-    }
-  };
-  const pause = async () => {
-    if (playing) {
-      setPlaying(false);
-    }
-  };
-
-  const setStatus = isViewable => {
-    setIsViewable(isViewable);
-  };
-
-  const onReady = () => {
-    setReady(true);
-  };
   return (
-    <Video
-      ref={ref}
-      source={{ uri: files[0]?.url }} // Can be a URL or a local file. files[0]?.url
-      style={styles.container}
-      resizeMode={resizeMode || 'cover'}
-      paused={playing ? false : true}
-      repeat
-      poster={
-        thumbnail?.url ||
-        (files?.length > 0 && files[0].thumbnails && files[0].thumbnails.length > 0 && files[0].thumbnails[0])
-      }
-      posterResizeMode={'cover'}
-      onReadyForDisplay={onReady}
-    />
+
+    <TouchableWithoutFeedback
+      onPress={() =>
+        !mediaRefs.current[feed._id].playing
+          ? mediaRefs.current[feed._id].play()
+          : mediaRefs.current[feed._id].pause()
+      }>
+      <View style={{ flex: 1 }}>
+
+        <VideoCard feed={feed} ref={FeedRef => (mediaRefs.current[feed._id] = FeedRef)}></VideoCard>
+
+        <FeedStats item={feed}></FeedStats>
+      </View>
+    </TouchableWithoutFeedback>
+
   );
 });
+
+
 
 export default FeedCard;

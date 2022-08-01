@@ -6,13 +6,13 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import React from 'react';
 import Home from 'screens/browse/Home';
 // import Meet from 'screens/meet/Meet';
-import LiveNow from 'screens/live/LiveNow';
 import Trending from 'screens/trending/Trending';
 import Profile from 'screens/profile/Profile';
 import Blank from 'screens/blank';
+import PostScreen from 'screens/post/postScreen';
+import UploadScreen from 'screens/upload/uploadScreen';
 
 
-import Notifications from 'screens/notifications/notificationsScreen';
 import { colors } from 'utils/theme';
 import { Platform } from 'react-native';
 
@@ -54,8 +54,8 @@ export const MainTabNav = (): JSX.Element => (
       }}
     />
     <Tab.Screen
-      name="Messages"
-      component={Blank}
+      name="PostVideo"
+      component={UploadScreen}
       options={{
         tabBarLabel: 'Post Video',
         tabBarShowLabel: true,
