@@ -109,7 +109,7 @@ const Home = ({ handleGetFeeds, feedState }: IProps): React.ReactElement => {
             showsVerticalScrollIndicator={false}
             onViewableItemsChanged={onViewableItemsChange.current}
             windowSize={2}
-            initialNumToRender={1}
+            initialNumToRender={0}
             maxToRenderPerBatch={2}
             removeClippedSubviews
             snapToInterval={
