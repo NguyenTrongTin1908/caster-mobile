@@ -45,12 +45,7 @@ const Register = (): React.ReactElement => {
   const [submitting, setSubmitting] = useState(false);
   const toast = useToast();
 
-  const onSubmit = async ({
-    email,
-    password,
-    username,
-    conPassword
-  }: any): Promise<void> => {
+  const onSubmit = async ({ email, password, username, conPassword }: any): Promise<void> => {
     if (password !== conPassword) {
       return toast.show({
         title: 'Error',
@@ -66,17 +61,16 @@ const Register = (): React.ReactElement => {
         password,
         username
       })
-      .then((res) => {
+      .then(res => {
         setSubmitting(false);
         toast.show({
           title: 'Sign up successfully',
           status: 'success',
-          description:
-            res.data?.data?.message || 'Thanks for signing up with us.'
+          description: res.data?.data?.message || 'Thanks for signing up with us.'
         });
         return navigation.navigate('IntroNav/Login');
       })
-      .catch(async (e) => {
+      .catch(async e => {
         // const error = await Promise.resolve(e);
         setSubmitting(false);
         Alert.alert('An error occurred, please try again!');
@@ -85,7 +79,7 @@ const Register = (): React.ReactElement => {
 
   return (
     <KeyboardDismiss>
-      <VStack flex={1} w="100%" mx="1" justifyContent="space-between">
+      <VStack flex={1} w="100%" mx="auto" justifyContent="space-between">
         <KeyboardAvoidingView>
           <ImageBackground
             style={{ width: '100%', height: '100%' }}
@@ -131,18 +125,13 @@ const Register = (): React.ReactElement => {
                     rules={{ required: 'Username is required.' }}
                     defaultValue=""
                   />
-                  {errors.username && (
-                    <ErrorMessage
-                      message={errors.username?.message || 'Name is required.'}
-                    />
-                  )}
+                  {errors.username && <ErrorMessage message={errors.username?.message || 'Name is required.'} />}
                 </FormControl>
                 <FormControl>
                   <Controller
                     control={control}
                     render={({ field: { onChange, value } }) => (
                       <Input
-
                         p={4}
                         borderColor={colors.inpBorderColor}
                         onChangeText={val => onChange(val)}
@@ -160,18 +149,13 @@ const Register = (): React.ReactElement => {
                     rules={{ required: 'Email is required.' }}
                     defaultValue=""
                   />
-                  {errors.email && (
-                    <ErrorMessage
-                      message={errors.email?.message || 'Email is required.'}
-                    />
-                  )}
+                  {errors.email && <ErrorMessage message={errors.email?.message || 'Email is required.'} />}
                 </FormControl>
                 <FormControl>
                   <Controller
                     control={control}
                     render={({ field: { onChange, value } }) => (
                       <Input
-
                         p={4}
                         borderColor={colors.inpBorderColor}
                         onChangeText={val => onChange(val)}
@@ -196,18 +180,13 @@ const Register = (): React.ReactElement => {
                     }}
                     defaultValue=""
                   />
-                  {errors.password && (
-                    <ErrorMessage
-                      message={errors.password?.message || 'Password is required.'}
-                    />
-                  )}
+                  {errors.password && <ErrorMessage message={errors.password?.message || 'Password is required.'} />}
                 </FormControl>
                 <FormControl>
                   <Controller
                     control={control}
                     render={({ field: { onChange, value } }) => (
                       <Input
-
                         p={4}
                         borderColor={colors.inpBorderColor}
                         onChangeText={val => onChange(val)}
@@ -233,12 +212,7 @@ const Register = (): React.ReactElement => {
                     defaultValue=""
                   />
                   {errors.conPassword && (
-                    <ErrorMessage
-                      message={
-                        errors.conPassword?.message ||
-                        'Confirm password is required.'
-                      }
-                    />
+                    <ErrorMessage message={errors.conPassword?.message || 'Confirm password is required.'} />
                   )}
                 </FormControl>
 
@@ -256,8 +230,10 @@ const Register = (): React.ReactElement => {
                     </LinearGradient>
                   </TouchableOpacity>
                 </Flex>
-                <HStack style={{ ...styles.loginRedirect }} >
-                  <Text fontSize={12} color={colors.primary}>ARE YOU MEMBER? </Text>
+                <HStack style={{ ...styles.loginRedirect }}>
+                  <Text fontSize={12} color={colors.primary}>
+                    ARE YOU MEMBER?{' '}
+                  </Text>
                   <Link onPress={(): void => navigation.navigate('IntroNav/Login')}>
                     <Text fontSize={12} color={colors.secondary}>
                       LOGIN
@@ -267,13 +243,9 @@ const Register = (): React.ReactElement => {
               </Box>
             </LinearGradient>
           </ImageBackground>
-
         </KeyboardAvoidingView>
-
-
-
       </VStack>
-    </KeyboardDismiss >
+    </KeyboardDismiss>
   );
 };
 
@@ -300,9 +272,9 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   loginRedirect: {
-    alignSelf: "center",
+    alignSelf: 'center',
     marginTop: Sizes.fixPadding + 10.0
-  },
+  }
 });
 
 export default Register;
