@@ -2,40 +2,29 @@ import { StyleSheet } from 'react-native';
 import { colors, Fonts, Sizes } from 'utils/theme';
 import { Dimensions} from "react-native";
 import { background, color } from 'native-base/lib/typescript/theme/styled-system';
-
 const { width, height } = Dimensions.get('window');
 
-
-
 const styles = StyleSheet.create({
-
   imgCover: {
     width:width ,
     height: 100.0,
-
 
 },
 container: {
   flex: 1,
 },
-
 textName:{
   color:colors.lightText,
   marginTop:40.0,
   alignSelf: 'center',
   fontSize: 23.0,
   fontWeight: 'bold',
-
 },
-
 subText:{
   color:colors.lightText,
   alignSelf: 'center',
-
   fontWeight: 'bold',
-
 },
-
 converPhoto: {
   width: '100%',
   height: 130,
@@ -89,7 +78,6 @@ postImageStyle: {
   flexDirection: 'row',
   justifyContent: 'center',
   marginHorizontal: Sizes.fixPadding - 8.0,
-
   width : Math.floor(
     (width - ((Sizes.fixPadding - 8.0)+(Sizes.fixPadding - 5.0)) * (3 - 1)) / 3
   )
@@ -100,8 +88,10 @@ editProfileButtonStyle: {
   borderRadius: Sizes.fixPadding - 5.0,
   alignItems: 'center',
   justifyContent: 'center',
-  paddingVertical: Sizes.fixPadding - 3.0,
+  paddingVertical: Sizes.fixPadding - 5.0,
   paddingHorizontal: Sizes.fixPadding * 2.0,
+  fontSize: 15.0,
+  margin:1.0
 },
 profileImageStyle: {
   width: 90.0,
@@ -110,14 +100,9 @@ profileImageStyle: {
   borderColor: colors.light,
   borderRadius: 45.0,
 },
-
 listFeeds: {
   height: '100%',
   width: '100%',
-
 }
-
 });
-
 export default styles;
-

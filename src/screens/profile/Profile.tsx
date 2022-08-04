@@ -9,8 +9,6 @@ import {
   useToast,
   Image,
   View,
-
-
 } from 'native-base';
 import { SafeAreaView, StyleSheet, ImageBackground, Text, TouchableOpacity } from 'react-native';
 import { useForm } from 'react-hook-form';
@@ -24,20 +22,18 @@ import { authService } from 'services/auth.service';
 import { IPerformer } from 'interfaces/performer';
 import TabView from 'components/uis/TabView';
 import { colors, Fonts, Sizes } from 'utils/theme';
-
 import Photo from './component/Photo';
 import Video from './component/Video';
 import styles from './style'
-
 interface Props {
   current: IPerformer;
   isLoggedIn: boolean;
   handleLogout: Function;
 }
+
 const Profile = ({ current, handleLogout }: Props): React.ReactElement => {
   const navigation = useNavigation() as any;
   const [q, setQ] = useState('');
-
   useEffect(() => {
     navigation.setOptions({
       headerShown: true,
@@ -47,26 +43,20 @@ const Profile = ({ current, handleLogout }: Props): React.ReactElement => {
       headerRight: null
     });
   }, [useContext]);
-
   const defaultValues = {
     email: current?.email,
     username: current?.username,
     password: '',
     conPassword: ''
   };
-
   const {
     control,
     handleSubmit,
     reset,
     formState: { errors }
   } = useForm({ defaultValues });
-
   const [submitting, setSubmitting] = useState(false);
   const toast = useToast();
-
-
-
   const onUpdatePassword = async ({
     password,
     prePassword
@@ -79,7 +69,6 @@ const Profile = ({ current, handleLogout }: Props): React.ReactElement => {
         placement: 'bottom'
       });
     }
-
     setSubmitting(true);
     //todo - source: performer for performer update
     await authService
@@ -105,13 +94,12 @@ const Profile = ({ current, handleLogout }: Props): React.ReactElement => {
         setSubmitting(false);
       });
   };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
-
         <Image source={current?.cover ? { uri: current?.cover } : { uri: '' }} style={styles.converPhoto} alt="cover" />
         <View style={styles.avContainer}>
-
           <View style={styles.avBlueRound}>
             <Image
               source={current?.avatar ? { uri: current?.avatar } : { uri: '' }}
@@ -121,16 +109,10 @@ const Profile = ({ current, handleLogout }: Props): React.ReactElement => {
               resizeMode="cover"
             />
             <View style={styles.activeNowTick}></View>
-
           </View>
-
-
         </View>
         <Text style={styles.textName}>{(current.name != " ") ? `${(current.name)}` : `${(current.username)}`}
-
         </Text>
-
-
         <View style={{ flexDirection: 'row', alignSelf: 'center', marginTop: 5 }}>
           <TouchableOpacity
             activeOpacity={0.9}
@@ -140,17 +122,8 @@ const Profile = ({ current, handleLogout }: Props): React.ReactElement => {
               Edit Profile
             </Text>
           </TouchableOpacity>
-          <Image
-            source={require('../../assets/insta.png')}
-            style={{ marginLeft: Sizes.fixPadding + 5.0, marginTop: 3, width: 33.0, height: 33.0, }}
-            resizeMode="contain"
-          />
-        </View>
-
-
-        <View style={styles.listFeeds}>
-
-          {/* <Button
+          <Button
+            style={styles.editProfileButtonStyle}
             colorScheme="tertiary"
             onPress={() => {
               handleLogout();
@@ -158,30 +131,30 @@ const Profile = ({ current, handleLogout }: Props): React.ReactElement => {
             }}
             disabled={false}
             label="Logout"
-          /> */}
+          />
+        </View>
+        <View style={styles.listFeeds}>
           <TabView
             scenes={[
-
               {
                 key: 'photoList',
-                title: '',
+                title: 'Photo',
                 sence: Photo,
+                params: { q }
+              },
+              {
+                key: 'videoList',
+                title: 'Video',
+                sence: Video,
                 params: { q }
               }
             ]}
           />
-
         </View>
-
       </View>
     </SafeAreaView >
   );
-
-
-
 };
-
-
 
 const mapStateToProp = (state: any): any => ({
   ...state.user,

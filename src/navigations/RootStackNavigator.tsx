@@ -8,7 +8,6 @@ import { connect } from 'react-redux';
 import React from 'react';
 import navigationHolder from 'lib/navigationHolder';
 import { colors } from 'utils/theme';
-
 import IntroNav from './IntroNav';
 import MainTabNav from './MainTabNav';
 import ChatRoom from 'screens/chat/ChatRoom';
@@ -17,6 +16,7 @@ import PerformerDetail from 'screens/performer/PerformerDetail';
 import Call from 'screens/call/Call';
 import Calling from 'screens/call/Calling';
 import LiveNow from 'screens/live/LiveNow';
+import FeedDetail from 'screens/detail/feedDetail';
 import { IPerformer } from 'interfaces/performer';
 
 export type RootStackParamList = {
@@ -29,6 +29,7 @@ export type RootStackParamList = {
   ChatRoom: { performer: IPerformer };
   PrivateChatDetail: { performer: IPerformer; conversationId: string };
   PerformerDetail: { username: string };
+  FeedDetail: { performerId: any }
 };
 
 export type RootStackNavigationProps<
@@ -108,6 +109,11 @@ function RootNavigator({ loggedIn }): React.ReactElement {
           options={{ headerShown: false, gestureEnabled: false }}
           name="PerformerDetail"
           component={PerformerDetail}
+        />
+        <Stack.Screen
+          options={{ headerShown: false, gestureEnabled: false }}
+          name="FeedDetail"
+          component={FeedDetail}
         />
         <Stack.Screen
           options={{ headerShown: false, gestureEnabled: false }}

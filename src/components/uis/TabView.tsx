@@ -32,7 +32,7 @@ const TabViewComponent = ({ scenes }: IProps): JSX.Element => {
             <Box
               key={route.title}
               borderBottomWidth={2}
-              // borderColor={borderColor}
+              borderColor={borderColor}
               p={3}>
               <Text
                 textAlign="center"
