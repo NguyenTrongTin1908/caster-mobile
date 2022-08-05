@@ -339,9 +339,15 @@ PODS:
     - Yoga
   - RNScreens (3.0.0):
     - React-Core
+  - RNStaticSafeAreaInsets (2.1.2):
+    - React
   - RNSVG (12.1.0):
     - React
   - RNVectorIcons (9.0.0):
+    - React-Core
+  - VisionCamera (2.14.0):
+    - React
+    - React-callinvoker
     - React-Core
   - Yoga (1.14.0)
 
@@ -395,8 +401,10 @@ DEPENDENCIES:
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - RNStaticSafeAreaInsets (from `../node_modules/react-native-static-safe-area-insets`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
+  - VisionCamera (from `../node_modules/react-native-vision-camera`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -498,10 +506,14 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNStaticSafeAreaInsets:
+    :path: "../node_modules/react-native-static-safe-area-insets"
   RNSVG:
     :path: "../node_modules/react-native-svg"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
+  VisionCamera:
+    :path: "../node_modules/react-native-vision-camera"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -554,8 +566,10 @@ SPEC CHECKSUMS:
   RNPermissions: f7ebe52db07c00901127966ca080b4ec6a6ceb0a
   RNReanimated: 024eff8202342abf4b24e11575a16afc441dabfe
   RNScreens: e8e8dd0588b5da0ab57dcca76ab9b2d8987757e0
+  RNStaticSafeAreaInsets: bb611be967ba27ced2fbf9aca0f067a786175ea6
   RNSVG: ce9d996113475209013317e48b05c21ee988d42e
   RNVectorIcons: 4143ba35feebab8fdbe6bc43d1e776b393d47ac8
+  VisionCamera: 63b1d9959d580e7da5c5c0b3ade281636b7c79ab
   Yoga: 8c8436d4171c87504c648ae23b1d81242bdf3bbf
 
 PODFILE CHECKSUM: a99bf32ea9397161c41dd4e8b32fb1ea58ecbbb5

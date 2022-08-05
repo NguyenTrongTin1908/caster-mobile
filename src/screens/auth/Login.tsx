@@ -201,8 +201,6 @@ const Login = ({ handleLogin, handleResetLogin, authLogin }: Props): React.React
             </LinearGradient>
           </ImageBackground>
         </KeyboardAvoidingView>
-
-
       </VStack>
     </KeyboardDismiss>
   );

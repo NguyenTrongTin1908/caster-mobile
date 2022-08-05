@@ -3,16 +3,7 @@ import { connect } from 'react-redux';
 import { useNavigation } from '@react-navigation/core';
 import { IUser } from 'interfaces/user';
 import { getFeeds, moreFeeds } from 'services/redux/feed/actions';
-
-import { colors, Sizes } from 'utils/theme';
-import {
-  Dimensions,
-  FlatList,
-  View,
-
-  SafeAreaView,
-  Platform,
-} from 'react-native';
+import { Dimensions, FlatList, View, SafeAreaView, Platform } from 'react-native';
 const { height } = Dimensions.get('window');
 import styles from './style';
 import FeedCard from 'components/feed/feed-card';
@@ -68,8 +59,6 @@ const Home = ({ handleGetFeeds, feedState }: IProps): React.ReactElement => {
     });
   };
 
-
-
   const renderItem = ({ item, index }: { item: IFeed; index: number }) => {
     return (
       <BottomTabBarHeightContext.Consumer>
@@ -85,10 +74,7 @@ const Home = ({ handleGetFeeds, feedState }: IProps): React.ReactElement => {
                 },
                 index % 2 == 0 ? { backgroundColor: '#000000' } : { backgroundColor: '#000000' }
               ]}>
-
               <FeedCard feed={item} mediaRefs={mediaRefs} />
-
-
             </View>
           );
         }}
@@ -108,7 +94,7 @@ const Home = ({ handleGetFeeds, feedState }: IProps): React.ReactElement => {
             decelerationRate={'fast'}
             showsVerticalScrollIndicator={false}
             onViewableItemsChanged={onViewableItemsChange.current}
-            windowSize={2}
+            windowSize={4}
             initialNumToRender={0}
             maxToRenderPerBatch={2}
             removeClippedSubviews

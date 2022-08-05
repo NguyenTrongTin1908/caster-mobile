@@ -15,6 +15,7 @@ import com.facebook.react.bridge.JSIModulePackage; // <- add this
 import com.swmansion.reanimated.ReanimatedJSIModulePackage; // <- add this
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.brentvatne.react.ReactVideoPackage;
+import com.mrousavy.camera.CameraPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -32,6 +33,7 @@ public class MainApplication extends Application implements ReactApplication {
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
           packages.add(new ReactVideoPackage());
+          // packages.add(new CameraPackage());
           return packages;
         }
 
