@@ -128,7 +128,8 @@ const styles = StyleSheet.create({
     bottom: 0
   },
   photo: {
-    // position: 'absolute',
+    width: '30%',
+    height: 150,
     top: 0,
     left: 0,
     right: 0,

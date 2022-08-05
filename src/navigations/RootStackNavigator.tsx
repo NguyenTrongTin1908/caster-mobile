@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import React from 'react';
 import navigationHolder from 'lib/navigationHolder';
 import { colors } from 'utils/theme';
-
 import IntroNav from './IntroNav';
 import MainTabNav from './MainTabNav';
 import ChatRoom from 'screens/chat/ChatRoom';
@@ -14,6 +13,7 @@ import PerformerDetail from 'screens/performer/PerformerDetail';
 import Call from 'screens/call/Call';
 import Calling from 'screens/call/Calling';
 import LiveNow from 'screens/live/LiveNow';
+import FeedDetail from 'screens/detail/feedDetail';
 import { IPerformer } from 'interfaces/performer';
 import MediaPreview from 'screens/media/MediaPreview';
 import UploadMedia from 'screens/feed/Upload';
@@ -36,6 +36,7 @@ export type RootStackParamList = {
     path: string;
     type: 'video' | 'photo';
   };
+  FeedDetail: { performerId: any };
 };
 
 export type RootStackNavigationProps<T extends keyof RootStackParamList = 'default'> = StackNavigationProp<
@@ -113,6 +114,7 @@ function RootNavigator({ loggedIn }): React.ReactElement {
           name="UploadMedia"
           component={UploadMedia}
         />
+        <Stack.Screen name="FeedDetail" component={FeedDetail} />
       </Stack.Navigator>
     </NavigationContainer>
   );
