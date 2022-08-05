@@ -3,12 +3,10 @@ import { colors, Fonts, Sizes } from 'utils/theme';
 import { Dimensions} from "react-native";
 import { background, color } from 'native-base/lib/typescript/theme/styled-system';
 const { width, height } = Dimensions.get('window');
-
 const styles = StyleSheet.create({
   imgCover: {
     width:width ,
     height: 100.0,
-
 },
 container: {
   flex: 1,
@@ -82,16 +80,18 @@ postImageStyle: {
     (width - ((Sizes.fixPadding - 8.0)+(Sizes.fixPadding - 5.0)) * (3 - 1)) / 3
   )
 },
-editProfileButtonStyle: {
+followButtonStyle: {
   borderColor: colors.secondary,
   borderWidth: 2.0,
   borderRadius: Sizes.fixPadding - 5.0,
   alignItems: 'center',
   justifyContent: 'center',
-  paddingVertical: Sizes.fixPadding - 5.0,
+  paddingVertical: Sizes.fixPadding - 20.0,
   paddingHorizontal: Sizes.fixPadding * 2.0,
-  fontSize: 15.0,
-  margin:1.0
+  width: 110.0,
+  margin:2.0,
+  height:40.0,
+
 },
 profileImageStyle: {
   width: 90.0,
@@ -103,6 +103,43 @@ profileImageStyle: {
 listFeeds: {
   height: '100%',
   width: '100%',
-}
+},
+editButtonStyle: {
+  backgroundColor: colors.secondary,
+  borderColor: colors.secondary,
+  borderWidth: 2.0,
+  borderRadius: Sizes.fixPadding - 5.0,
+  alignItems: 'center',
+  justifyContent: 'center',
+  paddingVertical: Sizes.fixPadding - 3.0,
+  width: 110.0,
+  height:40.0,
+  margin:2.0,
+},
+bar: {
+  top: 0,
+  left: 0,
+  right: 20,
+  height: 56,
+  position: 'absolute',
+  flexDirection: "row",
+  justifyContent: 'space-between',
+  backgroundColor: 'transparent',
+},
+left: {
+  top: 0,
+  left: 0,
+  width: 50,
+  height: 56,
+  alignItems: 'center',
+  justifyContent: 'center',
+},
+right: {
+  top: 0,
+  right: 0,
+  height: 56,
+  alignItems: 'center',
+  justifyContent: 'center',
+},
 });
 export default styles;

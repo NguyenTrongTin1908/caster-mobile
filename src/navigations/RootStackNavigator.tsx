@@ -15,10 +15,9 @@ import PrivateChatDetail from 'screens/chat/PrivateChatDetail';
 import PerformerDetail from 'screens/performer/PerformerDetail';
 import Call from 'screens/call/Call';
 import Calling from 'screens/call/Calling';
-import LiveNow from 'screens/live/LiveNow';
+import LiveNow from 'screens/livenow/LiveNow';
 import FeedDetail from 'screens/detail/feedDetail';
 import { IPerformer } from 'interfaces/performer';
-
 export type RootStackParamList = {
   default: undefined;
   IntroNav: undefined;
@@ -31,33 +30,21 @@ export type RootStackParamList = {
   PerformerDetail: { username: string };
   FeedDetail: { performerId: any }
 };
-
 export type RootStackNavigationProps<
   T extends keyof RootStackParamList = 'default'
   > = StackNavigationProp<RootStackParamList, T>;
-
 const Stack = createStackNavigator<RootStackParamList>();
-
 export const navigationRef = createNavigationContainerRef() as any;
-
 function RootNavigator({ loggedIn }): React.ReactElement {
   const defaultRouteName = loggedIn ? 'MainTabNav' : 'IntroNav';
-
   const CustomTheme = {
     ...DefaultTheme,
     colors: {
       ...DefaultTheme.colors,
       background: colors.appBgColor
-      // overwrite default color, check here https://reactnavigation.org/docs/themes/
-      // primary: 'rgb(255, 45, 85)',
-      // background: 'rgb(242, 242, 242)',
-      // card: 'rgb(255, 255, 255)',
-      // text: 'rgb(28, 28, 30)',
-      // border: 'rgb(199, 199, 204)',
-      // notification: 'rgb(255, 69, 58)'
+
     }
   };
-
   return (
     <NavigationContainer
       ref={navigationRef}
@@ -88,7 +75,6 @@ function RootNavigator({ loggedIn }): React.ReactElement {
           name="MainTabNav"
           component={MainTabNav}
         />
-
         <Stack.Screen
           options={{
             headerShown: false,
@@ -124,7 +110,6 @@ function RootNavigator({ loggedIn }): React.ReactElement {
     </NavigationContainer>
   );
 }
-
 const mapStateToProp = (state: any) => ({
   loggedIn: state.auth.loggedIn
 });

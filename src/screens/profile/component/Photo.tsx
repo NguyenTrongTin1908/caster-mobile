@@ -27,8 +27,7 @@ const Photo = (props: IProps) => {
   const [feedLoading, setfeedLoading] = useState(true);
   const [page, setPage] = useState(0);
   const navigation = useNavigation() as any;
-  useEffect(() => {
-  }, [useContext]);
+
   const loadfeeds = async (more = false, q = '', refresh = false) => {
     setfeedLoading(true);
     const newPage = more ? page + 1 : page;

@@ -28,9 +28,6 @@ const FeedDetail = ({ route }: IProps): React.ReactElement => {
   const [page, setPage] = useState(0);
   const mediaRefs = useRef([]) as any;
 
-  useEffect(() => {
-  }, [useContext]);
-
   const loadfeeds = async (more = false, q = '', refresh = false) => {
     const newPage = more ? page + 1 : page;
     setPage(refresh ? 0 : newPage);

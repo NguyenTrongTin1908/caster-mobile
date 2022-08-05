@@ -35,16 +35,16 @@ const PerformerCard = ({
           <Box position="relative">
             <Image
               source={
-                performer.avatar
+                performer && (performer.avatar
                   ? { uri: performer.avatar }
-                  : require('assets/icon.png')
+                  : require('assets/icon.png'))
               }
               alt={'avatar'}
               size={60}
               borderRadius={30}
               resizeMode="cover"
             />
-            {performer.isOnline && <OnlineDot right={0} top={2} />}
+            {(performer && performer.isOnline) && <OnlineDot right={0} top={2} />}
           </Box>
           <VStack alignSelf="center" space={1}>
             <Heading
@@ -52,12 +52,12 @@ const PerformerCard = ({
               w="100%"
               fontWeight={500}
               color={colors.lightText}>
-              {(performer.name != " ") ? `${(performer.name)}` : `${(performer.username)}`}
+              {performer && (performer.name != " " ? `${(performer.name)}` : `${(performer.username)}`)}
             </Heading>
 
             <Text fontSize={14} color={colors.lightText}>
-              {performer.dateOfBirth && getBirthday(performer.dateOfBirth)}
-              {performer.dateOfBirth &&
+              {performer && performer.dateOfBirth && getBirthday(performer.dateOfBirth)}
+              {performer && performer.dateOfBirth &&
                 `, ${formatZodiac(performer.dateOfBirth)}`}
             </Text>
           </VStack>
@@ -68,11 +68,11 @@ const PerformerCard = ({
             fontSize={14}
             letterSpacing={-0.15}
             color={colors.secondaryText}>
-            {performer.isOnline
+            {performer && (performer.isOnline
               ? 'Online'
               : performer.offlineAt
                 ? formatDateFromnow(performer.offlineAt)
-                : 'Few days ago'}
+                : 'Few days ago')}
           </Text>
         </HStack>
       </TouchableOpacity>
