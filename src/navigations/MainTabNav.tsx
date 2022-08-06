@@ -9,9 +9,7 @@ import Home from 'screens/browse/Home';
 import Trending from 'screens/trending/Trending';
 import Profile from 'screens/profile/Profile';
 import Blank from 'screens/blank';
-import PostScreen from 'screens/post/postScreen';
-import UploadScreen from 'screens/upload/uploadScreen';
-
+import CaptureMediaScreen from 'screens/media/CaptureMedia';
 
 import { colors } from 'utils/theme';
 import { Platform } from 'react-native';
@@ -54,8 +52,8 @@ export const MainTabNav = (): JSX.Element => (
       }}
     />
     <Tab.Screen
-      name="PostVideo"
-      component={UploadScreen}
+      name="MainTab/PostVideo"
+      component={CaptureMediaScreen}
       options={{
         tabBarLabel: 'Post Video',
         tabBarShowLabel: true,
