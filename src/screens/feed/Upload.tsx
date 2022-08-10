@@ -2,10 +2,21 @@ import React, { useCallback, useContext, useEffect, useMemo, useState } from 're
 import { Flex, Text, View, VStack } from 'native-base';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from 'navigations/RootStackNavigator';
-import { Image, ImageLoadEventData, NativeSyntheticEvent, TouchableWithoutFeedback, TextInput, TouchableOpacity, SafeAreaView, Alert, PermissionsAndroid, Platform, } from 'react-native';
+import {
+  Image,
+  ImageLoadEventData,
+  NativeSyntheticEvent,
+  TouchableWithoutFeedback,
+  TextInput,
+  TouchableOpacity,
+  SafeAreaView,
+  Alert,
+  PermissionsAndroid,
+  Platform
+} from 'react-native';
 import Video, { LoadError, OnLoadData } from 'react-native-video';
 import KeyboardDismiss from 'components/uis/KeyboardDismiss';
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { colors } from 'utils/theme';
 import { Switch } from 'react-native-switch';
 import { connect } from 'react-redux';
@@ -13,7 +24,7 @@ import CameraRoll from '@react-native-community/cameraroll';
 import { feedService } from 'services/feed.service';
 import { mediaService } from 'services/media.service';
 import { IPerformer } from 'interfaces/performer';
-import styles from './styles'
+import styles from './styles';
 const isVideoOnLoadEvent = (event: OnLoadData | NativeSyntheticEvent<ImageLoadEventData>): event is OnLoadData =>
   'duration' in event && 'naturalSize' in event;
 type Props = NativeStackScreenProps<RootStackParamList, 'Upload'>;
@@ -44,6 +55,7 @@ const Upload = ({ navigation, route }: Props, { current }: IProps): React.ReactE
     console.log('media has loaded.');
     setHasMediaLoaded(true);
   }, []);
+
   const requestSavePermission = async (): Promise<boolean> => {
     if (Platform.OS !== 'android') return true;
     const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
@@ -79,47 +91,72 @@ const Upload = ({ navigation, route }: Props, { current }: IProps): React.ReactE
     console.log(`failed to load media: ${JSON.stringify(error)}`);
   }, []);
   const source = useMemo(() => ({ uri: `file://${path}` }), [path]);
+
   const uploadVideo = async () => {
     try {
+      //   const result = await mediaService
+      //     .axiosUpload({
+      //       url: `https://api.caster.com/feeds/performers/photo/upload`,
+      //       file: { uri: path },
+      //       onUploadProgress: (progressEvent: any) => {
+      //         setProgress(progressEvent.loaded / progressEvent.total);
+      //       },
+      //       fileFieldName: 'file'
+      //     })
+      //     .catch(async e => {
+      //       console.log(await e);
+      //       throw e;
+      //     });
+      //   console.log(result);
+      //   return result;
+      // } catch (e) {
+      //   throw e;
+      // }
       const result = await mediaService
-        .axiosUpload({
-          url: `https://api.caster.com/feeds/performers/video/upload`,
-          file: source,
-          onUploadProgress: (progressEvent: any) => {
-            setProgress(
-              progressEvent.loaded / progressEvent.total
-            );
+        .upload(
+          `https://api.caster.com/feeds/performers/photo/upload`,
+          [
+            {
+              fieldname: 'file',
+              file: {
+                uri: path,
+                fieldname: 'file'
+              }
+            }
+          ],
+          {
+            onProgress: percentage => console.log(percentage)
           }
-        })
-        .catch((e) => {
+        )
+        .catch(e => {
           throw e;
         });
       return result;
     } catch (e) {
       throw e;
     }
-  }
+  };
   const submit = async () => {
     const formValues = {
       isSale,
       text,
       type
-    }
+    };
     try {
-      await setUploading(true)
-      await feedService.create({ ...formValues, type })
+      await setUploading(true);
+      await feedService.create({ ...formValues, type });
       Alert.alert('Posted successfully!');
     } catch {
       Alert.alert('Something went wrong, please try again later');
       setUploading(false);
     }
-  }
+  };
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <KeyboardDismiss>
         <View style={styles.container}>
           <View style={styles.headerWrapStyle}>
-            <Text color={colors.lightText} fontSize={20} >
+            <Text color={colors.lightText} fontSize={20}>
               Post
             </Text>
             <MaterialIcons
@@ -128,7 +165,7 @@ const Upload = ({ navigation, route }: Props, { current }: IProps): React.ReactE
               size={24}
               style={{
                 position: 'absolute',
-                left: 10.0,
+                left: 10.0
               }}
               onPress={() => navigation.pop()}
             />
@@ -136,7 +173,7 @@ const Upload = ({ navigation, route }: Props, { current }: IProps): React.ReactE
           <View style={styles.postInfoWrapStyle}>
             <Image
               source={current?.avatar ? { uri: current?.avatar } : require('../../assets/dance_1.jpg')}
-              style={{ width: 70.0, height: 70.0, borderRadius: 35.0, }}
+              style={{ width: 70.0, height: 70.0, borderRadius: 35.0 }}
             />
             <TextInput
               selectionColor={colors.lightText}
@@ -145,7 +182,9 @@ const Upload = ({ navigation, route }: Props, { current }: IProps): React.ReactE
               placeholderTextColor={colors.gray}
               multiline
               numberOfLines={6}
-              onChangeText={(text) => { setText(text) }}
+              onChangeText={text => {
+                setText(text);
+              }}
               style={styles.aboutPostTextFieldStyle}
             />
           </View>
@@ -189,6 +228,9 @@ const Upload = ({ navigation, route }: Props, { current }: IProps): React.ReactE
                 </TouchableWithoutFeedback>
               )}
             </Flex>
+            <TouchableOpacity activeOpacity={0.9} style={styles.postVideoButtonStyle} onPress={uploadVideo}>
+              <Text color={colors.lightText}>Upload </Text>
+            </TouchableOpacity>
           </VStack>
           <VStack marginTop={5}>
             <View style={styles.saveToGalleryInfoWrapStyle}>
@@ -197,7 +239,9 @@ const Upload = ({ navigation, route }: Props, { current }: IProps): React.ReactE
               </Text>
               <Switch
                 value={saveToGallery}
-                onValueChange={(val) => { setsaveToGallery(val) }}
+                onValueChange={val => {
+                  setsaveToGallery(val);
+                }}
                 disabled={false}
                 activeText={'On'}
                 inActiveText={'Off'}
@@ -219,7 +263,9 @@ const Upload = ({ navigation, route }: Props, { current }: IProps): React.ReactE
               </Text>
               <Switch
                 value={isSale}
-                onValueChange={(val) => { setisSale(val) }}
+                onValueChange={val => {
+                  setisSale(val);
+                }}
                 disabled={false}
                 activeText={'On'}
                 inActiveText={'Off'}
@@ -241,7 +287,9 @@ const Upload = ({ navigation, route }: Props, { current }: IProps): React.ReactE
               </Text>
               <Switch
                 value={active}
-                onValueChange={(val) => { setActive(val) }}
+                onValueChange={val => {
+                  setActive(val);
+                }}
                 disabled={false}
                 activeText={'On'}
                 inActiveText={'Off'}
@@ -260,18 +308,13 @@ const Upload = ({ navigation, route }: Props, { current }: IProps): React.ReactE
           </VStack>
         </View>
       </KeyboardDismiss>
-      <TouchableOpacity
-        activeOpacity={0.9}
-        style={styles.postVideoButtonStyle}
-      >
-        <Text color={colors.lightText}>
-          Post Video
-        </Text>
+      <TouchableOpacity activeOpacity={0.9} style={styles.postVideoButtonStyle}>
+        <Text color={colors.lightText}>Post Video</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
 };
 const mapStateToProp = (state: any): any => ({
-  ...state.user,
+  ...state.user
 });
 export default connect(mapStateToProp)(Upload);
