@@ -17,11 +17,12 @@ interface IProps {
   route: {
     params: {
       performerId: any;
+      type: string
     };
   };
 }
 const FeedDetail = ({ route }: IProps): React.ReactElement => {
-  const [videoScreen, setvideoScreen] = useState(true)
+  const [tab, setTab] = useState(route.params.type)
   const [itemPerPage, setitemPerPage] = useState(12);
   const [feedPage, setfeedPage] = useState(0);
   const [feeds, setfeeds] = useState([] as Array<IFeed>);
@@ -36,7 +37,7 @@ const FeedDetail = ({ route }: IProps): React.ReactElement => {
       offset: itemPerPage * feedPage,
       performerId: route.params.performerId,
     };
-    const { data } = videoScreen ? await feedService.userSearch({
+    const { data } = tab === 'video' ? await feedService.userSearch({
       ...query,
       type: 'video'
     }) :
@@ -83,7 +84,7 @@ const FeedDetail = ({ route }: IProps): React.ReactElement => {
   };
   useEffect(() => {
     loadfeeds();
-  }, [videoScreen]);
+  }, [tab]);
 
   return (
     <BottomTabBarHeightContext.Consumer>
@@ -112,8 +113,8 @@ const FeedDetail = ({ route }: IProps): React.ReactElement => {
             snapToAlignment={'start'}
           />
           <View style={styles.tabViewRelated}>
-            <TouchableOpacity onPress={() => setvideoScreen(true)}>
-              <Text style={{ color: videoScreen ? colors.lightText : '#979797', fontSize: 18 }}>
+            <TouchableOpacity onPress={() => setTab('video')}>
+              <Text style={{ color: tab === 'video' ? colors.lightText : '#979797', fontSize: 18 }}>
                 Video
               </Text>
             </TouchableOpacity>
@@ -123,8 +124,8 @@ const FeedDetail = ({ route }: IProps): React.ReactElement => {
               width: 2.0,
               backgroundColor: colors.lightText
             }} />
-            <TouchableOpacity onPress={() => setvideoScreen(false)}>
-              <Text style={{ color: videoScreen ? '#979797' : colors.lightText, fontSize: 18 }}>
+            <TouchableOpacity onPress={() => setTab('photo')}>
+              <Text style={{ color: tab === 'video' ? '#979797' : colors.lightText, fontSize: 18 }}>
                 Photo
               </Text>
             </TouchableOpacity>

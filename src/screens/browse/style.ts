@@ -89,7 +89,18 @@ const styles = StyleSheet.create({
     borderRadius: Sizes.fixPadding,
     alignItems: 'center',
     overflow: 'hidden'
-  }
+  },
+
+  tabView: {
+    position: 'absolute',
+    top: 20.0,
+    left: 0.0,
+    right: 0.0,
+    backgroundColor: 'transparent',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
 });
 
 export default styles;

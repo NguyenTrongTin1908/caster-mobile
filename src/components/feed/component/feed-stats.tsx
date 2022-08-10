@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigation } from '@react-navigation/core';
-
 import { colors, Sizes } from 'utils/theme';
+import MentionHashtagTextView from "react-native-mention-hashtag-text";
 import {
   Animated,
   TouchableOpacity,
@@ -17,18 +17,10 @@ import { Button } from 'native-base';
 import { IFeed } from 'interfaces/feed';
 interface IProps {
   item: IFeed
-
 }
 const FeedStats = ({ item }: IProps): React.ReactElement => {
   const navigation = useNavigation() as any;
-
   const spinValue = new Animated.Value(0);
-
-
-
-
-
-
   const handleRedirect = () => {
     navigation.navigate('LiveNow');
   };
@@ -40,13 +32,13 @@ const FeedStats = ({ item }: IProps): React.ReactElement => {
       useNativeDriver: true
     })
   ).start();
-
   const spin = spinValue.interpolate({
     inputRange: [0, 1],
     outputRange: ['0deg', '360deg']
   });
-
-
+  const mentionHashtagClick = (text) => {
+    //wait hashtag page
+  };
   return (
     <View style={styles.uiContainer}>
       <View style={styles.rightContainer}>
@@ -102,19 +94,22 @@ const FeedStats = ({ item }: IProps): React.ReactElement => {
           </Text>
         </View>
       </View>
-
       <View style={styles.bottomContainer}>
         <View>
-          <Text style={{ color: colors.lightText }}>@{item?.performer.username}</Text>
-          <Text style={{ marginTop: Sizes.fixPadding, color: colors.lightText }}>
-            {item.pollDescription}
-          </Text>
+          <Text style={{ color: colors.lightText, fontWeight: "bold" }}>@{item?.performer.username}</Text>
+          <MentionHashtagTextView
+            key={item?._id}
+            mentionHashtagPress={mentionHashtagClick}
+            mentionHashtagColor={colors.hastag}
+            style={{ marginTop: Sizes.fixPadding, color: colors.lightText }}
+          >
+            {item.text}
+          </MentionHashtagTextView>
           <View style={styles.songRow}>
             <MaterialIcons name="music-note" size={15} color="white" />
             <Text style={{ color: colors.lightText }}>{item.title || 'No name'}</Text>
           </View>
         </View>
-
         <View style={styles.postSongImageWrapStyle}>
           <Animated.Image
             style={{
@@ -132,9 +127,4 @@ const FeedStats = ({ item }: IProps): React.ReactElement => {
     </View>
   );
 }
-
-
-
-
-
 export default FeedStats;

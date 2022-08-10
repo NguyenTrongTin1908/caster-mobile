@@ -16,8 +16,9 @@ import LiveNow from 'screens/livenow/LiveNow';
 import FeedDetail from 'screens/detail/feedDetail';
 import { IPerformer } from 'interfaces/performer';
 import MediaPreview from 'screens/media/MediaPreview';
-import UploadMedia from 'screens/feed/Upload';
-
+import Upload from 'screens/feed/Upload';
+import PostScreen from 'screens/feed/Post';
+import Home from 'screens/browse/Home';
 export type RootStackParamList = {
   default: undefined;
   IntroNav: undefined;
@@ -32,18 +33,19 @@ export type RootStackParamList = {
     path: string;
     type: 'video' | 'photo';
   };
-  UploadMedia: {
+  Upload: {
     path: string;
     type: 'video' | 'photo';
   };
-  FeedDetail: { performerId: any };
-};
+  Home: {
+  }
+  FeedDetail: { performerId: any; type: 'video' | 'photo'; };
 
+};
 export type RootStackNavigationProps<T extends keyof RootStackParamList = 'default'> = StackNavigationProp<
   RootStackParamList,
   T
 >;
-
 const Stack = createStackNavigator<RootStackParamList>();
 export const navigationRef = createNavigationContainerRef() as any;
 function RootNavigator({ loggedIn }): React.ReactElement {
@@ -53,7 +55,6 @@ function RootNavigator({ loggedIn }): React.ReactElement {
     colors: {
       ...DefaultTheme.colors,
       background: colors.appBgColor
-
     }
   };
   return (
@@ -100,10 +101,19 @@ function RootNavigator({ loggedIn }): React.ReactElement {
         />
         <Stack.Screen
           options={{ headerShown: false, gestureEnabled: false }}
-          name="UploadMedia"
-          component={UploadMedia}
+          name="Upload"
+          component={Upload}
         />
-        <Stack.Screen name="FeedDetail" component={FeedDetail} />
+        <Stack.Screen
+          options={{ headerShown: false, gestureEnabled: false }}
+          name="Home"
+          component={Home}
+        />
+        <Stack.Screen
+          options={{ headerShown: false, gestureEnabled: false }}
+          name="FeedDetail"
+          component={FeedDetail}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

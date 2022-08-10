@@ -4,14 +4,11 @@ import { isUrl, getContentType, getExt } from 'lib/string';
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { IApiResponse } from 'src/interfaces';
-
 export abstract class APIRequest {
   static accessToken: string = '';
-
   setAuthHeaderToken(token: string): void {
     APIRequest.accessToken = token;
   }
-
   /**
    * Parses the JSON returned by a network request
    *
@@ -21,10 +18,8 @@ export abstract class APIRequest {
    */
   private parseJSON(response: Response): any {
     if (response.status === 204 || response.status === 205) return null;
-
     return response.json();
   }
-
   /**
    * Checks if a network request came back fine, and throws an error if not
    *
@@ -34,14 +29,11 @@ export abstract class APIRequest {
    */
   private checkStatus(response: Response): any {
     if (response.status >= 200 && response.status < 300) return response;
-
     if (response.status === 401) {
       throw new Error('Forbidden in the action!');
     }
-
     throw response.clone().json();
   }
-
   request(
     url: string,
     method?: string,
@@ -55,7 +47,6 @@ export abstract class APIRequest {
       Authorization: APIRequest.accessToken || '',
       ...(headers || {})
     };
-
     return fetch(
       isUrl(url) ? url : `${config.extra.apiEndpoint}${url}`,
       {
@@ -67,10 +58,8 @@ export abstract class APIRequest {
       .then(this.checkStatus)
       .then(this.parseJSON);
   }
-
   buildUrl(baseUrl: string, params?: { [key: string]: any }): string {
     if (!params) return baseUrl;
-
     const queryString = Object.keys(params)
       .map((k) => {
         if (Array.isArray(params[k]))
@@ -79,18 +68,14 @@ export abstract class APIRequest {
               (param) => `${encodeURIComponent(k)}=${encodeURIComponent(param)}`
             )
             .join('&');
-
         return `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`;
       })
       .join('&');
-
     return `${baseUrl}?${queryString}`;
   }
-
   get(url: string, headers?: { [key: string]: string }): Promise<IApiResponse> {
     return this.request(url, 'get', null, headers);
   }
-
   post(
     url: string,
     data?: any,
@@ -98,7 +83,6 @@ export abstract class APIRequest {
   ): Promise<IApiResponse> {
     return this.request(url, 'post', data, headers);
   }
-
   put(
     url: string,
     data?: any,
@@ -106,7 +90,6 @@ export abstract class APIRequest {
   ): Promise<IApiResponse> {
     return this.request(url, 'put', data, headers);
   }
-
   del(
     url: string,
     data?: any,
@@ -114,7 +97,6 @@ export abstract class APIRequest {
   ): Promise<IApiResponse> {
     return this.request(url, 'delete', data, headers);
   }
-
   //todo check upload
   async axiosUpload(options: {
     url: string;
@@ -126,36 +108,38 @@ export abstract class APIRequest {
     method?: string;
   }): Promise<IApiResponse> {
     const token = await AsyncStorage.getItem('accessToken');
-    const data = new FormData();
-    const name = options.fileName || options.file.uri.replace(/^.*[\\\/]/, '');
-
-    const type =
-      Platform.OS === 'android' &&
-      getContentType(getExt(options.file.uri).substr(1));
-
-    const uri =
-      Platform.OS === 'android'
-        ? options.file.uri
-        : options.file.uri.replace('file://', '');
-
-    data.append(options.fileFieldName || 'file', {
-      name,
-      uri,
-      type
-    } as any);
-
-    options.optionalData &&
-      Object.keys(options.optionalData).forEach((field: string) =>
-        data.append(field, options.optionalData[field])
-      );
+   const file= {
+      uri: options.file.uri,
+      type: `video/mp4`,
+      name: options.fileName
+ }
+ const data = [{
+  fieldname: 'file',
+          file
+ }]
+// const data =new FormData();
+//     const name = options.fileName || options.file.uri.replace(/^.*[\\\/]/, '');
+//     const type ='video'
+//     const uri =
+//       Platform.OS === 'android'
+//         ? options.file.uri
+//         : options.file.uri.replace('file://', '');
+//     data.append(options.fileFieldName || 'file', {
+//       name,
+//       uri,
+//       type
+//     } as any);
+//     options.optionalData &&
+//       Object.keys(options.optionalData).forEach((field: string) =>
+//         data.append(field, options.optionalData[field])
+//       );
 
     return axios({
       url: options.url,
       method: options.method || 'post',
-      onUploadProgress: options.onUploadProgress,
       headers: {
         Accept: 'application/json',
-        Authorization: `Bearer ${token}`,
+        Authorization: `${token}`,
         'Content-Type': 'multipart/form-data'
       },
       data

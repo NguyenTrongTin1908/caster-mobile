@@ -152,7 +152,7 @@ const MediaPreview = ({ navigation, route }: Props) => {
         style={styles.nextButton}
         colorScheme={'orange'}
         onPress={() =>
-          navigation.navigate('UploadMedia', {
+          navigation.navigate('Upload', {
             path: path,
             type: type
           })

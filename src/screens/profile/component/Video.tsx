@@ -1,16 +1,12 @@
-import React, { useEffect, useState, useContext, } from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
-import { Box, Button, FlatList } from 'native-base';
-import FeedCard from './ProfilePackageCard';
-import { FeedService } from 'services/feed.service';
+import React, { useEffect, useState, } from 'react';
+import { View, Image, TouchableOpacity } from 'react-native';
 import { IFeed } from 'interfaces/Feed';
 import BadgeText from 'components/uis/BadgeText';
 import LoadingSpinner from 'components/uis/LoadingSpinner';
 import { feedService } from 'services/feed.service';
 import { connect } from 'react-redux';
-import { Colors, Fonts, Sizes } from "../../../constants/styles";
+import { Sizes } from "../../../constants/styles";
 import styles from './style';
-import ProfilePackageCard from './ProfilePackageCard'
 import { ScrollView } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/core';
 interface IProps {
@@ -50,7 +46,9 @@ const Video = (props: IProps) => {
   );
   const handleRedirect = () => {
     navigation.navigate('FeedDetail', {
-      performerId: props.current._id
+      performerId: props.current._id,
+      type: 'video'
+
     });
   }
   useEffect(() => {

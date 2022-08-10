@@ -43,9 +43,10 @@ const Photo = (props: IProps) => {
 
     setfeedLoading(false);
   };
-  const handleRedirect2 = () => {
+  const handleRedirect = () => {
     navigation.navigate('FeedDetail', {
-      performerId: props.current._id
+      performerId: props.current._id,
+      type: 'photo'
     });
   }
   const renderEmpty = () => (
@@ -66,7 +67,7 @@ const Photo = (props: IProps) => {
         {feeds.map((item, index) => (
 
           <View key={item._id}>
-            <TouchableOpacity onPress={handleRedirect2}>
+            <TouchableOpacity onPress={handleRedirect}>
               <Image
                 style={styles.postImageStyle}
                 source={{ uri: item.files[0].url }}

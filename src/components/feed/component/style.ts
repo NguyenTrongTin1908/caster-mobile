@@ -21,11 +21,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
-    paddingBottom: Sizes.fixPadding * 3.0
+    paddingBottom: Sizes.fixPadding * 3.5
   },
   songRow: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginTop: Sizes.fixPadding* 2.0
   },
   rightContainer: {
     alignSelf: 'flex-end',

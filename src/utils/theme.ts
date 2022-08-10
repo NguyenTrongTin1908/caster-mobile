@@ -22,6 +22,7 @@ export const colors = {
   tertiary: COLOR_TERTIARY,
   active: COLOR_PRIMARY,
   danger: COLOR_DANGER,
+  hastag: 'rgb(82,198,246)',
 
   //text
   lightText: '#fff',
