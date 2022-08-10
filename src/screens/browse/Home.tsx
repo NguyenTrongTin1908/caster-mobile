@@ -2,7 +2,7 @@ import React, { useEffect, useContext, useState, useRef } from 'react';
 import { connect } from 'react-redux';
 import { useNavigation } from '@react-navigation/core';
 import { IUser } from 'interfaces/user';
-import { getFeeds, getFeedsSuccess, moreFeeds } from 'services/redux/feed/actions';
+import { getFeeds, moreFeeds } from 'services/redux/feed/actions';
 import { Dimensions, FlatList, View, SafeAreaView, Platform, Text, Alert, TouchableOpacity } from 'react-native';
 const { height } = Dimensions.get('window');
 import styles from './style';
@@ -79,7 +79,6 @@ const Home = ({ handleGetFeeds, feedState, handleGetMore }: IProps): React.React
     });
     setfeedPage(1)
   }
-
   const getFeeds = () => {
     handleGetFeeds({
       q: keyword,
@@ -90,7 +89,12 @@ const Home = ({ handleGetFeeds, feedState, handleGetMore }: IProps): React.React
       type: tab === 'video' ? 'video' : 'photo'
     });
   };
-
+  const handleTabChange = async () => {
+    tab === 'video' ? (
+      setTab('photo')
+    ) : setTab('video')
+    setfeedPage(0)
+  }
   useEffect(() => {
     getFeeds()
   }, [tab])
@@ -144,7 +148,7 @@ const Home = ({ handleGetFeeds, feedState, handleGetMore }: IProps): React.React
             snapToAlignment={'start'}
           />
           <View style={styles.tabView}>
-            <TouchableOpacity onPress={() => setTab('video')}>
+            <TouchableOpacity onPress={handleTabChange}>
               <Text style={{ color: tab === 'video' ? colors.lightText : '#979797', fontSize: 18 }}>
                 Video
               </Text>
@@ -155,7 +159,7 @@ const Home = ({ handleGetFeeds, feedState, handleGetMore }: IProps): React.React
               width: 2.0,
               backgroundColor: colors.lightText
             }} />
-            <TouchableOpacity onPress={() => setTab('photo')}>
+            <TouchableOpacity onPress={handleTabChange}>
               <Text style={{ color: tab === 'video' ? '#979797' : colors.lightText, fontSize: 18 }}>
                 Photo
               </Text>
