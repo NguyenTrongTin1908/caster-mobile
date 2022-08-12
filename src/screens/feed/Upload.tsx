@@ -224,13 +224,21 @@ const Upload = ({ navigation, route }: Props, { current, feed }: IProps): React.
           <VStack>
             <Flex justifyContent={'space-between'} alignContent={'flex-start'} w="100%" flexDirection={'row'}>
               {type === 'photo' && (
-                <Image
-                  source={source}
-                  style={styles.photo}
-                  resizeMode="cover"
-                  onLoadEnd={onMediaLoadEnd}
-                  onLoad={onMediaLoad}
-                />
+                <TouchableWithoutFeedback
+                  onPress={() =>
+                    navigation.navigate('MediaPreview', {
+                      path: path,
+                      type: type
+                    })
+                  }>
+                  <Image
+                    source={source}
+                    style={styles.photo}
+                    resizeMode="cover"
+                    onLoadEnd={onMediaLoadEnd}
+                    onLoad={onMediaLoad}
+                  />
+                </TouchableWithoutFeedback>
               )}
               {type === 'video' && (
                 <TouchableWithoutFeedback

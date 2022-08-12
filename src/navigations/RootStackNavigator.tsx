@@ -17,7 +17,6 @@ import FeedDetail from 'screens/detail/feedDetail';
 import { IPerformer } from 'interfaces/performer';
 import MediaPreview from 'screens/media/MediaPreview';
 import Upload from 'screens/feed/Upload';
-import PostScreen from 'screens/feed/Post';
 import Home from 'screens/browse/Home';
 export type RootStackParamList = {
   default: undefined;
