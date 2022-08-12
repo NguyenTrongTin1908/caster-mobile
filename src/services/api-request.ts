@@ -86,11 +86,8 @@ export abstract class APIRequest {
     const token = await AsyncStorage.getItem('accessToken');
     const data = new FormData();
     const name = options.fileName || options.file.uri.replace(/^.*[\\\/]/, '');
-
     const type = Platform.OS === 'android' && getContentType(getExt(options.file.uri).substr(1));
-
     const uri = Platform.OS === 'android' ? options.file.uri : options.file.uri.replace('file://', '');
-
     data.append(options.fileFieldName || 'file', {
       name,
       uri,
@@ -115,7 +112,6 @@ export abstract class APIRequest {
       })
       .catch(e => console.log('e>>>>>>', e));
   }
-
   async upload(
     url: string,
     files: {
@@ -132,14 +128,9 @@ export abstract class APIRequest {
     }
   ) {
     const uploadUrl = isUrl(url) ? url : `${config.extra.apiEndpoint}${url}`;
-    console.log(uploadUrl);
-
     const token = await AsyncStorage.getItem('accessToken');
-    console.log(token);
-
     return new Promise((resolve, reject) => {
       const req = new XMLHttpRequest();
-
       req.upload.addEventListener('progress', event => {
         if (event.lengthComputable) {
           options.onProgress({
@@ -147,7 +138,6 @@ export abstract class APIRequest {
           });
         }
       });
-
       req.addEventListener('load', () => {
         const success = req.status >= 200 && req.status < 300;
         const { response } = req;
@@ -156,7 +146,6 @@ export abstract class APIRequest {
         }
         return resolve(response);
       });
-
       req.upload.addEventListener('error', () => {
         reject(req.response);
       });
@@ -165,13 +154,6 @@ export abstract class APIRequest {
       files.forEach(f => {
         const type = Platform.OS === 'android' && getContentType(getExt(f.file.uri).substr(1));
         const uri = Platform.OS === 'android' ? f.file.uri : f.file.uri.replace('file://', '');
-        console.log(uri);
-        console.log({
-          name: f.file.uri.replace(/^.*[\\\/]/, ''),
-          uri,
-          type
-        });
-
         formData.append(f.fieldname || 'file', {
           name: f.file.uri.replace(/^.*[\\\/]/, ''),
           uri,
@@ -192,7 +174,6 @@ export abstract class APIRequest {
         });
       req.responseType = 'json';
       req.open(options.method || 'POST', uploadUrl);
-
       req.setRequestHeader('Authorization', token || '');
       req.send(formData);
     });

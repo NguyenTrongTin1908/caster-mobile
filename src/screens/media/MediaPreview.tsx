@@ -141,11 +141,11 @@ const MediaPreview = ({ navigation, route }: Props) => {
         <IonIcon name="close" size={35} color="white" style={styles.icon} />
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.saveButton} onPress={onSavePressed} disabled={savingState !== 'none'}>
+      {/* <TouchableOpacity style={styles.saveButton} onPress={onSavePressed} disabled={savingState !== 'none'}>
         {savingState === 'none' && <IonIcon name="download" size={35} color="white" style={styles.icon} />}
         {savingState === 'saved' && <IonIcon name="checkmark" size={35} color="white" style={styles.icon} />}
         {savingState === 'saving' && <ActivityIndicator color="white" />}
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       <Button
         variant={'outline'}

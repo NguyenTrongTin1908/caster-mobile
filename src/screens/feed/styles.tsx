@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginHorizontal: Sizes.fixPadding,
-    marginBottom: Sizes.fixPadding * 2.0,
+    marginBottom: Sizes.fixPadding,
   },
   aboutPostTextFieldStyle: {
     backgroundColor: '#101010',
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     borderRadius: Sizes.fixPadding - 7.0,
     alignItems: 'center',
     justifyContent: 'center',
-    margin: Sizes.fixPadding,
+    marginTop: Sizes.fixPadding * 17.0,
   }
 });
 
