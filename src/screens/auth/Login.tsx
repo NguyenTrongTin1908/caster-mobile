@@ -20,13 +20,13 @@ import { connect } from 'react-redux';
 import { login, resetLogin } from 'services/redux/auth/actions';
 import KeyboardDismiss from 'components/uis/KeyboardDismiss';
 import React, { useContext, useEffect } from 'react';
-import { colors, Fonts, padding, Sizes } from 'utils/theme';
-import Button from 'components/uis/Button';
+import { colors, padding, Sizes } from 'utils/theme';
 import ErrorMessage from 'components/uis/ErrorMessage';
 import { useNavigation } from '@react-navigation/core';
 import LinearGradient from 'react-native-linear-gradient';
-import { color } from 'native-base/lib/typescript/theme/styled-system';
-
+// import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+// import FontAwesome from 'react-native-vector-icons/FontAwesome5Pro';
+// import { config } from 'config';
 interface Props {
   handleLogin: Function;
   handleResetLogin: Function;
@@ -71,6 +71,39 @@ const Login = ({ handleLogin, handleResetLogin, authLogin }: Props): React.React
       return navigation.navigate('MainTabNav');
     }
   }, [authLogin.success, authLogin.error]);
+
+  // useEffect(() => {
+  //   async function initGoogle() {
+  //     GoogleSignin.configure({
+  //       scopes: ['profile', 'email'],
+  //       webClientId: config.extra.googleClientId,
+  //       forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
+  //       offlineAccess: false
+  //     });
+  //   }
+  //   initGoogle();
+  // }, []);
+
+  // const signInWithGoogle = async () => {
+  //   try {
+  //     await GoogleSignin.hasPlayServices();
+  //     const userInfo = await GoogleSignin.signIn();
+  //     if (userInfo.idToken) {
+  //       const payload = { tokenId: userInfo.idToken, role: 'google' };
+  //       console.log(payload);
+  //     }
+  //   } catch (error: any) {
+  //     if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+  //       // user cancelled the login flow
+  //     } else if (error.code === statusCodes.IN_PROGRESS) {
+  //       // operation (e.g. sign in) is in progress already
+  //     } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+  //       // play services not available or outdated
+  //     } else {
+  //       // some other error happened
+  //     }
+  //   }
+  // };
 
   return (
     <KeyboardDismiss>
@@ -169,22 +202,17 @@ const Login = ({ handleLogin, handleResetLogin, authLogin }: Props): React.React
                         <Text style={{ fontWeight: 'bold', color: colors.lightText }}>Continue</Text>
                       </LinearGradient>
                     </TouchableOpacity>
-                    {/* <Button
-                      // colorScheme="tertiary"
-                      onPress={handleSubmit(onSubmit)}
-                      disabled={authLogin.requesting}
-                      isLoading={authLogin.requesting}
-                      spinner={<Spinner size="sm" color={colors.primary} />}
-                      isLoadingText="Submitting"
-                      style={{ ...styles.loginButtonStyle }}>
+                    {/* <TouchableOpacity activeOpacity={0.9} disabled={authLogin.requesting} onPress={signInWithGoogle}>
                       <LinearGradient
                         start={{ x: 1, y: 0 }}
                         end={{ x: 0, y: 0 }}
                         colors={['rgba(244, 67, 54, 0.9)', 'rgba(244, 67, 54, 0.6)', 'rgba(244, 67, 54, 0.3)']}
                         style={styles.loginButtonStyle}>
-                        <Text style={{ fontWeight: 'bold', color: colors.lightText }}>Login</Text>
+                        <Text style={{ fontWeight: 'bold', color: colors.lightText }}>
+                          <FontAwesome name="google" size={20} /> Login with Google
+                        </Text>
                       </LinearGradient>
-                    </Button> */}
+                    </TouchableOpacity> */}
                   </Flex>
                   <Link alignSelf="center" onPress={(): void => navigation.navigate('IntroNav/ForgotPassword')}>
                     <Text fontWeight={300} fontSize={14} color={colors.primary}>
@@ -224,7 +252,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: Sizes.fixPadding + 10.0,
     height: 50.0,
-    marginBottom: Sizes.fixPadding * 2.0,
+    // marginBottom: Sizes.fixPadding * 2.0,
     backgroundColor: colors.btnPrimaryColor,
     width: '100%'
   }

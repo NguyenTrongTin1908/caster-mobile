@@ -1,4 +1,10 @@
 PODS:
+  - AppAuth (1.5.0):
+    - AppAuth/Core (= 1.5.0)
+    - AppAuth/ExternalUserAgent (= 1.5.0)
+  - AppAuth/Core (1.5.0)
+  - AppAuth/ExternalUserAgent (1.5.0):
+    - AppAuth/Core
   - boost-for-react-native (1.63.0)
   - BVLinearGradient (2.6.2):
     - React-Core
@@ -12,6 +18,14 @@ PODS:
     - React-jsi (= 0.64.0)
     - ReactCommon/turbomodule/core (= 0.64.0)
   - glog (0.3.5)
+  - GoogleSignIn (6.2.2):
+    - AppAuth (~> 1.5)
+    - GTMAppAuth (~> 1.3)
+    - GTMSessionFetcher/Core (~> 1.1)
+  - GTMAppAuth (1.3.0):
+    - AppAuth/Core (~> 1.4)
+    - GTMSessionFetcher/Core (~> 1.5)
+  - GTMSessionFetcher/Core (1.7.2)
   - Interactable (2.0.1):
     - React
   - Permission-Camera (3.2.0):
@@ -306,6 +320,9 @@ PODS:
     - React
   - RNGestureHandler (1.10.3):
     - React-Core
+  - RNGoogleSignin (8.0.0):
+    - GoogleSignIn (~> 6.2.2)
+    - React-Core
   - RNPermissions (3.2.0):
     - React-Core
   - RNReanimated (2.2.4):
@@ -345,7 +362,7 @@ PODS:
     - React
   - RNVectorIcons (9.0.0):
     - React-Core
-  - VisionCamera (2.14.0):
+  - VisionCamera (2.13.0):
     - React
     - React-callinvoker
     - React-Core
@@ -398,6 +415,7 @@ DEPENDENCIES:
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - "RNGoogleSignin (from `../node_modules/@react-native-google-signin/google-signin`)"
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -409,7 +427,11 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - AppAuth
     - boost-for-react-native
+    - GoogleSignIn
+    - GTMAppAuth
+    - GTMSessionFetcher
 
 EXTERNAL SOURCES:
   BVLinearGradient:
@@ -500,6 +522,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/masked-view"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNGoogleSignin:
+    :path: "../node_modules/@react-native-google-signin/google-signin"
   RNPermissions:
     :path: "../node_modules/react-native-permissions"
   RNReanimated:
@@ -518,12 +542,16 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
+  AppAuth: 80317d99ac7ff2801a2f18ff86b48cd315ed465d
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   BVLinearGradient: 34a999fda29036898a09c6a6b728b0b4189e1a44
   DoubleConversion: cf9b38bf0b2d048436d9a82ad2abe1404f11e7de
   FBLazyVector: 49cbe4b43e445b06bf29199b6ad2057649e4c8f5
   FBReactNativeSpec: bb71a14340b7a11ce93a643b510b9c8a4284e4c1
   glog: 73c2498ac6884b13ede40eda8228cb1eee9d9d62
+  GoogleSignIn: 3c68388ac221f379676e8f1cb115df3aaf73b93f
+  GTMAppAuth: 4d8f864896f3646f0c33baf38a28362f4c601e15
+  GTMSessionFetcher: 5595ec75acf5be50814f81e9189490412bad82ba
   Interactable: 411887c89fa16ac41f8e7898aca06dcad55e5f22
   Permission-Camera: 53efcbb755b0e8bdf253dbb27cc7559ccfce8480
   Permission-Microphone: db557c64f7e9ad41bff6b3f6d93df3b67311855b
@@ -563,13 +591,14 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: ac55c090d35b880ac47a7807ab797854afc640ae
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
+  RNGoogleSignin: b2179ba653c759b936404a7746fc5302f9de6a5a
   RNPermissions: f7ebe52db07c00901127966ca080b4ec6a6ceb0a
   RNReanimated: 024eff8202342abf4b24e11575a16afc441dabfe
   RNScreens: e8e8dd0588b5da0ab57dcca76ab9b2d8987757e0
   RNStaticSafeAreaInsets: bb611be967ba27ced2fbf9aca0f067a786175ea6
   RNSVG: ce9d996113475209013317e48b05c21ee988d42e
   RNVectorIcons: 4143ba35feebab8fdbe6bc43d1e776b393d47ac8
-  VisionCamera: 63b1d9959d580e7da5c5c0b3ade281636b7c79ab
+  VisionCamera: 57487a11a98a0d5d3ed73946062ab3920110f08e
   Yoga: 8c8436d4171c87504c648ae23b1d81242bdf3bbf
 
 PODFILE CHECKSUM: a99bf32ea9397161c41dd4e8b32fb1ea58ecbbb5
