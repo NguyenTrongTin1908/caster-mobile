@@ -1,16 +1,12 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
-import { Box, Button, FlatList } from 'native-base';
-import FeedCard from './ProfilePackageCard';
-import { FeedService } from 'services/feed.service';
+import { View, Image, TouchableOpacity } from 'react-native';
 import { IFeed } from 'interfaces/Feed';
 import BadgeText from 'components/uis/BadgeText';
 import LoadingSpinner from 'components/uis/LoadingSpinner';
 import { feedService } from 'services/feed.service';
 import { connect } from 'react-redux';
-import { Colors, Fonts, Sizes } from "../../../constants/styles";
+import { Sizes } from "utils/theme";
 import styles from './style';
-import ProfilePackageCard from './ProfilePackageCard'
 import { ScrollView } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/core'
 interface IProps {
@@ -21,13 +17,11 @@ interface IProps {
   };
   current: IFeed
 }
-
 const Photo = (props: IProps) => {
   const [feeds, setfeeds] = useState([] as Array<IFeed>);
   const [feedLoading, setfeedLoading] = useState(true);
   const [page, setPage] = useState(0);
   const navigation = useNavigation() as any;
-
   const loadfeeds = async (more = false, q = '', refresh = false) => {
     setfeedLoading(true);
     const newPage = more ? page + 1 : page;
@@ -38,9 +32,7 @@ const Photo = (props: IProps) => {
       performerId: props.current?._id,
       type: 'photo'
     });
-
     setfeeds(data.data);
-
     setfeedLoading(false);
   };
   const handleRedirect = () => {
@@ -59,13 +51,11 @@ const Photo = (props: IProps) => {
   useEffect(() => {
     loadfeeds();
   }, []);
-
   if (feedLoading) return <LoadingSpinner />
   return (
     <ScrollView>
       <View style={{ marginHorizontal: Sizes.fixPadding - 15.0, flexDirection: 'row', flexWrap: 'wrap' }}>
         {feeds.map((item, index) => (
-
           <View key={item._id}>
             <TouchableOpacity onPress={handleRedirect}>
               <Image
@@ -82,6 +72,5 @@ const Photo = (props: IProps) => {
 const mapStateToProp = (state: any): any => ({
   current: state.user.current
 })
-
 const mapDispatch = {}
 export default connect(mapStateToProp, mapDispatch)(Photo);

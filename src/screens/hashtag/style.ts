@@ -1,11 +1,9 @@
-import { Platform, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { colors, Fonts, Sizes } from 'utils/theme';
-import { Dimensions, StatusBar } from 'react-native';
+import { Dimensions } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
-let deviceH = Dimensions.get('screen').height;
-const STATUS_BAR_HEIGHT = StatusBar.currentHeight || 24;
-let bottomNavBarH = deviceH - height + STATUS_BAR_HEIGHT;
+
 const styles = StyleSheet.create({
   container: { flex: 1 },
   uiContainer: {
@@ -13,7 +11,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0.0,
     right: 0.0,
-    height: Platform.OS === 'ios' ? deviceH - (90 + 47) : deviceH - (bottomNavBarH + 60),
+    height: height - 79,
     justifyContent: 'flex-end'
   },
   bottomContainer: {
@@ -90,41 +88,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     overflow: 'hidden'
   },
-
   tabView: {
     position: 'absolute',
-    top: 20.0,
+    top: 10.0,
     left: 0.0,
     right: 0.0,
     backgroundColor: 'transparent',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center'
-  },
-  bar: {
-    top: 0,
-    left: 0,
-    right: 20,
-    height: 56,
-    position: 'absolute',
-    flexDirection: "row",
-    justifyContent: 'space-between',
-    backgroundColor: 'transparent',
-  },
-  left: {
-    top: 0,
-    left: 0,
-    width: 50,
-    height: 56,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  right: {
-    top: 0,
-    right: 0,
-    height: 56,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });
 

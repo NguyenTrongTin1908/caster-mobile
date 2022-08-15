@@ -2,15 +2,15 @@ import React, { useEffect, useContext, useState, useRef } from 'react';
 import { connect } from 'react-redux';
 import { useNavigation } from '@react-navigation/core';
 import { IUser } from 'interfaces/user';
-import { getFeeds, moreFeeds } from 'services/redux/feed/actions';
+import { getFollowingFeeds, moreFollowingFeeds } from 'services/redux/feed/actions';
 import { Dimensions, FlatList, View, SafeAreaView, Platform, Alert } from 'react-native';
 const { height } = Dimensions.get('window');
 import styles from './style';
 import FeedCard from 'components/feed/feed-card';
+import FeedTab from 'components/tabview/FeedTab';
 import { IFeed } from 'interfaces/feed';
 import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
-import FeedTab from 'components/tabview/FeedTab';
 let deviceH = Dimensions.get('screen').height;
 let bottomNavBarH = deviceH - height;
 interface IProps {
@@ -24,7 +24,7 @@ interface IProps {
     total: number;
   };
 }
-const Home = ({ handleGetFeeds, feedState, handleGetMore }: IProps): React.ReactElement => {
+const FollowPost = ({ handleGetFeeds, feedState, handleGetMore }: IProps): React.ReactElement => {
   const navigation = useNavigation() as any;
   const [tab, setTab] = useState('video')
   const [itemPerPage, setitemPerPage] = useState(12);
@@ -79,6 +79,7 @@ const Home = ({ handleGetFeeds, feedState, handleGetMore }: IProps): React.React
     });
     setfeedPage(1)
   }
+
   const getFeeds = () => {
     handleGetFeeds({
       q: keyword,
@@ -95,6 +96,7 @@ const Home = ({ handleGetFeeds, feedState, handleGetMore }: IProps): React.React
     ) : setTab('video')
     setfeedPage(0)
   }
+
   useEffect(() => {
     getFeeds()
   }, [tab])
@@ -156,10 +158,10 @@ const Home = ({ handleGetFeeds, feedState, handleGetMore }: IProps): React.React
 const mapStateToProp = (state: any): any => ({
   ...state.user,
   isLoggedIn: state.auth.loggedIn,
-  feedState: { ...state.feed?.feeds }
+  feedState: { ...state.feed?.followingFeeds }
 });
 const mapDispatch = {
-  handleGetFeeds: getFeeds,
-  handleGetMore: moreFeeds
+  handleGetFeeds: getFollowingFeeds,
+  handleGetMore: moreFollowingFeeds,
 };
-export default connect(mapStateToProp, mapDispatch)(Home);
+export default connect(mapStateToProp, mapDispatch)(FollowPost);

@@ -10,14 +10,7 @@ import LoadingSpinner from 'components/uis/LoadingSpinner';
 import BackButton from 'components/uis/BackButton';
 import { colors } from 'utils/theme';
 import styles from './style';
-interface IProps {
-  route: {
-    key: string;
-    title: string;
-    params: { q: string };
-  };
-}
-const Model = (props: IProps): React.ReactElement => {
+const Model = (): React.ReactElement => {
   const [performers, setPerformers] = useState([] as Array<IPerformer>);
   const [performerLoading, setPerformerLoading] = useState(true);
   const [page, setPage] = useState(0);
@@ -28,7 +21,7 @@ const Model = (props: IProps): React.ReactElement => {
     navigation.setOptions({
       headerShown: false,
       headerTitleAlign: 'center',
-      title: 'Profile',
+      title: 'Top Caster',
       headerLeft: () => <BackButton />,
       headerRight: null
     });

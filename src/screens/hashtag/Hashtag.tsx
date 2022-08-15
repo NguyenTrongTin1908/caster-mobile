@@ -1,55 +1,67 @@
 import React, { useEffect, useContext, useState, useRef } from 'react';
-import {
-  SafeAreaView, FlatList, Dimensions, TouchableOpacity, Text, View, Platform
-} from 'react-native';
-import styles from './style';
-import { Sizes } from "../../constants/styles";
-import { IFeed } from 'interfaces/feed';
+import { useNavigation } from '@react-navigation/core';
+import { IUser } from 'interfaces/user';
 import { feedService } from 'services/feed.service';
-import { colors } from 'utils/theme'
-import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
+import {
+  Dimensions,
+  FlatList,
+  View,
+  SafeAreaView,
+  Platform,
+} from 'react-native';
 const { height } = Dimensions.get('window');
-import { getStatusBarHeight } from 'react-native-status-bar-height';
+import styles from './style';
 import FeedCard from 'components/feed/feed-card';
-let deviceH = Dimensions.get('screen').height;
-let bottomNavBarH = deviceH - height;
+import { IFeed } from 'interfaces/feed';
+import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
 import MenuTab from 'components/tabview/MenuTab';
 import FeedTab from 'components/tabview/FeedTab';
+let deviceH = Dimensions.get('screen').height;
+let bottomNavBarH = deviceH - height;
 interface IProps {
+  current: IUser;
+  isLoggedIn: boolean;
   route: {
-    params: {
-      performerId: any;
-      type: string
-    };
-  };
+    params: { query: string, currentTab: string }
+  }
 }
-const FeedDetail = ({ route }: IProps): React.ReactElement => {
-  const [tab, setTab] = useState(route.params.type)
+const Hashtag = ({ current, isLoggedIn, route }: IProps): React.ReactElement => {
+  const navigation = useNavigation() as any;
+  const [tab, setTab] = useState(route.params.currentTab)
   const [itemPerPage, setitemPerPage] = useState(12);
   const [feedPage, setfeedPage] = useState(0);
-  const [feeds, setfeeds] = useState([] as Array<IFeed>);
-  const [page, setPage] = useState(0);
+  const [keyword, setKeyword] = useState('');
   const mediaRefs = useRef([]) as any;
-
-  const loadfeeds = async (more = false, q = '', refresh = false) => {
-    const newPage = more ? page + 1 : page;
-    setPage(refresh ? 0 : newPage);
-    const query = {
+  const [feeds, setfeeds] = useState([] as Array<IFeed>);
+  const [trendingfeeds, settrendingfeeds] = useState([] as Array<IFeed>);
+  useEffect(() => {
+    navigation.setOptions({ headerShown: false });
+    loadfeeds();
+  }, []);
+  const loadfeeds = async () => {
+    const { data } = await feedService.userSearch({
+      q: route.params.query ? route.params.query : keyword,
       limit: itemPerPage,
       offset: itemPerPage * feedPage,
-      performerId: route.params.performerId,
-    };
-    const { data } = tab === 'video' ? await feedService.userSearch({
-      ...query,
-      type: 'video'
-    }) :
-      await feedService.userSearch({
-        ...query,
-        type: 'photo'
-      })
-    setfeeds(data.data);
+      isHome: false,
+      type: (tab === 'video') ? 'video' : 'photo'
+    });
+    setfeeds(feeds.concat(data.data));
+    settrendingfeeds(feeds.concat(data.data));
   };
+  const loadmoreFeeds = async () => {
+    setfeedPage(feedPage + 1)
+    const { data } = await feedService.userSearch({
+      q: route.params.query ? route.params.query : keyword,
+      limit: itemPerPage,
+      offset: itemPerPage * feedPage,
+      isHome: false,
+      type: (tab === 'video') ? 'video' : 'photo',
 
+    });
+    setfeeds(feeds.concat(data.data))
+  };
   const onViewableItemsChange = useRef(({ changed }) => {
     changed.forEach(element => {
       const cell = mediaRefs.current[element.key];
@@ -69,7 +81,6 @@ const FeedDetail = ({ route }: IProps): React.ReactElement => {
     setfeeds([])
     setfeedPage(0)
   }
-
   const renderItem = ({ item, index }: { item: IFeed; index: number }) => {
     return (
       <BottomTabBarHeightContext.Consumer>
@@ -82,6 +93,7 @@ const FeedDetail = ({ route }: IProps): React.ReactElement => {
                     ? deviceH - (getStatusBarHeight(true))
                     : deviceH - (bottomNavBarH)
                 },
+                ,
                 index % 2 == 0 ? { backgroundColor: '#000000' } : { backgroundColor: '#000000' }
               ]}>
               <FeedCard feed={item} mediaRefs={mediaRefs} currentTab={tab} />
@@ -91,10 +103,10 @@ const FeedDetail = ({ route }: IProps): React.ReactElement => {
       </BottomTabBarHeightContext.Consumer>
     );
   };
+
   useEffect(() => {
     loadfeeds();
-  }, [tab]);
-
+  }, [tab])
   return (
     <BottomTabBarHeightContext.Consumer>
       {(tabBarHeight: any) => (
@@ -108,6 +120,7 @@ const FeedDetail = ({ route }: IProps): React.ReactElement => {
             showsVerticalScrollIndicator={false}
             onViewableItemsChanged={onViewableItemsChange.current}
             windowSize={2}
+            onEndReached={loadmoreFeeds}
             initialNumToRender={0}
             maxToRenderPerBatch={2}
             removeClippedSubviews
@@ -127,5 +140,5 @@ const FeedDetail = ({ route }: IProps): React.ReactElement => {
       )}
     </BottomTabBarHeightContext.Consumer>
   );
-}
-export default (FeedDetail);
+};
+export default Hashtag;

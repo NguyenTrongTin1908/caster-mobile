@@ -101,31 +101,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  bar: {
-    top: 0,
-    left: 0,
-    right: 20,
-    height: 56,
-    position: 'absolute',
-    flexDirection: "row",
-    justifyContent: 'space-between',
-    backgroundColor: 'transparent',
-  },
-  left: {
-    top: 0,
-    left: 0,
-    width: 50,
-    height: 56,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  right: {
-    top: 0,
-    right: 0,
-    height: 56,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
 });
 
 export default styles;
