@@ -8,9 +8,10 @@ import ImageCard from './component/image-card'
 interface IProps {
   feed: IFeed;
   mediaRefs: any;
+  currentTab: string;
 }
 
-export const FeedCard = forwardRef(({ feed, mediaRefs }: IProps, parentRef) => {
+export const FeedCard = forwardRef(({ feed, mediaRefs, currentTab }: IProps, parentRef) => {
   return (
     feed.type === 'video' ?
       (<TouchableWithoutFeedback
@@ -21,13 +22,13 @@ export const FeedCard = forwardRef(({ feed, mediaRefs }: IProps, parentRef) => {
         }>
         <View style={{ flex: 1 }}>
           <VideoCard feed={feed} ref={FeedRef => (mediaRefs.current[feed._id] = FeedRef)}></VideoCard>
-          <FeedStats item={feed}></FeedStats>
+          <FeedStats item={feed} currentTab={currentTab}></FeedStats>
         </View>
       </TouchableWithoutFeedback>)
       :
       (<View style={{ flex: 1 }}>
         <ImageCard feed={feed} ></ImageCard>
-        <FeedStats item={feed}></FeedStats>
+        <FeedStats item={feed} currentTab={currentTab}></FeedStats>
       </View>)
   );
 });

@@ -17,8 +17,9 @@ import { Button } from 'native-base';
 import { IFeed } from 'interfaces/feed';
 interface IProps {
   item: IFeed
+  currentTab: string
 }
-const FeedStats = ({ item }: IProps): React.ReactElement => {
+const FeedStats = ({ item, currentTab }: IProps): React.ReactElement => {
   const navigation = useNavigation() as any;
   const spinValue = new Animated.Value(0);
   const handleRedirect = () => {
@@ -37,7 +38,7 @@ const FeedStats = ({ item }: IProps): React.ReactElement => {
     outputRange: ['0deg', '360deg']
   });
   const mentionHashtagClick = (text) => {
-    //wait hashtag page
+    navigation.navigate('Hashtag', { query: text.substring(1), currentTab });
   };
   return (
     <View style={styles.uiContainer}>
@@ -48,7 +49,7 @@ const FeedStats = ({ item }: IProps): React.ReactElement => {
             marginBottom: Sizes.fixPadding + 10.0,
             alignItems: 'center'
           }}>
-          <TouchableOpacity activeOpacity={0.9}>
+          <TouchableOpacity activeOpacity={0.9} onPress={() => navigation.navigate('Model', { screen: 'Model' })}>
             <Image
               style={styles.profilePicture}
               source={{

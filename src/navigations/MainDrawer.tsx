@@ -213,11 +213,13 @@ export const MainDrawer = ({
             <Box flexDirection="row" alignItems="center">
               {item.icon}
             </Box>
+
             <Box flexDirection="row" alignItems="center">
               <Text size={"sm"} bold>
                 {item.label}
               </Text>
             </Box>
+
           </HStack>
         </TouchableOpacity>
       </Box>
@@ -249,19 +251,7 @@ export const MainDrawer = ({
           />
         </View>
       </Flex>
-      <Flex
-        flex={2}
-        style={[
-          styles.shadowContainer,
-          {
-            backgroundColor: showDrawer
-              ? "rgba(52, 52, 52, 0.2)"
-              : "rgba(52, 52, 52, 0)",
-          },
-        ]}
-      >
-        <TouchableOpacity style={styles.touchClose} onPress={handleHide} />
-      </Flex>
+
     </Animatable.View>
   );
 };

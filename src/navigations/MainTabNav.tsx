@@ -10,6 +10,7 @@ import Trending from 'screens/trending/Trending';
 import Profile from 'screens/profile/Profile';
 import Blank from 'screens/blank';
 import CaptureMediaScreen from 'screens/media/CaptureMedia';
+// import Hashtag from 'screens/hashtag/Hashtag';
 
 import { colors } from 'utils/theme';
 import { Platform } from 'react-native';
@@ -19,6 +20,7 @@ const Tab = createBottomTabNavigator();
 export const MainTabNav = (): JSX.Element => (
   <Tab.Navigator
     initialRouteName="MainTab/Home"
+    detachInactiveScreens={false}
     screenOptions={{
       tabBarActiveTintColor: colors.lightText,
       tabBarInactiveTintColor: colors.gray,
@@ -34,6 +36,7 @@ export const MainTabNav = (): JSX.Element => (
     }}>
     <Tab.Screen
       name="MainTab/Home"
+
       component={Home}
       options={{
         tabBarLabel: 'Home',
@@ -61,7 +64,7 @@ export const MainTabNav = (): JSX.Element => (
       }}
     />
     <Tab.Screen
-      name="Notification"
+      name="Notifications"
       component={Blank}
       options={{
         tabBarLabel: 'Notifications',

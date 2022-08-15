@@ -18,6 +18,10 @@ import { IPerformer } from 'interfaces/performer';
 import MediaPreview from 'screens/media/MediaPreview';
 import Upload from 'screens/feed/Upload';
 import Home from 'screens/browse/Home';
+import Model from 'screens/model/Model';
+import Profile from 'screens/profile/Profile';
+import Hashtag from 'screens/hashtag/Hashtag';
+import Trending from 'screens/trending/Trending';
 export type RootStackParamList = {
   default: undefined;
   IntroNav: undefined;
@@ -25,6 +29,10 @@ export type RootStackParamList = {
   Call: undefined;
   Calling: undefined;
   LiveNow: undefined;
+  Model: undefined;
+  Profile: undefined
+  Hashtag: undefined;
+  Trending: undefined;
   ChatRoom: { performer: IPerformer };
   PrivateChatDetail: { performer: IPerformer; conversationId: string };
   PerformerDetail: { username: string };
@@ -39,6 +47,8 @@ export type RootStackParamList = {
   Home: {
   }
   FeedDetail: { performerId: any; type: 'video' | 'photo'; };
+
+
 
 };
 export type RootStackNavigationProps<T extends keyof RootStackParamList = 'default'> = StackNavigationProp<
@@ -113,6 +123,29 @@ function RootNavigator({ loggedIn }): React.ReactElement {
           name="FeedDetail"
           component={FeedDetail}
         />
+        <Stack.Screen
+          options={{ headerShown: false, gestureEnabled: false }}
+          name="Model"
+          component={Model}
+        />
+
+        <Stack.Screen
+          options={{ headerShown: false, gestureEnabled: false }}
+          name="Profile"
+          component={Profile}
+        />
+
+        <Stack.Screen
+          options={{ headerShown: false, gestureEnabled: false }}
+          name="Hashtag"
+          component={Hashtag}
+        />
+        <Stack.Screen
+          options={{ headerShown: false, gestureEnabled: false }}
+          name="Trending"
+          component={Trending}
+        />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

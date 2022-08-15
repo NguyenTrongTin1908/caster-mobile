@@ -1,41 +1,67 @@
 import React, { useEffect, useContext, useState, useRef } from 'react';
-import { connect } from 'react-redux';
 import { useNavigation } from '@react-navigation/core';
 import { IUser } from 'interfaces/user';
-import { getFollowingFeeds, moreFollowingFeeds } from 'services/redux/feed/actions';
-import { Dimensions, FlatList, View, SafeAreaView, Platform, Alert } from 'react-native';
+import { feedService } from 'services/feed.service';
+import {
+  Dimensions,
+  FlatList,
+  View,
+  SafeAreaView,
+  Platform,
+} from 'react-native';
 const { height } = Dimensions.get('window');
 import styles from './style';
 import FeedCard from 'components/feed/feed-card';
-import FeedTab from 'components/tabview/FeedTab';
 import { IFeed } from 'interfaces/feed';
 import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
+import MenuTab from 'components/tabview/MenuTab';
+import FeedTab from 'components/tabview/FeedTab';
 let deviceH = Dimensions.get('screen').height;
 let bottomNavBarH = deviceH - height;
 interface IProps {
   current: IUser;
   isLoggedIn: boolean;
-  handleGetFeeds: Function;
-  handleGetMore: Function;
-  feedState: {
-    requesting: boolean;
-    items: IFeed[];
-    total: number;
-  };
+  route: {
+    params: { query: string, currentTab: string }
+  }
 }
-const FollowPost = ({ handleGetFeeds, feedState, handleGetMore }: IProps): React.ReactElement => {
+const Hashtag = ({ current, isLoggedIn, route }: IProps): React.ReactElement => {
   const navigation = useNavigation() as any;
-  const [tab, setTab] = useState('video')
+  const [tab, setTab] = useState(route.params.currentTab)
   const [itemPerPage, setitemPerPage] = useState(12);
   const [feedPage, setfeedPage] = useState(0);
-  const [orientation, setOrientation] = useState('');
   const [keyword, setKeyword] = useState('');
   const mediaRefs = useRef([]) as any;
+  const [feeds, setfeeds] = useState([] as Array<IFeed>);
+  const [trendingfeeds, settrendingfeeds] = useState([] as Array<IFeed>);
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
-    getFeeds();
-  }, [useContext]);
+    loadfeeds();
+  }, []);
+  const loadfeeds = async () => {
+    const { data } = await feedService.userSearch({
+      q: route.params.query ? route.params.query : keyword,
+      limit: itemPerPage,
+      offset: itemPerPage * feedPage,
+      isHome: false,
+      type: (tab === 'video') ? 'video' : 'photo'
+    });
+    setfeeds(feeds.concat(data.data));
+    settrendingfeeds(feeds.concat(data.data));
+  };
+  const loadmoreFeeds = async () => {
+    setfeedPage(feedPage + 1)
+    const { data } = await feedService.userSearch({
+      q: route.params.query ? route.params.query : keyword,
+      limit: itemPerPage,
+      offset: itemPerPage * feedPage,
+      isHome: false,
+      type: (tab === 'video') ? 'video' : 'photo',
+
+    });
+    setfeeds(feeds.concat(data.data))
+  };
   const onViewableItemsChange = useRef(({ changed }) => {
     changed.forEach(element => {
       const cell = mediaRefs.current[element.key];
@@ -48,58 +74,13 @@ const FollowPost = ({ handleGetFeeds, feedState, handleGetMore }: IProps): React
       }
     });
   }) as any;
-  const loadmoreFeeds = async () => {
-    const { total: totalFeeds } = feedState;
-    try {
-      if ((feedPage + 1) * itemPerPage >= totalFeeds) {
-        resetloadFeeds();
-      } else {
-        setfeedPage(feedPage + 1)
-        handleGetMore({
-          q: keyword,
-          orientation,
-          limit: itemPerPage,
-          offset: itemPerPage * (feedPage + 1),
-          isHome: false,
-          type: tab === 'video' ? 'video' : 'photo'
-        });
-      }
-    } catch (e) {
-      Alert.alert('Something went wrong, please try again later');
-    }
-  }
-  const resetloadFeeds = async () => {
-    handleGetMore({
-      q: keyword,
-      orientation,
-      limit: itemPerPage,
-      offset: 0,
-      isHome: false,
-      type: tab === 'video' ? 'video' : 'photo'
-    });
-    setfeedPage(1)
-  }
-
-  const getFeeds = () => {
-    handleGetFeeds({
-      q: keyword,
-      orientation,
-      limit: itemPerPage,
-      offset: itemPerPage * feedPage,
-      isHome: false,
-      type: tab === 'video' ? 'video' : 'photo'
-    });
-  };
   const handleTabChange = async () => {
     tab === 'video' ? (
       setTab('photo')
     ) : setTab('video')
+    setfeeds([])
     setfeedPage(0)
   }
-
-  useEffect(() => {
-    getFeeds()
-  }, [tab])
   const renderItem = ({ item, index }: { item: IFeed; index: number }) => {
     return (
       <BottomTabBarHeightContext.Consumer>
@@ -108,11 +89,11 @@ const FollowPost = ({ handleGetFeeds, feedState, handleGetMore }: IProps): React
             <View
               style={[
                 {
-                  height:
-                    Platform.OS === 'ios'
-                      ? deviceH - (tabBarHeight + getStatusBarHeight(true))
-                      : deviceH - (bottomNavBarH + tabBarHeight)
+                  height: Platform.OS === 'ios'
+                    ? deviceH - (getStatusBarHeight(true))
+                    : deviceH - (bottomNavBarH)
                 },
+                ,
                 index % 2 == 0 ? { backgroundColor: '#000000' } : { backgroundColor: '#000000' }
               ]}>
               <FeedCard feed={item} mediaRefs={mediaRefs} currentTab={tab} />
@@ -122,46 +103,42 @@ const FollowPost = ({ handleGetFeeds, feedState, handleGetMore }: IProps): React
       </BottomTabBarHeightContext.Consumer>
     );
   };
+
+  useEffect(() => {
+    loadfeeds();
+  }, [tab])
   return (
     <BottomTabBarHeightContext.Consumer>
       {(tabBarHeight: any) => (
         <SafeAreaView style={styles.container}>
           <FlatList
-            data={feedState.items}
+            data={feeds}
             renderItem={renderItem}
             pagingEnabled={true}
             keyExtractor={item => item._id}
             decelerationRate={'fast'}
             showsVerticalScrollIndicator={false}
             onViewableItemsChanged={onViewableItemsChange.current}
-            windowSize={4}
+            windowSize={2}
             onEndReached={loadmoreFeeds}
             initialNumToRender={0}
             maxToRenderPerBatch={2}
             removeClippedSubviews
             snapToInterval={
               Platform.OS === 'ios'
-                ? deviceH - (tabBarHeight + getStatusBarHeight(true))
-                : deviceH - (bottomNavBarH + tabBarHeight)
+                ? deviceH - getStatusBarHeight(true)
+                : deviceH - bottomNavBarH
             }
             viewabilityConfig={{
               itemVisiblePercentThreshold: 100
             }}
             snapToAlignment={'start'}
           />
+          <MenuTab></MenuTab>
           <FeedTab onTabChange={handleTabChange} tab={tab}></FeedTab>
         </SafeAreaView>
       )}
     </BottomTabBarHeightContext.Consumer>
   );
 };
-const mapStateToProp = (state: any): any => ({
-  ...state.user,
-  isLoggedIn: state.auth.loggedIn,
-  feedState: { ...state.feed?.followingFeeds }
-});
-const mapDispatch = {
-  handleGetFeeds: getFollowingFeeds,
-  handleGetMore: moreFollowingFeeds,
-};
-export default connect(mapStateToProp, mapDispatch)(FollowPost);
+export default Hashtag;

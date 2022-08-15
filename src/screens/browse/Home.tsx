@@ -3,14 +3,14 @@ import { connect } from 'react-redux';
 import { useNavigation } from '@react-navigation/core';
 import { IUser } from 'interfaces/user';
 import { getFeeds, moreFeeds } from 'services/redux/feed/actions';
-import { Dimensions, FlatList, View, SafeAreaView, Platform, Text, Alert, TouchableOpacity } from 'react-native';
+import { Dimensions, FlatList, View, SafeAreaView, Platform, Alert } from 'react-native';
 const { height } = Dimensions.get('window');
 import styles from './style';
 import FeedCard from 'components/feed/feed-card';
 import { IFeed } from 'interfaces/feed';
 import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
-import { colors, Sizes } from 'utils/theme'
+import FeedTab from 'components/tabview/FeedTab';
 let deviceH = Dimensions.get('screen').height;
 let bottomNavBarH = deviceH - height;
 interface IProps {
@@ -113,7 +113,7 @@ const Home = ({ handleGetFeeds, feedState, handleGetMore }: IProps): React.React
                 },
                 index % 2 == 0 ? { backgroundColor: '#000000' } : { backgroundColor: '#000000' }
               ]}>
-              <FeedCard feed={item} mediaRefs={mediaRefs} />
+              <FeedCard feed={item} mediaRefs={mediaRefs} currentTab={tab} />
             </View>
           );
         }}
@@ -147,24 +147,7 @@ const Home = ({ handleGetFeeds, feedState, handleGetMore }: IProps): React.React
             }}
             snapToAlignment={'start'}
           />
-          <View style={styles.tabView}>
-            <TouchableOpacity onPress={handleTabChange}>
-              <Text style={{ color: tab === 'video' ? colors.lightText : '#979797', fontSize: 18 }}>
-                Video
-              </Text>
-            </TouchableOpacity>
-            <View style={{
-              marginHorizontal: Sizes.fixPadding + 5.0,
-              height: 18.0,
-              width: 2.0,
-              backgroundColor: colors.lightText
-            }} />
-            <TouchableOpacity onPress={handleTabChange}>
-              <Text style={{ color: tab === 'video' ? '#979797' : colors.lightText, fontSize: 18 }}>
-                Photo
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <FeedTab onTabChange={handleTabChange} tab={tab}></FeedTab>
         </SafeAreaView>
       )}
     </BottomTabBarHeightContext.Consumer>

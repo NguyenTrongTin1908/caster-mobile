@@ -25,19 +25,21 @@ interface Props {
   current: IPerformer;
   isLoggedIn: boolean;
   handleLogout: Function;
+
+  route: {
+    params: {
+      performerID: string
+    }
+  }
 }
 
-const Profile = ({ current, handleLogout }: Props): React.ReactElement => {
+const Profile = ({ current, handleLogout, route }: Props): React.ReactElement => {
   const navigation = useNavigation() as any;
   const [q, setQ] = useState('');
   const [showOptions, setshowOptions] = useState(false);
   useEffect(() => {
     navigation.setOptions({
       headerShown: false,
-      headerTitleAlign: 'center',
-      title: 'Profile',
-      headerLeft: () => <BackButton />,
-      headerRight: null
     });
   }, [useContext]);
   const defaultValues = {

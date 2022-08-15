@@ -13,6 +13,8 @@ import { getStatusBarHeight } from 'react-native-status-bar-height';
 import FeedCard from 'components/feed/feed-card';
 let deviceH = Dimensions.get('screen').height;
 let bottomNavBarH = deviceH - height;
+import MenuTab from 'components/tabview/MenuTab';
+import FeedTab from 'components/tabview/FeedTab';
 interface IProps {
   route: {
     params: {
@@ -60,6 +62,13 @@ const FeedDetail = ({ route }: IProps): React.ReactElement => {
       }
     });
   }) as any;
+  const handleTabChange = async () => {
+    tab === 'video' ? (
+      setTab('photo')
+    ) : setTab('video')
+    setfeeds([])
+    setfeedPage(0)
+  }
 
   const renderItem = ({ item, index }: { item: IFeed; index: number }) => {
     return (
@@ -75,7 +84,7 @@ const FeedDetail = ({ route }: IProps): React.ReactElement => {
                 },
                 index % 2 == 0 ? { backgroundColor: '#000000' } : { backgroundColor: '#000000' }
               ]}>
-              <FeedCard feed={item} mediaRefs={mediaRefs} />
+              <FeedCard feed={item} mediaRefs={mediaRefs} currentTab={tab} />
             </View>
           );
         }}
@@ -112,24 +121,8 @@ const FeedDetail = ({ route }: IProps): React.ReactElement => {
             }}
             snapToAlignment={'start'}
           />
-          <View style={styles.tabViewRelated}>
-            <TouchableOpacity onPress={() => setTab('video')}>
-              <Text style={{ color: tab === 'video' ? colors.lightText : '#979797', fontSize: 18 }}>
-                Video
-              </Text>
-            </TouchableOpacity>
-            <View style={{
-              marginHorizontal: Sizes.fixPadding + 5.0,
-              height: 18.0,
-              width: 2.0,
-              backgroundColor: colors.lightText
-            }} />
-            <TouchableOpacity onPress={() => setTab('photo')}>
-              <Text style={{ color: tab === 'video' ? '#979797' : colors.lightText, fontSize: 18 }}>
-                Photo
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <MenuTab></MenuTab>
+          <FeedTab onTabChange={handleTabChange} tab={tab}></FeedTab>
         </SafeAreaView>
       )}
     </BottomTabBarHeightContext.Consumer>
