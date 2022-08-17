@@ -12,7 +12,7 @@ interface IProps {
     title: string;
     sence: React.ElementType<any>;
     params?: {
-      q: string;
+      [key: string]: any
     };
   }>;
 }

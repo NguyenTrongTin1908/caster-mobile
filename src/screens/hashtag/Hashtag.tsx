@@ -15,8 +15,8 @@ import FeedCard from 'components/feed/feed-card';
 import { IFeed } from 'interfaces/feed';
 import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
-import MenuTab from 'components/tabview/MenuTab';
-import FeedTab from 'components/tabview/FeedTab';
+import MenuTab from 'components/tab/MenuTab';
+import FeedTab from 'components/tab/FeedTab';
 let deviceH = Dimensions.get('screen').height;
 let bottomNavBarH = deviceH - height;
 interface IProps {

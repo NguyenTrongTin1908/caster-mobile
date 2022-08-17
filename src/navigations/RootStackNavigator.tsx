@@ -22,6 +22,7 @@ import Model from 'screens/model/Model';
 import Profile from 'screens/profile/Profile';
 import Hashtag from 'screens/hashtag/Hashtag';
 import Trending from 'screens/trending/Trending';
+import ModelProfile from 'screens/model/profile/ModelProfile';
 export type RootStackParamList = {
   default: undefined;
   IntroNav: undefined;
@@ -30,7 +31,8 @@ export type RootStackParamList = {
   Calling: undefined;
   LiveNow: undefined;
   Model: undefined;
-  Profile: undefined
+  Profile: undefined;
+  ModelProfile: undefined;
   Hashtag: undefined;
   Trending: undefined;
   ChatRoom: { performer: IPerformer };
@@ -133,6 +135,12 @@ function RootNavigator({ loggedIn }): React.ReactElement {
           options={{ headerShown: false, gestureEnabled: false }}
           name="Profile"
           component={Profile}
+        />
+
+        <Stack.Screen
+          options={{ headerShown: false, gestureEnabled: false }}
+          name="ModelProfile"
+          component={ModelProfile}
         />
 
         <Stack.Screen

@@ -13,8 +13,8 @@ import { getStatusBarHeight } from 'react-native-status-bar-height';
 import FeedCard from 'components/feed/feed-card';
 let deviceH = Dimensions.get('screen').height;
 let bottomNavBarH = deviceH - height;
-import MenuTab from 'components/tabview/MenuTab';
-import FeedTab from 'components/tabview/FeedTab';
+import MenuTab from 'components/tab/MenuTab';
+import FeedTab from 'components/tab/FeedTab';
 interface IProps {
   route: {
     params: {

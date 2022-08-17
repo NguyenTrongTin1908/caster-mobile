@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, SafeAreaView } from 'react-native';
+import { View, SafeAreaView, Text } from 'react-native';
 import { Box, FlatList, Heading } from 'native-base';
 import { useNavigation } from '@react-navigation/core';
 import PerformerCard from 'components/message/PerformerCard';
@@ -16,7 +16,6 @@ const Model = (): React.ReactElement => {
   const [page, setPage] = useState(0);
   const [moreable, setMoreable] = useState(true);
   const navigation = useNavigation() as any;
-
   useEffect(() => {
     navigation.setOptions({
       headerShown: false,
@@ -34,7 +33,6 @@ const Model = (): React.ReactElement => {
     const { data } = await performerService.search({
       offset: refresh ? 0 : newPage * 10,
       limit: 10,
-
     });
     if (!refresh && data.length < 10) {
       setMoreable(false);
@@ -52,26 +50,27 @@ const Model = (): React.ReactElement => {
       )}
     </View>
   );
-
   useEffect(() => {
     loadPerformers();
   }, []);
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Box flex={1} mx="auto" w="100%">
+        {/* <WavyHeader customStyles={styles.svgCurve} />
+        <View >
+          <Text style={styles.headerText}>Top Caster</Text>
+        </View> */}
         <Heading
           mb={4}
-          fontSize={40}
-          letterSpacing={-1}
+          fontSize={36}
+          textAlign="center"
           color={colors.lightText}
           bold>
           Top Caster
         </Heading>
-
         <FlatList
           data={performers}
-          renderItem={({ item }) => <PerformerCard performer={item} />}
+          renderItem={({ item }) => <PerformerCard performer={item} navigationScreen='ModelProfile' />}
           keyExtractor={(item, index) => item._id + '_' + index}
           style={styles.listModel}
           onEndReachedThreshold={0.5}

@@ -21,13 +21,13 @@ export const FeedCard = forwardRef(({ feed, mediaRefs, currentTab }: IProps, par
             : mediaRefs.current[feed._id].pause()
         }>
         <View style={{ flex: 1 }}>
-          <VideoCard feed={feed} ref={FeedRef => (mediaRefs.current[feed._id] = FeedRef)}></VideoCard>
+          <VideoCard key={feed._id} feed={feed} ref={FeedRef => (mediaRefs.current[feed._id] = FeedRef)}></VideoCard>
           <FeedStats item={feed} currentTab={currentTab}></FeedStats>
         </View>
       </TouchableWithoutFeedback>)
       :
       (<View style={{ flex: 1 }}>
-        <ImageCard feed={feed} ></ImageCard>
+        <ImageCard key={feed._id} feed={feed} ></ImageCard>
         <FeedStats item={feed} currentTab={currentTab}></FeedStats>
       </View>)
   );

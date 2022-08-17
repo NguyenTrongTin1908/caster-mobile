@@ -1,12 +1,11 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import { Box, HStack, VStack, Text, Heading, Image } from 'native-base';
 import { colors } from 'utils/theme';
 import { IPerformer } from 'interfaces/performer';
 import { useNavigation } from '@react-navigation/native';
 import OnlineDot from 'components/uis/OnlineDot';
 import { formatDateFromnow, getBirthday, formatZodiac } from 'lib/date';
-
 interface IProps {
   performer: IPerformer;
   //use for private chat
@@ -15,10 +14,9 @@ interface IProps {
     conversationId: string;
   };
 }
-
 const PerformerCard = ({
   performer,
-  navigationScreen = 'ChatRoom',
+  navigationScreen,
   navigationParams
 }: IProps): React.ReactElement => {
   const navigation = useNavigation() as any;
@@ -27,8 +25,7 @@ const PerformerCard = ({
       <TouchableOpacity
         onPress={() =>
           navigation.navigate(navigationScreen, {
-            ...navigationParams,
-            performer
+            performer: JSON.stringify(performer)
           })
         }>
         <HStack space={3}>
@@ -37,14 +34,16 @@ const PerformerCard = ({
               source={
                 performer && (performer.avatar
                   ? { uri: performer.avatar }
-                  : require('assets/icon.png'))
+                  : require('../../assets/bg.jpg'))
               }
               alt={'avatar'}
               size={60}
               borderRadius={30}
               resizeMode="cover"
             />
-            {(performer && performer.isOnline) && <OnlineDot right={0} top={2} />}
+            <View>
+            </View>
+            {(performer?.isOnline) ? <OnlineDot right={0} top={2} /> : null}
           </Box>
           <VStack alignSelf="center" space={1}>
             <Heading
@@ -54,20 +53,18 @@ const PerformerCard = ({
               color={colors.lightText}>
               {performer && (performer.name != " " ? `${(performer.name)}` : `${(performer.username)}`)}
             </Heading>
-
             <Text fontSize={14} color={colors.lightText}>
-              {performer && performer.dateOfBirth && getBirthday(performer.dateOfBirth)}
-              {performer && performer.dateOfBirth &&
-                `, ${formatZodiac(performer.dateOfBirth)}`}
+              {performer && (performer.country || 'UN')}
+              {performer &&
+                ` ,  ${performer?.gender || 'female'}`}
             </Text>
           </VStack>
-
           <Text
             my={3}
             ml="auto"
             fontSize={14}
             letterSpacing={-0.15}
-            color={colors.secondaryText}>
+            color={colors.lightText}>
             {performer && (performer.isOnline
               ? 'Online'
               : performer.offlineAt
@@ -76,8 +73,7 @@ const PerformerCard = ({
           </Text>
         </HStack>
       </TouchableOpacity>
-    </Box>
+    </Box >
   );
 };
-
 export default PerformerCard;

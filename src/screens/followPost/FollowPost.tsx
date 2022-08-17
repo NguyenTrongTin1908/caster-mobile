@@ -7,7 +7,7 @@ import { Dimensions, FlatList, View, SafeAreaView, Platform, Alert } from 'react
 const { height } = Dimensions.get('window');
 import styles from './style';
 import FeedCard from 'components/feed/feed-card';
-import FeedTab from 'components/tabview/FeedTab';
+import FeedTab from 'components/tab/FeedTab';
 import { IFeed } from 'interfaces/feed';
 import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
 import { getStatusBarHeight } from 'react-native-status-bar-height';

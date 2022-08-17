@@ -37,7 +37,7 @@ const FeedStats = ({ item, currentTab }: IProps): React.ReactElement => {
     inputRange: [0, 1],
     outputRange: ['0deg', '360deg']
   });
-  const mentionHashtagClick = (text) => {
+  const mentionHashtagClick = (key, text) => {
     navigation.navigate('Hashtag', { query: text.substring(1), currentTab });
   };
   return (
@@ -99,7 +99,7 @@ const FeedStats = ({ item, currentTab }: IProps): React.ReactElement => {
         <View>
           <Text style={{ color: colors.lightText, fontWeight: "bold" }}>@{item?.performer.username}</Text>
           <MentionHashtagTextView
-            key={item?._id}
+            key={item._id}
             mentionHashtagPress={mentionHashtagClick}
             mentionHashtagColor={colors.hastag}
             style={{ marginTop: Sizes.fixPadding, color: colors.lightText }}

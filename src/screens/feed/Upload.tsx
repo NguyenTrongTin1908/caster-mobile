@@ -28,6 +28,7 @@ import CameraRoll from '@react-native-community/cameraroll';
 import { feedService } from 'services/feed.service';
 import { mediaService } from 'services/media.service';
 import { IPerformer } from 'interfaces/performer';
+import { useNavigation } from '@react-navigation/core';
 import { IFeed } from 'interfaces/feed';
 import styles from './styles';
 const isVideoOnLoadEvent = (event: OnLoadData | NativeSyntheticEvent<ImageLoadEventData>): event is OnLoadData =>
@@ -37,8 +38,9 @@ interface IProps {
   current: IPerformer;
   feed?: IFeed;
 }
-const Upload = ({ navigation, route }: Props, { current, feed }: IProps): React.ReactElement => {
+const Upload = ({ route }: Props, { current, feed }: IProps): React.ReactElement => {
   const { path, type } = route.params;
+  const navigation = useNavigation() as any;
   const [saveToGallery, setsaveToGallery] = useState(false);
   const [fileIds, setFileids] = useState(feed?.fileIds ? feed.fileIds : []);
   const [fileList, setFileList] = useState(feed?.files ? feed.files : []) as any;
@@ -78,6 +80,7 @@ const Upload = ({ navigation, route }: Props, { current, feed }: IProps): React.
       saveToGallery && onSavePressed()
       !feed ? await feedService.create({ ...formValues, type }) : await feedService.update(feed._id, { ...formValues, type: feed?.type });
       Alert.alert('Posted successfully!');
+      navigation.navigate("MainTab/Profile")
     } catch {
       Alert.alert('Something went wrong, please try again later');
     }
