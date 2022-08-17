@@ -1,4 +1,4 @@
-package com.fanso;
+package com.caster.caster;
 
 import android.app.Application;
 import android.content.Context;

@@ -1,4 +1,4 @@
-package com.fanso;
+package com.caster.caster;
 import android.os.Bundle; // add this
 import com.facebook.react.ReactActivity;
 import org.devio.rn.splashscreen.SplashScreen;

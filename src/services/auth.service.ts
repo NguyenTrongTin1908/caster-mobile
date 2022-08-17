@@ -48,6 +48,10 @@ export class AuthService extends APIRequest {
   async removeAccessToken(): Promise<void> {
     await AsyncStorage.removeItem('accessToken');
   }
+
+  async loginGoogle(data: any) {
+    return this.post('/auth/google/login', data);
+  }
 }
 
 export const authService = new AuthService();
