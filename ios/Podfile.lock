@@ -374,6 +374,7 @@ DEPENDENCIES:
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/React/FBReactNativeSpec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
+  - GoogleSignIn
   - Interactable (from `../node_modules/react-native-interactable`)
   - Permission-Camera (from `../node_modules/react-native-permissions/ios/Camera`)
   - Permission-Microphone (from `../node_modules/react-native-permissions/ios/Microphone`)
@@ -601,6 +602,6 @@ SPEC CHECKSUMS:
   VisionCamera: 57487a11a98a0d5d3ed73946062ab3920110f08e
   Yoga: 8c8436d4171c87504c648ae23b1d81242bdf3bbf
 
-PODFILE CHECKSUM: a99bf32ea9397161c41dd4e8b32fb1ea58ecbbb5
+PODFILE CHECKSUM: 46d82a9dd891840133171ee7a42765dffb0c7e6e
 
 COCOAPODS: 1.11.3

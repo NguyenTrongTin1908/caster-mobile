@@ -3,8 +3,10 @@ import {
   authAccessToken,
   login,
   loginFail,
+  loginSocial,
   loginSuccess,
   logout,
+  logoutSuccess,
   setLogin
 } from './actions';
 import { authService } from 'services/auth.service';
@@ -13,7 +15,7 @@ import { flatten } from 'lodash';
 import { put } from 'redux-saga/effects';
 import { setCurrentUser } from '../user/actions';
 import { IUserLogin } from 'interfaces/auth';
-
+import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 const authSagas = [
   {
     on: login,
@@ -46,8 +48,11 @@ const authSagas = [
   {
     on: logout,
     *worker() {
+      const isSignedInByGoogle = yield GoogleSignin.isSignedIn();
+      if (isSignedInByGoogle) yield GoogleSignin.signOut();
+      APIRequest.accessToken = '';
       yield authService.removeAccessToken();
-      yield put(logout());
+      yield put(logoutSuccess());
     }
   },
   {
@@ -65,6 +70,29 @@ const authSagas = [
           yield put(setLogin(true));
           yield put(setCurrentUser(data));
         }
+      } catch (e) {
+        APIRequest.accessToken = '';
+        yield put(setCurrentUser(null));
+        yield put(setLogin(false));
+      }
+    }
+  },
+  {
+    on: loginSocial,
+    *worker(data: any) {
+      try {
+        const payload = data.payload as any;
+        const { token } = payload;
+        APIRequest.accessToken = token;
+        // load current user and othere here
+        yield authService.setAccessToken(token);
+
+        // get my info and set isLoggedIn = true
+        const { data: userData } = yield authService.me();
+
+        yield put(setLogin(true));
+        yield put(setCurrentUser(userData));
+        yield put(loginSuccess());
       } catch (e) {
         APIRequest.accessToken = '';
         yield put(setCurrentUser(null));

@@ -19,6 +19,8 @@ target 'Fanso' do
 
   pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
 
+  pod 'GoogleSignIn'
+
   target 'FansoTests' do
     inherit! :complete
     # Pods for testing

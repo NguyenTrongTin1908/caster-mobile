@@ -1,14 +1,7 @@
 import { IReduxAction } from 'src/interfaces';
 import { createReducers } from 'lib/redux';
 import { defaultStore } from 'utils/store';
-import {
-  login,
-  loginFail,
-  loginSuccess,
-  logout,
-  resetLogin,
-  setLogin
-} from './actions';
+import { login, loginFail, loginSuccess, logout, logoutSuccess, resetLogin, setLogin } from './actions';
 import { merge } from 'lodash';
 
 const initialState = {
@@ -59,7 +52,7 @@ const authReducers = [
     }
   },
   {
-    on: logout,
+    on: logoutSuccess,
     reducer() {
       return {
         ...initialState
