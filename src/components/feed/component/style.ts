@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
   songRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: Sizes.fixPadding* 2.0
+    marginTop: Sizes.fixPadding * 2.0
   },
   rightContainer: {
     alignSelf: 'flex-end',

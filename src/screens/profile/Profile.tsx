@@ -1,10 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { connect } from 'react-redux';
-import {
-  useToast,
-  Image,
-  View,
-} from 'native-base';
+import { useToast, Image, View } from 'native-base';
 import { SafeAreaView, Text, TouchableOpacity, Animated } from 'react-native';
 import { useForm } from 'react-hook-form';
 import { useNavigation } from '@react-navigation/core';
@@ -15,7 +11,7 @@ import TabView from 'components/uis/TabView';
 import { colors, Fonts, Sizes } from 'utils/theme';
 import Photo from 'components/tab/profile/Photo';
 import Video from 'components/tab/profile/Video';
-import styles from './style'
+import styles from './style';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { Menu } from 'react-native-material-menu';
 import { color } from 'native-base/lib/typescript/theme/styled-system';
@@ -26,9 +22,9 @@ interface Props {
 
   route: {
     params: {
-      performerID: string
-    }
-  }
+      performerID: string;
+    };
+  };
 }
 
 const Profile = ({ current, handleLogout, route }: Props): React.ReactElement => {
@@ -37,7 +33,7 @@ const Profile = ({ current, handleLogout, route }: Props): React.ReactElement =>
   const [showOptions, setshowOptions] = useState(false);
   useEffect(() => {
     navigation.setOptions({
-      headerShown: false,
+      headerShown: false
     });
   }, [useContext]);
   const defaultValues = {
@@ -54,10 +50,7 @@ const Profile = ({ current, handleLogout, route }: Props): React.ReactElement =>
   } = useForm({ defaultValues });
   const [submitting, setSubmitting] = useState(false);
   const toast = useToast();
-  const onUpdatePassword = async ({
-    password,
-    prePassword
-  }: any): Promise<void> => {
+  const onUpdatePassword = async ({ password, prePassword }: any): Promise<void> => {
     if (!password) {
       return toast.show({
         title: 'Warning',
@@ -80,7 +73,7 @@ const Profile = ({ current, handleLogout, route }: Props): React.ReactElement =>
         reset(defaultValues);
         setSubmitting(false);
       })
-      .catch(async (e) => {
+      .catch(async e => {
         const error = await Promise.resolve(e);
         toast.show({
           title: 'Error',
@@ -91,24 +84,25 @@ const Profile = ({ current, handleLogout, route }: Props): React.ReactElement =>
         setSubmitting(false);
       });
   };
-  const handleItemMenu = (options) => {
+  const handleItemMenu = options => {
     if (options === 'Logout') {
-      setshowOptions(false)
-      handleLogout()
+      setshowOptions(false);
+      handleLogout();
       navigation.navigate('IntroNav', { screen: 'IntroNav/Login' });
     }
-  }
+  };
   const menuItems = ({ option }) => {
     return (
-      <TouchableOpacity onPress={() => {
-        handleItemMenu(option);
-      }}>
+      <TouchableOpacity
+        onPress={() => {
+          handleItemMenu(option);
+        }}>
         <Text style={{ marginRight: Sizes.fixPadding * 2, marginVertical: Sizes.fixPadding + 2.0, fontWeight: 'bold' }}>
           {option}
         </Text>
       </TouchableOpacity>
-    )
-  }
+    );
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -126,24 +120,15 @@ const Profile = ({ current, handleLogout, route }: Props): React.ReactElement =>
             <View style={styles.activeNowTick}></View>
           </View>
         </View>
-        <Text style={styles.textName}>{(current && current?.name != " ") ? `${(current.name)}` : `${(current.username)}`}
+        <Text style={styles.textName}>
+          {current && current?.name != ' ' ? `${current.name}` : `${current?.username}`}
         </Text>
         <View style={{ flexDirection: 'row', alignSelf: 'center', marginTop: 5 }}>
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={styles.editButtonStyle}
-          >
-            <Text style={styles.subText}>
-              Edit Profile
-            </Text>
+          <TouchableOpacity activeOpacity={0.7} style={styles.editButtonStyle}>
+            <Text style={styles.subText}>Edit Profile</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            activeOpacity={0.5}
-            style={styles.followButtonStyle}
-          >
-            <Text style={styles.subText}>
-              Follow
-            </Text>
+          <TouchableOpacity activeOpacity={0.5} style={styles.followButtonStyle}>
+            <Text style={styles.subText}>Follow</Text>
           </TouchableOpacity>
         </View>
         <View style={{ flex: 1 }}>
@@ -166,20 +151,16 @@ const Profile = ({ current, handleLogout, route }: Props): React.ReactElement =>
           />
         </View>
         <Animated.View style={styles.bar}>
-          <TouchableOpacity onPress={() => navigation.goBack()} >
+          <TouchableOpacity onPress={() => navigation.goBack()}>
             <View style={styles.left}>
-              <MaterialIcons
-                name="arrow-back"
-                color={colors.lightText}
-                size={24}
-              />
+              <MaterialIcons name="arrow-back" color={colors.lightText} size={24} />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity >
+          <TouchableOpacity>
             <View style={styles.right}>
               <Menu
                 visible={showOptions}
-                style={{ paddingTop: Sizes.fixPadding, paddingHorizontal: Sizes.fixPadding, }}
+                style={{ paddingTop: Sizes.fixPadding, paddingHorizontal: Sizes.fixPadding }}
                 anchor={
                   <MaterialIcons
                     name="more-vert"
@@ -188,8 +169,7 @@ const Profile = ({ current, handleLogout, route }: Props): React.ReactElement =>
                     onPress={() => setshowOptions(true)}
                   />
                 }
-                onRequestClose={() => setshowOptions(false)}
-              >
+                onRequestClose={() => setshowOptions(false)}>
                 {menuItems({ option: 'Logout' })}
                 {menuItems({ option: 'Block' })}
               </Menu>
@@ -197,7 +177,7 @@ const Profile = ({ current, handleLogout, route }: Props): React.ReactElement =>
           </TouchableOpacity>
         </Animated.View>
       </View>
-    </SafeAreaView >
+    </SafeAreaView>
   );
 };
 

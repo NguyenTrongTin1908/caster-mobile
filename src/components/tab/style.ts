@@ -1,17 +1,16 @@
 import { Platform, StyleSheet } from 'react-native';
-
+import { getStatusBarHeight } from 'react-native-status-bar-height';
 
 const styles = StyleSheet.create({
-
   bar: {
     top: 20,
     left: 0,
     right: 0,
     height: 56,
     position: 'absolute',
-    flexDirection: "row",
+    flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: 'transparent',
+    backgroundColor: 'transparent'
   },
   left: {
     top: 0,
@@ -19,7 +18,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 56,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   right: {
     top: -20,
@@ -27,48 +26,47 @@ const styles = StyleSheet.create({
     height: 106,
     width: 56,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   container: {
-    display: "none",
-    position: "absolute",
+    display: 'none',
+    position: 'absolute',
     zIndex: 1000,
     flex: 1,
-    flexDirection: "row",
-    width: "100%",
-    height: "100%",
+    flexDirection: 'row',
+    width: '100%',
+    height: '100%',
     shadowOffset: { width: 0, height: 1 }, // shadow right only
     shadowOpacity: 0.4,
-    shadowRadius: 6,
+    shadowRadius: 6
   },
   drawerContainer: {
     flex: 5,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff'
   },
   shadowContainer: {
-    flex: 2,
+    flex: 2
   },
   touchClose: {
-    width: "100%",
-    height: "100%",
+    width: '100%',
+    height: '100%'
   },
   menuButton: {
-    width: "100%",
+    width: '100%',
     height: 40,
     flex: 1,
-    flexDirection: "row",
+    flexDirection: 'row'
   },
   tabView: {
     position: 'absolute',
-    top: 10.0,
+    top: 15.0 + getStatusBarHeight(true),
     left: 0.0,
     right: 0.0,
     backgroundColor: 'transparent',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center'
-  },
+  }
+});
 
-})
-
-export default styles
+export default styles;

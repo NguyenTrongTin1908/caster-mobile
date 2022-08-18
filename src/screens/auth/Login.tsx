@@ -86,7 +86,7 @@ const Login = ({ handleLogin, handleResetLogin, authLogin, loginSocial }: Props)
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       if (userInfo.idToken) {
-        const payload = { tokenId: userInfo.idToken, role: 'google' };
+        const payload = { tokenId: userInfo.idToken, role: 'performer' };
         const data = (await authService.loginGoogle(payload)).data;
         data.token && loginSocial({ token: data.token });
       }
