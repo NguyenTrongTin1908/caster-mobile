@@ -28,7 +28,6 @@ const FeedDetail = ({ route }: IProps): React.ReactElement => {
   const [page, setPage] = useState(0);
   const mediaRefs = useRef([]) as any;
   const insets = useSafeAreaInsets();
-  console.log(Platform.OS, insets);
 
   const loadfeeds = async (more = false, q = '', refresh = false) => {
     const newPage = more ? page + 1 : page;
