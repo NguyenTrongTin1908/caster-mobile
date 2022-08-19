@@ -11,7 +11,6 @@ import { IFeed } from 'interfaces/feed';
 import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import FeedTab from 'components/tab/FeedTab';
-import MenuTab from 'components/tab/MenuTab';
 let deviceH = Dimensions.get('screen').height;
 let bottomNavBarH = deviceH - height;
 interface IProps {
@@ -27,7 +26,7 @@ interface IProps {
 }
 const Home = ({ handleGetFeeds, feedState, handleGetMore }: IProps): React.ReactElement => {
   const navigation = useNavigation() as any;
-  const [tab, setTab] = useState('video')
+  const [tab, setTab] = useState('video');
   const [itemPerPage, setitemPerPage] = useState(12);
   const [feedPage, setfeedPage] = useState(0);
   const [orientation, setOrientation] = useState('');
@@ -55,7 +54,7 @@ const Home = ({ handleGetFeeds, feedState, handleGetMore }: IProps): React.React
       if ((feedPage + 1) * itemPerPage >= totalFeeds) {
         resetloadFeeds();
       } else {
-        setfeedPage(feedPage + 1)
+        setfeedPage(feedPage + 1);
         handleGetMore({
           q: keyword,
           orientation,
@@ -68,7 +67,7 @@ const Home = ({ handleGetFeeds, feedState, handleGetMore }: IProps): React.React
     } catch (e) {
       Alert.alert('Something went wrong, please try again later');
     }
-  }
+  };
   const resetloadFeeds = async () => {
     handleGetMore({
       q: keyword,
@@ -78,8 +77,8 @@ const Home = ({ handleGetFeeds, feedState, handleGetMore }: IProps): React.React
       isHome: false,
       type: tab === 'video' ? 'video' : 'photo'
     });
-    setfeedPage(1)
-  }
+    setfeedPage(1);
+  };
   const getFeeds = () => {
     handleGetFeeds({
       q: keyword,
@@ -91,14 +90,12 @@ const Home = ({ handleGetFeeds, feedState, handleGetMore }: IProps): React.React
     });
   };
   const handleTabChange = async () => {
-    tab === 'video' ? (
-      setTab('photo')
-    ) : setTab('video')
-    setfeedPage(0)
-  }
+    tab === 'video' ? setTab('photo') : setTab('video');
+    setfeedPage(0);
+  };
   useEffect(() => {
-    getFeeds()
-  }, [tab])
+    getFeeds();
+  }, [tab]);
   const renderItem = ({ item, index }: { item: IFeed; index: number }) => {
     return (
       <BottomTabBarHeightContext.Consumer>

@@ -1,6 +1,5 @@
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  ActivityIndicator,
   Alert,
   Image,
   ImageLoadEventData,
@@ -12,14 +11,14 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback
 } from 'react-native';
-import { Button, Text, Actionsheet, useDisclose, Input, FormControl, Modal } from 'native-base';
+import { Button, Text } from 'native-base';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from 'navigations/RootStackNavigator';
 import Video, { LoadError, OnLoadData } from 'react-native-video';
 import { useIsFocused } from '@react-navigation/core';
 import { useIsForeground } from '../../hooks/useIsForeground';
 import CameraRoll from '@react-native-community/cameraroll';
-import { SAFE_AREA_PADDING, SCREEN_HEIGHT } from 'utils/theme';
+import { SAFE_AREA_PADDING } from 'utils/theme';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 
 const requestSavePermission = async (): Promise<boolean> => {
@@ -140,12 +139,6 @@ const MediaPreview = ({ navigation, route }: Props) => {
       <TouchableOpacity style={styles.closeButton} onPress={navigation.goBack}>
         <IonIcon name="close" size={35} color="white" style={styles.icon} />
       </TouchableOpacity>
-
-      {/* <TouchableOpacity style={styles.saveButton} onPress={onSavePressed} disabled={savingState !== 'none'}>
-        {savingState === 'none' && <IonIcon name="download" size={35} color="white" style={styles.icon} />}
-        {savingState === 'saved' && <IonIcon name="checkmark" size={35} color="white" style={styles.icon} />}
-        {savingState === 'saving' && <ActivityIndicator color="white" />}
-      </TouchableOpacity> */}
 
       <Button
         variant={'outline'}

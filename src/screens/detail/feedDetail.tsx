@@ -1,10 +1,9 @@
-import React, { useEffect, useContext, useState, useRef } from 'react';
-import { SafeAreaView, FlatList, Dimensions, TouchableOpacity, Text, View, Platform, StatusBar } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { SafeAreaView, FlatList, Dimensions, View, Platform } from 'react-native';
 import styles from './style';
 import { IFeed } from 'interfaces/feed';
 import { feedService } from 'services/feed.service';
 const { height } = Dimensions.get('window');
-import { getStatusBarHeight } from 'react-native-status-bar-height';
 import FeedCard from 'components/feed/feed-card';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 let deviceH = Dimensions.get('screen').height;

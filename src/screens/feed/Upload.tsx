@@ -1,7 +1,5 @@
 import React, { useCallback, useContext, useEffect, useMemo, useState, useLayoutEffect } from 'react';
-import {
-  Flex, Text, View, VStack, Box, FormControl,
-} from 'native-base';
+import { Flex, Text, View, VStack, Box, FormControl } from 'native-base';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Controller, useForm } from 'react-hook-form';
 import ErrorMessage from 'components/uis/ErrorMessage';
@@ -16,7 +14,7 @@ import {
   SafeAreaView,
   Alert,
   PermissionsAndroid,
-  Platform,
+  Platform
 } from 'react-native';
 import Video, { LoadError, OnLoadData } from 'react-native-video';
 import KeyboardDismiss from 'components/uis/KeyboardDismiss';
@@ -43,32 +41,21 @@ const Upload = ({ route }: Props, { current, feed }: IProps): React.ReactElement
   const navigation = useNavigation() as any;
   const [saveToGallery, setsaveToGallery] = useState(false);
   const [fileIds, setFileids] = useState(feed?.fileIds ? feed.fileIds : []);
-  const [fileList, setFileList] = useState(feed?.files ? feed.files : []) as any;
   const {
     control,
     handleSubmit,
     formState: { errors }
   } = useForm();
   useLayoutEffect(() => {
-    uploadVideo()
-  }, [])
+    uploadVideo();
+  }, []);
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
   }, [useContext]);
-  const onSubmit = async ({
-    text, isSale, active
-  }: any): Promise<void> => {
-    submit(
-      text,
-      isSale,
-      active
-    );
+  const onSubmit = async ({ text, isSale, active }: any): Promise<void> => {
+    submit(text, isSale, active);
   };
-  const submit = async (
-    text,
-    isSale,
-    active
-  ) => {
+  const submit = async (text, isSale, active) => {
     const formValues = {
       text,
       isSale,
@@ -77,10 +64,12 @@ const Upload = ({ route }: Props, { current, feed }: IProps): React.ReactElement
       fileIds
     };
     try {
-      saveToGallery && onSavePressed()
-      !feed ? await feedService.create({ ...formValues, type }) : await feedService.update(feed._id, { ...formValues, type: feed?.type });
+      saveToGallery && onSavePressed();
+      !feed
+        ? await feedService.create({ ...formValues, type })
+        : await feedService.update(feed._id, { ...formValues, type: feed?.type });
       Alert.alert('Posted successfully!');
-      navigation.navigate("MainTab/Profile")
+      navigation.navigate('MainTab/Profile');
     } catch {
       Alert.alert('Something went wrong, please try again later');
     }
@@ -121,8 +110,6 @@ const Upload = ({ route }: Props, { current, feed }: IProps): React.ReactElement
       const resp = await CameraRoll.save(`file://${path}`, {
         type: type
       });
-
-
     } catch (e) {
       const message = e instanceof Error ? e.message : JSON.stringify(e);
       setsaveToGallery(false);
@@ -135,24 +122,26 @@ const Upload = ({ route }: Props, { current, feed }: IProps): React.ReactElement
   const source = useMemo(() => ({ uri: type === 'video' ? `file://${path}` : `file://file://${path}` }), [path]);
   const uploadVideo = async () => {
     try {
-      const url = type === 'video' ? `https://api.caster.com/feeds/performers/video/upload` : `https://api.caster.com/feeds/performers/photo/upload`
-      const resp = await mediaService
-        .upload(
-          url,
-          [
-            {
-              fieldname: 'file',
-              file: {
-                uri: type === 'video' ? path : `file://${path}`,
-                fieldname: 'file'
-              }
-            }
-          ],
+      const url =
+        type === 'video'
+          ? `https://api.caster.com/feeds/performers/video/upload`
+          : `https://api.caster.com/feeds/performers/photo/upload`;
+      const resp = (await mediaService.upload(
+        url,
+        [
           {
-            onProgress: percentage => console.log(percentage)
-          },
-        ) as any
-      setFileids(resp.data._id)
+            fieldname: 'file',
+            file: {
+              uri: type === 'video' ? path : `file://${path}`,
+              fieldname: 'file'
+            }
+          }
+        ],
+        {
+          onProgress: percentage => console.log(percentage)
+        }
+      )) as any;
+      setFileids(resp.data._id);
     } catch (e) {
       throw e;
     }
@@ -202,11 +191,9 @@ const Upload = ({ route }: Props, { current, feed }: IProps): React.ReactElement
                 rules={{ required: 'Description is required' }}
                 defaultValue=""
               />
-              {errors.text && (
-                <ErrorMessage message={'Please add a description'} />
-              )}
+              {errors.text && <ErrorMessage message={'Please add a description'} />}
             </FormControl>
-            <TouchableWithoutFeedback >
+            <TouchableWithoutFeedback>
               <Box
                 bgColor={colors.primary}
                 mr={3}
@@ -214,13 +201,8 @@ const Upload = ({ route }: Props, { current, feed }: IProps): React.ReactElement
                 w={34}
                 borderRadius={17}
                 alignItems="center"
-                justifyContent="center"
-              >
-                <MaterialIcons
-                  name="insert-emoticon"
-                  size={25}
-                  color={colors.lightText}
-                />
+                justifyContent="center">
+                <MaterialIcons name="insert-emoticon" size={25} color={colors.lightText} />
               </Box>
             </TouchableWithoutFeedback>
           </View>
@@ -321,7 +303,8 @@ const Upload = ({ route }: Props, { current, feed }: IProps): React.ReactElement
                         switchLeftPx={5}
                         switchRightPx={5}
                         switchWidthMultiplier={2.8}
-                      />)}
+                      />
+                    )}
                     name="isSale"
                     defaultValue={false}
                   />
@@ -353,7 +336,8 @@ const Upload = ({ route }: Props, { current, feed }: IProps): React.ReactElement
                         switchLeftPx={5}
                         switchRightPx={5}
                         switchWidthMultiplier={2.8}
-                      />)}
+                      />
+                    )}
                     name="active"
                     defaultValue={false}
                   />
