@@ -23,6 +23,7 @@ export const colors = {
   active: COLOR_PRIMARY,
   danger: COLOR_DANGER,
   hastag: 'rgb(82,198,246)',
+  lightGray:'#F1F1F2',
 
   //text
   lightText: '#fff',

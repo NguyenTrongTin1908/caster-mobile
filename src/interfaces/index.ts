@@ -5,4 +5,5 @@ export * from './token-package';
 export * from './utils';
 export * from './performer';
 export * from './conversation';
-export * from './feed'
+export * from './feed';
+export * from './comment';

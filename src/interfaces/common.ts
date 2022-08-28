@@ -6,7 +6,7 @@ export interface IApiResponse {
   message?: string;
 }
 
-export interface IReduxAction {
+export interface IReduxAction<T> {
   payload: any;
   type: string;
 }

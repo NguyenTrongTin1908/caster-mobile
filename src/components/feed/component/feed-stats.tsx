@@ -1,6 +1,6 @@
-import React from 'react';
-import { useNavigation } from '@react-navigation/core';
-import { colors, Sizes } from 'utils/theme';
+import React, { useLayoutEffect, useState } from "react";
+import { useNavigation } from "@react-navigation/core";
+import { colors, Sizes } from "utils/theme";
 import MentionHashtagTextView from "react-native-mention-hashtag-text";
 import {
   Animated,
@@ -9,37 +9,128 @@ import {
   View,
   Image,
   Text,
-} from 'react-native';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import styles from './style';
-import { Button } from 'native-base';
-import { IFeed } from 'interfaces/feed';
+} from "react-native";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import styles from "./style";
+import { Button } from "native-base";
+import { IFeed } from "interfaces/feed";
+import { IUser } from "interfaces/user";
+import ListComments from "components/comment/list-comments";
+import { connect } from "react-redux";
+
+import {
+  getComments,
+  moreComment,
+  deleteComment,
+  createComment,
+} from "services/redux/comment/actions";
+
+import { reactionService } from "services/reaction.service";
+import Ionicons from "react-native-vector-icons/Ionicons";
 interface IProps {
-  item: IFeed
-  currentTab: string
+  item: IFeed;
+  currentTab: string;
+  currentUser: IUser;
+  moreComment: Function;
+  createComment: Function;
+  deleteComment: Function;
+  getComments: Function;
+  commentMapping: Function;
 }
-const FeedStats = ({ item, currentTab }: IProps): React.ReactElement => {
+const FeedStats = ({
+  item,
+  currentTab,
+  currentUser,
+  getComments,
+  moreComment,
+  deleteComment,
+  createComment,
+  commentMapping,
+}: IProps): React.ReactElement => {
   const navigation = useNavigation() as any;
   const spinValue = new Animated.Value(0);
+  const [itemPerPage, setitemPerPage] = useState(4);
+  const [commentPage, setcommentPage] = useState(0);
+  const [requesting, setRequesting] = useState(false);
+  const [isBookMarked, setBookmark] = useState(false);
+
+  useLayoutEffect(() => {
+    handleShowComment();
+  }, []);
+  const comments = commentMapping.hasOwnProperty(item._id)
+    ? commentMapping[item._id].items
+    : [];
+
   const handleRedirect = () => {
-    navigation.navigate('LiveNow');
+    navigation.navigate("LiveNow");
   };
   Animated.loop(
     Animated.timing(spinValue, {
       toValue: 1,
       duration: 4000,
       easing: Easing.linear,
-      useNativeDriver: true
+      useNativeDriver: true,
     })
   ).start();
   const spin = spinValue.interpolate({
     inputRange: [0, 1],
-    outputRange: ['0deg', '360deg']
+    outputRange: ["0deg", "360deg"],
   });
   const mentionHashtagClick = (key, text) => {
-    navigation.navigate('Hashtag', { query: text.substring(1), currentTab });
+    navigation.navigate("Hashtag", { query: text.substring(1), currentTab });
   };
+
+  const handleLike = async () => {
+    if (requesting) return;
+    try {
+      setRequesting(true);
+      if (!isBookMarked) {
+        await reactionService.create({
+          objectId: item._id,
+          action: "book_mark",
+          objectType: "feed",
+        });
+        setBookmark(true);
+        setRequesting(false);
+      } else {
+        await reactionService.delete({
+          objectId: item._id,
+          action: "book_mark",
+          objectType: "feed",
+        });
+        setBookmark(false);
+        setRequesting(false);
+      }
+    } catch (e) {
+      const error = await e;
+    }
+  };
+
+  const handleDeleteComment = async (item) => {
+    deleteComment(item.Id);
+  };
+  const handleCreateComment = async (data) => {
+    createComment(data);
+  };
+  const handleShowComment = async () => {
+    getComments({
+      objectId: item._id,
+      objectType: "feed",
+      limit: itemPerPage,
+      offset: commentPage,
+    });
+  };
+
+  const handleGetmore = async () => {
+    setcommentPage(commentPage + 1);
+    moreComment({
+      objectId: item._id,
+      objectType: "feed",
+      limit: itemPerPage,
+      offset: (commentPage + 1) * itemPerPage,
+    });
+  };
+
   return (
     <View style={styles.uiContainer}>
       <View style={styles.rightContainer}>
@@ -47,14 +138,20 @@ const FeedStats = ({ item, currentTab }: IProps): React.ReactElement => {
           style={{
             marginRight: Sizes.fixPadding - 5.0,
             marginBottom: Sizes.fixPadding + 10.0,
-            alignItems: 'center'
-          }}>
-          <TouchableOpacity activeOpacity={0.9} onPress={() => navigation.navigate('Model', { screen: 'Model' })}>
+            alignItems: "center",
+          }}
+        >
+          <TouchableOpacity
+            activeOpacity={0.9}
+            onPress={() => navigation.navigate("Model", { screen: "Model" })}
+          >
             <Image
               style={styles.profilePicture}
               source={{
                 uri:
-                  item?.performer.avatar || Image.resolveAssetSource(require('../../../assets/user.png')).uri
+                  item?.performer.avatar ||
+                  Image.resolveAssetSource(require("../../../assets/user.png"))
+                    .uri,
               }}
             />
           </TouchableOpacity>
@@ -66,9 +163,14 @@ const FeedStats = ({ item, currentTab }: IProps): React.ReactElement => {
           style={{
             marginRight: Sizes.fixPadding,
             marginVertical: Sizes.fixPadding + 2.0,
-            alignItems: 'center'
-          }}>
-          <Button size={44} backgroundColor="orange.400" onPress={handleRedirect}>
+            alignItems: "center",
+          }}
+        >
+          <Button
+            size={44}
+            backgroundColor="orange.400"
+            onPress={handleRedirect}
+          >
             Live Now
           </Button>
         </View>
@@ -76,10 +178,40 @@ const FeedStats = ({ item, currentTab }: IProps): React.ReactElement => {
           style={{
             marginRight: Sizes.fixPadding,
             marginTop: Sizes.fixPadding + 2.0,
-            alignItems: 'center'
-          }}>
+            alignItems: "center",
+          }}
+        >
+          <TouchableOpacity onPress={handleLike}>
+            <Ionicons
+              name={isBookMarked ? "bookmark" : "bookmark-outline"}
+              size={25}
+              color={!isBookMarked ? colors.gray : colors.gray}
+              selectionColor={colors.gray}
+              onPress={handleLike}
+            />
+          </TouchableOpacity>
+
+          <Text
+            style={{
+              marginTop: Sizes.fixPadding - 7.0,
+              color: colors.lightText,
+            }}
+          ></Text>
+        </View>
+        <View
+          style={{
+            marginRight: Sizes.fixPadding,
+            marginTop: Sizes.fixPadding + 2.0,
+            alignItems: "center",
+          }}
+        >
           <MaterialIcons name="visibility" color={colors.light} size={28} />
-          <Text style={{ marginTop: Sizes.fixPadding - 7.0, color: colors.lightText }}>
+          <Text
+            style={{
+              marginTop: Sizes.fixPadding - 7.0,
+              color: colors.lightText,
+            }}
+          >
             {item.stats.views}
           </Text>
         </View>
@@ -87,17 +219,34 @@ const FeedStats = ({ item, currentTab }: IProps): React.ReactElement => {
           style={{
             marginRight: Sizes.fixPadding,
             marginVertical: Sizes.fixPadding + 2.0,
-            alignItems: 'center'
-          }}>
-          <MaterialCommunityIcons name="comment-processing" color={colors.lightText} size={28} />
-          <Text style={{ marginTop: Sizes.fixPadding - 7.0, color: colors.lightText }}>
+            alignItems: "center",
+          }}
+        >
+          <ListComments
+            comments={comments}
+            user={currentUser}
+            canReply={true}
+            onDelete={handleDeleteComment}
+            showComment={handleShowComment}
+            moreComment={handleGetmore}
+            createComment={handleCreateComment}
+            feed={item}
+          />
+          <Text
+            style={{
+              marginTop: Sizes.fixPadding - 7.0,
+              color: colors.lightText,
+            }}
+          >
             {item.totalComment}
           </Text>
         </View>
       </View>
       <View style={styles.bottomContainer}>
         <View>
-          <Text style={{ color: colors.lightText, fontWeight: "bold" }}>@{item?.performer.username}</Text>
+          <Text style={{ color: colors.lightText, fontWeight: "bold" }}>
+            @{item?.performer.username}
+          </Text>
           <MentionHashtagTextView
             key={item._id}
             mentionHashtagPress={mentionHashtagClick}
@@ -108,7 +257,9 @@ const FeedStats = ({ item, currentTab }: IProps): React.ReactElement => {
           </MentionHashtagTextView>
           <View style={styles.songRow}>
             <MaterialIcons name="music-note" size={15} color="white" />
-            <Text style={{ color: colors.lightText }}>{item.title || 'No name'}</Text>
+            <Text style={{ color: colors.lightText }}>
+              {item.title || "No name"}
+            </Text>
           </View>
         </View>
         <View style={styles.postSongImageWrapStyle}>
@@ -117,15 +268,35 @@ const FeedStats = ({ item, currentTab }: IProps): React.ReactElement => {
               width: 27.0,
               height: 27.0,
               borderRadius: 13.5,
-              transform: [{ rotate: spin }]
+              transform: [{ rotate: spin }],
             }}
             source={{
-              uri: item.performer.avatar || Image.resolveAssetSource(require('../../../assets/user.png')).uri
+              uri:
+                item.performer.avatar ||
+                Image.resolveAssetSource(require("../../../assets/user.png"))
+                  .uri,
             }}
           />
         </View>
       </View>
     </View>
   );
-}
-export default FeedStats;
+};
+
+const mapStates = (state: any) => {
+  const { commentMapping, comment } = state.comment;
+  return {
+    commentMapping,
+    comment,
+    currentUser: state.user.current,
+  };
+};
+
+const mapDispatch = {
+  getComments,
+  moreComment,
+  deleteComment,
+  createComment,
+};
+
+export default connect(mapStates, mapDispatch)(FeedStats);
