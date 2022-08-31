@@ -145,7 +145,6 @@ const Home = ({ handleGetFeeds, feedState, handleGetMore }: IProps): React.React
             }}
             snapToAlignment={'start'}
           />
-
           <FeedTab onTabChange={handleTabChange} tab={tab}></FeedTab>
         </SafeAreaView>
       )}

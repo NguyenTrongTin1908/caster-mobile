@@ -1,11 +1,6 @@
 import { View } from "native-base";
 import React from "react";
-import {
-  KeyboardAvoidingView,
-  Platform,
-  SafeAreaView,
-  TouchableWithoutFeedback,
-} from "react-native";
+import { TouchableWithoutFeedback } from "react-native";
 import { IFeed } from "interfaces/feed";
 import FeedStats from "./component/feed-stats";
 import VideoCard from "./component/video-card";
@@ -36,7 +31,7 @@ export const FeedCard = ({ feed, mediaRefs, currentTab }: IProps) => {
         </TouchableWithoutFeedback>
       ) : (
         <View style={{ flex: 1 }}>
-          <ImageCard key={feed._id} feed={feed}></ImageCard>
+          <ImageCard key={feed._id} feed={feed} ref={(FeedRef) => (mediaRefs.current[feed._id] = FeedRef)}></ImageCard>
         </View>
       )}
       <FeedStats item={feed} currentTab={currentTab}></FeedStats>

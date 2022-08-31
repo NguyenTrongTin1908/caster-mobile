@@ -9,13 +9,10 @@ import Video from "react-native-video";
 import { IFeed } from "interfaces/feed";
 import styles from "./style";
 import { feedService } from "services/feed.service";
-
 interface IProps {
   resizeMode?: string;
-  ref?: any;
   feed: IFeed;
 }
-
 export const VideoCard = forwardRef(
   ({ resizeMode, feed: { files, thumbnail, _id } }: IProps, parentRef) => {
     const [playing, setPlaying] = useState(false);
@@ -28,20 +25,16 @@ export const VideoCard = forwardRef(
       setStatus,
       playing,
     }));
-
     useEffect(() => {
       return () => ref.current.seek(0);
     }, []);
-
     useEffect(() => {
       if (!playing && viewable) {
         play();
-        feedService.addView(_id);
       } else {
         pause();
       }
     }, [viewable]);
-
     const play = async () => {
       if (!playing) {
         setPlaying(true);
@@ -52,14 +45,16 @@ export const VideoCard = forwardRef(
         setPlaying(false);
       }
     };
-
     const setStatus = (isViewable) => {
       setIsViewable(isViewable);
     };
-
     const onReady = () => {
       setReady(true);
     };
+    const countView = () => {
+      feedService.addView(_id);
+    };
+
     return (
       <Video
         ref={ref}
@@ -77,9 +72,9 @@ export const VideoCard = forwardRef(
         }
         posterResizeMode={"cover"}
         onReadyForDisplay={onReady}
+        onEnd={countView}
       />
     );
   }
 );
-
 export default VideoCard;

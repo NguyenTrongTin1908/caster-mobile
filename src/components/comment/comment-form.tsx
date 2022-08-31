@@ -24,100 +24,99 @@ interface IProps {
   isReply?: boolean;
   handleOnSubmit: Function;
 }
-export const CommentForm = ({
-  objectId,
-  objectType,
-  isReply,
-  handleOnSubmit,
-}: IProps): React.ReactElement => {
-  const [text, setText] = useState("");
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm();
-  const contentInput = useRef();
+const CommentForm = React.memo(
+  ({
+    objectId,
+    objectType,
+    isReply,
+    handleOnSubmit,
+  }: IProps): React.ReactElement => {
 
-  const onSubmit = async ({ content }: any): Promise<void> => {
-    submit(content);
-    reset();
-  };
+    const [text, setText] = useState("");
+    const {
+      control,
+      handleSubmit,
+      formState: { errors },
+      reset,
+    } = useForm();
+    const contentInput = useRef();
 
-  const submit = async (content) => {
-    try {
-      const data = {} as ICreateComment;
-      data.content = content;
-      data.objectId = objectId;
-      data.objectType = objectType || "video";
-      handleOnSubmit(data);
-    } catch {}
-  };
+    const onSubmit = async ({ content }: any): Promise<void> => {
+      submit(content);
+      reset();
+    };
 
-  return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={400}
-    >
-      <KeyboardDismiss>
-        <SafeAreaView>
-          <HStack width="100%">
-            <View width="88%">
-              <FormControl>
-                <Controller
-                  control={control}
-                  render={({ field: { onChange, value } }) => (
-                    <TextInput
-                      selectionColor={colors.gray}
-                      value={value}
-                      placeholder={
-                        !isReply ? "Add a comment here" : "Add a reply here"
-                      }
-                      placeholderTextColor={colors.gray}
-                      secureTextEntry={true}
-                      multiline
-                      numberOfLines={6}
-                      onChangeText={(val) => onChange(val)}
-                      style={{
-                        backgroundColor: colors.lightGray,
-                        borderRadius: 50,
-                        width: "100%",
-                        height: !isReply ? 45 : 40,
-                        alignItems: "center",
-                      }}
+    const submit = async (content) => {
+      try {
+        const data = {} as ICreateComment;
+        data.content = content;
+        data.objectId = objectId;
+        data.objectType = objectType || "video";
+        handleOnSubmit(data);
+      } catch {}
+    };
+
+    return (
+
+        <KeyboardDismiss>
+          <SafeAreaView>
+            <HStack width="100%">
+              <View width="88%">
+                <FormControl>
+                  <Controller
+                    control={control}
+                    render={({ field: { onChange, value } }) => (
+                      <TextInput
+                        selectionColor={colors.gray}
+                        value={value}
+                        placeholder={
+                          !isReply ? "Add a comment here" : "Add a reply here"
+                        }
+                        placeholderTextColor={colors.gray}
+                        secureTextEntry={true}
+                        multiline
+                        numberOfLines={6}
+                        onChangeText={(val) => onChange(val)}
+                        style={{
+                          backgroundColor: colors.lightGray,
+                          borderRadius: 50,
+                          width: "100%",
+                          height: !isReply ? 45 : 40,
+                          alignItems: "center",
+                        }}
+                      />
+                    )}
+                    name="content"
+                    rules={{ required: "Comment is required" }}
+                    defaultValue=""
+                  />
+                </FormControl>
+              </View>
+
+              <View width="10%" style={styles.sendComment}>
+                <TouchableOpacity onPress={handleSubmit(onSubmit)}>
+                  {isReply ? (
+                    <Ionicons
+                      name="arrow-up-circle"
+                      size={22}
+                      color={"crimson"}
+                      style={styles.sendComment}
+                    />
+                  ) : (
+                    <Ionicons
+                      name="send-sharp"
+                      size={22}
+                      color={"crimson"}
+                      style={styles.sendComment}
                     />
                   )}
-                  name="content"
-                  rules={{ required: "Comment is required" }}
-                  defaultValue=""
-                />
-              </FormControl>
-            </View>
+                </TouchableOpacity>
+              </View>
+            </HStack>
+          </SafeAreaView>
+        </KeyboardDismiss>
+    );
+  }
+);
 
-            <View width="10%" style={styles.sendComment}>
-              <TouchableOpacity onPress={handleSubmit(onSubmit)}>
-                {isReply ? (
-                  <Ionicons
-                    name="arrow-up-circle"
-                    size={22}
-                    color={"crimson"}
-                    style={styles.sendComment}
-                  />
-                ) : (
-                  <Ionicons
-                    name="send-sharp"
-                    size={22}
-                    color={"crimson"}
-                    style={styles.sendComment}
-                  />
-                )}
-              </TouchableOpacity>
-            </View>
-          </HStack>
-        </SafeAreaView>
-      </KeyboardDismiss>
-    </KeyboardAvoidingView>
-  );
-};
-
-export default React.memo(CommentForm);
+export default CommentForm;

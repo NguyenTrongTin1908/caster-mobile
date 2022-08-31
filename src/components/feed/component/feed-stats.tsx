@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from "react";
+import React, {  useState } from "react";
 import { useNavigation } from "@react-navigation/core";
 import { colors, Sizes } from "utils/theme";
 import MentionHashtagTextView from "react-native-mention-hashtag-text";
@@ -17,50 +17,22 @@ import { IFeed } from "interfaces/feed";
 import { IUser } from "interfaces/user";
 import ListComments from "components/comment/list-comments";
 import { connect } from "react-redux";
-
-import {
-  getComments,
-  moreComment,
-  deleteComment,
-  createComment,
-} from "services/redux/comment/actions";
-
 import { reactionService } from "services/reaction.service";
 import Ionicons from "react-native-vector-icons/Ionicons";
 interface IProps {
   item: IFeed;
   currentTab: string;
   currentUser: IUser;
-  moreComment: Function;
-  createComment: Function;
-  deleteComment: Function;
-  getComments: Function;
-  commentMapping: Function;
 }
 const FeedStats = ({
   item,
   currentTab,
   currentUser,
-  getComments,
-  moreComment,
-  deleteComment,
-  createComment,
-  commentMapping,
 }: IProps): React.ReactElement => {
-  const navigation = useNavigation() as any;
-  const spinValue = new Animated.Value(0);
-  const [itemPerPage, setitemPerPage] = useState(4);
-  const [commentPage, setcommentPage] = useState(0);
   const [requesting, setRequesting] = useState(false);
   const [isBookMarked, setBookmark] = useState(false);
-
-  useLayoutEffect(() => {
-    handleShowComment();
-  }, []);
-  const comments = commentMapping.hasOwnProperty(item._id)
-    ? commentMapping[item._id].items
-    : [];
-
+  const navigation = useNavigation() as any;
+  const spinValue = new Animated.Value(0);
   const handleRedirect = () => {
     navigation.navigate("LiveNow");
   };
@@ -104,31 +76,6 @@ const FeedStats = ({
     } catch (e) {
       const error = await e;
     }
-  };
-
-  const handleDeleteComment = async (item) => {
-    deleteComment(item.Id);
-  };
-  const handleCreateComment = async (data) => {
-    createComment(data);
-  };
-  const handleShowComment = async () => {
-    getComments({
-      objectId: item._id,
-      objectType: "feed",
-      limit: itemPerPage,
-      offset: commentPage,
-    });
-  };
-
-  const handleGetmore = async () => {
-    setcommentPage(commentPage + 1);
-    moreComment({
-      objectId: item._id,
-      objectType: "feed",
-      limit: itemPerPage,
-      offset: (commentPage + 1) * itemPerPage,
-    });
   };
 
   return (
@@ -190,7 +137,6 @@ const FeedStats = ({
               onPress={handleLike}
             />
           </TouchableOpacity>
-
           <Text
             style={{
               marginTop: Sizes.fixPadding - 7.0,
@@ -223,13 +169,8 @@ const FeedStats = ({
           }}
         >
           <ListComments
-            comments={comments}
             user={currentUser}
             canReply={true}
-            onDelete={handleDeleteComment}
-            showComment={handleShowComment}
-            moreComment={handleGetmore}
-            createComment={handleCreateComment}
             feed={item}
           />
           <Text
@@ -284,19 +225,9 @@ const FeedStats = ({
 };
 
 const mapStates = (state: any) => {
-  const { commentMapping, comment } = state.comment;
   return {
-    commentMapping,
-    comment,
     currentUser: state.user.current,
   };
 };
 
-const mapDispatch = {
-  getComments,
-  moreComment,
-  deleteComment,
-  createComment,
-};
-
-export default connect(mapStates, mapDispatch)(FeedStats);
+export default connect(mapStates)(FeedStats);

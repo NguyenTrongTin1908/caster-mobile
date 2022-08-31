@@ -24,6 +24,7 @@ export const colors = {
   danger: COLOR_DANGER,
   hastag: 'rgb(82,198,246)',
   lightGray:'#F1F1F2',
+  darkGray: '#B1A492',
 
   //text
   lightText: '#fff',
