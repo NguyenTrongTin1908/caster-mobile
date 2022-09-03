@@ -15,8 +15,9 @@ import {
 import React, { useState } from "react";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import LoadingSpinner from "components/uis/LoadingSpinner";
-import { colors } from "utils/theme";
 import CommentForm from "./comment-form";
+import { colors, Sizes } from "utils/theme";
+
 import {
   getComments,
   moreComment,
@@ -25,6 +26,7 @@ import {
 } from "services/redux/comment/actions";
 import { connect } from "react-redux";
 import BadgeText from "../uis/BadgeText";
+import styles from "./style"
 interface IProps {
   user: IUser;
   canReply?: boolean;
@@ -51,6 +53,8 @@ const ListComments = React.memo(
     const [requesting, setRequesting] = useState(true);
     const { onOpen, isOpen, onClose } = useDisclose();
     const [modalVisible, setModalVisible] = useState(false);
+    const [totalComment,setTotalComment]= useState(feed.totalComment)
+
     const comments = commentMapping.hasOwnProperty(feed._id)
     ? commentMapping[feed._id].items
     : [];
@@ -59,14 +63,7 @@ const ListComments = React.memo(
       handleShowComment();
       onOpen();
     };
-    const renderItem = ({ item }) => {
-      return (
-      <View>
-        <CommentItem canReply={canReply} key={item._id} item={item} />
-        {/* <CommentItem canReply={canReply} key={item._id} item={item} onOpenModal={() => setModalVisible(!modalVisible)}/> */}
-      </View>
-      )
-    };
+
     const handleShowComment = async () => {
       setRequesting(true)
       await getComments({
@@ -77,13 +74,6 @@ const ListComments = React.memo(
       });
       setRequesting(false)
     };
-    const renderEmpty = () => (
-      <View>
-        {!requesting && !comments.length && (
-          <BadgeText content={'There is no comment available!'} />
-        )}
-      </View>
-    );
     const handleGetmore = async () => {
       setcommentPage(commentPage + 1);
        moreComment({
@@ -94,8 +84,25 @@ const ListComments = React.memo(
       });
     };
     const handleCreateComment = async (data) => {
+      setTotalComment(totalComment+1)
+
       createComment(data);
     };
+    const renderItem = ({ item }) => {
+      return (
+      <View>
+        <CommentItem canReply={canReply} key={item._id} item={item} />
+        {/* <CommentItem canReply={canReply} key={item._id} item={item} onOpenModal={() => setModalVisible(!modalVisible)}/> */}
+      </View>
+      )
+    };
+    const renderEmpty = () => (
+      <View>
+        {!requesting && !comments.length && (
+          <BadgeText content={'There is no comment available!'} />
+        )}
+      </View>
+    );
     return (
       <View>
         <TouchableOpacity onPress={() => handleOpenComment()}>
@@ -163,53 +170,19 @@ const ListComments = React.memo(
             </HStack>
           </Actionsheet.Content>
         </Actionsheet>
+        <Text
+            style={{
+              marginTop: Sizes.fixPadding - 7.0,
+              color: colors.lightText,
+              textAlign: "center"
+            }}
+          >
+            {totalComment}
+          </Text>
       </View>
     );
   }
 );
-const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2
-  },
-  buttonOpen: {
-    backgroundColor: "#F194FF",
-  },
-  buttonClose: {
-    backgroundColor: "#2196F3",
-  },
-  textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center"
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: "center"
-  }
-});
 const mapStates = (state: any) => {
   const { commentMapping, comment } = state.comment;
   return {

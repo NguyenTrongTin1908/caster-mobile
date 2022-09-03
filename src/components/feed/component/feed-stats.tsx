@@ -173,14 +173,7 @@ const FeedStats = ({
             canReply={true}
             feed={item}
           />
-          <Text
-            style={{
-              marginTop: Sizes.fixPadding - 7.0,
-              color: colors.lightText,
-            }}
-          >
-            {item.totalComment}
-          </Text>
+
         </View>
       </View>
       <View style={styles.bottomContainer}>

@@ -4,41 +4,34 @@ import { View } from "native-base";
 import { FlatList } from "react-native";
 import React, { useEffect, useState } from "react";
 import {
-  getComments,
   moreComment,
   createComment,
   deleteComment,
 } from "services/redux/comment/actions";
 import { connect } from "react-redux";
-
-
+import LoadingSpinner from "../uis/LoadingSpinner";
 interface IProps {
   user: IUser;
   canReply?: boolean;
   item: any;
-  getComments: Function;
   createComment: Function;
-  commentMapping: any
+  commentMapping: any;
+  replys:any
 }
 const ListReplys = React.memo(
-  ({item,
+  ({
+    item,
     canReply,
     commentMapping,
-    getComments,
-    createComment, }: IProps): React.ReactElement => {
+    createComment,
+    replys
+   }: IProps): React.ReactElement => {
     const renderItem = ({ item }) => {
       return <CommentItem canReply={canReply} key={item._id} item={item} />;
     };
+    console.log('Vooooo Reply')
     const [itemPerPage, setItemPerPage] = useState(6);
     const [commentPage, setCommentPage] = useState(0);
-    useEffect(() => {
-      getComments({
-        objectId: item._id,
-        objectType: "comment",
-        limit: itemPerPage,
-        offset: commentPage,
-      });
-    },[])
 
     const handleGetmore = async () => {
       setCommentPage(commentPage + 1);
@@ -50,13 +43,9 @@ const ListReplys = React.memo(
       });
     };
 
-    const replys = commentMapping.hasOwnProperty(item._id)
-      ? commentMapping[item._id].items
-      : [];
-
     return (
       <View marginLeft="10">
-        <FlatList
+       { commentMapping[item._id] && !commentMapping[item._id].requesting && <FlatList
           data={replys}
           showsVerticalScrollIndicator={false}
           pagingEnabled={true}
@@ -66,11 +55,12 @@ const ListReplys = React.memo(
           onEndReachedThreshold={0.1}
           onEndReached={()=>handleGetmore()}
         />
+       }
+      {(commentMapping[item._id] && commentMapping[item._id].requesting ) && <LoadingSpinner />}
       </View>
     );
   }
 );
-
 const mapStates = (state: any) => {
   const { commentMapping, comment } = state.comment;
   return {
@@ -80,7 +70,6 @@ const mapStates = (state: any) => {
   };
 };
 const mapDispatch = {
-  getComments,
   moreComment,
   deleteComment,
   createComment,

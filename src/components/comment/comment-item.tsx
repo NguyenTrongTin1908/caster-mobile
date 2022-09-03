@@ -3,10 +3,10 @@ import { reactionService } from "services/reaction.service";
 import { connect } from "react-redux";
 import ListReplys from "./list-reply";
 import CommentForm from "./comment-form";
-
 import {
   createComment,
   deleteComment,
+  getComments,
 } from "services/redux/comment/actions";
 import { View, VStack, HStack, Image, Flex, Text } from "native-base";
 import { IUser, IComment } from "src/interfaces/index";
@@ -25,6 +25,8 @@ interface IProps {
   currentUser: IUser;
   deleteComment: Function;
   createComment: Function;
+  getComments: Function;
+  commentMapping :any
 }
 const CommentItem = React.memo(
   ({
@@ -33,20 +35,34 @@ const CommentItem = React.memo(
     currentUser,
     deleteComment,
     createComment,
+    getComments,
+    commentMapping
   }: IProps): React.ReactElement => {
     const [isOpenReply, setOpenReply] = useState(false);
+    {canReply && console.log('Day la comment')}
+    console.log('DA : ', item.isLiked)
     const [isLiked, setLiked] = useState(item.isLiked);
     const [isReply, setReply] = useState(false);
     const [totalLike, setTotalLike] = useState(item.totalLike || 0);
     const viewWidth = Math.floor(width - 2 * 2);
+    const replys = commentMapping.hasOwnProperty(item._id)
+    ? commentMapping[item._id].items
+    : [];
     const handleCreateComment = async (values) => {
       createComment(values);
-      setReply(false);
-      setOpenReply(false);
       onOpenComment();
     };
     const onOpenComment = async () => {
+      handleGetReply()
       setOpenReply(!isOpenReply);
+    };
+    const handleGetReply= async () => {
+      getComments({
+        objectId: item._id,
+        objectType: "comment",
+        limit: 0,
+        offset: 0,
+      });
     };
     const likeComment = async (comment) => {
       try {
@@ -69,10 +85,10 @@ const CommentItem = React.memo(
         }
       } catch (e) {}
     };
-
     const handleDeleteComment = async () => {
       deleteComment(item._id);
     };
+
     return (
       // <TouchableOpacity onPress={()=>onOpenModal()}>
         <View width={"100%"} marginTop="2" flex={1}>
@@ -112,14 +128,14 @@ const CommentItem = React.memo(
                     {item?.content}
                   </Text>
                   <HStack>
-                    {canReply && (
+                    {canReply &&  (
                       <TouchableOpacity onPress={() => setReply(!isReply)}>
                         <Text color={colors.secondary}>Reply</Text>
                       </TouchableOpacity>
                     )}
                     {canReply && (
                       <TouchableOpacity
-                        onPress={onOpenComment}
+                        onPress={() => onOpenComment()}
                         style={{ marginLeft: 3 }}
                       >
                         <Text color={colors.secondary}>View reply</Text>
@@ -135,7 +151,7 @@ const CommentItem = React.memo(
                   </HStack>
                 </VStack>
               </Flex>
-              {isReply && (
+              {canReply && isReply &&(
                 <HStack space={2} w="100%">
                   <View w="15%">
                     <Image
@@ -173,6 +189,7 @@ const CommentItem = React.memo(
                     user={currentUser}
                     canReply={false}
                     item={item}
+                    replys={replys}
                   />
                 </View>
               )}
@@ -188,8 +205,8 @@ const CommentItem = React.memo(
                 <Ionicons
                   name={isLiked ? "heart" : "heart-outline"}
                   size={22}
-                  color={!isLiked ? colors.gray : colors.secondary}
-                  selectionColor={colors.secondary}
+                  color={isLiked ? colors.secondary : colors.gray  }
+                  // selectionColor={colors.secondary}
                 />
               </TouchableOpacity>
               <Text fontSize="12" textAlign="center">
@@ -203,14 +220,16 @@ const CommentItem = React.memo(
   }
 );
 const mapStates = (state: any) => {
+  const { commentMapping, comment } = state.comment;
   return {
+    commentMapping,
+    comment,
     currentUser: state.user.current,
   };
 };
 const mapDispatch = {
-
+  getComments,
   deleteComment,
   createComment,
-};
-
+}
 export default connect(mapStates, mapDispatch)(CommentItem);
