@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { reactionService } from "services/reaction.service";
 import { connect } from "react-redux";
 import ListReplys from "./list-reply";
@@ -9,23 +9,25 @@ import {
   getComments,
 } from "services/redux/comment/actions";
 import { View, VStack, HStack, Image, Flex, Text } from "native-base";
-import { IUser, IComment } from "src/interfaces/index";
+import { IPerformer, IComment } from "src/interfaces/index";
 import { colors } from "utils/theme";
 import {
   TouchableOpacity,
   Dimensions,
-  KeyboardAvoidingView,
-  Platform,
+  Modal,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import ConfirmModal from 'components/modal/confirm'
 const { width } = Dimensions.get("window");
+
 interface IProps {
   item: IComment;
   canReply?: boolean;
-  currentUser: IUser;
+  currentUser: IPerformer;
   deleteComment: Function;
   createComment: Function;
   getComments: Function;
+  onDelete: Function;
   commentMapping :any
 }
 const CommentItem = React.memo(
@@ -33,16 +35,16 @@ const CommentItem = React.memo(
     item,
     canReply,
     currentUser,
-    deleteComment,
     createComment,
     getComments,
-    commentMapping
+    commentMapping,
+    onDelete
   }: IProps): React.ReactElement => {
     const [isOpenReply, setOpenReply] = useState(false);
-    {canReply && console.log('Day la comment')}
-    console.log('DA : ', item.isLiked)
+    const [isModalVisible, setModalVisible] = useState(false);
     const [isLiked, setLiked] = useState(item.isLiked);
     const [isReply, setReply] = useState(false);
+    const [isDelete, setDelete] = useState(false);
     const [totalLike, setTotalLike] = useState(item.totalLike || 0);
     const viewWidth = Math.floor(width - 2 * 2);
     const replys = commentMapping.hasOwnProperty(item._id)
@@ -85,12 +87,21 @@ const CommentItem = React.memo(
         }
       } catch (e) {}
     };
+
+    const changeModalVisible = (bool) => {
+      setModalVisible(bool)
+    }
+    const setDataConfirm = (data,content) => {
+      if(data === 'Cancel')
+      return;
+      handleDeleteComment()
+    }
     const handleDeleteComment = async () => {
-      deleteComment(item._id);
+      onDelete(item);
+      handleGetReply()
     };
 
     return (
-      // <TouchableOpacity onPress={()=>onOpenModal()}>
         <View width={"100%"} marginTop="2" flex={1}>
           <HStack width={"100%"} space={"5px"}>
             <View
@@ -206,7 +217,6 @@ const CommentItem = React.memo(
                   name={isLiked ? "heart" : "heart-outline"}
                   size={22}
                   color={isLiked ? colors.secondary : colors.gray  }
-                  // selectionColor={colors.secondary}
                 />
               </TouchableOpacity>
               <Text fontSize="12" textAlign="center">
@@ -214,8 +224,17 @@ const CommentItem = React.memo(
               </Text>
             </VStack>
           </HStack>
-        </View>
-      // </TouchableOpacity>
+          {/* <Modal
+           animationType="slide"
+           transparent={true}
+           visible={isModalVisible}
+           onRequestClose={() => {
+           changeModalVisible(false);
+           }}
+           >
+          <ConfirmModal feed={item} changeModalVisible={changeModalVisible} setDataConfirm={setDataConfirm} ></ConfirmModal>
+          </Modal> */}
+      </View>
     );
   }
 );

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { IUser } from "src/interfaces";
+import { IPerformer } from "src/interfaces";
 import { Controller, useForm } from "react-hook-form";
 import { FormControl, HStack, View } from "native-base";
 import KeyboardDismiss from "components/uis/KeyboardDismiss";
@@ -18,7 +18,7 @@ import EmojiSelector from "react-native-emoji-selector";
 
 interface IProps {
   objectId: string;
-  creator: IUser;
+  creator: IPerformer;
   objectType?: string;
   requesting?: boolean;
   isReply?: boolean;

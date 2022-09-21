@@ -19,6 +19,26 @@ const styles = StyleSheet.create({
     // justifyContent: 'space-between',
     // alignItems: 'center'
   },
+  header: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  text: {
+    paddingTop: 10,
+    textAlign: "center",
+    fontSize: 24,
+  },
+  body: {
+    justifyContent: "center",
+    paddingHorizontal: 15,
+    minHeight: 100,
+  },
+  footer: {
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 10,
+    flexDirection: "row",
+  },
   sendComment: {
     marginLeft: 'auto',
     alignItems:'center',

@@ -1,5 +1,5 @@
 import CommentItem from "./comment-item";
-import { IComment, IUser } from "interfaces/index";
+import { IComment, IPerformer } from "interfaces/index";
 import { Actionsheet, View, useDisclose, HStack, Image, } from "native-base";
 import {
   FlatList,
@@ -28,7 +28,7 @@ import { connect } from "react-redux";
 import BadgeText from "../uis/BadgeText";
 import styles from "./style"
 interface IProps {
-  user: IUser;
+  user: IPerformer;
   canReply?: boolean;
   feed: any;
   getComments: Function;
@@ -65,14 +65,19 @@ const ListComments = React.memo(
     };
 
     const handleShowComment = async () => {
-      setRequesting(true)
-      await getComments({
-        objectId: feed._id,
-        objectType: "feed",
-        limit: itemPerPage,
-        offset: 0,
-      });
-      setRequesting(false)
+      try {
+        setRequesting(true)
+        await getComments({
+          objectId: feed._id,
+          objectType: "feed",
+          limit: itemPerPage,
+          offset: 0,
+        });
+        setRequesting(false)
+      } catch (error) {
+
+      }
+
     };
     const handleGetmore = async () => {
       setcommentPage(commentPage + 1);
@@ -84,14 +89,23 @@ const ListComments = React.memo(
       });
     };
     const handleCreateComment = async (data) => {
-      setTotalComment(totalComment+1)
+      try {
+        createComment(data);
+        setTotalComment(totalComment+1)
 
-      createComment(data);
+      } catch (error) {
+        console.log(error)
+      }
+
+    };
+    const handleDeleteComment = async (item) => {
+      deleteComment(item._id);
+      handleShowComment()
     };
     const renderItem = ({ item }) => {
       return (
       <View>
-        <CommentItem canReply={canReply} key={item._id} item={item} />
+        <CommentItem canReply={canReply} key={item._id} item={item} onDelete={handleDeleteComment}/>
         {/* <CommentItem canReply={canReply} key={item._id} item={item} onOpenModal={() => setModalVisible(!modalVisible)}/> */}
       </View>
       )
@@ -127,15 +141,15 @@ const ListComments = React.memo(
            {/* <Modal
               animationType="slide"
               transparent={true}
-              visible={modalVisible}
+              visible={true}
               onRequestClose={() => {
               Alert.alert("Modal has been closed.");
               setModalVisible(!modalVisible);
             }}
             >
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <Text style={styles.modalText}>Hello World!</Text>
+            <View style={styles.container}>
+              <View style={styles.header}>
+                <Text style={styles.text}>Hello</Text>
               </View>
             </View>
           </Modal> */}

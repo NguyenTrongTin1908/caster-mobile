@@ -14,15 +14,15 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import styles from "./style";
 import { Button } from "native-base";
 import { IFeed } from "interfaces/feed";
-import { IUser } from "interfaces/user";
 import ListComments from "components/comment/list-comments";
 import { connect } from "react-redux";
 import { reactionService } from "services/reaction.service";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { IPerformer } from "src/interfaces";
 interface IProps {
   item: IFeed;
   currentTab: string;
-  currentUser: IUser;
+  currentUser: IPerformer;
 }
 const FeedStats = ({
   item,

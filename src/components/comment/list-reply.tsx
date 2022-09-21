@@ -1,5 +1,5 @@
 import CommentItem from "./comment-item";
-import { IComment, IUser } from "interfaces/index";
+import { IComment, IPerformer } from "interfaces/index";
 import { View } from "native-base";
 import { FlatList } from "react-native";
 import React, { useEffect, useState } from "react";
@@ -11,7 +11,7 @@ import {
 import { connect } from "react-redux";
 import LoadingSpinner from "../uis/LoadingSpinner";
 interface IProps {
-  user: IUser;
+  user: IPerformer;
   canReply?: boolean;
   item: any;
   createComment: Function;
@@ -27,9 +27,8 @@ const ListReplys = React.memo(
     replys
    }: IProps): React.ReactElement => {
     const renderItem = ({ item }) => {
-      return <CommentItem canReply={canReply} key={item._id} item={item} />;
+      return <CommentItem canReply={canReply} key={item._id} item={item} onDelete={handleDeleteComment} />;
     };
-    console.log('Vooooo Reply')
     const [itemPerPage, setItemPerPage] = useState(6);
     const [commentPage, setCommentPage] = useState(0);
 
@@ -41,6 +40,9 @@ const ListReplys = React.memo(
         limit: itemPerPage,
         offset: (commentPage + 1) * itemPerPage,
       });
+    };
+    const handleDeleteComment = async (item) => {
+      deleteComment(item._id);
     };
 
     return (
