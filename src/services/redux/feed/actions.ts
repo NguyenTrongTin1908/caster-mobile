@@ -31,6 +31,18 @@ export const {
 } = createAsyncAction('getTrendingFeeds', 'GET_TRENDING_FEEDS');
 
 export const {
+  getRecommendFeeds,
+  getRecommendFeedsSuccess,
+  getRecommendFeedsFail
+} = createAsyncAction('getRecommendFeeds', 'GET_RECOMMEND_FEEDS');
+
+export const {
+  moreRecommendFeeds,
+  moreRecommendFeedsSuccess,
+  moreRecommendFeedsFail
+} = createAsyncAction('moreRecommendFeeds', 'GET_MODE_RECOMMEND_FEEDS');
+
+export const {
   moreFollowingFeeds,
   moreFollowingFeedsSuccess,
   moreFollowingFeedsFail

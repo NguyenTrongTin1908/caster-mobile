@@ -21,7 +21,9 @@ import { logout } from "services/redux/auth/actions";
 import storeHolder from "lib/storeHolder";
 import { navigationRef } from "./RootStackNavigator";
 import { colors } from "utils/theme";
-import { IUser } from "src/interfaces";
+import { IPerformer } from "src/interfaces";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+
 
 const styles = StyleSheet.create({
   container: {
@@ -30,7 +32,7 @@ const styles = StyleSheet.create({
     zIndex: -1,
     flex: 1,
     flexDirection: "row",
-    width: "100%",
+    width: "70%",
     height: "100%",
     shadowOffset: { width: 0, height: 1 }, // shadow right only
     shadowOpacity: 0.4,
@@ -56,7 +58,7 @@ const styles = StyleSheet.create({
 });
 
 interface DrawerProps {
-  user: IUser;
+  user: IPerformer;
   loggedIn: boolean;
   showDrawer: boolean;
   hasTouchedDrawer: boolean;
@@ -71,6 +73,7 @@ export const MainDrawer = ({
   handleLogout,
 }: DrawerProps): JSX.Element => {
   const viewRef = useRef(null) as any;
+
 
   const handleShow = () => {
     if (!showDrawer) viewRef.current.fadeOutLeft(800);
@@ -114,11 +117,15 @@ export const MainDrawer = ({
               {user?.name}
             </Text>
             <Text fontSize="xs" color={colors.light} textTransform="capitalize">
-              {user?.type}
+              {user?.country}
             </Text>
           </VStack>
           <Box mt={3} ml="auto">
-            {/* <Feather name="edit" size={17} color={colors.light} /> */}
+            <TouchableOpacity onPress={()=>navigationRef.current?.navigate('EditProfile')}>
+            <Feather name="edit" size={17} color={colors.light} />
+
+
+            </TouchableOpacity>
           </Box>
         </HStack>
       </Box>
@@ -142,27 +149,27 @@ export const MainDrawer = ({
 
   const menuLoggedInItems = [
     {
-      id: "profile",
-      label: "My Profile",
-      icon: `${(<Feather name="user" size={20} color={colors.dark} />)}`,
+      id: "golive",
+      label: "Go Live Now",
+      icon: `toggle-right`,
       onPress: () => {
         navigationRef.current?.navigate("Profile");
         handleHide();
       },
     },
     {
-      id: "favorites",
-      label: "Favorites",
-      icon: `${(<Feather name="heart" size={20} color={colors.dark} />)}`,
+      id: "goPrivate",
+      label: "Go Private",
+      icon: `video-camera`,
       onPress: () => {
         // navigationRef.current?.navigate('MyFavorites');
         handleHide();
       },
     },
     {
-      id: "transactions",
-      label: "Transactions",
-      icon: `${(<Entypo name="credit-card" size={20} color={colors.dark} />)}`,
+      id: "top",
+      label: "Top",
+      icon: `bar-chart`,
       onPress: () => {
         //todo - update navigation
         // navigationRef.current?.navigate('');
@@ -170,9 +177,9 @@ export const MainDrawer = ({
       },
     },
     {
-      id: "invite-friend",
-      label: "Invite Friend",
-      icon: `${(<Feather name="user-plus" size={20} color={colors.dark} />)}`,
+      id: "explore",
+      label: "Explore",
+      icon: `search`,
       onPress: () => {
         //todo - update navigation
         // navigationRef.current?.navigate('');
@@ -180,23 +187,65 @@ export const MainDrawer = ({
       },
     },
     {
-      id: "help-and-support",
-      label: "Help / Support",
-      icon: `${(
-        <MaterialIcons name="help-outline" size={20} color={colors.dark} />
-      )}`,
+      id: "manageProfile",
+      label: "Manage Profile",
+      icon: `user`,
+      onPress: ()=>navigationRef.current?.navigate('ModelProfile'),
+    },
+    {
+      id: "myWallet",
+      label: "My Wallet",
+      icon: "credit-card",
       onPress: () => {
         //todo - update navigation
         // navigationRef.current?.navigate('');
+        handleHide();
+      },
+    },
+    {
+      id: "notification",
+      label: "Notifications",
+      icon: "bell-o",
+      onPress: () => {
+        //todo - update navigation
+        // navigationRef.current?.navigate('');
+        handleHide();
+      },
+    },
+    {
+      id: "purchaseHistory",
+      label: "Purchase History",
+      icon: `cart-arrow-down`,
+      onPress: () => {
+        // todo - should update logout redux
+        handleLogout();
+        handleHide();
+      },
+    },
+    {
+      id: "earningHistory",
+      label: "Earnings History",
+      icon: `money`,
+      onPress: () => {
+        // todo - should update logout redux
+        handleLogout();
+        handleHide();
+      },
+    },
+    {
+      id: "payoutResquest",
+      label: "Payout Resquests",
+      icon: `cc-paypal`,
+      onPress: () => {
+        // todo - should update logout redux
+        handleLogout();
         handleHide();
       },
     },
     {
       id: "logout",
       label: "Logout",
-      icon: `${(
-        <MaterialIcons name="logout" size={20} color={colors.dark} />
-      )}`,
+      icon: `sign-out`,
       onPress: () => {
         // todo - should update logout redux
         handleLogout();
@@ -207,19 +256,18 @@ export const MainDrawer = ({
 
   const renderMenuItem = ({ item }: any) => {
     return (
-      <Box mt={1}>
+      <Box mt={1} marginTop={3}>
         <TouchableOpacity style={styles.menuButton} onPress={item.onPress}>
           <HStack space={3}>
-            <Box flexDirection="row" alignItems="center">
-              {item.icon}
+            <Box flexDirection="row" >
+              <FontAwesome name={item.icon} size={17} color={colors.appBgColor} />
             </Box>
 
-            <Box flexDirection="row" alignItems="center">
+            <Box flexDirection="row" marginLeft={3}>
               <Text size={"sm"} bold>
                 {item.label}
               </Text>
             </Box>
-
           </HStack>
         </TouchableOpacity>
       </Box>
@@ -243,7 +291,7 @@ export const MainDrawer = ({
       <Flex flex={5} style={styles.drawerContainer}>
         <View>{renderProfile()}</View>
         <Divider />
-        <View px={8} py={2}>
+        <View px={18} py={22}>
           <FlatList
             data={loggedIn ? menuLoggedInItems : menuGuest}
             renderItem={renderMenuItem}
@@ -251,7 +299,6 @@ export const MainDrawer = ({
           />
         </View>
       </Flex>
-
     </Animatable.View>
   );
 };

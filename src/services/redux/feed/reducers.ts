@@ -19,6 +19,9 @@ import {
   getTrendingFeeds,
   getTrendingFeedsSuccess,
   getTrendingFeedsFail,
+  getRecommendFeeds,
+  getRecommendFeedsSuccess,
+  getRecommendFeedsFail,
   moreTrendingFeeds,
   moreTrendingFeedsSuccess,
   moreTrendingFeedsFail
@@ -39,6 +42,12 @@ const initialState = {
     success: false
   },
   trendingFeeds: {
+    requesting: false,
+    error: null,
+    data: null,
+    success: false
+  },
+  recommendFeeds: {
     requesting: false,
     error: null,
     data: null,
@@ -247,6 +256,46 @@ const feedReducers = [
         ...prevState,
         trendingFeeds: {
           ...prevState.trendingFeeds,
+          requesting: false,
+          error: data.payload
+        }
+      };
+    }
+  },
+  {
+    on: getRecommendFeeds,
+    reducer(prevState: any) {
+      return {
+        ...prevState,
+        recommendFeeds: {
+          ...initialState.recommendFeeds,
+          requesting: true
+        }
+      };
+    }
+  },
+  {
+    on: getRecommendFeedsSuccess,
+    reducer(prevState: any, data: any) {
+      return {
+        ...prevState,
+        recommendFeeds: {
+          ...prevState.recommendFeeds,
+          requesting: false,
+          items: data.payload.data,
+          total: data.payload.total,
+          success: true
+        }
+      };
+    }
+  },
+  {
+    on: getRecommendFeedsFail,
+    reducer(prevState: any, data: any) {
+      return {
+        ...prevState,
+        recommendFeeds: {
+          ...prevState.recommendFeeds,
           requesting: false,
           error: data.payload
         }

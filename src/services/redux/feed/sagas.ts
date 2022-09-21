@@ -7,7 +7,9 @@ import {
   getFeeds, getFeedsSuccess, getFeedsFail, getFollowingFeeds,
   moreFeeds, moreFeedsSuccess, moreFeedsFail, moreFollowingFeeds,
   getFollowingFeedsSuccess, getTrendingFeedsSuccess,
-   moreFollowingFeedsFail, moreFollowingFeedsSuccess, getTrendingFeeds, moreTrendingFeeds, moreTrendingFeedsFail, moreTrendingFeedsSuccess
+  moreFollowingFeedsFail, moreFollowingFeedsSuccess, getTrendingFeeds, moreTrendingFeeds, moreTrendingFeedsFail, moreTrendingFeedsSuccess,getRecommendFeeds,
+  getRecommendFeedsSuccess,
+  getRecommendFeedsFail
 } from './actions';
 
 const performerSagas = [
@@ -85,6 +87,31 @@ const performerSagas = [
       }
     }
   },
+  {
+    on: getRecommendFeeds,
+    * worker(data: IReduxAction) {
+    try {
+      const resp = yield feedService.userRecommendSearch(data.payload);
+      yield put(getRecommendFeedsSuccess(resp.data));
+      yield put(getFeedsSuccess(resp.data));
+    } catch (e) {
+      const error = yield Promise.resolve(e);
+      yield put(getRecommendFeedsFail(error));
+    }
+    }
+  },
+  // {
+  //   on: moreTrendingFeeds,
+  //   * worker(data: IReduxAction) {
+  //     try {
+  //       const resp = yield feedService.userSearch(data.payload);
+  //       yield put(moreTrendingFeedsSuccess(resp.data));
+  //     } catch (e) {
+  //       const error = yield Promise.resolve(e);
+  //       yield put(moreTrendingFeedsFail(error));
+  //     }
+  //   }
+  // },
 
 
 ];

@@ -24,6 +24,11 @@ export class FeedService extends APIRequest {
       this.buildUrl('/feeds/users/search/trending', query)
     );
   }
+  userRecommendSearch(query?: { [key: string]: any }) {
+    return this.get(
+      this.buildUrl('/feeds/users/search/recommended', query)
+    );
+  }
 
   userHomeFeeds(query?: { [key: string]: any }) {
     if (query?.q === '') {

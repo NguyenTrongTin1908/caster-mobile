@@ -3,7 +3,7 @@ import { getStatusBarHeight } from 'react-native-status-bar-height';
 
 const styles = StyleSheet.create({
   bar: {
-    top: 20,
+    top: 15 + getStatusBarHeight(true),
     left: 0,
     right: 0,
     height: 56,
