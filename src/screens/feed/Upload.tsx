@@ -64,7 +64,6 @@ const Upload = (
     navigation.setOptions({ headerShown: false });
   }, [useContext]);
   const onSubmit = async ({ text, isSale, active }: any): Promise<void> => {
-    console.log("Vo");
     submit(text, isSale, active);
   };
   const submit = async (text, isSale, active) => {

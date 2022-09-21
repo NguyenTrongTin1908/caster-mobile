@@ -1,6 +1,5 @@
 import React, { useEffect, useContext, useState, useRef } from 'react';
 import { useNavigation } from '@react-navigation/core';
-import { IUser } from 'interfaces/user';
 import { feedService } from 'services/feed.service';
 import {
   Dimensions,
@@ -15,12 +14,12 @@ import FeedCard from 'components/feed/feed-card';
 import { IFeed } from 'interfaces/feed';
 import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
-import MenuTab from 'components/tab/MenuTab';
 import FeedTab from 'components/tab/FeedTab';
+import { IPerformer } from 'src/interfaces';
 let deviceH = Dimensions.get('screen').height;
 let bottomNavBarH = deviceH - height;
 interface IProps {
-  current: IUser;
+  current: IPerformer;
   isLoggedIn: boolean;
   route: {
     params: { query: string, currentTab: string }
@@ -96,7 +95,7 @@ const Hashtag = ({ current, isLoggedIn, route }: IProps): React.ReactElement => 
                 ,
                 index % 2 == 0 ? { backgroundColor: '#000000' } : { backgroundColor: '#000000' }
               ]}>
-              <FeedCard feed={item} mediaRefs={mediaRefs} currentTab={tab} />
+              <FeedCard feed={item} mediaRefs={mediaRefs} currentTab={tab} current={current} />
             </View>
           );
         }}
@@ -134,7 +133,6 @@ const Hashtag = ({ current, isLoggedIn, route }: IProps): React.ReactElement => 
             }}
             snapToAlignment={'start'}
           />
-          <MenuTab></MenuTab>
           <FeedTab onTabChange={handleTabChange} tab={tab}></FeedTab>
         </SafeAreaView>
       )}

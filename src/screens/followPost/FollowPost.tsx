@@ -1,7 +1,6 @@
 import React, { useEffect, useContext, useState, useRef } from 'react';
 import { connect } from 'react-redux';
 import { useNavigation } from '@react-navigation/core';
-import { IUser } from 'interfaces/user';
 import { getFollowingFeeds, moreFollowingFeeds } from 'services/redux/feed/actions';
 import { Dimensions, FlatList, View, SafeAreaView, Platform, Alert } from 'react-native';
 const { height } = Dimensions.get('window');
@@ -11,10 +10,11 @@ import FeedTab from 'components/tab/FeedTab';
 import { IFeed } from 'interfaces/feed';
 import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
+import { IPerformer } from 'src/interfaces';
 let deviceH = Dimensions.get('screen').height;
 let bottomNavBarH = deviceH - height;
 interface IProps {
-  current: IUser;
+  current: IPerformer;
   isLoggedIn: boolean;
   handleGetFeeds: Function;
   handleGetMore: Function;
@@ -24,7 +24,7 @@ interface IProps {
     total: number;
   };
 }
-const FollowPost = ({ handleGetFeeds, feedState, handleGetMore }: IProps): React.ReactElement => {
+const FollowPost = ({ handleGetFeeds, feedState, handleGetMore,current }: IProps): React.ReactElement => {
   const navigation = useNavigation() as any;
   const [tab, setTab] = useState('video')
   const [itemPerPage, setitemPerPage] = useState(12);
@@ -115,7 +115,7 @@ const FollowPost = ({ handleGetFeeds, feedState, handleGetMore }: IProps): React
                 },
                 index % 2 == 0 ? { backgroundColor: '#000000' } : { backgroundColor: '#000000' }
               ]}>
-              <FeedCard feed={item} mediaRefs={mediaRefs} currentTab={tab} />
+              <FeedCard feed={item} mediaRefs={mediaRefs} currentTab={tab} current={current}/>
             </View>
           );
         }}
