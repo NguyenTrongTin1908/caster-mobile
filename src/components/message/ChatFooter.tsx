@@ -8,12 +8,12 @@ import {
   VStack,
   KeyboardAvoidingView,
 } from "native-base";
-import { IUser } from "interfaces/user";
 import { colors } from "utils/theme";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { IPerformer } from "src/interfaces";
 
 interface IProps {
-  authUser: IUser;
+  authUser: IPerformer;
   conversationId: string;
   performerId?: string;
   Button: Function;

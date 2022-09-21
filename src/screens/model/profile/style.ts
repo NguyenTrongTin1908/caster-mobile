@@ -3,6 +3,8 @@ import { colors, Fonts, Sizes } from 'utils/theme';
 import { Dimensions} from "react-native";
 import { background, color } from 'native-base/lib/typescript/theme/styled-system';
 const { width, height } = Dimensions.get('window');
+import { getStatusBarHeight } from 'react-native-status-bar-height';
+
 const styles = StyleSheet.create({
   imgCover: {
     width:width ,
@@ -18,6 +20,13 @@ textName:{
   fontSize: 23.0,
   fontWeight: 'bold',
 },
+editDatePicker: {
+  fontSize: 24.0,
+  color:colors.lightText,
+
+
+  width: '100%'
+},
 subText:{
   color:colors.lightText,
   alignSelf: 'center',
@@ -31,10 +40,20 @@ avContainer: {
   height: 120,
   width: 120,
   borderRadius: 200,
-  backgroundColor: 'white',
   position: 'absolute',
   alignSelf: 'center',
-  marginTop: 50,
+  marginTop: 60 + getStatusBarHeight(true),
+  alignItems: 'center',
+  justifyContent: 'center',
+},
+avEdit: {
+  height: 120,
+  width: 120,
+  borderRadius: 200,
+  position: 'absolute',
+  alignSelf: 'center',
+  marginTop: 110 + getStatusBarHeight(true),
+  zIndex: 9999,
   alignItems: 'center',
   justifyContent: 'center',
 },
@@ -141,5 +160,73 @@ right: {
   alignItems: 'center',
   justifyContent: 'center',
 },
+headerWrapStyle: {
+  flexDirection: "row",
+  alignItems: 'center',
+  justifyContent: 'center',
+  paddingVertical: Sizes.fixPadding + 5.0,
+},
+userProfilePhotoStyle: {
+  width: 100.0,
+  height: 100.0,
+  borderRadius: 50.0,
+
+},
+userProfilePhotoBlurContentStyle: {
+  width: 100.0,
+  height: 100.0,
+  borderRadius: 50.0,
+  backgroundColor: 'rgba(0,0,0,0.55)',
+  alignItems: 'center',
+  justifyContent: 'center'
+},
+userCoverStyle: {
+  position: 'absolute',
+  top: 10,
+},
+profileScrollView :{
+  flex: 1,
+  backgroundColor: colors.darkText,
+  marginVertical: 35
+},
+bottomSheetContentStyle: {
+  backgroundColor: colors.lightText,
+  paddingTop: Sizes.fixPadding + 5.0,
+  paddingBottom: Sizes.fixPadding,
+},
+
+dialogContainerStyle: {
+  borderRadius: Sizes.fixPadding,
+  width: width - 70,
+  paddingHorizontal: Sizes.fixPadding * 2.0,
+  paddingTop: -Sizes.fixPadding,
+  paddingBottom: Sizes.fixPadding * 2.0
+},
+cancelButtonStyle: {
+  flex: 0.50,
+  backgroundColor: '#E0E0E0',
+  borderRadius: Sizes.fixPadding - 5.0,
+  alignItems: 'center',
+  justifyContent: 'center',
+  paddingVertical: Sizes.fixPadding,
+  marginRight: Sizes.fixPadding + 5.0,
+},
+okButtonStyle: {
+  flex: 0.50,
+  backgroundColor: colors.primary,
+  borderRadius: Sizes.fixPadding - 5.0,
+  paddingVertical: Sizes.fixPadding,
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginLeft: Sizes.fixPadding + 5.0
+},
+okAndCancelButtonContainerStyle: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginTop: Sizes.fixPadding * 2.0,
+  marginHorizontal: Sizes.fixPadding + 5.0
+},
+
 });
 export default styles;

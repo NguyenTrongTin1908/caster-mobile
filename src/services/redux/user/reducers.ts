@@ -5,6 +5,8 @@ import {
   updateProfile,
   updateProfileFail,
   updateProfileSuccess,
+  updateCurrentUserAvatar,
+  updateCurrentUserCover,
   resetUpdateProfile
 } from './actions';
 import { IReduxAction } from 'src/interfaces';
@@ -18,7 +20,7 @@ const initialState = {
 const userReducers = [
   {
     on: setCurrentUser,
-    reducer: (state: any, data: IReduxAction) => ({
+    reducer: (state: any, data: any) => ({
       ...state,
       current: data.payload
     })
@@ -35,7 +37,7 @@ const userReducers = [
   },
   {
     on: updateProfileSuccess,
-    reducer: (state: any, data: IReduxAction) => ({
+    reducer: (state: any, data: any) => ({
       ...state,
       current: data.payload,
       updateProfile: {
@@ -47,13 +49,33 @@ const userReducers = [
   },
   {
     on: updateProfileFail,
-    reducer: (state: any, data: IReduxAction) => ({
+    reducer: (state: any, data: any) => ({
       ...state,
       updateProfile: {
         requesting: false,
         error: data.payload,
         success: false
       }
+    })
+  },
+  {
+    on: updateCurrentUserAvatar,
+    reducer: (state: any, data: any) => ({
+        ...state,
+        current: {
+          ...state.current,
+          avatar: data.payload
+      }
+    })
+  },
+  {
+    on: updateCurrentUserCover,
+    reducer: (state: any, data: any) => ({
+        ...state,
+        current: {
+          ...state.current,
+          cover: data.payload
+        }
     })
   },
   {

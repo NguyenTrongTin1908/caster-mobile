@@ -8,9 +8,9 @@ import FeedCard from 'components/feed/feed-card';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 let deviceH = Dimensions.get('screen').height;
 let bottomNavBarH = deviceH - height;
-
-import MenuTab from 'components/tab/MenuTab';
 import FeedTab from 'components/tab/FeedTab';
+import { connect } from 'react-redux';
+import { IPerformer } from 'src/interfaces';
 interface IProps {
   route: {
     params: {
@@ -18,8 +18,9 @@ interface IProps {
       type: string;
     };
   };
+  current : IPerformer;
 }
-const FeedDetail = ({ route }: IProps): React.ReactElement => {
+const FeedDetail = ({ route ,current}: IProps): React.ReactElement => {
   const [tab, setTab] = useState(route.params.type);
   const [itemPerPage, setitemPerPage] = useState(12);
   const [feedPage, setfeedPage] = useState(0);
@@ -75,7 +76,7 @@ const FeedDetail = ({ route }: IProps): React.ReactElement => {
             height: Platform.OS === 'ios' ? deviceH - (insets.bottom + insets.top) : deviceH - bottomNavBarH
           }
         ]}>
-        <FeedCard feed={item} mediaRefs={mediaRefs} currentTab={tab} />
+        <FeedCard feed={item} mediaRefs={mediaRefs} currentTab={tab} current={current}/>
       </View>
     );
   };
@@ -102,9 +103,12 @@ const FeedDetail = ({ route }: IProps): React.ReactElement => {
         }}
         snapToAlignment={'start'}
       />
-      <MenuTab></MenuTab>
       <FeedTab onTabChange={handleTabChange} tab={tab}></FeedTab>
     </SafeAreaView>
   );
 };
-export default FeedDetail;
+
+const mapStateToProp = (state: any):any =>({
+  ...state.user,
+})
+export default connect(mapStateToProp)(FeedDetail);

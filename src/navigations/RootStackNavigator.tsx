@@ -19,10 +19,10 @@ import MediaPreview from 'screens/media/MediaPreview';
 import Upload from 'screens/feed/Upload';
 import Home from 'screens/browse/Home';
 import Model from 'screens/model/Model';
-import Profile from 'screens/profile/Profile';
 import Hashtag from 'screens/hashtag/Hashtag';
 import Trending from 'screens/trending/Trending';
 import ModelProfile from 'screens/model/profile/ModelProfile';
+import EditProfile from  'screens/model/profile/EditProfile';
 export type RootStackParamList = {
   default: undefined;
   IntroNav: undefined;
@@ -33,6 +33,7 @@ export type RootStackParamList = {
   Model: undefined;
   Profile: undefined;
   ModelProfile: undefined;
+  EditProfile : undefined;
   Hashtag: undefined;
   Trending: undefined;
   ChatRoom: { performer: IPerformer };
@@ -131,17 +132,24 @@ function RootNavigator({ loggedIn }): React.ReactElement {
           component={Model}
         />
 
-        <Stack.Screen
+        {/* <Stack.Screen
           options={{ headerShown: false, gestureEnabled: false }}
           name="Profile"
           component={Profile}
-        />
+        /> */}
 
         <Stack.Screen
           options={{ headerShown: false, gestureEnabled: false }}
           name="ModelProfile"
           component={ModelProfile}
         />
+
+        <Stack.Screen
+          options={{ headerShown: false, gestureEnabled: false }}
+          name="EditProfile"
+          component={EditProfile}
+        />
+
 
         <Stack.Screen
           options={{ headerShown: false, gestureEnabled: false }}

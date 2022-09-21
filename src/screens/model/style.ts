@@ -36,6 +36,9 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
     marginTop: 0
-  }
+  },
+
+
+
 })
 export default styles;

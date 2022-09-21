@@ -1,9 +1,18 @@
 import {
   updateProfile,
   updateProfileFail,
-  updateProfileSuccess
+  updateProfileSuccess,
+  updatePerformer,
+  updateCurrentUserAvatar,
+  updateCurrentUserCover,
+  updateUser,
+  updateUserSuccess,
+  updateUserFail,
+  setUpdating
 } from './actions';
 import { authService } from 'services/auth.service';
+import { performerService } from 'services/perfomer.service';
+
 import { createSagas } from 'lib/redux';
 import { flatten } from 'lodash';
 import { put } from 'redux-saga/effects';
@@ -24,7 +33,28 @@ const userSagas = [
         yield put(updateProfileFail(error));
       }
     }
-  }
+  },
+
+  {
+    on: updatePerformer,
+    * worker(data: any) {
+      try {
+        yield put(setUpdating(true));
+        const updated = yield performerService.updateMe(data.payload._id, data.payload);
+        yield put(updateUserSuccess(updated.data));
+      } catch (e) {
+        // TODO - alert error
+        const error = yield Promise.resolve(e);
+        console.log(error?.message || 'Error occured, please try again later');
+        yield put(updateUserFail(error));
+      } finally {
+        yield put(setUpdating(false));
+      }
+    }
+  },
+
+
+
 ];
 
 export default flatten([createSagas(userSagas)]);

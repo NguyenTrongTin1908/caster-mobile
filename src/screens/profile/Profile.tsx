@@ -124,7 +124,7 @@ const Profile = ({ current, handleLogout, route }: Props): React.ReactElement =>
           {current && current?.name != ' ' ? `${current.name}` : `${current?.username}`}
         </Text>
         <View style={{ flexDirection: 'row', alignSelf: 'center', marginTop: 5 }}>
-          <TouchableOpacity activeOpacity={0.7} style={styles.editButtonStyle}>
+          <TouchableOpacity activeOpacity={0.7} style={styles.editButtonStyle} onPress={() =>navigation.navigate('EditProfile')}>
             <Text style={styles.subText}>Edit Profile</Text>
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={0.5} style={styles.followButtonStyle}>

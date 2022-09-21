@@ -1,6 +1,6 @@
 import React from 'react';
 import { Flex, Divider, Box, HStack, View, Text } from 'native-base';
-import { Dimensions, StatusBar, TouchableOpacity, Animated, FlatList, } from 'react-native';
+import { Dimensions, StatusBar, TouchableOpacity, Animated, FlatList, Alert, Modal, Pressable, } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import { colors, Sizes } from 'utils/theme'
 import { omit } from 'lodash';
@@ -12,13 +12,42 @@ import { Menu } from 'react-native-material-menu';
 import { useState, useRef } from 'react';
 import * as Animatable from "react-native-animatable";
 import Feather from "react-native-vector-icons/Feather";
+import { reportService } from 'services/report.service';
+import { IFeed, IPerformer } from 'src/interfaces';
 const initialLayout = { width: Dimensions.get('window').width };
+import ReportModal from 'components/modal/report'
+import KeyboardDismiss from "components/uis/KeyboardDismiss";
 
-const MenuTab = (): React.ReactElement => {
+interface IProps {
+  feed: IFeed;
+}
+const MenuTab = ({feed}: IProps) : React.ReactElement => {
   const navigation = useNavigation() as any;
   const [showOptions, setshowOptions] = useState(false);
-  const viewRef = useRef(null) as any;
-  ;
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const changeModalVisible = (bool) => {
+    setModalVisible(bool)
+  }
+  const setDataConfirm = (data,content) => {
+    if(data === 'Cancel')
+    return;
+    handleReport(content)
+  }
+  const handleReport= async(reason: string) => {
+    if (!reason || reason.length < 20) {
+      Alert.alert("You report must be at least 20 characters");
+      return;
+    }
+    try {
+      await reportService.create({
+        target: 'feed', targetId: feed._id, performerId: feed.fromSourceId, description: reason
+      });
+      Alert.alert("Report successfully");
+    } catch {
+      Alert.alert("Something went wrong, please try again later");
+    }
+  }
   const renderMenuItem = ({ item }: any) => {
     return (
       <Box mt={1}>
@@ -42,8 +71,10 @@ const MenuTab = (): React.ReactElement => {
       case 'Top Caster':
         setshowOptions(false)
         navigation.navigate('Model', { screen: 'Model' });
+      case 'Report'    :
+        setshowOptions(false)
+        changeModalVisible(true)
       default:
-
     }
   }
   const menuItems = ({ option }) => {
@@ -83,9 +114,24 @@ const MenuTab = (): React.ReactElement => {
             onRequestClose={() => setshowOptions(false)}
           >
             {menuItems({ option: 'Top Caster' })}
+            {menuItems({ option: 'Report' })}
           </Menu>
         </View>
       </TouchableOpacity>
+      {modalVisible &&
+      <KeyboardDismiss>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          changeModalVisible(false);
+        }}
+        >
+        <ReportModal feed={feed} changeModalVisible={changeModalVisible} setDataConfirm={setDataConfirm} ></ReportModal>
+      </Modal>
+      </KeyboardDismiss>
+      }
     </Animated.View>
   )
 }
