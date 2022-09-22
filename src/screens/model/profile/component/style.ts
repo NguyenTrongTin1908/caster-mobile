@@ -106,7 +106,37 @@ postImageStyle: {
 
 
 
-  }
+  },
+
+  headerText: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    // change the color property for better output
+    color: '#fff',
+    textAlign: 'center',
+    marginTop: 0
+  },
+
+  radioModel: {
+    fontWeight: 'bold',
+    // change the color property for better output
+    color: colors.lightText,
+    textAlign: 'center',
+
+    marginTop: 0
+  },
+  modal: {
+    height:220,
+    width : width - 80,
+    paddingTop:10,
+    backgroundColor: 'white',
+    // borderRadius: 10
+  },
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 
 })
 

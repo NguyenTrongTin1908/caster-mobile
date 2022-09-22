@@ -25,6 +25,7 @@ export const colors = {
   hastag: 'rgb(82,198,246)',
   lightGray:'#F1F1F2',
   darkGray: '#B1A492',
+  blueCaster: "#FF69B4",
 
   //text
   lightText: '#fff',

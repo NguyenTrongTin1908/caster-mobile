@@ -16,14 +16,12 @@ import {
 import { showDrawer as showDrawerHandler } from "services/redux/app-nav/actions";
 import Feather from "react-native-vector-icons/Feather";
 import Entypo from "react-native-vector-icons/Entypo";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { logout } from "services/redux/auth/actions";
 import storeHolder from "lib/storeHolder";
 import { navigationRef } from "./RootStackNavigator";
 import { colors } from "utils/theme";
 import { IPerformer } from "src/interfaces";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-
 
 const styles = StyleSheet.create({
   container: {
@@ -74,7 +72,6 @@ export const MainDrawer = ({
 }: DrawerProps): JSX.Element => {
   const viewRef = useRef(null) as any;
 
-
   const handleShow = () => {
     if (!showDrawer) viewRef.current.fadeOutLeft(800);
     else {
@@ -121,10 +118,10 @@ export const MainDrawer = ({
             </Text>
           </VStack>
           <Box mt={3} ml="auto">
-            <TouchableOpacity onPress={()=>navigationRef.current?.navigate('EditProfile')}>
-            <Feather name="edit" size={17} color={colors.light} />
-
-
+            <TouchableOpacity
+              onPress={() => navigationRef.current?.navigate("EditProfile")}
+            >
+              <Feather name="edit" size={17} color={colors.light} />
             </TouchableOpacity>
           </Box>
         </HStack>
@@ -166,13 +163,23 @@ export const MainDrawer = ({
         handleHide();
       },
     },
+    // {
+    //   id: "notification",
+    //   label: "Notifications",
+    //   icon: "bell-o",
+    //   onPress: () => {
+    //     //todo - update navigation
+    //     // navigationRef.current?.navigate('');
+    //     handleHide();
+    //   },
+    // },
     {
       id: "top",
       label: "Top",
       icon: `bar-chart`,
       onPress: () => {
         //todo - update navigation
-        // navigationRef.current?.navigate('');
+        navigationRef.current?.navigate("Model");
         handleHide();
       },
     },
@@ -190,7 +197,7 @@ export const MainDrawer = ({
       id: "manageProfile",
       label: "Manage Profile",
       icon: `user`,
-      onPress: ()=>navigationRef.current?.navigate('ModelProfile'),
+      onPress: () => navigationRef.current?.navigate("ModelProfile"),
     },
     {
       id: "myWallet",
@@ -202,13 +209,13 @@ export const MainDrawer = ({
         handleHide();
       },
     },
+
     {
-      id: "notification",
-      label: "Notifications",
-      icon: "bell-o",
+      id: "followerList",
+      label: "Follower List",
+      icon: "user",
       onPress: () => {
-        //todo - update navigation
-        // navigationRef.current?.navigate('');
+        navigationRef.current?.navigate("ListFollow");
         handleHide();
       },
     },
@@ -259,8 +266,12 @@ export const MainDrawer = ({
       <Box mt={1} marginTop={3}>
         <TouchableOpacity style={styles.menuButton} onPress={item.onPress}>
           <HStack space={3}>
-            <Box flexDirection="row" >
-              <FontAwesome name={item.icon} size={17} color={colors.appBgColor} />
+            <Box flexDirection="row">
+              <FontAwesome
+                name={item.icon}
+                size={17}
+                color={colors.appBgColor}
+              />
             </Box>
 
             <Box flexDirection="row" marginLeft={3}>

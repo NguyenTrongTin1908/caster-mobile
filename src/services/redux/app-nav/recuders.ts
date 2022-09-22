@@ -20,7 +20,7 @@ const appNavReducers = [
   },
   {
     on: showDrawer,
-    reducer(state, data: IReduxAction) {
+    reducer(state, data: IReduxAction<any>) {
       return {
         ...state,
         showDrawer: data.payload,

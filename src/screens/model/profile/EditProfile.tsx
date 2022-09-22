@@ -15,11 +15,10 @@ import {
   Image,
 } from "native-base";
 import { Controller, useForm } from "react-hook-form";
-import { colors, Fonts, Sizes } from "utils/theme";
+import { colors, Sizes } from "utils/theme";
 import Button from "components/uis/Button";
 import ImagePicker from "react-native-image-crop-picker";
 import { useNavigation } from "@react-navigation/core";
-import BackButton from "components/uis/BackButton";
 import {
   Alert,
   ImageBackground,
@@ -27,7 +26,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { connect } from "react-redux";
-import { IBody, IPerformer, ICountry } from "src/interfaces";
+import { IPerformer, ICountry } from "src/interfaces";
 import { utilsService } from "services/utils.service";
 import { performerService } from "services/perfomer.service";
 
@@ -46,7 +45,6 @@ import DatePicker from "react-native-datepicker";
 import { BottomSheet } from "react-native-elements";
 import { mediaService } from "services/media.service";
 import HeaderMenu from "components/tab/HeaderMenu";
-import { values } from "lodash";
 
 interface IProps {
   current: IPerformer;
@@ -66,17 +64,7 @@ const EditProfile = ({
   const [showBottomSheet, setShowButtonSheet] = useState(false);
   const [open, setOpen] = useState(false);
   const [type, setType] = useState("");
-  const {
-    heights = [],
-    weights = [],
-    bodyTypes = [],
-    genders = [],
-    sexualOrientations = [],
-    ethnicities = [],
-    hairs = [],
-    eyes = [],
-    butts = [],
-  } = bodyInfo;
+  const { heights = [], genders = [], ethnicities = [] } = bodyInfo;
   const defaultValues = {
     ...current,
     dateOfBirth: (current.dateOfBirth && moment(current.dateOfBirth)) || "",
@@ -85,19 +73,19 @@ const EditProfile = ({
   const {
     control,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm({ defaultValues });
   const [submitting, setSubmitting] = useState(false);
-  const toast = useToast();
   const navigation = useNavigation() as any;
   const onSubmit = async (data: any): Promise<void> => {
     submit(data);
   };
   const submit = async (data) => {
-    const [day, month, year] = data.dateOfBirth.split("-");
-    const datePick = new Date(+year, month - 1, +day);
-    data.dateOfBirth = datePick.toISOString();
+    if (typeof data.dateOfBirth === "string") {
+      const [day, month, year] = data.dateOfBirth.split("-");
+      const datePick = new Date(+year, month - 1, +day);
+      data.dateOfBirth = datePick.toISOString();
+    }
     try {
       handleUpdatePerformer({
         ...current,
@@ -117,12 +105,12 @@ const EditProfile = ({
       cropping: true,
     }).then(async (image) => {
       if (type === "avatar") {
-        const data = await performerService.getAvatarUploadUrl();
-        const url = `https://api.caster.com${data}`;
+        const dataUrl = await performerService.getAvatarUploadUrl();
+        const url = `https://api.caster.com${dataUrl}`;
         handleUpdate(url, image.path, "avatar");
       } else {
-        const data = await performerService.getCoverUploadUrl();
-        const url = `https://api.caster.com${data}`;
+        const dataUrl = await performerService.getCoverUploadUrl();
+        const url = `https://api.caster.com${dataUrl}`;
         handleUpdate(url, image.path, "cover");
       }
     });
@@ -135,12 +123,12 @@ const EditProfile = ({
       cropping: true,
     }).then(async (image) => {
       if (type === "avatar") {
-        const data = await performerService.getAvatarUploadUrl();
-        const url = `https://api.caster.com${data}`;
+        const dataUrl = await performerService.getAvatarUploadUrl();
+        const url = `https://api.caster.com${dataUrl}`;
         handleUpdate(url, image.path, "avatar");
       } else {
-        const data = await performerService.getCoverUploadUrl();
-        const url = `https://api.caster.com${data}`;
+        const dataUrl = await performerService.getCoverUploadUrl();
+        const url = `https://api.caster.com${dataUrl}`;
         handleUpdate(url, image.path, "cover");
       }
     });
@@ -254,7 +242,7 @@ const EditProfile = ({
               <Input
                 InputLeftElement={
                   <Text color={colors.inpLabelColor} fontSize={17}>
-                    Name
+                    UserName
                   </Text>
                 }
                 mx={4}
@@ -391,7 +379,6 @@ const EditProfile = ({
                 name="dateOfBirth"
               />
             </FormControl>
-            {/* <Button label="Open" onPress={() => setOpen(true)} /> */}
           </View>
         </HStack>
 
@@ -546,42 +533,6 @@ const EditProfile = ({
         </FormControl>
 
         <Divider borderColor={colors.divider} />
-
-        {/* <FormControl>
-          <Controller
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <Input
-                InputLeftElement={
-                  <Text color={colors.inpLabelColor} fontSize={17}>
-                    Current Password
-                  </Text>
-                }
-                mx={4}
-                p={4}
-                variant="unstyled"
-                borderColor={colors.inpBorderColor}
-                onChangeText={(val) => onChange(val)}
-                value={value}
-                autoCapitalize="none"
-                color={colors.lightText}
-                fontSize={20}
-                letterSpacing={0.2}
-                textAlign="left"
-                type="password"
-              />
-            )}
-            name="password"
-            rules={{
-              required: "Password is required.",
-              minLength: {
-                value: 6,
-                message: "Password is minimum 6 characters.",
-              },
-            }}
-          />
-        </FormControl> */}
-        <Divider borderColor={colors.divider} />
         <FormControl>
           <Controller
             control={control}
@@ -716,17 +667,6 @@ const EditProfile = ({
     </SafeAreaView>
   );
 };
-
-// EditProfile.getInitialProps = async ({ ctx }) => {
-//   const [countries, bodyInfo] = await Promise.all([
-//     utilsService.countriesList(),
-//     utilsService.bodyInfo(),
-//   ]);
-//   return {
-//     countries: countries?.data || [],
-//     bodyInfo: bodyInfo?.data || [],
-//   };
-// };
 
 const mapStates = (state: any) => ({
   ...state.user,

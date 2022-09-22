@@ -1,8 +1,11 @@
 import { APIRequest } from './api-request';
 
 export class FollowService extends APIRequest {
-  search(query?: { [key: string]: any }) {
-    return this.get(this.buildUrl('/follow/search', query));
+  searchFollower(query?: { [key: string]: any }) {
+    return this.get(this.buildUrl('/follow/search/follower', query));
+  }
+  searchFollowing(query?: { [key: string]: any }) {
+    return this.get(this.buildUrl('/follow/search/following', query));
   }
 
   create(payload: any) {
