@@ -1,11 +1,9 @@
 import React, { useEffect, useContext, useState, useRef } from "react";
 import { useNavigation } from "@react-navigation/core";
-import { IUser } from "interfaces/user";
 import { feedService } from "services/feed.service";
 import {
   Dimensions,
   FlatList,
-  Easing,
   View,
   SafeAreaView,
   Platform,
@@ -18,13 +16,15 @@ import { BottomTabBarHeightContext } from "@react-navigation/bottom-tabs";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import FeedTab from "components/tab/FeedTab";
 import HeaderMenu from "components/tab/HeaderMenu";
+import { connect } from "react-redux";
+import { IPerformer } from "src/interfaces";
 let deviceH = Dimensions.get("screen").height;
 let bottomNavBarH = deviceH - height;
 interface IProps {
-  current: IUser;
+  current: IPerformer;
   isLoggedIn: boolean;
 }
-const Trending = (): React.ReactElement => {
+const Trending = ({ current }: IProps): React.ReactElement => {
   const navigation = useNavigation() as any;
   const [tab, setTab] = useState("video");
   const [itemPerPage, setitemPerPage] = useState(12);
@@ -44,7 +44,8 @@ const Trending = (): React.ReactElement => {
       orientation,
       limit: itemPerPage,
       offset: itemPerPage * feedPage,
-      isHome: false,
+      isHome: true,
+      sortBy: "mostViewInCurrentDay",
       type: tab === "video" ? "video" : "photo",
     });
     setfeeds(feeds.concat(data.data));
@@ -117,7 +118,12 @@ const Trending = (): React.ReactElement => {
                   : { backgroundColor: "#000000" },
               ]}
             >
-              <FeedTab onTabChange={handleTabChange} tab={tab}></FeedTab>
+              <FeedCard
+                feed={item}
+                mediaRefs={mediaRefs}
+                currentTab={tab}
+                current={current}
+              />
             </View>
           );
         }}
@@ -140,7 +146,7 @@ const Trending = (): React.ReactElement => {
             decelerationRate={"fast"}
             showsVerticalScrollIndicator={false}
             onViewableItemsChanged={onViewableItemsChange.current}
-            windowSize={2}
+            windowSize={4}
             onEndReached={loadmoreFeeds}
             initialNumToRender={0}
             maxToRenderPerBatch={2}
@@ -162,4 +168,8 @@ const Trending = (): React.ReactElement => {
     </BottomTabBarHeightContext.Consumer>
   );
 };
-export default Trending;
+const mapStateToProp = (state: any): any => ({
+  ...state.user,
+  isLoggedIn: state.auth.loggedIn,
+});
+export default connect(mapStateToProp)(Trending);

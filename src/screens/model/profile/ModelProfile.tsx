@@ -25,7 +25,7 @@ const ModelProfile = ({ handleLogout, route }: Props): React.ReactElement => {
   const navigation = useNavigation() as any;
   const [showOptions, setshowOptions] = useState(false);
   const performer = JSON.parse(route.params.performer);
-  console.log("performer", typeof performer.isOnline);
+
   useEffect(() => {
     navigation.setOptions({
       headerShown: false,

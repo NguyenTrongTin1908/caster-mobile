@@ -124,7 +124,7 @@ export const MainDrawer = ({
         />
       ),
       onPress: () => {
-        navigationRef.current?.navigate("Profile");
+        // navigationRef.current?.navigate("Profile");
         handleHide();
       },
     },
@@ -179,7 +179,10 @@ export const MainDrawer = ({
       id: "manageProfile",
       label: "Manage Profile",
       icon: <FontAwesome name={"user"} size={17} color={colors.appBgColor} />,
-      onPress: () => navigationRef.current?.navigate("MainTab/Profile"),
+      onPress: () => {
+        navigationRef.current?.navigate("MainTab/Profile");
+        handleHide();
+      },
     },
     {
       id: "myWallet",

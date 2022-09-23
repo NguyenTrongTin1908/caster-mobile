@@ -1,18 +1,19 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Box, Heading } from 'native-base';
-import { useNavigation } from '@react-navigation/core';
-import { colors } from 'utils/theme';
-import SearchInput from 'components/uis/SearchInput';
-import Follower from './component/Follower';
-import Following from './component/Following';
-import TabView from 'components/uis/TabView';
+import React, { useContext, useEffect, useState } from "react";
+import { Box, Heading } from "native-base";
+import { useNavigation } from "@react-navigation/core";
+import { colors } from "utils/theme";
+import SearchInput from "components/uis/SearchInput";
+import Follower from "./component/Follower";
+import Following from "./component/Following";
+import TabView from "components/uis/TabView";
+import HeaderMenu from "components/tab/HeaderMenu";
 
-const listFollow = (): React.ReactElement => {
+const ListFollow = (): React.ReactElement => {
   const navigation = useNavigation() as any;
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
   }, [useContext]);
-  const [q, setQ] = useState('');
+  const [q, setQ] = useState("");
   const onSearch = (text: string): void => {
     setQ(text);
   };
@@ -20,30 +21,32 @@ const listFollow = (): React.ReactElement => {
     <Box safeAreaX={4} safeAreaTop={8} flex={1}>
       <Heading
         mb={4}
-        fontSize={40}
-        letterSpacing={-1}
+        fontSize={34}
+        textAlign="center"
         color={colors.lightText}
-        bold>
+        bold
+      >
         List Follow
       </Heading>
 
       <TabView
         scenes={[
           {
-            key: 'followingList',
-            title: 'Follower',
+            key: "followingList",
+            title: "Follower",
             sence: Follower,
-            params: { q }
+            params: { q },
           },
           {
-            key: 'followerList',
-            title: 'Following',
+            key: "followerList",
+            title: "Following",
             sence: Following,
-            params: { q }
-          }
+            params: { q },
+          },
         ]}
       />
+      <HeaderMenu />
     </Box>
   );
 };
-export default listFollow;
+export default ListFollow;
