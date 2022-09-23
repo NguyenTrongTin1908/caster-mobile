@@ -136,7 +136,7 @@ editButtonStyle: {
   margin:2.0,
 },
 bar: {
-  top: 0,
+  top: 15 + getStatusBarHeight(true),
   left: 0,
   right: 20,
   height: 56,

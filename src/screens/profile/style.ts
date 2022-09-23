@@ -2,6 +2,7 @@ import { StyleSheet } from 'react-native';
 import { colors, Fonts, Sizes } from 'utils/theme';
 import { Dimensions} from "react-native";
 import { background, color } from 'native-base/lib/typescript/theme/styled-system';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
 const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
   imgCover: {
@@ -117,7 +118,7 @@ editButtonStyle: {
   margin:2.0,
 },
 bar: {
-  top: 0,
+  top: 15 + getStatusBarHeight(true),
   left: 0,
   right: 20,
   height: 56,

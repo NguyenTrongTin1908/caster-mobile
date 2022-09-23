@@ -35,11 +35,7 @@ interface IProps {
   handleGetMoreRecommendFeeds: Function;
   handleGetTrendingFeeds: Function;
 
-  feedState: {
-    requesting: boolean;
-    items: IFeed[];
-    total: number;
-  };
+  feedState: any;
   feedRecommendState: {
     requesting: boolean;
     items: IFeed[];
@@ -146,6 +142,9 @@ const Home = ({
   useEffect(() => {
     getFeeds();
   }, [tab]);
+  useEffect(() => {
+    feedState.success && !feedState.items.length && loadmoreFeeds();
+  }, [feedState]);
   const renderItem = ({ item, index }: { item: IFeed; index: number }) => {
     return (
       <BottomTabBarHeightContext.Consumer>
