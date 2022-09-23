@@ -1,36 +1,41 @@
-import React, { useEffect, useContext, useState, useRef } from 'react';
-import { useNavigation } from '@react-navigation/core';
-import { feedService } from 'services/feed.service';
+import React, { useEffect, useContext, useState, useRef } from "react";
+import { useNavigation } from "@react-navigation/core";
+import { feedService } from "services/feed.service";
 import {
   Dimensions,
   FlatList,
   View,
   SafeAreaView,
   Platform,
-} from 'react-native';
-const { height } = Dimensions.get('window');
-import styles from './style';
-import FeedCard from 'components/feed/feed-card';
-import { IFeed } from 'interfaces/feed';
-import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
-import { getStatusBarHeight } from 'react-native-status-bar-height';
-import FeedTab from 'components/tab/FeedTab';
-import { IPerformer } from 'src/interfaces';
-let deviceH = Dimensions.get('screen').height;
+} from "react-native";
+const { height } = Dimensions.get("window");
+import styles from "./style";
+import FeedCard from "components/feed/feed-card";
+import { IFeed } from "interfaces/feed";
+import { BottomTabBarHeightContext } from "@react-navigation/bottom-tabs";
+import { getStatusBarHeight } from "react-native-status-bar-height";
+import FeedTab from "components/tab/FeedTab";
+import { IPerformer } from "src/interfaces";
+import HeaderMenu from "components/tab/HeaderMenu";
+let deviceH = Dimensions.get("screen").height;
 let bottomNavBarH = deviceH - height;
 interface IProps {
   current: IPerformer;
   isLoggedIn: boolean;
   route: {
-    params: { query: string, currentTab: string }
-  }
+    params: { query: string; currentTab: string };
+  };
 }
-const Hashtag = ({ current, isLoggedIn, route }: IProps): React.ReactElement => {
+const Hashtag = ({
+  current,
+  isLoggedIn,
+  route,
+}: IProps): React.ReactElement => {
   const navigation = useNavigation() as any;
-  const [tab, setTab] = useState(route.params.currentTab)
+  const [tab, setTab] = useState(route.params.currentTab);
   const [itemPerPage, setitemPerPage] = useState(12);
   const [feedPage, setfeedPage] = useState(0);
-  const [keyword, setKeyword] = useState('');
+  const [keyword, setKeyword] = useState("");
   const mediaRefs = useRef([]) as any;
   const [feeds, setfeeds] = useState([] as Array<IFeed>);
   const [trendingfeeds, settrendingfeeds] = useState([] as Array<IFeed>);
@@ -44,25 +49,24 @@ const Hashtag = ({ current, isLoggedIn, route }: IProps): React.ReactElement => 
       limit: itemPerPage,
       offset: itemPerPage * feedPage,
       isHome: false,
-      type: (tab === 'video') ? 'video' : 'photo'
+      type: tab === "video" ? "video" : "photo",
     });
     setfeeds(feeds.concat(data.data));
     settrendingfeeds(feeds.concat(data.data));
   };
   const loadmoreFeeds = async () => {
-    setfeedPage(feedPage + 1)
+    setfeedPage(feedPage + 1);
     const { data } = await feedService.userSearch({
       q: route.params.query ? route.params.query : keyword,
       limit: itemPerPage,
       offset: itemPerPage * feedPage,
       isHome: false,
-      type: (tab === 'video') ? 'video' : 'photo',
-
+      type: tab === "video" ? "video" : "photo",
     });
-    setfeeds(feeds.concat(data.data))
+    setfeeds(feeds.concat(data.data));
   };
   const onViewableItemsChange = useRef(({ changed }) => {
-    changed.forEach(element => {
+    changed.forEach((element) => {
       const cell = mediaRefs.current[element.key];
       if (cell) {
         if (element.isViewable) {
@@ -74,12 +78,10 @@ const Hashtag = ({ current, isLoggedIn, route }: IProps): React.ReactElement => 
     });
   }) as any;
   const handleTabChange = async () => {
-    tab === 'video' ? (
-      setTab('photo')
-    ) : setTab('video')
-    setfeeds([])
-    setfeedPage(0)
-  }
+    tab === "video" ? setTab("photo") : setTab("video");
+    setfeeds([]);
+    setfeedPage(0);
+  };
   const renderItem = ({ item, index }: { item: IFeed; index: number }) => {
     return (
       <BottomTabBarHeightContext.Consumer>
@@ -88,14 +90,23 @@ const Hashtag = ({ current, isLoggedIn, route }: IProps): React.ReactElement => 
             <View
               style={[
                 {
-                  height: Platform.OS === 'ios'
-                    ? deviceH - (getStatusBarHeight(true))
-                    : deviceH - (bottomNavBarH)
+                  height:
+                    Platform.OS === "ios"
+                      ? deviceH - getStatusBarHeight(true)
+                      : deviceH - bottomNavBarH,
                 },
                 ,
-                index % 2 == 0 ? { backgroundColor: '#000000' } : { backgroundColor: '#000000' }
-              ]}>
-              <FeedCard feed={item} mediaRefs={mediaRefs} currentTab={tab} current={current} />
+                index % 2 == 0
+                  ? { backgroundColor: "#000000" }
+                  : { backgroundColor: "#000000" },
+              ]}
+            >
+              <FeedCard
+                feed={item}
+                mediaRefs={mediaRefs}
+                currentTab={tab}
+                current={current}
+              />
             </View>
           );
         }}
@@ -105,7 +116,7 @@ const Hashtag = ({ current, isLoggedIn, route }: IProps): React.ReactElement => 
 
   useEffect(() => {
     loadfeeds();
-  }, [tab])
+  }, [tab]);
   return (
     <BottomTabBarHeightContext.Consumer>
       {(tabBarHeight: any) => (
@@ -114,8 +125,8 @@ const Hashtag = ({ current, isLoggedIn, route }: IProps): React.ReactElement => 
             data={feeds}
             renderItem={renderItem}
             pagingEnabled={true}
-            keyExtractor={item => item._id}
-            decelerationRate={'fast'}
+            keyExtractor={(item) => item._id}
+            decelerationRate={"fast"}
             showsVerticalScrollIndicator={false}
             onViewableItemsChanged={onViewableItemsChange.current}
             windowSize={2}
@@ -124,16 +135,17 @@ const Hashtag = ({ current, isLoggedIn, route }: IProps): React.ReactElement => 
             maxToRenderPerBatch={2}
             removeClippedSubviews
             snapToInterval={
-              Platform.OS === 'ios'
+              Platform.OS === "ios"
                 ? deviceH - getStatusBarHeight(true)
                 : deviceH - bottomNavBarH
             }
             viewabilityConfig={{
-              itemVisiblePercentThreshold: 100
+              itemVisiblePercentThreshold: 100,
             }}
-            snapToAlignment={'start'}
+            snapToAlignment={"start"}
           />
           <FeedTab onTabChange={handleTabChange} tab={tab}></FeedTab>
+          <HeaderMenu />;
         </SafeAreaView>
       )}
     </BottomTabBarHeightContext.Consumer>

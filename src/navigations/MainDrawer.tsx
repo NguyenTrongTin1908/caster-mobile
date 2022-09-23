@@ -23,38 +23,6 @@ import { colors } from "utils/theme";
 import { IPerformer } from "src/interfaces";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 
-const styles = StyleSheet.create({
-  container: {
-    display: "none",
-    position: "absolute",
-    zIndex: -1,
-    flex: 1,
-    flexDirection: "row",
-    width: "70%",
-    height: "100%",
-    shadowOffset: { width: 0, height: 1 }, // shadow right only
-    shadowOpacity: 0.4,
-    shadowRadius: 6,
-  },
-  drawerContainer: {
-    flex: 5,
-    backgroundColor: "#fff",
-  },
-  shadowContainer: {
-    flex: 2,
-  },
-  touchClose: {
-    width: "100%",
-    height: "100%",
-  },
-  menuButton: {
-    width: "100%",
-    height: 40,
-    flex: 1,
-    flexDirection: "row",
-  },
-});
-
 interface DrawerProps {
   user: IPerformer;
   loggedIn: boolean;
@@ -100,7 +68,7 @@ export const MainDrawer = ({
     }
 
     return (
-      <Box safeAreaTop bgColor={colors.primary} px={4} py={4}>
+      <Box safeAreaTop bgColor={colors.dark} px={4} py={4}>
         <HStack space={3}>
           <Image
             source={{ uri: user?.avatar }}
@@ -133,7 +101,7 @@ export const MainDrawer = ({
     {
       id: "login",
       label: "Login",
-      icon: `${(<Entypo name="login" size={20} color={colors.dark} />)}`,
+      icon: <Entypo name="login" size={20} color={colors.dark} />,
       onPress: () => {
         navigationRef.current?.navigate("IntroNav", {
           screen: "IntroNav/Login",
@@ -148,7 +116,13 @@ export const MainDrawer = ({
     {
       id: "golive",
       label: "Go Live Now",
-      icon: `toggle-right`,
+      icon: (
+        <FontAwesome
+          name={"toggle-right"}
+          size={17}
+          color={colors.appBgColor}
+        />
+      ),
       onPress: () => {
         navigationRef.current?.navigate("Profile");
         handleHide();
@@ -157,7 +131,13 @@ export const MainDrawer = ({
     {
       id: "goPrivate",
       label: "Go Private",
-      icon: `video-camera`,
+      icon: (
+        <FontAwesome
+          name={"video-camera"}
+          size={17}
+          color={colors.appBgColor}
+        />
+      ),
       onPress: () => {
         // navigationRef.current?.navigate('MyFavorites');
         handleHide();
@@ -176,7 +156,9 @@ export const MainDrawer = ({
     {
       id: "top",
       label: "Top",
-      icon: `bar-chart`,
+      icon: (
+        <FontAwesome name={"bar-chart"} size={17} color={colors.appBgColor} />
+      ),
       onPress: () => {
         //todo - update navigation
         navigationRef.current?.navigate("Model");
@@ -186,7 +168,7 @@ export const MainDrawer = ({
     {
       id: "explore",
       label: "Explore",
-      icon: `search`,
+      icon: <FontAwesome name={"search"} size={17} color={colors.appBgColor} />,
       onPress: () => {
         //todo - update navigation
         // navigationRef.current?.navigate('');
@@ -196,13 +178,15 @@ export const MainDrawer = ({
     {
       id: "manageProfile",
       label: "Manage Profile",
-      icon: `user`,
-      onPress: () => navigationRef.current?.navigate("ModelProfile"),
+      icon: <FontAwesome name={"user"} size={17} color={colors.appBgColor} />,
+      onPress: () => navigationRef.current?.navigate("MainTab/Profile"),
     },
     {
       id: "myWallet",
       label: "My Wallet",
-      icon: "credit-card",
+      icon: (
+        <FontAwesome name={"credit-card"} size={17} color={colors.appBgColor} />
+      ),
       onPress: () => {
         //todo - update navigation
         // navigationRef.current?.navigate('');
@@ -213,7 +197,7 @@ export const MainDrawer = ({
     {
       id: "followerList",
       label: "Follower List",
-      icon: "user",
+      icon: <FontAwesome name={"user"} size={17} color={colors.appBgColor} />,
       onPress: () => {
         navigationRef.current?.navigate("ListFollow");
         handleHide();
@@ -222,41 +206,54 @@ export const MainDrawer = ({
     {
       id: "purchaseHistory",
       label: "Purchase History",
-      icon: `cart-arrow-down`,
+      icon: (
+        <FontAwesome
+          name={"cart-arrow-down"}
+          size={17}
+          color={colors.appBgColor}
+        />
+      ),
       onPress: () => {
         // todo - should update logout redux
-        handleLogout();
+
         handleHide();
       },
     },
     {
       id: "earningHistory",
       label: "Earnings History",
-      icon: `money`,
+      icon: <FontAwesome name={"money"} size={17} color={colors.appBgColor} />,
       onPress: () => {
         // todo - should update logout redux
-        handleLogout();
+
         handleHide();
       },
     },
     {
       id: "payoutResquest",
       label: "Payout Resquests",
-      icon: `cc-paypal`,
+      icon: (
+        <FontAwesome name={"cc-paypal"} size={17} color={colors.appBgColor} />
+      ),
       onPress: () => {
         // todo - should update logout redux
-        handleLogout();
+
         handleHide();
       },
     },
     {
       id: "logout",
       label: "Logout",
-      icon: `sign-out`,
+      icon: (
+        <FontAwesome name={"sign-out"} size={17} color={colors.appBgColor} />
+      ),
       onPress: () => {
         // todo - should update logout redux
         handleLogout();
         handleHide();
+        navigationRef.current?.navigate("IntroNav", {
+          screen: "IntroNav/Login",
+        });
       },
     },
   ];
@@ -266,13 +263,7 @@ export const MainDrawer = ({
       <Box mt={1} marginTop={3}>
         <TouchableOpacity style={styles.menuButton} onPress={item.onPress}>
           <HStack space={3}>
-            <Box flexDirection="row">
-              <FontAwesome
-                name={item.icon}
-                size={17}
-                color={colors.appBgColor}
-              />
-            </Box>
+            <Box flexDirection="row">{item.icon}</Box>
 
             <Box flexDirection="row" marginLeft={3}>
               <Text size={"sm"} bold>
@@ -310,9 +301,53 @@ export const MainDrawer = ({
           />
         </View>
       </Flex>
+      <Flex
+        flex={2}
+        style={[
+          {
+            backgroundColor: showDrawer
+              ? "rgba(52, 52, 52, 0.2)"
+              : "rgba(52, 52, 52, 0)",
+          },
+        ]}
+      >
+        <TouchableOpacity style={styles.touchClose} onPress={handleHide} />
+      </Flex>
     </Animatable.View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    display: "none",
+    position: "absolute",
+    zIndex: -1,
+    flex: 1,
+    flexDirection: "row",
+    width: "100%",
+    height: "100%",
+    shadowOffset: { width: 0, height: 1 }, // shadow right only
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
+  },
+  drawerContainer: {
+    flex: 5,
+    backgroundColor: "#fff",
+  },
+  shadowContainer: {
+    flex: 2,
+  },
+  touchClose: {
+    width: "100%",
+    height: "100%",
+  },
+  menuButton: {
+    width: "100%",
+    height: 40,
+    flex: 1,
+    flexDirection: "row",
+  },
+});
 
 const mapStateToProp = (state: any) => ({
   user: state.user.current,

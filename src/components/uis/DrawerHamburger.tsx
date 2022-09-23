@@ -5,7 +5,6 @@ import Feather from "react-native-vector-icons/Feather";
 import { showDrawer as showDrawerHandler } from "services/redux/app-nav/actions";
 import storeHolder from "lib/storeHolder";
 import { colors } from "utils/theme";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 export const DrawerHamburger = (): JSX.Element => {
   const handleShow = () => {
@@ -15,7 +14,7 @@ export const DrawerHamburger = (): JSX.Element => {
 
   return (
     <TouchableOpacity onPress={handleShow} style={{ paddingLeft: 7 }}>
-      <MaterialIcons name="more-vert" size={30} color={colors.lightText} />
+      <Feather name="menu" size={30} color={colors.lightText} />
     </TouchableOpacity>
   );
 };

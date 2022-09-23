@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/core";
 import { colors, Sizes } from "utils/theme";
 import MentionHashtagTextView from "react-native-mention-hashtag-text";
@@ -131,8 +131,8 @@ const FeedStats = ({
           <TouchableOpacity onPress={handleLike}>
             <Ionicons
               name={isBookMarked ? "bookmark" : "bookmark-outline"}
-              size={25}
-              color={!isBookMarked ? colors.gray : colors.gray}
+              size={28}
+              color={!isBookMarked ? colors.lightText : colors.lightText}
               selectionColor={colors.gray}
               onPress={handleLike}
             />
@@ -168,12 +168,7 @@ const FeedStats = ({
             alignItems: "center",
           }}
         >
-          <ListComments
-            user={currentUser}
-            canReply={true}
-            feed={item}
-          />
-
+          <ListComments user={currentUser} canReply={true} feed={item} />
         </View>
       </View>
       <View style={styles.bottomContainer}>

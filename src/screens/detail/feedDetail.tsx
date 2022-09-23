@@ -1,16 +1,23 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { SafeAreaView, FlatList, Dimensions, View, Platform } from 'react-native';
-import styles from './style';
-import { IFeed } from 'interfaces/feed';
-import { feedService } from 'services/feed.service';
-const { height } = Dimensions.get('window');
-import FeedCard from 'components/feed/feed-card';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-let deviceH = Dimensions.get('screen').height;
+import React, { useEffect, useState, useRef } from "react";
+import {
+  SafeAreaView,
+  FlatList,
+  Dimensions,
+  View,
+  Platform,
+} from "react-native";
+import styles from "./style";
+import { IFeed } from "interfaces/feed";
+import { feedService } from "services/feed.service";
+const { height } = Dimensions.get("window");
+import FeedCard from "components/feed/feed-card";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+let deviceH = Dimensions.get("screen").height;
 let bottomNavBarH = deviceH - height;
-import FeedTab from 'components/tab/FeedTab';
-import { connect } from 'react-redux';
-import { IPerformer } from 'src/interfaces';
+import FeedTab from "components/tab/FeedTab";
+import { connect } from "react-redux";
+import { IPerformer } from "src/interfaces";
+import HeaderMenu from "components/tab/HeaderMenu";
 interface IProps {
   route: {
     params: {
@@ -18,9 +25,9 @@ interface IProps {
       type: string;
     };
   };
-  current : IPerformer;
+  current: IPerformer;
 }
-const FeedDetail = ({ route ,current}: IProps): React.ReactElement => {
+const FeedDetail = ({ route, current }: IProps): React.ReactElement => {
   const [tab, setTab] = useState(route.params.type);
   const [itemPerPage, setitemPerPage] = useState(12);
   const [feedPage, setfeedPage] = useState(0);
@@ -29,29 +36,29 @@ const FeedDetail = ({ route ,current}: IProps): React.ReactElement => {
   const mediaRefs = useRef([]) as any;
   const insets = useSafeAreaInsets();
 
-  const loadfeeds = async (more = false, q = '', refresh = false) => {
+  const loadfeeds = async (more = false, q = "", refresh = false) => {
     const newPage = more ? page + 1 : page;
     setPage(refresh ? 0 : newPage);
     const query = {
       limit: itemPerPage,
       offset: itemPerPage * feedPage,
-      performerId: route.params.performerId
+      performerId: route.params.performerId,
     };
     const { data } =
-      tab === 'video'
+      tab === "video"
         ? await feedService.userSearch({
             ...query,
-            type: 'video'
+            type: "video",
           })
         : await feedService.userSearch({
             ...query,
-            type: 'photo'
+            type: "photo",
           });
     setfeeds(data.data);
   };
 
   const onViewableItemsChange = useRef(({ changed }) => {
-    changed.forEach(element => {
+    changed.forEach((element) => {
       const cell = mediaRefs.current[element.key];
       if (cell) {
         if (element.isViewable) {
@@ -63,7 +70,7 @@ const FeedDetail = ({ route ,current}: IProps): React.ReactElement => {
     });
   }) as any;
   const handleTabChange = async () => {
-    tab === 'video' ? setTab('photo') : setTab('video');
+    tab === "video" ? setTab("photo") : setTab("video");
     setfeeds([]);
     setfeedPage(0);
   };
@@ -73,10 +80,19 @@ const FeedDetail = ({ route ,current}: IProps): React.ReactElement => {
       <View
         style={[
           {
-            height: Platform.OS === 'ios' ? deviceH - (insets.bottom + insets.top) : deviceH - bottomNavBarH
-          }
-        ]}>
-        <FeedCard feed={item} mediaRefs={mediaRefs} currentTab={tab} current={current}/>
+            height:
+              Platform.OS === "ios"
+                ? deviceH - (insets.bottom + insets.top)
+                : deviceH - bottomNavBarH,
+          },
+        ]}
+      >
+        <FeedCard
+          feed={item}
+          mediaRefs={mediaRefs}
+          currentTab={tab}
+          current={current}
+        />
       </View>
     );
   };
@@ -89,26 +105,32 @@ const FeedDetail = ({ route ,current}: IProps): React.ReactElement => {
         data={feeds}
         renderItem={renderItem}
         pagingEnabled={true}
-        keyExtractor={item => item._id}
-        decelerationRate={'fast'}
+        keyExtractor={(item) => item._id}
+        decelerationRate={"fast"}
         showsVerticalScrollIndicator={false}
         onViewableItemsChanged={onViewableItemsChange.current}
         windowSize={2}
         initialNumToRender={0}
         maxToRenderPerBatch={2}
         removeClippedSubviews
-        snapToInterval={Platform.OS === 'ios' ? deviceH - (insets.bottom + insets.top) : deviceH - bottomNavBarH}
+        snapToInterval={
+          Platform.OS === "ios"
+            ? deviceH - (insets.bottom + insets.top)
+            : deviceH - bottomNavBarH
+        }
         viewabilityConfig={{
-          itemVisiblePercentThreshold: 100
+          itemVisiblePercentThreshold: 100,
         }}
-        snapToAlignment={'start'}
+        snapToAlignment={"start"}
       />
+      <HeaderMenu />
+
       <FeedTab onTabChange={handleTabChange} tab={tab}></FeedTab>
     </SafeAreaView>
   );
 };
 
-const mapStateToProp = (state: any):any =>({
+const mapStateToProp = (state: any): any => ({
   ...state.user,
-})
+});
 export default connect(mapStateToProp)(FeedDetail);
