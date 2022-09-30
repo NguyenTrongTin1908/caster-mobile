@@ -16,7 +16,7 @@ import { colors } from "utils/theme";
 import Button from "components/uis/Button";
 import ErrorMessage from "components/uis/ErrorMessage";
 import styles from "./style";
-import { ImageBackground, TouchableOpacity } from "react-native";
+import { Alert, ImageBackground, TouchableOpacity } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { IPerformer } from "src/interfaces";
 import { performerService } from "services/perfomer.service";
@@ -29,10 +29,10 @@ import {
 import ImagePicker from "react-native-image-crop-picker";
 import { mediaService } from "services/media.service";
 import { getStatusBarHeight } from "react-native-status-bar-height";
+import { useNavigation } from "@react-navigation/core";
 interface IProps {
   // control: any;
   formErrors: any;
-  onSubmit: () => void;
   submitting: boolean;
   current: IPerformer;
   updatePerformer: Function;
@@ -42,7 +42,6 @@ interface IProps {
 const VerificationForm = ({
   // control,
   formErrors,
-  onSubmit,
   submitting,
   current,
   updatePerformer: handleUpdatePerformer,
@@ -50,49 +49,80 @@ const VerificationForm = ({
   updateCurrentUserCover: handleUpdateCover,
 }: IProps): React.ReactElement => {
   const defaultValues = {};
-  const [type, setType] = useState("");
+  const [typeFile, setTypeFile] = useState("");
   const [idImage, setIdImage] = useState("");
   const [documentImage, setDocumentImage] = useState("");
+  const [idVerificationFileId, setIdVerificationFileId] = useState("");
+  const [documentVerificationFileId, setDocumentVerificationFileId] =
+    useState("");
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm({ defaultValues });
-  let idVerificationFileId = "";
-  let documentVerificationFileId = "";
+  const navigation = useNavigation() as any;
+
+  const onSubmit = async (data: any): Promise<void> => {
+    submit(data);
+  };
+  const submit = async (data) => {
+    data.idVerificationId = idVerificationFileId;
+    data.documentVerificationId = documentVerificationFileId;
+    // if (typeof data.dateOfBirth === "string") {
+    //   const [day, month, year] = data.dateOfBirth.split("-");
+    //   const datePick = new Date(+year, month - 1, +day);
+    //   data.dateOfBirth = datePick.toISOString();
+    // }
+    console.log("Data : ", data);
+    try {
+      handleUpdatePerformer({
+        ...current,
+        ...data,
+      });
+      Alert.alert("Posted successfully!");
+      navigation.navigate("MainTab/Profile");
+    } catch {
+      Alert.alert("Something went wrong, please try again later");
+    }
+  };
   useEffect(() => {
     if (current.documentVerification) {
-      documentVerificationFileId = current?.documentVerification?._id;
+      setDocumentVerificationFileId(current?.documentVerification?._id);
       setDocumentImage(current?.documentVerification?.url);
     }
     if (current.idVerification) {
-      idVerificationFileId = current?.idVerification?._id;
+      setIdVerificationFileId(current?.idVerification?._id);
       setIdImage(current?.idVerification?.url);
     }
   }, []);
   useEffect(() => {
-    type !== "" && openGallery();
-  }, [type]);
+    typeFile !== "" && openGallery();
+  }, [typeFile]);
   const documentUploadUrl = performerService.getDocumentUploadUrl();
-  const onFileUploaded = (type, file) => {
-    if (file && type === "idFile") {
-      idVerificationFileId = file?.response?.data?._id;
-      setIdImage(file?.response?.data.url);
-    }
-    if (file && type === "documentFile") {
-      documentVerificationFileId = file?.response?.data?._id;
-      setDocumentImage(file?.response?.data.url);
-    }
-  };
+  // const onFileUploaded = (type, file) => {
+  //   if (file && type === "idFile") {
+  //     idVerificationFileId = file?.response?.data?._id;
+  //     setIdImage(file?.response?.data.url);
+  //   }
+  //   if (file && type === "documentFile") {
+  //     documentVerificationFileId = file?.response?.data?._id;
+  //     setDocumentImage(file?.response?.data.url);
+  //   }
+  // };
   const openGallery = async () => {
     ImagePicker.openPicker({
       width: 300,
       height: 300,
       cropping: true,
     }).then(async (image) => {
-      if (type === "ID card") {
+      if (typeFile === "ID card") {
+        const url = `https://api.caster.com${documentUploadUrl}`;
+        handleUpdate(url, image.path, "file");
+
         setIdImage(image.path);
       } else {
+        const url = `https://api.caster.com${documentUploadUrl}`;
+        handleUpdate(url, image.path, "file");
         setDocumentImage(image.path);
       }
     });
@@ -112,9 +142,12 @@ const VerificationForm = ({
           },
         },
       ])) as any;
-      resp.data.type === "avatar"
-        ? handleUpdateAvt(resp.data.url)
-        : handleUpdateCover(resp.data.url);
+      // resp.data.type === "avatar"
+      //   ? handleUpdateAvt(resp.data.url)
+      //   : handleUpdateCover(resp.data.url);
+      typeFile == "ID card"
+        ? setIdVerificationFileId(resp.data._id)
+        : setDocumentVerificationFileId(resp.data._id);
     } catch (error) {}
   };
   return (
@@ -136,7 +169,7 @@ const VerificationForm = ({
                   <TouchableOpacity
                     activeOpacity={0.9}
                     onPress={() => {
-                      setType("ID card");
+                      setTypeFile("ID card");
                     }}
                     style={styles.userProfilePhotoBlurContentStyle}
                   >
@@ -173,7 +206,7 @@ const VerificationForm = ({
                   <TouchableOpacity
                     activeOpacity={0.9}
                     onPress={() => {
-                      setType("Selfie");
+                      setTypeFile("Selfie");
                     }}
                     style={styles.userProfilePhotoBlurContentStyle}
                   >
