@@ -133,7 +133,7 @@ const CommentItem = React.memo(
               >
                 <VStack>
                   <Text fontSize={"lg"} color={colors.primary}>
-                    {item?.creator.name || item?.creator.username}
+                    {item?.creator?.name || item?.creator?.username || ""}
                   </Text>
                   <Text fontSize={"md"} marginLeft="2" max-width={"100%"}>
                     {item?.content}
@@ -152,7 +152,7 @@ const CommentItem = React.memo(
                         <Text color={colors.secondary}>View reply</Text>
                       </TouchableOpacity>
                     )}
-                     {(item.creator._id === currentUser._id)  && <TouchableOpacity
+                     {(item?.creator?._id === currentUser._id)  && <TouchableOpacity
                         onPress={handleDeleteComment}
                         style={{ marginLeft: 3 }}
                       >

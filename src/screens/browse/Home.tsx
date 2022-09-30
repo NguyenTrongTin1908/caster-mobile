@@ -34,7 +34,6 @@ interface IProps {
   handleGetRecommendFeeds: Function;
   handleGetMoreRecommendFeeds: Function;
   handleGetTrendingFeeds: Function;
-
   feedState: any;
   feedRecommendState: {
     requesting: boolean;
@@ -60,10 +59,19 @@ const Home = ({
   const [keyword, setKeyword] = useState("");
   const [isLoadTrendingFeed, setLoadTrendingFeed] = useState(false);
   const mediaRefs = useRef([]) as any;
-  useEffect(() => {
+  useEffect( () => {
     navigation.setOptions({ headerShown: false });
     getFeeds();
   }, [useContext]);
+  useEffect(() => {
+    getFeeds();
+  }, [tab]);
+  useEffect(() => {
+    (feedState.total !== undefined) && loadmoreFeeds();
+  }, [isLoadTrendingFeed]);
+  useEffect(() => {
+    (feedState.success && !feedState.items.length && feedState.total !== undefined) && loadmoreFeeds();
+  }, [feedState]);
   const onViewableItemsChange = useRef(({ changed }) => {
     changed.forEach((element) => {
       const cell = mediaRefs.current[element.key];
@@ -76,55 +84,8 @@ const Home = ({
       }
     });
   }) as any;
-  const loadmoreFeeds = async () => {
-    const { total: totalFeeds } = feedState;
-    try {
-      if ((feedPage + 1) * itemPerPage >= totalFeeds) {
-        await setLoadTrendingFeed(true);
-        setfeedPage(0);
-      }
-      isLoadTrendingFeed
-        ? loadmoreTrendingFeeds()
-        : handleGetMore({
-            q: keyword,
-            orientation,
-            limit: itemPerPage,
-            offset: itemPerPage * (feedPage + 1),
-            isHome: false,
-            type: tab === "video" ? "video" : "photo",
-          });
-    } catch (e) {
-      Alert.alert("Something went wrong, please try again later");
-    }
-  };
-
-  const loadmoreTrendingFeeds = () => {
-    const { items: recommendFeeds } = feedRecommendState;
-    try {
-      setfeedPage(feedPage + 1);
-      handleGetMore({
-        limit: itemPerPage,
-        offset: feedPage * itemPerPage,
-        type: tab === "video" ? "video" : "photo",
-        sortBy: "mostViewInCurrentDay",
-        excludeIds: recommendFeeds.map((item) => item._id).join(","),
-      });
-    } catch (e) {}
-  };
-
-  const resetloadFeeds = async () => {
-    handleGetMore({
-      q: keyword,
-      orientation,
-      limit: itemPerPage,
-      offset: 0,
-      isHome: false,
-      type: tab === "video" ? "video" : "photo",
-    });
-    setfeedPage(1);
-  };
-  const getFeeds = () => {
-    handleGetRecommendFeeds({
+  const getFeeds = async() => {
+    await handleGetRecommendFeeds({
       list: 3,
       q: keyword,
       orientation,
@@ -132,19 +93,54 @@ const Home = ({
       offset: itemPerPage * feedPage,
       type: tab === "video" ? "video" : "photo",
     });
-
-    // this.setState({ loading: false });
   };
   const handleTabChange = async () => {
     tab === "video" ? setTab("photo") : setTab("video");
     setfeedPage(0);
   };
-  useEffect(() => {
-    getFeeds();
-  }, [tab]);
-  useEffect(() => {
-    feedState.success && !feedState.items.length && loadmoreFeeds();
-  }, [feedState]);
+
+  const loadmoreFeeds = async () => {
+    const { total: totalFeeds } = feedState;
+    try {
+      if ((feedPage + 1) * itemPerPage >= totalFeeds) {
+        !isLoadTrendingFeed && setLoadTrendingFeed(true);
+        feedPage !== 0 &&  setfeedPage(0);
+        return await loadmoreTrendingFeeds()
+      }
+      if (isLoadTrendingFeed) { return loadmoreTrendingFeeds()}
+
+      !isLoadTrendingFeed && await handleGetMore({
+            q: keyword,
+            orientation,
+            limit: itemPerPage,
+            offset: itemPerPage * (feedPage + 1),
+            isHome: false,
+            type: tab === "video" ? "video" : "photo",
+          });
+          setfeedPage(feedPage+1);
+    } catch (e) {
+      Alert.alert("Something went wrong, please try again later");
+    }
+  };
+  const loadmoreTrendingFeeds = async() => {
+    const { items: recommendFeeds } = feedRecommendState;
+    const { total: totalFeeds } = feedState;
+
+    if ((feedPage + 1) * itemPerPage >= totalFeeds) {
+      setfeedPage(0)
+    }
+    try {
+      await handleGetMore({
+        limit: itemPerPage,
+        offset: feedPage * itemPerPage,
+        type: tab === "video" ? "video" : "photo",
+        sortBy: "mostViewInCurrentDay",
+        excludeIds: recommendFeeds.map((item) => item._id).join(","),
+      });
+      setfeedPage(feedPage + 1);
+    } catch (e) {}
+  };
+
   const renderItem = ({ item, index }: { item: IFeed; index: number }) => {
     return (
       <BottomTabBarHeightContext.Consumer>
@@ -187,7 +183,8 @@ const Home = ({
             decelerationRate={"fast"}
             showsVerticalScrollIndicator={false}
             onViewableItemsChanged={onViewableItemsChange.current}
-            windowSize={4}
+            windowSize={2}
+            onEndReachedThreshold={0.5}
             onEndReached={loadmoreFeeds}
             initialNumToRender={0}
             maxToRenderPerBatch={2}
@@ -203,7 +200,6 @@ const Home = ({
             snapToAlignment={"start"}
           />
           <HeaderMenu />
-
           <FeedTab onTabChange={handleTabChange} tab={tab}></FeedTab>
         </SafeAreaView>
       )}

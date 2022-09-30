@@ -15,7 +15,7 @@ container: {
 },
 textName:{
   color:colors.lightText,
-  marginTop:40.0,
+  marginTop:45.0,
   alignSelf: 'center',
   fontSize: 23.0,
   fontWeight: 'bold',

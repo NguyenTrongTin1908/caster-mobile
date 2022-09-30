@@ -19,9 +19,19 @@ const styles = StyleSheet.create({
 
 
 },
+checkBoxFollow: {
+  position: 'absolute',
+  right: 0,
+  marginVertical: Sizes.fixPadding * 2,
+
+  // top:55,
+  // color: colors.secondary,
+
+
+},
 
   listModel: {
-    marginTop: 15,
+    marginVertical: Sizes.fixPadding * 2,
   },
 
   textLive:{

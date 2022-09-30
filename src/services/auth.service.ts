@@ -6,7 +6,8 @@ import {
   IUserRegister,
   IUserUpdate,
   IForgotPassword,
-  IUpdatePasswordFormData
+  IUpdatePasswordFormData,
+  IVerifyEmail
 } from 'src/interfaces';
 
 export class AuthService extends APIRequest {
@@ -52,6 +53,12 @@ export class AuthService extends APIRequest {
   async loginGoogle(data: any) {
     return this.post('/auth/google/login', data);
   }
+
+  public async verifyEmail(data: IVerifyEmail) {
+    return this.post('/auth/email-verification', data);
+  }
+
+
 }
 
 export const authService = new AuthService();

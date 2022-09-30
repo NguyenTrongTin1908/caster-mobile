@@ -18,3 +18,8 @@ export interface IUpdatePasswordFormData {
   password: string;
   prePassword: string;
 }
+
+export interface IVerifyEmail {
+  source: any;
+  sourceType: string;
+}

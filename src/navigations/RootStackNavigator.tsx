@@ -26,7 +26,7 @@ import Hashtag from "screens/hashtag/Hashtag";
 import ListFollow from "screens/follow/listFollow";
 import Trending from "screens/trending/Trending";
 import ModelProfile from "screens/model/profile/ModelProfile";
-import EditProfile from "screens/model/profile/EditProfile";
+import EditProfile from "screens/profile/EditProfile";
 export type RootStackParamList = {
   default: undefined;
   IntroNav: undefined;
