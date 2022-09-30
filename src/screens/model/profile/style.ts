@@ -15,7 +15,7 @@ container: {
 },
 textName:{
   color:colors.lightText,
-  marginTop:45.0,
+  marginTop:40.0,
   alignSelf: 'center',
   fontSize: 23.0,
   fontWeight: 'bold',
@@ -34,7 +34,7 @@ subText:{
 },
 converPhoto: {
   width: '100%',
-  height: 130,
+  height: 120,
 },
 avContainer: {
   height: 120,
@@ -52,7 +52,7 @@ avEdit: {
   borderRadius: 200,
   position: 'absolute',
   alignSelf: 'center',
-  marginTop: 110 + getStatusBarHeight(true),
+  marginTop: 100 + getStatusBarHeight(true),
   zIndex: 9999,
   alignItems: 'center',
   justifyContent: 'center',

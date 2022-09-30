@@ -10,6 +10,10 @@ const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
 
+  container: {
+    flex: 1,
+  },
+
   btnGolive: {
     left: 0.0,
     top:15,
@@ -144,6 +148,143 @@ userProfilePhotoBlurContentStyle: {
     bottom: 15,
     borderWidth: 3,
     borderColor: 'white',
+  },
+
+
+
+  userCoverStyle: {
+    position: 'absolute',
+    top: 10,
+  },
+  profileScrollView :{
+    flex: 1,
+    backgroundColor: colors.darkText,
+    marginVertical: 10
+  },
+  bottomSheetContentStyle: {
+    backgroundColor: colors.lightText,
+    paddingTop: Sizes.fixPadding + 5.0,
+    paddingBottom: Sizes.fixPadding,
+  },
+
+
+  editDatePicker: {
+    fontSize: 24.0,
+    color:colors.lightText,
+
+
+    width: '100%'
+  },
+  subText:{
+    color:colors.lightText,
+    alignSelf: 'center',
+    fontWeight: 'bold',
+  },
+  converPhoto: {
+    width: '100%',
+    height: 130,
+  },
+
+  followButtonStyle: {
+    borderColor: colors.secondary,
+    borderWidth: 2.0,
+    borderRadius: Sizes.fixPadding - 5.0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: Sizes.fixPadding - 20.0,
+    paddingHorizontal: Sizes.fixPadding * 2.0,
+    width: 110.0,
+    margin:2.0,
+    height:40.0,
+
+  },
+  profileImageStyle: {
+    width: 90.0,
+    height: 90.0,
+    borderWidth: 2.0,
+    borderColor: colors.light,
+    borderRadius: 45.0,
+  },
+  listFeeds: {
+    height: '100%',
+    width: '100%',
+  },
+  editButtonStyle: {
+    backgroundColor: colors.secondary,
+    borderColor: colors.secondary,
+    borderWidth: 2.0,
+    borderRadius: Sizes.fixPadding - 5.0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: Sizes.fixPadding - 3.0,
+    width: 110.0,
+    height:40.0,
+    margin:2.0,
+  },
+  bar: {
+    top: 15 + getStatusBarHeight(true),
+    left: 0,
+    right: 20,
+    height: 56,
+    position: 'absolute',
+    flexDirection: "row",
+    justifyContent: 'space-between',
+    backgroundColor: 'transparent',
+  },
+  left: {
+    top: 0,
+    left: 0,
+    width: 50,
+    height: 56,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  right: {
+    top: 0,
+    right: 0,
+    height: 56,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerWrapStyle: {
+    flexDirection: "row",
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: Sizes.fixPadding + 5.0,
+  },
+
+
+  dialogContainerStyle: {
+    borderRadius: Sizes.fixPadding,
+    width: width - 70,
+    paddingHorizontal: Sizes.fixPadding * 2.0,
+    paddingTop: -Sizes.fixPadding,
+    paddingBottom: Sizes.fixPadding * 2.0
+  },
+  cancelButtonStyle: {
+    flex: 0.50,
+    backgroundColor: '#E0E0E0',
+    borderRadius: Sizes.fixPadding - 5.0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: Sizes.fixPadding,
+    marginRight: Sizes.fixPadding + 5.0,
+  },
+  okButtonStyle: {
+    flex: 0.50,
+    backgroundColor: colors.primary,
+    borderRadius: Sizes.fixPadding - 5.0,
+    paddingVertical: Sizes.fixPadding,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: Sizes.fixPadding + 5.0
+  },
+  okAndCancelButtonContainerStyle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: Sizes.fixPadding * 2.0,
+    marginHorizontal: Sizes.fixPadding + 5.0
   },
 
 
