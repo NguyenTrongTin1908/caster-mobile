@@ -26,6 +26,8 @@ import Hashtag from "screens/hashtag/Hashtag";
 import ListFollow from "screens/follow/listFollow";
 import Trending from "screens/trending/Trending";
 import ModelProfile from "screens/model/profile/ModelProfile";
+import Profile from "screens/profile/Profile";
+
 import EditProfile from "screens/profile/EditProfile";
 export type RootStackParamList = {
   default: undefined;
@@ -133,6 +135,11 @@ function RootNavigator({ loggedIn }): React.ReactElement {
           options={{ headerShown: false, gestureEnabled: false }}
           name="LiveNow"
           component={LiveNow}
+        />
+        <Stack.Screen
+          options={{ headerShown: false, gestureEnabled: false }}
+          name="Profile"
+          component={Profile}
         />
         <Stack.Screen
           options={{ headerShown: false, gestureEnabled: false }}

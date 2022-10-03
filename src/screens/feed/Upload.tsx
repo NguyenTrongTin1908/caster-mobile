@@ -83,7 +83,7 @@ const Upload = (
             type: feed?.type,
           });
       Alert.alert("Posted successfully!");
-      navigation.navigate("MainTab/Profile");
+      navigation.navigate("Profile");
     } catch {
       Alert.alert("Something went wrong, please try again later");
     }

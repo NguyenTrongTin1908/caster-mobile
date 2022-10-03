@@ -80,7 +80,7 @@ const VerificationForm = ({
         ...data,
       });
       Alert.alert("Posted successfully!");
-      navigation.navigate("MainTab/Profile");
+      navigation.navigate("Profile");
     } catch {
       Alert.alert("Something went wrong, please try again later");
     }
@@ -238,7 +238,7 @@ const VerificationForm = ({
           colorScheme="primary"
           onPress={handleSubmit(onSubmit)}
           disabled={submitting}
-          label="Submit"
+          label="Save Changes"
         />
       </Box>
     </View>

@@ -33,6 +33,7 @@ export const colors = {
   lightTitle: 'rgba(60, 60, 67, 0.6)',
   divider: 'rgba(0, 0, 0, 0.12)',
   gray: '#CCCCCC',
+  ruby: 'rgb(251,0,0)',
 
   //input
   inpBorderColor: '#C9C9C9',

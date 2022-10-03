@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   FormControl,
@@ -6,47 +6,33 @@ import {
   Input,
   Divider,
   View,
-  Heading,
   TextArea,
   Select,
   HStack,
   ScrollView,
-  Image,
 } from "native-base";
 import { Controller, useForm } from "react-hook-form";
-import { colors, Sizes } from "utils/theme";
+import { colors } from "utils/theme";
 import Button from "components/uis/Button";
 import ImagePicker from "react-native-image-crop-picker";
 import { useNavigation } from "@react-navigation/core";
-import {
-  Alert,
-  ImageBackground,
-  SafeAreaView,
-  TouchableOpacity,
-} from "react-native";
+import { Alert } from "react-native";
 import { connect } from "react-redux";
 import { IPerformer, ICountry } from "src/interfaces";
 import { utilsService } from "services/utils.service";
 import { performerService } from "services/perfomer.service";
-import TabView from "components/uis/TabView";
 import {
   updatePerformer,
   updateCurrentUserAvatar,
   updateCurrentUserCover,
 } from "services/redux/user/actions";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 import styles from "./style";
 import moment from "moment";
 import ErrorMessage from "components/uis/ErrorMessage";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import DatePicker from "react-native-datepicker";
-import { BottomSheet } from "react-native-elements";
 import { mediaService } from "services/media.service";
-import HeaderMenu from "components/tab/HeaderMenu";
 import { authService } from "services/auth.service";
-import VerificationForm from "./VerificationForm";
-import Video from "components/tab/profile/Video";
+
 interface IProps {
   current: IPerformer;
   updatePerformer: Function;
@@ -61,9 +47,8 @@ const UpdateProfileForm = ({
 }: IProps): React.ReactElement => {
   const [countries, setCountries] = useState([] as Array<ICountry>);
   const [bodyInfo, setBodyInfo] = useState([] as any);
-  const [showBottomSheet, setShowButtonSheet] = useState(false);
   const [type, setType] = useState("");
-  const [emailSending, setEmailSending] = useState(false);
+  // const [emailSending, setEmailSending] = useState(false);
   const { heights = [], genders = [], ethnicities = [] } = bodyInfo;
   const defaultValues = {
     ...current,
@@ -73,7 +58,11 @@ const UpdateProfileForm = ({
     control,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm({ defaultValues });
+  const password = useRef({});
+  password.current = watch("password", "");
+
   const [submitting, setSubmitting] = useState(false);
   const navigation = useNavigation() as any;
   const onSubmit = async (data: any): Promise<void> => {
@@ -91,27 +80,27 @@ const UpdateProfileForm = ({
         ...data,
       });
       Alert.alert("Posted successfully!");
-      navigation.navigate("MainTab/Profile");
+      navigation.navigate("Profile");
     } catch {
       Alert.alert("Something went wrong, please try again later");
     }
   };
-  const verifyEmail = async () => {
-    try {
-      await setEmailSending(true);
-      const resp = await authService.verifyEmail({
-        sourceType: "performer",
-        source: current,
-      });
-      // this.handleCountdown();
-      resp.data && resp.data.message && Alert.alert(resp.data.message);
-    } catch (e) {
-      const error = await e;
-      Alert.alert("An error occured, please try again");
-    } finally {
-      await setEmailSending(false);
-    }
-  };
+  // const verifyEmail = async () => {
+  //   try {
+  //     await setEmailSending(true);
+  //     const resp = await authService.verifyEmail({
+  //       sourceType: "performer",
+  //       source: current,
+  //     });
+  //     // this.handleCountdown();
+  //     resp.data && resp.data.message && Alert.alert(resp.data.message);
+  //   } catch (e) {
+  //     const error = await e;
+  //     Alert.alert("An error occured, please try again");
+  //   } finally {
+  //     await setEmailSending(false);
+  //   }
+  // };
   //  const handleCountdown = async () => {
   //     const { countTime } = this.state;
   //     if (countTime === 0) {
@@ -461,6 +450,7 @@ const UpdateProfileForm = ({
                 mx={4}
                 p={4}
                 variant="unstyled"
+                placeholder="Tell people something about you..."
                 borderColor={colors.inpBorderColor}
                 onChangeText={(val) => onChange(val)}
                 value={value}
@@ -500,7 +490,20 @@ const UpdateProfileForm = ({
               />
             )}
             name="password"
+            rules={{
+              pattern: new RegExp(
+                /^(?=.{8,})(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z])(?=.*[^\w\d]).*$/g
+              ),
+            }}
           />
+          {errors.password && (
+            <ErrorMessage
+              message={
+                errors.password?.message ||
+                "Password must have minimum 8 characters, at least 1 number, 1 uppercase letter, 1 lowercase letter & 1 special character"
+              }
+            />
+          )}
         </FormControl>
         <Divider borderColor={colors.divider} />
         <FormControl>
@@ -530,7 +533,16 @@ const UpdateProfileForm = ({
               />
             )}
             name="confirm"
+            rules={{
+              validate: (value) =>
+                value === password.current || "The passwords do not match",
+            }}
           />
+          {errors.confirm && (
+            <ErrorMessage
+              message={errors.confirm?.message || "Comfirm is required."}
+            />
+          )}
         </FormControl>
         <Divider borderColor={colors.divider} />
       </ScrollView>
@@ -539,7 +551,7 @@ const UpdateProfileForm = ({
           colorScheme="primary"
           onPress={handleSubmit(onSubmit)}
           disabled={submitting}
-          label="Submit"
+          label="Save Changes"
         />
       </Box>
     </View>

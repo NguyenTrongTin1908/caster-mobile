@@ -48,6 +48,7 @@ import HeaderMenu from "components/tab/HeaderMenu";
 import { authService } from "services/auth.service";
 import VerificationForm from "./component/VerificationForm";
 import UpdateProfileForm from "./component/UpdateProfileForm";
+import SettingFeeForm from "./component/SettingFeeForm";
 
 interface IProps {
   current: IPerformer;
@@ -96,7 +97,7 @@ const EditProfile = ({
       });
 
       Alert.alert("Posted successfully!");
-      navigation.navigate("MainTab/Profile");
+      navigation.navigate("Profile");
     } catch {
       Alert.alert("Something went wrong, please try again later");
     }
@@ -272,14 +273,19 @@ const EditProfile = ({
           <TabView
             scenes={[
               {
-                key: "photoList",
+                key: "basicSettings",
                 title: "Basic Settings",
                 sence: UpdateProfileForm,
               },
               {
-                key: "videoList",
+                key: "idDocuments",
                 title: "ID Documents",
                 sence: VerificationForm,
+              },
+              {
+                key: "feeSettings",
+                title: "Fee Settings",
+                sence: SettingFeeForm,
               },
             ]}
           />

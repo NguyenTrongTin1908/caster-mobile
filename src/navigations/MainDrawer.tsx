@@ -153,18 +153,18 @@ export const MainDrawer = ({
     //     handleHide();
     //   },
     // },
-    {
-      id: "top",
-      label: "Top",
-      icon: (
-        <FontAwesome name={"bar-chart"} size={17} color={colors.appBgColor} />
-      ),
-      onPress: () => {
-        //todo - update navigation
-        navigationRef.current?.navigate("Model");
-        handleHide();
-      },
-    },
+    // {
+    //   id: "top",
+    //   label: "Top",
+    //   icon: (
+    //     <FontAwesome name={"bar-chart"} size={17} color={colors.appBgColor} />
+    //   ),
+    //   onPress: () => {
+    //     //todo - update navigation
+    //     navigationRef.current?.navigate("Model");
+    //     handleHide();
+    //   },
+    // },
     {
       id: "explore",
       label: "Explore",
@@ -180,7 +180,7 @@ export const MainDrawer = ({
       label: "Manage Profile",
       icon: <FontAwesome name={"user"} size={17} color={colors.appBgColor} />,
       onPress: () => {
-        navigationRef.current?.navigate("MainTab/Profile");
+        navigationRef.current?.navigate("Profile");
         handleHide();
       },
     },

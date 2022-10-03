@@ -42,6 +42,18 @@ userProfilePhotoStyle: {
   borderRadius: 50.0,
 
 },
+
+settingFeeImage: {
+  width: 50.0,
+  height: 50.0,
+  borderRadius: 50.0,
+
+},
+
+settingFeeStack: {
+  alignItems : "center",
+  marginVertical : 40
+},
 userProfilePhotoBlurContentStyle: {
   width: 100.0,
   height: 100.0,
