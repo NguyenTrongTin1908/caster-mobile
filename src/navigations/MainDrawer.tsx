@@ -22,6 +22,7 @@ import { navigationRef } from "./RootStackNavigator";
 import { colors } from "utils/theme";
 import { IPerformer } from "src/interfaces";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 interface DrawerProps {
   user: IPerformer;
@@ -172,6 +173,18 @@ export const MainDrawer = ({
       onPress: () => {
         //todo - update navigation
         // navigationRef.current?.navigate('');
+        handleHide();
+      },
+    },
+    {
+      id: "folowPost",
+      label: "Follow Post",
+      icon: (
+        <MaterialIcons name={"group"} size={17} color={colors.appBgColor} />
+      ),
+      onPress: () => {
+        //todo - update navigation
+        navigationRef.current?.navigate("FollowPost");
         handleHide();
       },
     },

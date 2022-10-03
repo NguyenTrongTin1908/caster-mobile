@@ -17,6 +17,8 @@ import { getStatusBarHeight } from "react-native-status-bar-height";
 import FeedTab from "components/tab/FeedTab";
 import { IPerformer } from "src/interfaces";
 import HeaderMenu from "components/tab/HeaderMenu";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
 let deviceH = Dimensions.get("screen").height;
 let bottomNavBarH = deviceH - height;
 interface IProps {
@@ -39,6 +41,8 @@ const Hashtag = ({
   const mediaRefs = useRef([]) as any;
   const [feeds, setfeeds] = useState([] as Array<IFeed>);
   const [trendingfeeds, settrendingfeeds] = useState([] as Array<IFeed>);
+  const insets = useSafeAreaInsets();
+
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
     loadfeeds();
@@ -118,37 +122,33 @@ const Hashtag = ({
     loadfeeds();
   }, [tab]);
   return (
-    <BottomTabBarHeightContext.Consumer>
-      {(tabBarHeight: any) => (
-        <SafeAreaView style={styles.container}>
-          <FlatList
-            data={feeds}
-            renderItem={renderItem}
-            pagingEnabled={true}
-            keyExtractor={(item) => item._id}
-            decelerationRate={"fast"}
-            showsVerticalScrollIndicator={false}
-            onViewableItemsChanged={onViewableItemsChange.current}
-            windowSize={2}
-            onEndReached={loadmoreFeeds}
-            initialNumToRender={0}
-            maxToRenderPerBatch={2}
-            removeClippedSubviews
-            snapToInterval={
-              Platform.OS === "ios"
-                ? deviceH - getStatusBarHeight(true)
-                : deviceH - bottomNavBarH
-            }
-            viewabilityConfig={{
-              itemVisiblePercentThreshold: 100,
-            }}
-            snapToAlignment={"start"}
-          />
-          <FeedTab onTabChange={handleTabChange} tab={tab}></FeedTab>
-          <HeaderMenu />;
-        </SafeAreaView>
-      )}
-    </BottomTabBarHeightContext.Consumer>
+    <SafeAreaView style={styles.container}>
+      <FlatList
+        data={feeds}
+        renderItem={renderItem}
+        pagingEnabled={true}
+        keyExtractor={(item) => item._id}
+        decelerationRate={"fast"}
+        showsVerticalScrollIndicator={false}
+        onViewableItemsChanged={onViewableItemsChange.current}
+        windowSize={2}
+        initialNumToRender={0}
+        maxToRenderPerBatch={2}
+        removeClippedSubviews
+        snapToInterval={
+          Platform.OS === "ios"
+            ? deviceH - (insets.bottom + insets.top)
+            : deviceH - bottomNavBarH
+        }
+        viewabilityConfig={{
+          itemVisiblePercentThreshold: 100,
+        }}
+        snapToAlignment={"start"}
+      />
+      <HeaderMenu />
+
+      <FeedTab onTabChange={handleTabChange} tab={tab}></FeedTab>
+    </SafeAreaView>
   );
 };
 export default Hashtag;

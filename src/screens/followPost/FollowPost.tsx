@@ -1,17 +1,30 @@
-import React, { useEffect, useContext, useState, useRef } from 'react';
-import { connect } from 'react-redux';
-import { useNavigation } from '@react-navigation/core';
-import { getFollowingFeeds, moreFollowingFeeds } from 'services/redux/feed/actions';
-import { Dimensions, FlatList, View, SafeAreaView, Platform, Alert } from 'react-native';
-const { height } = Dimensions.get('window');
-import styles from './style';
-import FeedCard from 'components/feed/feed-card';
-import FeedTab from 'components/tab/FeedTab';
-import { IFeed } from 'interfaces/feed';
-import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
-import { getStatusBarHeight } from 'react-native-status-bar-height';
-import { IPerformer } from 'src/interfaces';
-let deviceH = Dimensions.get('screen').height;
+import React, { useEffect, useContext, useState, useRef } from "react";
+import { connect } from "react-redux";
+import { useNavigation } from "@react-navigation/core";
+import {
+  getFollowingFeeds,
+  moreFollowingFeeds,
+} from "services/redux/feed/actions";
+import {
+  Dimensions,
+  FlatList,
+  View,
+  SafeAreaView,
+  Platform,
+  Alert,
+} from "react-native";
+const { height } = Dimensions.get("window");
+import styles from "./style";
+import FeedCard from "components/feed/feed-card";
+import FeedTab from "components/tab/FeedTab";
+import { IFeed } from "interfaces/feed";
+import { BottomTabBarHeightContext } from "@react-navigation/bottom-tabs";
+import { getStatusBarHeight } from "react-native-status-bar-height";
+
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { IPerformer } from "src/interfaces";
+import HeaderMenu from "components/tab/HeaderMenu";
+let deviceH = Dimensions.get("screen").height;
 let bottomNavBarH = deviceH - height;
 interface IProps {
   current: IPerformer;
@@ -24,20 +37,27 @@ interface IProps {
     total: number;
   };
 }
-const FollowPost = ({ handleGetFeeds, feedState, handleGetMore,current }: IProps): React.ReactElement => {
+const FollowPost = ({
+  handleGetFeeds,
+  feedState,
+  handleGetMore,
+  current,
+}: IProps): React.ReactElement => {
   const navigation = useNavigation() as any;
-  const [tab, setTab] = useState('video')
+  const [tab, setTab] = useState("video");
   const [itemPerPage, setitemPerPage] = useState(12);
   const [feedPage, setfeedPage] = useState(0);
-  const [orientation, setOrientation] = useState('');
-  const [keyword, setKeyword] = useState('');
+  const [orientation, setOrientation] = useState("");
+  const [keyword, setKeyword] = useState("");
   const mediaRefs = useRef([]) as any;
+  const insets = useSafeAreaInsets();
+
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
     getFeeds();
   }, [useContext]);
   const onViewableItemsChange = useRef(({ changed }) => {
-    changed.forEach(element => {
+    changed.forEach((element) => {
       const cell = mediaRefs.current[element.key];
       if (cell) {
         if (element.isViewable) {
@@ -54,20 +74,20 @@ const FollowPost = ({ handleGetFeeds, feedState, handleGetMore,current }: IProps
       if ((feedPage + 1) * itemPerPage >= totalFeeds) {
         resetloadFeeds();
       } else {
-        setfeedPage(feedPage + 1)
+        setfeedPage(feedPage + 1);
         handleGetMore({
           q: keyword,
           orientation,
           limit: itemPerPage,
           offset: itemPerPage * (feedPage + 1),
           isHome: false,
-          type: tab === 'video' ? 'video' : 'photo'
+          type: tab === "video" ? "video" : "photo",
         });
       }
     } catch (e) {
-      Alert.alert('Something went wrong, please try again later');
+      Alert.alert("Something went wrong, please try again later");
     }
-  }
+  };
   const resetloadFeeds = async () => {
     handleGetMore({
       q: keyword,
@@ -75,10 +95,10 @@ const FollowPost = ({ handleGetFeeds, feedState, handleGetMore,current }: IProps
       limit: itemPerPage,
       offset: 0,
       isHome: false,
-      type: tab === 'video' ? 'video' : 'photo'
+      type: tab === "video" ? "video" : "photo",
     });
-    setfeedPage(1)
-  }
+    setfeedPage(1);
+  };
 
   const getFeeds = () => {
     handleGetFeeds({
@@ -87,19 +107,17 @@ const FollowPost = ({ handleGetFeeds, feedState, handleGetMore,current }: IProps
       limit: itemPerPage,
       offset: itemPerPage * feedPage,
       isHome: false,
-      type: tab === 'video' ? 'video' : 'photo'
+      type: tab === "video" ? "video" : "photo",
     });
   };
   const handleTabChange = async () => {
-    tab === 'video' ? (
-      setTab('photo')
-    ) : setTab('video')
-    setfeedPage(0)
-  }
+    tab === "video" ? setTab("photo") : setTab("video");
+    setfeedPage(0);
+  };
 
   useEffect(() => {
-    getFeeds()
-  }, [tab])
+    getFeeds();
+  }, [tab]);
   const renderItem = ({ item, index }: { item: IFeed; index: number }) => {
     return (
       <BottomTabBarHeightContext.Consumer>
@@ -109,13 +127,22 @@ const FollowPost = ({ handleGetFeeds, feedState, handleGetMore,current }: IProps
               style={[
                 {
                   height:
-                    Platform.OS === 'ios'
-                      ? deviceH - (tabBarHeight + getStatusBarHeight(true))
-                      : deviceH - (bottomNavBarH + tabBarHeight)
+                    Platform.OS === "ios"
+                      ? deviceH - getStatusBarHeight(true)
+                      : deviceH - bottomNavBarH,
                 },
-                index % 2 == 0 ? { backgroundColor: '#000000' } : { backgroundColor: '#000000' }
-              ]}>
-              <FeedCard feed={item} mediaRefs={mediaRefs} currentTab={tab} current={current}/>
+                ,
+                index % 2 == 0
+                  ? { backgroundColor: "#000000" }
+                  : { backgroundColor: "#000000" },
+              ]}
+            >
+              <FeedCard
+                feed={item}
+                mediaRefs={mediaRefs}
+                currentTab={tab}
+                current={current}
+              />
             </View>
           );
         }}
@@ -123,42 +150,39 @@ const FollowPost = ({ handleGetFeeds, feedState, handleGetMore,current }: IProps
     );
   };
   return (
-    <BottomTabBarHeightContext.Consumer>
-      {(tabBarHeight: any) => (
-        <SafeAreaView style={styles.container}>
-          <FlatList
-            data={feedState.items}
-            renderItem={renderItem}
-            pagingEnabled={true}
-            keyExtractor={item => item._id}
-            decelerationRate={'fast'}
-            showsVerticalScrollIndicator={false}
-            onViewableItemsChanged={onViewableItemsChange.current}
-            windowSize={4}
-            onEndReached={loadmoreFeeds}
-            initialNumToRender={0}
-            maxToRenderPerBatch={2}
-            removeClippedSubviews
-            snapToInterval={
-              Platform.OS === 'ios'
-                ? deviceH - (tabBarHeight + getStatusBarHeight(true))
-                : deviceH - (bottomNavBarH + tabBarHeight)
-            }
-            viewabilityConfig={{
-              itemVisiblePercentThreshold: 100
-            }}
-            snapToAlignment={'start'}
-          />
-          <FeedTab onTabChange={handleTabChange} tab={tab}></FeedTab>
-        </SafeAreaView>
-      )}
-    </BottomTabBarHeightContext.Consumer>
+    <SafeAreaView style={styles.container}>
+      <FlatList
+        data={feedState.items}
+        renderItem={renderItem}
+        pagingEnabled={true}
+        keyExtractor={(item) => item._id}
+        decelerationRate={"fast"}
+        showsVerticalScrollIndicator={false}
+        onViewableItemsChanged={onViewableItemsChange.current}
+        windowSize={2}
+        initialNumToRender={0}
+        maxToRenderPerBatch={2}
+        removeClippedSubviews
+        snapToInterval={
+          Platform.OS === "ios"
+            ? deviceH - (insets.bottom + insets.top)
+            : deviceH - bottomNavBarH
+        }
+        viewabilityConfig={{
+          itemVisiblePercentThreshold: 100,
+        }}
+        snapToAlignment={"start"}
+      />
+      <HeaderMenu />
+
+      <FeedTab onTabChange={handleTabChange} tab={tab}></FeedTab>
+    </SafeAreaView>
   );
 };
 const mapStateToProp = (state: any): any => ({
   ...state.user,
   isLoggedIn: state.auth.loggedIn,
-  feedState: { ...state.feed?.followingFeeds }
+  feedState: { ...state.feed?.followingFeeds },
 });
 const mapDispatch = {
   handleGetFeeds: getFollowingFeeds,

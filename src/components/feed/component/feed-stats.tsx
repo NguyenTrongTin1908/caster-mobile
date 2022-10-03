@@ -48,7 +48,7 @@ const FeedStats = ({
     inputRange: [0, 1],
     outputRange: ["0deg", "360deg"],
   });
-  const mentionHashtagClick = (key, text) => {
+  const mentionHashtagClick = (text) => {
     navigation.navigate("Hashtag", { query: text.substring(1), currentTab });
   };
 
@@ -177,12 +177,12 @@ const FeedStats = ({
             @{item?.performer.username}
           </Text>
           <MentionHashtagTextView
-            key={item._id}
+            key={item?._id}
             mentionHashtagPress={mentionHashtagClick}
-            mentionHashtagColor={colors.hastag}
+            mentionHashtagColor={colors.hashtag}
             style={{ marginTop: Sizes.fixPadding, color: colors.lightText }}
           >
-            {item.text}
+            {item?.text}
           </MentionHashtagTextView>
           <View style={styles.songRow}>
             <MaterialIcons name="music-note" size={15} color="white" />
