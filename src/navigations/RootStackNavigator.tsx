@@ -28,6 +28,7 @@ import Trending from "screens/trending/Trending";
 import ModelProfile from "screens/model/profile/ModelProfile";
 import Profile from "screens/profile/Profile";
 import FollowPost from "screens/followPost/FollowPost";
+import PushNotificationSetting from "screens/notification/component/PushNotificationSetting";
 
 import EditProfile from "screens/profile/EditProfile";
 export type RootStackParamList = {
@@ -42,6 +43,7 @@ export type RootStackParamList = {
   ModelProfile: undefined;
   EditProfile: undefined;
   FollowPost: undefined;
+  PushNotificationSetting: undefined;
   ListFollow: { performer: IPerformer };
   Hashtag: { query: string; currentTab: string };
   Trending: undefined;
@@ -119,6 +121,15 @@ function RootNavigator({ loggedIn }): React.ReactElement {
           }}
           name="ListFollow"
           component={ListFollow}
+        />
+
+        <Stack.Screen
+          options={{
+            headerShown: false,
+            gestureEnabled: false,
+          }}
+          name="PushNotificationSetting"
+          component={PushNotificationSetting}
         />
 
         <Stack.Screen

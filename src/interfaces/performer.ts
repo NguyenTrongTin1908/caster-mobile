@@ -98,6 +98,25 @@ export interface IPerformer {
     linkedIn: string;
   };
   isPerformer: boolean;
+  notificationSetting:
+
+  {
+  active: boolean,
+  receiveOnDesktop: boolean,
+  mail: boolean,
+  comment: boolean,
+  follower: boolean,
+  newContent: boolean,
+  followingGoLive: boolean,
+  followingPrivateChat: boolean,
+  moderator: boolean,
+  privateChatRequest: boolean,
+  casterAdminMessage: boolean,
+  upgradedComplete: boolean,
+  sposorship: boolean,
+
+
+  }
 }
 
 export interface IBanking {

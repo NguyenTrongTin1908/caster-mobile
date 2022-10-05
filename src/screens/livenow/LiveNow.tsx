@@ -30,6 +30,7 @@ const LiveNow = (): React.ReactElement => {
       <Heading
         mb={4}
         fontSize={40}
+        textAlign="center"
         letterSpacing={-1}
         color={colors.lightText}
         bold

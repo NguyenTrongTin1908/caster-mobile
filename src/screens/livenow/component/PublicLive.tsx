@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text } from 'react-native';
-import { Box, Button, FlatList } from 'native-base';
-import PerformerCard from 'components/message/PerformerCard';
-import { performerService } from 'services/perfomer.service';
-import { IPerformer } from 'interfaces/performer';
-import BadgeText from 'components/uis/BadgeText';
-import LoadingSpinner from 'components/uis/LoadingSpinner';
-import styles from './style';
+import React, { useEffect, useState } from "react";
+import { View, Text } from "react-native";
+import { Box, Button, FlatList } from "native-base";
+import PerformerCard from "components/message/PerformerCard";
+import { performerService } from "services/perfomer.service";
+import { IPerformer } from "interfaces/performer";
+import BadgeText from "components/uis/BadgeText";
+import LoadingSpinner from "components/uis/LoadingSpinner";
+import styles from "./style";
+import { connect } from "react-redux";
 
 interface IProps {
   route: {
@@ -14,6 +15,8 @@ interface IProps {
     title: string;
     params: { q: string };
   };
+
+  current: IPerformer;
 }
 
 const PublicLive = (props: IProps): React.ReactElement => {
@@ -22,7 +25,7 @@ const PublicLive = (props: IProps): React.ReactElement => {
   const [performerLoading, setPerformerLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [moreable, setMoreable] = useState(true);
-  const loadPerformers = async (more = false, q = '', refresh = false) => {
+  const loadPerformers = async (more = false, q = "", refresh = false) => {
     if (more && !moreable) return;
     setPerformerLoading(true);
     const newPage = more ? page + 1 : page;
@@ -31,7 +34,7 @@ const PublicLive = (props: IProps): React.ReactElement => {
       offset: refresh ? 0 : newPage * 10,
       limit: 10,
       live: 1,
-      isOnline: 1
+      isOnline: 1,
     });
     if (!refresh && data.length < 10) {
       setMoreable(false);
@@ -45,7 +48,7 @@ const PublicLive = (props: IProps): React.ReactElement => {
   const renderEmpty = () => (
     <View>
       {!performerLoading && !performers.length && (
-        <BadgeText content={'There is no performer available!'} />
+        <BadgeText content={"There is no performer available!"} />
       )}
     </View>
   );
@@ -59,14 +62,14 @@ const PublicLive = (props: IProps): React.ReactElement => {
 
   return (
     <Box flex={1} mx="auto" w="100%">
-      <Button style={styles.btnGolive}><Text style={styles.textLive}>
-        Go Live{"\n"}
-        Now
-      </Text></Button>
       <FlatList
         data={performers}
-        renderItem={({ item }) => <PerformerCard performer={item} />}
-        keyExtractor={(item, index) => item._id + '_' + index}
+        renderItem={({ item }) =>
+          item._id !== props.current._id ? (
+            <PerformerCard performer={item} />
+          ) : null
+        }
+        keyExtractor={(item, index) => item._id + "_" + index}
         style={styles.listModel}
         onEndReachedThreshold={0.5}
         onEndReached={() => loadPerformers(true, qString, false)}
@@ -76,4 +79,9 @@ const PublicLive = (props: IProps): React.ReactElement => {
     </Box>
   );
 };
-export default PublicLive;
+
+const mapStateToProp = (state: any): any => ({
+  ...state.user,
+  isLoggedIn: state.auth.loggedIn,
+});
+export default connect(mapStateToProp)(PublicLive);

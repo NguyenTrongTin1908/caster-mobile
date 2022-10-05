@@ -59,7 +59,7 @@ const Home = ({
   const [keyword, setKeyword] = useState("");
   const [isLoadTrendingFeed, setLoadTrendingFeed] = useState(false);
   const mediaRefs = useRef([]) as any;
-  useEffect( () => {
+  useEffect(() => {
     navigation.setOptions({ headerShown: false });
     getFeeds();
   }, [useContext]);
@@ -67,10 +67,13 @@ const Home = ({
     getFeeds();
   }, [tab]);
   useEffect(() => {
-    (feedState.total !== undefined) && loadmoreFeeds();
+    feedState.total !== undefined && loadmoreFeeds();
   }, [isLoadTrendingFeed]);
   useEffect(() => {
-    (feedState.success && !feedState.items.length && feedState.total !== undefined) && loadmoreFeeds();
+    feedState.success &&
+      !feedState.items.length &&
+      feedState.total !== undefined &&
+      loadmoreFeeds();
   }, [feedState]);
   const onViewableItemsChange = useRef(({ changed }) => {
     changed.forEach((element) => {
@@ -84,7 +87,7 @@ const Home = ({
       }
     });
   }) as any;
-  const getFeeds = async() => {
+  const getFeeds = async () => {
     await handleGetRecommendFeeds({
       list: 3,
       q: keyword,
@@ -104,30 +107,33 @@ const Home = ({
     try {
       if ((feedPage + 1) * itemPerPage >= totalFeeds) {
         !isLoadTrendingFeed && setLoadTrendingFeed(true);
-        feedPage !== 0 &&  setfeedPage(0);
-        return await loadmoreTrendingFeeds()
+        feedPage !== 0 && setfeedPage(0);
+        return await loadmoreTrendingFeeds();
       }
-      if (isLoadTrendingFeed) { return loadmoreTrendingFeeds()}
+      if (isLoadTrendingFeed) {
+        return loadmoreTrendingFeeds();
+      }
 
-      !isLoadTrendingFeed && await handleGetMore({
-            q: keyword,
-            orientation,
-            limit: itemPerPage,
-            offset: itemPerPage * (feedPage + 1),
-            isHome: false,
-            type: tab === "video" ? "video" : "photo",
-          });
-          setfeedPage(feedPage+1);
+      !isLoadTrendingFeed &&
+        (await handleGetMore({
+          q: keyword,
+          orientation,
+          limit: itemPerPage,
+          offset: itemPerPage * (feedPage + 1),
+          isHome: false,
+          type: tab === "video" ? "video" : "photo",
+        }));
+      setfeedPage(feedPage + 1);
     } catch (e) {
       Alert.alert("Something went wrong, please try again later");
     }
   };
-  const loadmoreTrendingFeeds = async() => {
+  const loadmoreTrendingFeeds = async () => {
     const { items: recommendFeeds } = feedRecommendState;
     const { total: totalFeeds } = feedState;
 
     if ((feedPage + 1) * itemPerPage >= totalFeeds) {
-      setfeedPage(0)
+      setfeedPage(0);
     }
     try {
       await handleGetMore({

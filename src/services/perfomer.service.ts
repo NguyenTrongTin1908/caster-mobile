@@ -55,6 +55,9 @@ export class PerformerService extends APIRequest {
   getBookmarked(payload) {
     return this.get(this.buildUrl('/reactions/performers/bookmark', payload));
   }
+  updateNotificationSetting(id: string, payload: any) {
+    return this.put(`/performers/${id}/notification-settings`, payload);
+  }
 
 
 }

@@ -209,6 +209,18 @@ export const MainDrawer = ({
         handleHide();
       },
     },
+    {
+      id: "pushNotificationSetting",
+      label: "Notification Setting",
+      icon: (
+        <FontAwesome name={"credit-card"} size={17} color={colors.appBgColor} />
+      ),
+      onPress: () => {
+        //todo - update navigation
+        navigationRef.current?.navigate("PushNotificationSetting");
+        handleHide();
+      },
+    },
 
     {
       id: "followerList",
@@ -246,8 +258,8 @@ export const MainDrawer = ({
       },
     },
     {
-      id: "payoutResquest",
-      label: "Payout Resquests",
+      id: "payoutRequests",
+      label: "Payout requests",
       icon: (
         <FontAwesome name={"cc-paypal"} size={17} color={colors.appBgColor} />
       ),
