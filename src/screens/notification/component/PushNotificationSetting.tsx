@@ -35,6 +35,7 @@ const PushNotificationSetting = ({ current }: IProps): React.ReactElement => {
     try {
       await performerService.updateNotificationSetting(current._id, list);
       Alert.alert("Updated successfully");
+      navigation.navigate("NotificationPage");
     } catch (error) {
       Alert.alert("Error occured, please try again later");
     }
@@ -158,7 +159,7 @@ const PushNotificationSetting = ({ current }: IProps): React.ReactElement => {
     setList({ ...data });
     // await setList({ ...list, [record.key]: !record.status });
   };
-  const handleActive = async () => {
+  const handleActive = () => {
     // setList({ ...list, active: !list?.active });
     let data = list;
     data["active"] = !active;
@@ -190,14 +191,13 @@ const PushNotificationSetting = ({ current }: IProps): React.ReactElement => {
                 size="lg"
                 alignSelf={"center"}
                 isChecked={active}
-                onChange={handleActive}
+                onValueChange={handleActive}
                 aria-label="active"
               />
             </View>
             <View style={styles.notificationRow}>
               <Checkbox
-                isInvalid
-                value="invalid"
+                value="active"
                 isChecked={list.receiveOnDesktop}
                 onChange={(val) => handleCheckBox("receiveOnDesktop", val)}
                 aria-label="receiveOnDesktop"
@@ -223,7 +223,7 @@ const PushNotificationSetting = ({ current }: IProps): React.ReactElement => {
                       key={cellIndex}
                       data={
                         cellIndex === 1 ? (
-                          <View>
+                          <View alignSelf={"center"}>
                             <Checkbox
                               key={cellIndex}
                               value={cellData.key}
@@ -235,7 +235,9 @@ const PushNotificationSetting = ({ current }: IProps): React.ReactElement => {
                             ></Checkbox>
                           </View>
                         ) : (
-                          cellData.name
+                          <View alignSelf={"center"}>
+                            <Text>{cellData.name}</Text>
+                          </View>
                         )
                       }
                     />
@@ -246,18 +248,22 @@ const PushNotificationSetting = ({ current }: IProps): React.ReactElement => {
             <Table
               borderStyle={{ borderColor: colors.darkText, borderWidth: 1 }}
             >
-              <Row data={tableHeadTime} style={styles.head} />
+              <Row
+                data={tableHeadTime}
+                style={styles.head}
+                textStyle={styles.textNoti}
+              />
               {timeData.map((rowData, index) => (
                 <TableWrapper key={index} style={styles.row}>
-                  {rowData.map((cellData, cellIndex) => (
+                  {rowData.map((cellData: any, cellIndex) => (
                     <Cell
                       key={cellIndex}
                       data={
                         cellIndex === 1 ? (
-                          <View>
+                          <View alignSelf={"center"}>
                             <Checkbox
-                              isInvalid
-                              value="invalid"
+                              key={cellIndex}
+                              value={cellData.key}
                               isChecked={cellData.status}
                               onChange={(val) =>
                                 handleCheckBox(cellData.key, val)
@@ -266,7 +272,9 @@ const PushNotificationSetting = ({ current }: IProps): React.ReactElement => {
                             ></Checkbox>
                           </View>
                         ) : (
-                          cellData.name
+                          <View alignSelf={"center"}>
+                            <Text>{cellData.name}</Text>
+                          </View>
                         )
                       }
                     />
@@ -277,18 +285,22 @@ const PushNotificationSetting = ({ current }: IProps): React.ReactElement => {
             <Table
               borderStyle={{ borderColor: colors.darkText, borderWidth: 1 }}
             >
-              <Row data={tableHeadHost} style={styles.head} />
+              <Row
+                data={tableHeadHost}
+                style={styles.head}
+                textStyle={styles.textNoti}
+              />
               {hostData.map((rowData, index) => (
                 <TableWrapper key={index} style={styles.row}>
-                  {rowData.map((cellData, cellIndex) => (
+                  {rowData.map((cellData: any, cellIndex) => (
                     <Cell
                       key={cellIndex}
                       data={
                         cellIndex === 1 ? (
-                          <View>
+                          <View alignSelf={"center"}>
                             <Checkbox
-                              isInvalid
-                              value="invalid"
+                              key={cellIndex}
+                              value={cellData.key}
                               isChecked={cellData.status}
                               onChange={(val) =>
                                 handleCheckBox(cellData.key, val)
@@ -297,7 +309,9 @@ const PushNotificationSetting = ({ current }: IProps): React.ReactElement => {
                             ></Checkbox>
                           </View>
                         ) : (
-                          cellData.name
+                          <View alignSelf={"center"}>
+                            <Text>{cellData.name}</Text>
+                          </View>
                         )
                       }
                     />
@@ -308,18 +322,22 @@ const PushNotificationSetting = ({ current }: IProps): React.ReactElement => {
             <Table
               borderStyle={{ borderColor: colors.darkText, borderWidth: 1 }}
             >
-              <Row data={tableHeadSystem} style={styles.head} />
+              <Row
+                data={tableHeadSystem}
+                style={styles.head}
+                textStyle={styles.textNoti}
+              />
               {systemData.map((rowData, index) => (
                 <TableWrapper key={index} style={styles.row}>
-                  {rowData.map((cellData, cellIndex) => (
+                  {rowData.map((cellData: any, cellIndex) => (
                     <Cell
                       key={cellIndex}
                       data={
                         cellIndex === 1 ? (
-                          <View>
+                          <View alignSelf={"center"}>
                             <Checkbox
-                              isInvalid
-                              value="invalid"
+                              key={cellIndex}
+                              value={cellData.key}
                               isChecked={cellData.status}
                               onChange={(val) =>
                                 handleCheckBox(cellData.key, val)
@@ -328,7 +346,9 @@ const PushNotificationSetting = ({ current }: IProps): React.ReactElement => {
                             ></Checkbox>
                           </View>
                         ) : (
-                          cellData.name
+                          <View alignSelf={"center"}>
+                            <Text>{cellData.name}</Text>
+                          </View>
                         )
                       }
                     />

@@ -92,8 +92,6 @@ const NotificationCard = ({ notification }: IProps): React.ReactElement => {
     redirect(notification);
   };
 
-  console.log("DATA  :", notification);
-
   return (
     <Box w="100%" my={1.5}>
       <TouchableOpacity onPress={() => onClickItem(notification)}>

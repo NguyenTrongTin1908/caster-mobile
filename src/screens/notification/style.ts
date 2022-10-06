@@ -45,9 +45,9 @@ const styles = StyleSheet.create({
 
   btn: { width: 58, height: 18, backgroundColor: '#78B7BB',  borderRadius: 2 },
   btnText: { textAlign: 'center', color: '#fff' },
-  head: { height: 40, backgroundColor: '#808B97',textAlign: 'center' },
-  row: { flexDirection: 'row', backgroundColor: colors.lightText },
-  textNoti: { margin: 6 },
+  head: { height: 40, backgroundColor: '#808B97'},
+  row: { flexDirection: 'row', backgroundColor: colors.lightText},
+  textNoti: { textAlign: 'center'},
 
 
 

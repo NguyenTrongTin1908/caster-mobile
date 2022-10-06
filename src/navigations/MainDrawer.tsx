@@ -71,17 +71,32 @@ export const MainDrawer = ({
     return (
       <Box safeAreaTop bgColor={colors.dark} px={4} py={4}>
         <HStack space={3}>
-          <Image
-            source={{ uri: user?.avatar }}
-            alt="user-avatar"
-            width={60}
-            height={60}
-            borderRadius={30}
-          />
+          <TouchableOpacity
+            onPress={() => {
+              navigationRef.current?.navigate("Profile");
+              handleHide();
+            }}
+          >
+            <Image
+              source={{ uri: user?.avatar }}
+              alt="user-avatar"
+              width={60}
+              height={60}
+              borderRadius={30}
+            />
+          </TouchableOpacity>
+
           <VStack space={1} justifyContent="center">
-            <Text fontSize="lg" bold color={colors.light}>
-              {user?.name}
-            </Text>
+            <TouchableOpacity
+              onPress={() => {
+                navigationRef.current?.navigate("Profile");
+                handleHide();
+              }}
+            >
+              <Text fontSize="lg" bold color={colors.light}>
+                {user?.name}
+              </Text>
+            </TouchableOpacity>
             <Text fontSize="xs" color={colors.light} textTransform="capitalize">
               {user?.country}
             </Text>

@@ -3,14 +3,15 @@ import { getStatusBarHeight } from 'react-native-status-bar-height';
 
 const styles = StyleSheet.create({
   bar: {
-    top: 15 + getStatusBarHeight(true),
+    top: 8 + getStatusBarHeight(true),
     left: 0,
     right: 0,
-    height: 56,
     position: 'absolute',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: 'transparent'
+    height:50
+    // flexDirection: 'row',
+    // justifyContent: 'space-between',
+    // backgroundColor: 'transparent',
+    // zIndex:10000
   },
   left: {
     top: 0,

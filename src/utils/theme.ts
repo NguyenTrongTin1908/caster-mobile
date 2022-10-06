@@ -38,6 +38,8 @@ export const colors = {
   //input
   inpBorderColor: '#C9C9C9',
   inpLabelColor: '#969696',
+  transparent: 'rgba(0,0,0,0)',
+
 
   //btn
   btnPrimaryColor: COLOR_PRIMARY,

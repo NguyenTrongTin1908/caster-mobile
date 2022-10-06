@@ -1,4 +1,9 @@
-import { Alert, ImageBackground, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  Alert,
+  ImageBackground,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import {
   Flex,
   Box,
@@ -10,21 +15,24 @@ import {
   Link,
   Text,
   VStack,
-  Image
-} from 'native-base';
-import { Controller, useForm } from 'react-hook-form';
-import { connect } from 'react-redux';
-import { login, loginSocial, resetLogin } from 'services/redux/auth/actions';
-import KeyboardDismiss from 'components/uis/KeyboardDismiss';
-import React, { useContext, useEffect } from 'react';
-import { colors, padding, Sizes } from 'utils/theme';
-import ErrorMessage from 'components/uis/ErrorMessage';
-import { useNavigation } from '@react-navigation/core';
-import LinearGradient from 'react-native-linear-gradient';
-import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
-import FontAwesome from 'react-native-vector-icons/FontAwesome5Pro';
-import { config } from 'config';
-import { authService } from 'services/auth.service';
+  Image,
+} from "native-base";
+import { Controller, useForm } from "react-hook-form";
+import { connect } from "react-redux";
+import { login, loginSocial, resetLogin } from "services/redux/auth/actions";
+import KeyboardDismiss from "components/uis/KeyboardDismiss";
+import React, { useContext, useEffect } from "react";
+import { colors, padding, Sizes } from "utils/theme";
+import ErrorMessage from "components/uis/ErrorMessage";
+import { useNavigation } from "@react-navigation/core";
+import LinearGradient from "react-native-linear-gradient";
+import {
+  GoogleSignin,
+  statusCodes,
+} from "@react-native-google-signin/google-signin";
+import FontAwesome from "react-native-vector-icons/FontAwesome5Pro";
+import { config } from "config";
+import { authService } from "services/auth.service";
 interface Props {
   handleLogin: Function;
   handleResetLogin: Function;
@@ -36,7 +44,12 @@ interface Props {
   loginSocial: Function;
 }
 
-const Login = ({ handleLogin, handleResetLogin, authLogin, loginSocial }: Props): React.ReactElement => {
+const Login = ({
+  handleLogin,
+  handleResetLogin,
+  authLogin,
+  loginSocial,
+}: Props): React.ReactElement => {
   const navigation = useNavigation() as any;
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
@@ -45,13 +58,13 @@ const Login = ({ handleLogin, handleResetLogin, authLogin, loginSocial }: Props)
   const {
     control,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
   } = useForm();
 
   const onSubmit = async ({ username, password }: any): Promise<void> => {
     handleLogin({
       username,
-      password
+      password,
     });
   };
 
@@ -61,21 +74,23 @@ const Login = ({ handleLogin, handleResetLogin, authLogin, loginSocial }: Props)
     if (!success && !error) return;
     if (error) {
       handleResetLogin();
-      return Alert.alert(error?.data?.message || 'An error occurred, please try again!');
+      return Alert.alert(
+        error?.data?.message || "An error occurred, please try again!"
+      );
     }
 
     if (success) {
-      return navigation.navigate('MainTabNav');
+      return navigation.navigate("MainTabNav");
     }
   }, [authLogin.success, authLogin.error]);
 
   useEffect(() => {
     async function initGoogle() {
       GoogleSignin.configure({
-        scopes: ['profile', 'email'],
+        scopes: ["profile", "email"],
         webClientId: config.extra.googleClientId,
         forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
-        offlineAccess: false
+        offlineAccess: false,
       });
     }
     initGoogle();
@@ -86,7 +101,7 @@ const Login = ({ handleLogin, handleResetLogin, authLogin, loginSocial }: Props)
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       if (userInfo.idToken) {
-        const payload = { tokenId: userInfo.idToken, role: 'performer' };
+        const payload = { tokenId: userInfo.idToken, role: "performer" };
         const data = (await authService.loginGoogle(payload)).data;
         data.token && loginSocial({ token: data.token });
       }
@@ -108,21 +123,29 @@ const Login = ({ handleLogin, handleResetLogin, authLogin, loginSocial }: Props)
       <VStack flex={1} w="100%" mx="auto" justifyContent="space-between">
         <KeyboardAvoidingView>
           <ImageBackground
-            style={{ width: '100%', height: '100%' }}
-            source={require('assets/bg.jpg')}
-            resizeMode="cover">
+            style={{ width: "100%", height: "100%" }}
+            source={require("assets/bg.jpg")}
+            resizeMode="cover"
+          >
             <LinearGradient
               start={{ x: 0, y: 1 }}
               end={{ x: 0, y: 0 }}
-              colors={['black', 'rgba(0,0.10,0,0.77)', 'rgba(0,0,0,0.1)']}
-              style={{ flex: 1, paddingHorizontal: Sizes.fixPadding * 2.0 }}>
+              colors={["black", "rgba(0,0.10,0,0.77)", "rgba(0,0,0,0.1)"]}
+              style={{ flex: 1, paddingHorizontal: Sizes.fixPadding * 2.0 }}
+            >
               <Box px={padding.p5} py={20}>
                 <HStack space={2} alignSelf="center" mb={20}>
-                  <Heading alignSelf="center" fontSize={30} color={colors.lightText} bold letterSpacing={-1}>
+                  <Heading
+                    alignSelf="center"
+                    fontSize={30}
+                    color={colors.lightText}
+                    bold
+                    letterSpacing={-1}
+                  >
                     Welcome Back
                   </Heading>
                   <Image
-                    source={require('assets/heart-purple.png')}
+                    source={require("assets/heart-purple.png")}
                     alt="heart-purple"
                     size="58px"
                     resizeMode="contain"
@@ -135,7 +158,8 @@ const Login = ({ handleLogin, handleResetLogin, authLogin, loginSocial }: Props)
                       <Input
                         p={4}
                         borderColor={colors.inpBorderColor}
-                        onChangeText={val => onChange(val)}
+                        borderRadius={30}
+                        onChangeText={(val) => onChange(val)}
                         value={value}
                         autoCapitalize="none"
                         fontSize={15}
@@ -147,21 +171,27 @@ const Login = ({ handleLogin, handleResetLogin, authLogin, loginSocial }: Props)
                       />
                     )}
                     name="username"
-                    rules={{ required: 'Email or username is required.' }}
+                    rules={{ required: "Email or username is required." }}
                     defaultValue=""
                   />
                   {errors.username && (
-                    <ErrorMessage message={errors.username?.message || 'Email or username is required.'} />
+                    <ErrorMessage
+                      message={
+                        errors.username?.message ||
+                        "Email or username is required."
+                      }
+                    />
                   )}
                 </FormControl>
-                <FormControl>
+                <FormControl marginTop={0.3}>
                   <Controller
                     control={control}
                     render={({ field: { onChange, value } }) => (
                       <Input
                         p={4}
                         borderColor={colors.inpBorderColor}
-                        onChangeText={val => onChange(val)}
+                        borderRadius={30}
+                        onChangeText={(val) => onChange(val)}
                         value={value}
                         autoCapitalize="none"
                         fontSize={15}
@@ -175,49 +205,93 @@ const Login = ({ handleLogin, handleResetLogin, authLogin, loginSocial }: Props)
                     )}
                     name="password"
                     rules={{
-                      required: 'Password is required.',
+                      required: "Password is required.",
                       minLength: {
                         value: 6,
-                        message: 'Password is minimum 6 characters.'
-                      }
+                        message: "Password is minimum 6 characters.",
+                      },
                     }}
                     defaultValue=""
                   />
-                  {errors.password && <ErrorMessage message={errors.password?.message || 'Password is required.'} />}
+                  {errors.password && (
+                    <ErrorMessage
+                      message={
+                        errors.password?.message || "Password is required."
+                      }
+                    />
+                  )}
                 </FormControl>
 
                 <VStack space={3}>
-                  <Flex alignSelf="center" width={'100%'}>
+                  <Flex alignSelf="center" width={"100%"}>
                     <TouchableOpacity
                       activeOpacity={0.9}
                       disabled={authLogin.requesting}
-                      onPress={handleSubmit(onSubmit)}>
+                      onPress={handleSubmit(onSubmit)}
+                    >
                       <LinearGradient
                         start={{ x: 1, y: 0 }}
                         end={{ x: 0, y: 0 }}
-                        colors={['rgba(244, 67, 54, 0.9)', 'rgba(244, 67, 54, 0.6)', 'rgba(244, 67, 54, 0.3)']}
-                        style={styles.loginButtonStyle}>
-                        <Text style={{ fontWeight: 'bold', color: colors.lightText }}>Continue</Text>
+                        colors={[
+                          "rgba(244, 67, 54, 0.9)",
+                          "rgba(244, 67, 54, 0.6)",
+                          "rgba(244, 67, 54, 0.3)",
+                        ]}
+                        style={styles.loginButtonStyle}
+                      >
+                        <Text
+                          style={{
+                            fontWeight: "bold",
+                            color: colors.lightText,
+                          }}
+                        >
+                          Continue
+                        </Text>
                       </LinearGradient>
                     </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={0.9} disabled={authLogin.requesting} onPress={signInWithGoogle}>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      disabled={authLogin.requesting}
+                      onPress={signInWithGoogle}
+                    >
                       <LinearGradient
                         start={{ x: 1, y: 0 }}
                         end={{ x: 0, y: 0 }}
-                        colors={['rgba(244, 67, 54, 0.9)', 'rgba(244, 67, 54, 0.6)', 'rgba(244, 67, 54, 0.3)']}
-                        style={styles.loginButtonStyle}>
-                        <Text style={{ fontWeight: 'bold', color: colors.lightText }}>
-                          <FontAwesome name="google" size={20} /> Login with Google
+                        colors={[
+                          "rgba(244, 67, 54, 0.9)",
+                          "rgba(244, 67, 54, 0.6)",
+                          "rgba(244, 67, 54, 0.3)",
+                        ]}
+                        style={styles.loginButtonStyle}
+                      >
+                        <Text
+                          style={{
+                            fontWeight: "bold",
+                            color: colors.lightText,
+                          }}
+                        >
+                          <FontAwesome name="google" size={20} /> Login with
+                          Google
                         </Text>
                       </LinearGradient>
                     </TouchableOpacity>
                   </Flex>
-                  <Link alignSelf="center" onPress={(): void => navigation.navigate('IntroNav/ForgotPassword')}>
+                  <Link
+                    alignSelf="center"
+                    onPress={(): void =>
+                      navigation.navigate("IntroNav/ForgotPassword")
+                    }
+                  >
                     <Text fontWeight={300} fontSize={14} color={colors.primary}>
                       Forgot Password?
                     </Text>
                   </Link>
-                  <Link alignSelf="center" onPress={(): void => navigation.navigate('IntroNav/Register')}>
+                  <Link
+                    alignSelf="center"
+                    onPress={(): void =>
+                      navigation.navigate("IntroNav/Register")
+                    }
+                  >
                     <Text fontSize={12} color={colors.primary}>
                       CREATE AN ACCOUNT
                     </Text>
@@ -234,35 +308,35 @@ const Login = ({ handleLogin, handleResetLogin, authLogin, loginSocial }: Props)
 
 const styles = StyleSheet.create({
   textFieldContentStyle: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     height: 50.0,
     paddingHorizontal: Sizes.fixPadding * 2.0,
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    backgroundColor: "rgba(255, 255, 255, 0.3)",
     borderRadius: Sizes.fixPadding * 2.5,
-    marginBottom: Sizes.fixPadding,
-    fontWeight: 'bold',
-    color: colors.lightText
+    // marginBottom: Sizes.fixPadding,
+    fontWeight: "bold",
+    color: colors.lightText,
   },
   loginButtonStyle: {
     borderRadius: Sizes.fixPadding * 2.5,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: Sizes.fixPadding + 10.0,
     height: 50.0,
     // marginBottom: Sizes.fixPadding * 2.0,
     backgroundColor: colors.btnPrimaryColor,
-    width: '100%'
-  }
+    width: "100%",
+  },
 });
 
 const mapStateToProp = (state: any): any => ({
-  ...state.auth
+  ...state.auth,
 });
 
 const mapDispatch = {
   handleLogin: login,
   handleResetLogin: resetLogin,
-  loginSocial: loginSocial
+  loginSocial: loginSocial,
 };
 export default connect(mapStateToProp, mapDispatch)(Login);

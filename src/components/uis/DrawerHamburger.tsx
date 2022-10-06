@@ -13,8 +13,13 @@ export const DrawerHamburger = (): JSX.Element => {
   };
 
   return (
-    <TouchableOpacity onPress={handleShow} style={{ paddingLeft: 7 }}>
-      <Feather name="menu" size={30} color={colors.lightText} />
+    <TouchableOpacity onPress={handleShow} style={{ zIndex: 1000 }}>
+      <Feather
+        name="menu"
+        size={32}
+        color={colors.lightText}
+        style={{ padding: 8 }}
+      />
     </TouchableOpacity>
   );
 };
