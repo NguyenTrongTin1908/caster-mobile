@@ -16,7 +16,7 @@ import { connect } from "react-redux";
 import { IPerformer, ICountry } from "src/interfaces";
 import { Table, Row, Cell, TableWrapper } from "react-native-table-component";
 import { performerService } from "services/perfomer.service";
-import styles from "./style";
+import styles from "../style";
 import HeaderMenu from "components/tab/HeaderMenu";
 interface IProps {
   current: IPerformer;

@@ -1,9 +1,28 @@
-import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { ImageBackground, SafeAreaView, TouchableOpacity, StyleSheet, Text, View, Linking } from 'react-native';
-import { Colors, Fonts, Sizes } from '../../constants/styles';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { useIsFocused, useNavigation } from '@react-navigation/core';
-import { PinchGestureHandler, PinchGestureHandlerGestureEvent, TapGestureHandler } from 'react-native-gesture-handler';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import {
+  ImageBackground,
+  SafeAreaView,
+  TouchableOpacity,
+  StyleSheet,
+  Text,
+  View,
+  Linking,
+} from "react-native";
+import { Colors, Fonts, Sizes } from "../../constants/styles";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { useIsFocused, useNavigation } from "@react-navigation/core";
+import {
+  PinchGestureHandler,
+  PinchGestureHandlerGestureEvent,
+  TapGestureHandler,
+} from "react-native-gesture-handler";
 import {
   CameraDeviceFormat,
   CameraPermissionStatus,
@@ -13,31 +32,36 @@ import {
   sortFormats,
   useCameraDevices,
   useFrameProcessor,
-  VideoFile
-} from 'react-native-vision-camera';
-import { Camera, frameRateIncluded } from 'react-native-vision-camera';
-import { CONTENT_SPACING, MAX_ZOOM_FACTOR, SAFE_AREA_PADDING } from 'utils/theme';
+  VideoFile,
+} from "react-native-vision-camera";
+import { Camera, frameRateIncluded } from "react-native-vision-camera";
+import {
+  CONTENT_SPACING,
+  MAX_ZOOM_FACTOR,
+  SAFE_AREA_PADDING,
+} from "utils/theme";
 import Reanimated, {
   Extrapolate,
   interpolate,
   useAnimatedGestureHandler,
   useAnimatedProps,
-  useSharedValue
-} from 'react-native-reanimated';
-import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import IonIcon from 'react-native-vector-icons/Ionicons';
-import { CaptureButton } from 'components/media/CaptureButton';
+  useSharedValue,
+} from "react-native-reanimated";
+import MaterialIcon from "react-native-vector-icons/MaterialCommunityIcons";
+import IonIcon from "react-native-vector-icons/Ionicons";
+import { CaptureButton } from "components/media/CaptureButton";
 const ReanimatedCamera = Reanimated.createAnimatedComponent(Camera);
 Reanimated.addWhitelistedNativeProps({
-  zoom: true
+  zoom: true,
 });
 const SCALE_FULL_ZOOM = 3;
 const BUTTON_SIZE = 40;
 const UploadScreen = () => {
   const navigation = useNavigation() as any;
-  const [cameraPermissionStatus, setCameraPermissionStatus] = useState<CameraPermissionStatus>('not-determined');
+  const [cameraPermissionStatus, setCameraPermissionStatus] =
+    useState<CameraPermissionStatus>("not-determined");
   const [microphonePermissionStatus, setMicrophonePermissionStatus] =
-    useState<CameraPermissionStatus>('not-determined');
+    useState<CameraPermissionStatus>("not-determined");
   const [canOpenCamera, setOpenCamera] = useState(false);
   const camera = useRef<Camera>(null);
   const [isCameraInitialized, setIsCameraInitialized] = useState(false);
@@ -49,9 +73,11 @@ const UploadScreen = () => {
   const isFocussed = useIsFocused();
   const isActive = isFocussed;
 
-  const [cameraPosition, setCameraPosition] = useState<'front' | 'back'>('front');
+  const [cameraPosition, setCameraPosition] = useState<"front" | "back">(
+    "front"
+  );
   const [enableHdr, setEnableHdr] = useState(false);
-  const [flash, setFlash] = useState<'off' | 'on'>('off');
+  const [flash, setFlash] = useState<"off" | "on">("off");
   const [enableNightMode, setEnableNightMode] = useState(false);
 
   // camera format settings
@@ -73,30 +99,46 @@ const UploadScreen = () => {
     }
 
     const supportsHdrAt60Fps = formats.some(
-      f => f.supportsVideoHDR && f.frameRateRanges.some(r => frameRateIncluded(r, 60))
+      (f) =>
+        f.supportsVideoHDR &&
+        f.frameRateRanges.some((r) => frameRateIncluded(r, 60))
     );
     if (enableHdr && !supportsHdrAt60Fps) {
       // User has enabled HDR, but HDR is not supported at 60 FPS.
       return 30;
     }
 
-    const supports60Fps = formats.some(f => f.frameRateRanges.some(r => frameRateIncluded(r, 60)));
+    const supports60Fps = formats.some((f) =>
+      f.frameRateRanges.some((r) => frameRateIncluded(r, 60))
+    );
     if (!supports60Fps) {
       // 60 FPS is not supported by any format.
       return 30;
     }
     // If nothing blocks us from using it, we default to 60 FPS.
     return 60;
-  }, [device?.supportsLowLightBoost, enableHdr, enableNightMode, formats, is60Fps]);
+  }, [
+    device?.supportsLowLightBoost,
+    enableHdr,
+    enableNightMode,
+    formats,
+    is60Fps,
+  ]);
 
   const supportsCameraFlipping = useMemo(
     () => devices.back != null && devices.front != null,
     [devices.back, devices.front]
   );
   const supportsFlash = device?.hasFlash ?? false;
-  const supportsHdr = useMemo(() => formats.some(f => f.supportsVideoHDR || f.supportsPhotoHDR), [formats]);
+  const supportsHdr = useMemo(
+    () => formats.some((f) => f.supportsVideoHDR || f.supportsPhotoHDR),
+    [formats]
+  );
   const supports60Fps = useMemo(
-    () => formats.some(f => f.frameRateRanges.some(rate => frameRateIncluded(rate, 60))),
+    () =>
+      formats.some((f) =>
+        f.frameRateRanges.some((rate) => frameRateIncluded(rate, 60))
+      ),
     [formats]
   );
   const canToggleNightMode = enableNightMode
@@ -109,11 +151,13 @@ const UploadScreen = () => {
     if (enableHdr) {
       // We only filter by HDR capable formats if HDR is set to true.
       // Otherwise we ignore the `supportsVideoHDR` property and accept formats which support HDR `true` or `false`
-      result = result.filter(f => f.supportsVideoHDR || f.supportsPhotoHDR);
+      result = result.filter((f) => f.supportsVideoHDR || f.supportsPhotoHDR);
     }
 
     // find the first format that includes the given FPS
-    return result.find(f => f.frameRateRanges.some(r => frameRateIncluded(r, fps)));
+    return result.find((f) =>
+      f.frameRateRanges.some((r) => frameRateIncluded(r, fps))
+    );
   }, [formats, fps, enableHdr]);
 
   //#region Animated Zoom
@@ -125,7 +169,7 @@ const UploadScreen = () => {
   const cameraAnimatedProps = useAnimatedProps(() => {
     const z = Math.max(Math.min(zoom.value, maxZoom), minZoom);
     return {
-      zoom: z
+      zoom: z,
     };
   }, [maxZoom, minZoom, zoom]);
   //#endregion
@@ -142,24 +186,24 @@ const UploadScreen = () => {
     console.error(error);
   }, []);
   const onInitialized = useCallback(() => {
-    console.log('Camera initialized!');
+    console.log("Camera initialized!");
     setIsCameraInitialized(true);
   }, []);
   const onMediaCaptured = useCallback(
-    (media: PhotoFile | VideoFile, type: 'photo' | 'video') => {
+    (media: PhotoFile | VideoFile, type: "photo" | "video") => {
       console.log(`Media captured! ${JSON.stringify(media)}`);
-      navigation.navigate('MediaPreview', {
+      navigation.navigate("MediaPreview", {
         path: media.path,
-        type: type
+        type: type,
       });
     },
     [navigation]
   );
   const onFlipCameraPressed = useCallback(() => {
-    setCameraPosition(p => (p === 'back' ? 'front' : 'back'));
+    setCameraPosition((p) => (p === "back" ? "front" : "back"));
   }, []);
   const onFlashPressed = useCallback(() => {
-    setFlash(f => (f === 'off' ? 'on' : 'off'));
+    setFlash((f) => (f === "off" ? "on" : "off"));
   }, []);
   //#endregion
 
@@ -177,14 +221,19 @@ const UploadScreen = () => {
   }, [neutralZoom, zoom]);
 
   useEffect(() => {
-    Camera.getMicrophonePermissionStatus().then(status => setHasMicrophonePermission(status === 'authorized'));
+    Camera.getMicrophonePermissionStatus().then((status) =>
+      setHasMicrophonePermission(status === "authorized")
+    );
   }, []);
   //#endregion
 
   //#region Pinch to Zoom Gesture
   // The gesture handler maps the linear pinch gesture (0 - 1) to an exponential curve since a camera's zoom
   // function does not appear linear to the user. (aka zoom 0.1 -> 0.2 does not look equal in difference as 0.8 -> 0.9)
-  const onPinchGesture = useAnimatedGestureHandler<PinchGestureHandlerGestureEvent, { startZoom?: number }>({
+  const onPinchGesture = useAnimatedGestureHandler<
+    PinchGestureHandlerGestureEvent,
+    { startZoom?: number }
+  >({
     onStart: (_, context) => {
       context.startZoom = zoom.value;
     },
@@ -197,39 +246,51 @@ const UploadScreen = () => {
         [-1, 0, 1],
         Extrapolate.CLAMP
       );
-      zoom.value = interpolate(scale, [-1, 0, 1], [minZoom, startZoom, maxZoom], Extrapolate.CLAMP);
-    }
+      zoom.value = interpolate(
+        scale,
+        [-1, 0, 1],
+        [minZoom, startZoom, maxZoom],
+        Extrapolate.CLAMP
+      );
+    },
   });
   //#endregion
 
   if (device != null && format != null) {
     console.log(
-      `Re-rendering camera page with ${isActive ? 'active' : 'inactive'} camera. ` +
+      `Re-rendering camera page with ${
+        isActive ? "active" : "inactive"
+      } camera. ` +
         `Device: "${device.name}" (${format.photoWidth}x${format.photoHeight} @ ${fps}fps)`
     );
   } else {
-    console.log('re-rendering camera page without active camera');
+    console.log("re-rendering camera page without active camera");
   }
 
-  const onFrameProcessorSuggestionAvailable = useCallback((suggestion: FrameProcessorPerformanceSuggestion) => {
-    console.log(`Suggestion available! ${suggestion.type}: Can do ${suggestion.suggestedFrameProcessorFps} FPS`);
-  }, []);
+  const onFrameProcessorSuggestionAvailable = useCallback(
+    (suggestion: FrameProcessorPerformanceSuggestion) => {
+      console.log(
+        `Suggestion available! ${suggestion.type}: Can do ${suggestion.suggestedFrameProcessorFps} FPS`
+      );
+    },
+    []
+  );
 
   const requestMicrophonePermission = useCallback(async () => {
-    console.log('Requesting microphone permission...');
+    console.log("Requesting microphone permission...");
     const permission = await Camera.requestMicrophonePermission();
     console.log(`Microphone permission status: ${permission}`);
 
-    if (permission === 'denied') await Linking.openSettings();
+    if (permission === "denied") await Linking.openSettings();
     setMicrophonePermissionStatus(permission);
   }, []);
 
   const requestCameraPermission = useCallback(async () => {
-    console.log('Requesting camera permission...');
+    console.log("Requesting camera permission...");
     const permission = await Camera.requestCameraPermission();
     console.log(`Camera permission status: ${permission}`);
 
-    if (permission === 'denied') await Linking.openSettings();
+    if (permission === "denied") await Linking.openSettings();
     setCameraPermissionStatus(permission);
   }, []);
 
@@ -239,25 +300,28 @@ const UploadScreen = () => {
 
   useEffect(() => {
     async function requestPermission() {
-      console.log('Requesting camera permission...');
+      console.log("Requesting camera permission...");
       const permission = await Camera.requestCameraPermission();
       console.log(`Camera permission status: ${permission}`);
 
-      if (permission === 'denied') await Linking.openSettings();
+      if (permission === "denied") await Linking.openSettings();
       setCameraPermissionStatus(permission);
 
-      console.log('Requesting microphone permission...');
+      console.log("Requesting microphone permission...");
       const permissionM = await Camera.requestMicrophonePermission();
       console.log(`Microphone permission status: ${permissionM}`);
 
-      if (permissionM === 'denied') await Linking.openSettings();
+      if (permissionM === "denied") await Linking.openSettings();
       setMicrophonePermissionStatus(permissionM);
     }
     requestPermission();
   }, []);
 
   useEffect(() => {
-    if (cameraPermissionStatus === 'authorized' && microphonePermissionStatus === 'authorized') {
+    if (
+      cameraPermissionStatus === "authorized" &&
+      microphonePermissionStatus === "authorized"
+    ) {
       setOpenCamera(true);
     }
   }, [cameraPermissionStatus, microphonePermissionStatus, navigation]);
@@ -266,7 +330,10 @@ const UploadScreen = () => {
     return (
       <View style={styles.container}>
         {device != null && (
-          <PinchGestureHandler onGestureEvent={onPinchGesture} enabled={isActive}>
+          <PinchGestureHandler
+            onGestureEvent={onPinchGesture}
+            enabled={isActive}
+          >
             <Reanimated.View style={StyleSheet.absoluteFill}>
               <TapGestureHandler onEnded={onDoubleTap} numberOfTaps={2}>
                 <ReanimatedCamera
@@ -276,7 +343,9 @@ const UploadScreen = () => {
                   isActive={isActive}
                   fps={fps}
                   hdr={enableHdr}
-                  lowLightBoost={device.supportsLowLightBoost && enableNightMode}
+                  lowLightBoost={
+                    device.supportsLowLightBoost && enableNightMode
+                  }
                   onInitialized={onInitialized}
                   onError={onError}
                   enableZoomGesture={false}
@@ -299,37 +368,61 @@ const UploadScreen = () => {
           cameraZoom={zoom}
           minZoom={minZoom}
           maxZoom={maxZoom}
-          flash={supportsFlash ? flash : 'off'}
+          flash={supportsFlash ? flash : "off"}
           enabled={isCameraInitialized && isActive}
           setIsPressingButton={setIsPressingButton}
         />
         <View style={styles.rightButtonRow}>
           {supportsCameraFlipping && (
-            <TouchableOpacity style={styles.button} onPress={onFlipCameraPressed}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={onFlipCameraPressed}
+            >
               <IonIcon name="camera-reverse" color="white" size={24} />
             </TouchableOpacity>
           )}
           {supportsFlash && (
             <TouchableOpacity style={styles.button} onPress={onFlashPressed}>
-              <IonIcon name={flash === 'on' ? 'flash' : 'flash-off'} color="white" size={24} />
+              <IonIcon
+                name={flash === "on" ? "flash" : "flash-off"}
+                color="white"
+                size={24}
+              />
             </TouchableOpacity>
           )}
           {supports60Fps && (
-            <TouchableOpacity style={styles.button} onPress={() => setIs60Fps(!is60Fps)}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => setIs60Fps(!is60Fps)}
+            >
               <Text style={styles.text}>
-                {is60Fps ? '60' : '30'}
-                {'\n'}FPS
+                {is60Fps ? "60" : "30"}
+                {"\n"}FPS
               </Text>
             </TouchableOpacity>
           )}
           {supportsHdr && (
-            <TouchableOpacity style={styles.button} onPress={() => setEnableHdr(h => !h)}>
-              <MaterialIcon name={enableHdr ? 'hdr' : 'hdr-off'} color="white" size={24} />
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => setEnableHdr((h) => !h)}
+            >
+              <MaterialIcon
+                name={enableHdr ? "hdr" : "hdr-off"}
+                color="white"
+                size={24}
+              />
             </TouchableOpacity>
           )}
           {canToggleNightMode && (
-            <TouchableOpacity style={styles.button} onPress={() => setEnableNightMode(!enableNightMode)}>
-              <IonIcon name={enableNightMode ? 'moon' : 'moon-outline'} color="white" size={24} />
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => setEnableNightMode(!enableNightMode)}
+            >
+              <IonIcon
+                name={enableNightMode ? "moon" : "moon-outline"}
+                color="white"
+                size={24}
+              />
             </TouchableOpacity>
           )}
         </View>
@@ -341,8 +434,9 @@ const UploadScreen = () => {
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ flex: 1 }}>
         <ImageBackground
-          source={require('../../assets/images/ronaldo.png')}
-          style={{ flex: 1, justifyContent: 'flex-end' }}>
+          source={require("../../assets/dance_1.jpg")}
+          style={{ flex: 1, justifyContent: "flex-end" }}
+        >
           {canOpenCamera && device != null && CameraScreen()}
         </ImageBackground>
       </View>
@@ -353,80 +447,80 @@ const UploadScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'black'
+    backgroundColor: "black",
   },
   videoIconWrapStyle: {
     backgroundColor: Colors.primaryColor,
     width: 70.0,
     height: 70.0,
     borderRadius: 35.0,
-    alignItems: 'center',
-    justifyContent: 'center'
+    alignItems: "center",
+    justifyContent: "center",
   },
   videoInfoWrapStyle: {
-    backgroundColor: 'rgba(0,0,0,0.1)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: Sizes.fixPadding + 5.0
+    backgroundColor: "rgba(0,0,0,0.1)",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: Sizes.fixPadding + 5.0,
   },
   captureButton: {
-    position: 'absolute',
-    alignSelf: 'center',
-    bottom: SAFE_AREA_PADDING.paddingBottom
+    position: "absolute",
+    alignSelf: "center",
+    bottom: SAFE_AREA_PADDING.paddingBottom,
   },
   button: {
     marginBottom: CONTENT_SPACING,
     width: 40,
     height: 40,
     borderRadius: 40 / 2,
-    backgroundColor: 'rgba(140, 140, 140, 0.3)',
-    justifyContent: 'center',
-    alignItems: 'center'
+    backgroundColor: "rgba(140, 140, 140, 0.3)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   rightButtonRow: {
-    position: 'absolute',
+    position: "absolute",
     right: SAFE_AREA_PADDING.paddingRight,
-    top: SAFE_AREA_PADDING.paddingTop
+    top: SAFE_AREA_PADDING.paddingTop,
   },
   text: {
-    color: 'white',
+    color: "white",
     fontSize: 11,
-    fontWeight: 'bold',
-    textAlign: 'center'
+    fontWeight: "bold",
+    textAlign: "center",
   },
   addMusicButtonStyle: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     borderRadius: Sizes.fixPadding - 2.0,
     backgroundColor: Colors.blackColor,
-    justifyContent: 'center',
+    justifyContent: "center",
     paddingVertical: Sizes.fixPadding,
-    paddingHorizontal: Sizes.fixPadding
+    paddingHorizontal: Sizes.fixPadding,
   },
   nextButtonStyle: {
-    alignItems: 'center',
+    alignItems: "center",
     borderRadius: Sizes.fixPadding - 2.0,
     backgroundColor: Colors.blackColor,
-    justifyContent: 'center',
+    justifyContent: "center",
     paddingVertical: Sizes.fixPadding,
-    paddingHorizontal: Sizes.fixPadding * 3.0
+    paddingHorizontal: Sizes.fixPadding * 3.0,
   },
   addMusicAndNextButtonWrapStyle: {
     marginBottom: Sizes.fixPadding + 5.0,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginHorizontal: Sizes.fixPadding
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginHorizontal: Sizes.fixPadding,
   },
   coverWrapStyle: {
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
     backgroundColor: Colors.whiteColor,
     padding: Sizes.fixPadding - 8.0,
     borderRadius: Sizes.fixPadding,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: Sizes.fixPadding
-  }
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: Sizes.fixPadding,
+  },
 });
 
 export default UploadScreen;

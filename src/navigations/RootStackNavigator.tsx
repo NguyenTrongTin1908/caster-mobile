@@ -29,6 +29,7 @@ import ModelProfile from "screens/model/profile/ModelProfile";
 import Profile from "screens/profile/Profile";
 import FollowPost from "screens/followPost/FollowPost";
 import PushNotificationSetting from "screens/notification/component/PushNotificationSetting";
+import NotificationPage from "screens/notification/Notification";
 
 import EditProfile from "screens/profile/EditProfile";
 export type RootStackParamList = {
@@ -44,6 +45,7 @@ export type RootStackParamList = {
   EditProfile: undefined;
   FollowPost: undefined;
   PushNotificationSetting: undefined;
+  NotificationPage: undefined;
   ListFollow: { performer: IPerformer };
   Hashtag: { query: string; currentTab: string };
   Trending: undefined;
@@ -158,6 +160,11 @@ function RootNavigator({ loggedIn }): React.ReactElement {
           options={{ headerShown: false, gestureEnabled: false }}
           name="LiveNow"
           component={LiveNow}
+        />
+        <Stack.Screen
+          options={{ headerShown: false, gestureEnabled: false }}
+          name="NotificationPage"
+          component={NotificationPage}
         />
         <Stack.Screen
           options={{ headerShown: false, gestureEnabled: false }}

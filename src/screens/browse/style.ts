@@ -1,6 +1,7 @@
 import { Platform, StyleSheet } from 'react-native';
 import { colors, Fonts, Sizes } from 'utils/theme';
 import { Dimensions, StatusBar } from 'react-native';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
 
 const { width, height } = Dimensions.get('window');
 let deviceH = Dimensions.get('screen').height;
@@ -126,6 +127,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  iconSettings:{
+    position: 'absolute',
+    top: 0 +getStatusBarHeight(true),
+    right: 0,
+
+  }
 });
 
 export default styles;

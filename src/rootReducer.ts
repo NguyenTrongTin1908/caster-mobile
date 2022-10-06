@@ -9,8 +9,9 @@ import appNav from 'services/redux/app-nav/recuders';
 import chat from 'services/redux/chatRoom/reducers'
 import feed from 'services/redux/feed/reducers'
 import comment from 'services/redux/comment/reducers'
+import notification from 'services/redux/notification/reducers'
 
 
-const reducers = merge(auth, system, user, appNav,chat,feed,comment);
+const reducers = merge(auth, system, user, appNav,chat,feed,comment,notification);
 
 export default combineReducers(reducers);

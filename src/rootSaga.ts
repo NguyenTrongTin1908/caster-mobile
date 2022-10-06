@@ -7,9 +7,10 @@ import userSagas from 'services/redux/user/sagas';
 import chatRoom from 'services/redux/chatRoom/sagas';
 import performerSagas from 'services/redux/feed/sagas';
 import commentSagas from 'services/redux/comment/sagas'
+import notificationSagas from 'services/redux/notification/sagas'
 
 function* rootSaga(): any {
-  yield all([...authSagas, ...systemSagas, ...userSagas,...chatRoom,...performerSagas,...commentSagas].map(spawn));
+  yield all([...authSagas, ...systemSagas, ...userSagas,...chatRoom,...performerSagas,...commentSagas,...notificationSagas].map(spawn));
 }
 
 export default rootSaga;

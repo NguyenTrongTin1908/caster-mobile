@@ -106,7 +106,7 @@ const FeedStats = ({
             <MaterialIcons name="add" color={colors.lightText} size={18} />
           </View>
         </View>
-        <View
+        {/* <View
           style={{
             marginRight: Sizes.fixPadding,
             marginVertical: Sizes.fixPadding + 2.0,
@@ -120,7 +120,7 @@ const FeedStats = ({
           >
             Live Now
           </Button>
-        </View>
+        </View> */}
         <View
           style={{
             marginRight: Sizes.fixPadding,

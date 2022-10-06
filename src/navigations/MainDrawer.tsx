@@ -210,14 +210,12 @@ export const MainDrawer = ({
       },
     },
     {
-      id: "pushNotificationSetting",
-      label: "Notification Setting",
-      icon: (
-        <FontAwesome name={"credit-card"} size={17} color={colors.appBgColor} />
-      ),
+      id: "notificationPage",
+      label: "Notifications And Mail",
+      icon: <Entypo name={"bell"} size={17} color={colors.appBgColor} />,
       onPress: () => {
         //todo - update navigation
-        navigationRef.current?.navigate("PushNotificationSetting");
+        navigationRef.current?.navigate("NotificationPage");
         handleHide();
       },
     },

@@ -124,9 +124,7 @@ const ModelProfile = ({ handleLogout, route }: Props): React.ReactElement => {
             ]}
           />
         </View>
-        <View style={styles.bar}>
-          <HeaderMenu />
-        </View>
+        <HeaderMenu />
       </View>
     </SafeAreaView>
   );

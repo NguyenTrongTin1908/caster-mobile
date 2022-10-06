@@ -174,20 +174,8 @@ const Profile = ({
             ]}
           />
         </View>
-        <View style={styles.bar}>
-          {/* <TouchableOpacity onPress={() => navigation.goBack()}>
-            <View style={styles.left}>
-              <MaterialIcons
-                name="arrow-back"
-                color={colors.lightText}
-                size={24}
-              />
-            </View>
-          </TouchableOpacity> */}
-          {/* <View style={styles.right}> */}
-          <HeaderMenu />
-          {/* </View> */}
-        </View>
+
+        <HeaderMenu />
       </View>
     </SafeAreaView>
   );
