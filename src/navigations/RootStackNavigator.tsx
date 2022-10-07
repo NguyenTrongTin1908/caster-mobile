@@ -30,6 +30,8 @@ import Profile from "screens/profile/Profile";
 import FollowPost from "screens/followPost/FollowPost";
 import PushNotificationSetting from "screens/notification/component/PushNotificationSetting";
 import NotificationPage from "screens/notification/Notification";
+import Wallet from "screens/wallet/Wallet";
+import TokenPackage from "screens/token-package/TokenPackage";
 
 import EditProfile from "screens/profile/EditProfile";
 export type RootStackParamList = {
@@ -49,6 +51,8 @@ export type RootStackParamList = {
   ListFollow: { performer: IPerformer };
   Hashtag: { query: string; currentTab: string };
   Trending: undefined;
+  Wallet: undefined;
+  TokenPackage: undefined;
   // ChatRoom: { performer: IPerformer };
   // PrivateChatDetail: { performer: IPerformer; conversationId: string };
   PerformerDetail: { username: string };
@@ -170,6 +174,16 @@ function RootNavigator({ loggedIn }): React.ReactElement {
           options={{ headerShown: false, gestureEnabled: false }}
           name="Profile"
           component={Profile}
+        />
+        <Stack.Screen
+          options={{ headerShown: false, gestureEnabled: false }}
+          name="Wallet"
+          component={Wallet}
+        />
+        <Stack.Screen
+          options={{ headerShown: false, gestureEnabled: false }}
+          name="TokenPackage"
+          component={TokenPackage}
         />
         <Stack.Screen
           options={{ headerShown: false, gestureEnabled: false }}

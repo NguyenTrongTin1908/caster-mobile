@@ -12,8 +12,11 @@ import styles from "./style";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { Menu } from "react-native-material-menu";
 import HeaderMenu from "components/tab/HeaderMenu";
+import ButtonFollow from "components/uis/ButtonFollow";
+import { IPerformer } from "src/interfaces";
 interface Props {
   isLoggedIn: boolean;
+  current: IPerformer;
   handleLogout: Function;
   route: {
     params: {
@@ -21,7 +24,11 @@ interface Props {
     };
   };
 }
-const ModelProfile = ({ handleLogout, route }: Props): React.ReactElement => {
+const ModelProfile = ({
+  handleLogout,
+  route,
+  current,
+}: Props): React.ReactElement => {
   const navigation = useNavigation() as any;
   const [showOptions, setshowOptions] = useState(false);
   const performer = JSON.parse(route.params.performer);
@@ -76,7 +83,7 @@ const ModelProfile = ({ handleLogout, route }: Props): React.ReactElement => {
               source={
                 performer?.avatar
                   ? { uri: performer?.avatar }
-                  : require("../../../assets/bg.jpg")
+                  : require("../../../assets/avatar-default.png")
               }
               alt={"avatar"}
               size={100}
@@ -93,19 +100,32 @@ const ModelProfile = ({ handleLogout, route }: Props): React.ReactElement => {
             ? `${performer.name}`
             : `${performer.username}`}
         </Text>
-        <View
-          style={{ flexDirection: "row", alignSelf: "center", marginTop: 5 }}
-        >
-          {/* <TouchableOpacity activeOpacity={0.7} style={styles.editButtonStyle}>
+
+        {/* <TouchableOpacity activeOpacity={0.7} style={styles.editButtonStyle}>
             <Text style={styles.subText}>Edit Profile</Text>
           </TouchableOpacity> */}
-          <TouchableOpacity
+        {/* <TouchableOpacity
             activeOpacity={0.5}
             style={styles.followButtonStyle}
           >
             <Text style={styles.subText}>Follow</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            marginTop: 2,
+          }}
+        >
+          <ButtonFollow
+            isHideOnClick={false}
+            targetId={performer._id}
+            sourceId={current._id}
+            isFollow={performer.isFollowed}
+            getPerformerList={() => {}}
+          />
         </View>
+
         <View style={{ flex: 1 }}>
           <TabView
             scenes={[
@@ -130,6 +150,8 @@ const ModelProfile = ({ handleLogout, route }: Props): React.ReactElement => {
   );
 };
 const mapStateToProp = (state: any): any => ({
+  ...state.user,
+
   isLoggedIn: state.auth.loggedIn,
 });
 const mapDispatch = {

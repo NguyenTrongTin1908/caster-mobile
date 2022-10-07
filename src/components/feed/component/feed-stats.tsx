@@ -19,6 +19,7 @@ import { connect } from "react-redux";
 import { reactionService } from "services/reaction.service";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { IPerformer } from "src/interfaces";
+import ButtonFollow from "components/uis/ButtonFollow";
 interface IProps {
   item: IFeed;
   currentTab: string;
@@ -83,6 +84,21 @@ const FeedStats = ({
       <View style={styles.rightContainer}>
         <View
           style={{
+            marginBottom: Sizes.fixPadding + 5.0,
+            alignItems: "center",
+          }}
+        >
+          <ButtonFollow
+            isHideOnClick={false}
+            targetId={item?.performer._id}
+            sourceId={currentUser._id}
+            isFollow={item?.performer.isFollowed}
+            getPerformerList={() => {}}
+          />
+        </View>
+
+        <View
+          style={{
             marginRight: Sizes.fixPadding - 5.0,
             marginBottom: Sizes.fixPadding + 10.0,
             alignItems: "center",
@@ -90,15 +106,21 @@ const FeedStats = ({
         >
           <TouchableOpacity
             activeOpacity={0.9}
-            onPress={() => navigation.navigate("Model", { screen: "Model" })}
+            onPress={() =>
+              navigation.navigate("ModelProfile", {
+                screen: "ModelProfile",
+                performer: JSON.stringify(item?.performer),
+              })
+            }
           >
             <Image
               style={styles.profilePicture}
               source={{
                 uri:
                   item?.performer.avatar ||
-                  Image.resolveAssetSource(require("../../../assets/user.png"))
-                    .uri,
+                  Image.resolveAssetSource(
+                    require("../../../assets/avatar-default.png")
+                  ).uri,
               }}
             />
           </TouchableOpacity>

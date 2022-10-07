@@ -18,7 +18,7 @@ export const DrawerHamburger = (): JSX.Element => {
         name="menu"
         size={32}
         color={colors.lightText}
-        style={{ padding: 8 }}
+        style={{ padding: 2 }}
       />
     </TouchableOpacity>
   );

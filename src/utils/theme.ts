@@ -25,7 +25,8 @@ export const colors = {
   hashtag: 'rgb(82,198,246)',
   lightGray:'#F1F1F2',
   darkGray: '#B1A492',
-  blueCaster: "#FF69B4",
+  diamondIcon: "#A97D28",
+  rubyIcon : "#F83333",
 
   //text
   lightText: '#fff',

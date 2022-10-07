@@ -3,6 +3,7 @@ import React, { useRef, useEffect } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import {
+  ScrollView,
   Box,
   FlatList,
   Flex,
@@ -23,7 +24,7 @@ import { colors } from "utils/theme";
 import { IPerformer } from "src/interfaces";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 interface DrawerProps {
   user: IPerformer;
   loggedIn: boolean;
@@ -31,7 +32,6 @@ interface DrawerProps {
   hasTouchedDrawer: boolean;
   handleLogout: Function;
 }
-
 export const MainDrawer = ({
   loggedIn = false,
   showDrawer = false,
@@ -40,19 +40,16 @@ export const MainDrawer = ({
   handleLogout,
 }: DrawerProps): JSX.Element => {
   const viewRef = useRef(null) as any;
-
   const handleShow = () => {
     if (!showDrawer) viewRef.current.fadeOutLeft(800);
     else {
       viewRef.current.fadeInLeft(800);
     }
   };
-
   const handleHide = () => {
     const store = storeHolder.getStore();
     store?.dispatch(showDrawerHandler(false));
   };
-
   const renderProfile = () => {
     if (!loggedIn) {
       return (
@@ -67,7 +64,6 @@ export const MainDrawer = ({
         </Box>
       );
     }
-
     return (
       <Box safeAreaTop bgColor={colors.dark} px={4} py={4}>
         <HStack space={3}>
@@ -85,7 +81,6 @@ export const MainDrawer = ({
               borderRadius={30}
             />
           </TouchableOpacity>
-
           <VStack space={1} justifyContent="center">
             <TouchableOpacity
               onPress={() => {
@@ -109,10 +104,47 @@ export const MainDrawer = ({
             </TouchableOpacity>
           </Box>
         </HStack>
+        <View
+          flexDirection={"row"}
+          justifyContent="space-between"
+          marginTop={5}
+        >
+          <TouchableOpacity>
+            <View flexDirection={"row"}>
+              <FontAwesome name="heart" size={20} color={colors.primary} />
+              <Text color={colors.lightText} marginX={2}>
+                {(user?.rubyBalance || 0).toFixed(2)}
+              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  navigationRef.current?.navigate("TokenPackage");
+                  handleHide();
+                }}
+              >
+                <FontAwesome
+                  color={colors.btnSecondaryColor}
+                  size={20}
+                  name="plus-circle"
+                ></FontAwesome>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <View flexDirection={"row"}>
+              <FontAwesome
+                name="diamond"
+                size={20}
+                color={colors.diamondIcon}
+              />
+              <Text color={colors.lightText} marginX={2}>
+                {(user?.balance || 0).toFixed(2)}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       </Box>
     );
   };
-
   const menuGuest = [
     {
       id: "login",
@@ -122,12 +154,10 @@ export const MainDrawer = ({
         navigationRef.current?.navigate("IntroNav", {
           screen: "IntroNav/Login",
         });
-
         handleHide();
       },
     },
   ];
-
   const menuLoggedInItems = [
     {
       id: "golive",
@@ -159,28 +189,6 @@ export const MainDrawer = ({
         handleHide();
       },
     },
-    // {
-    //   id: "notification",
-    //   label: "Notifications",
-    //   icon: "bell-o",
-    //   onPress: () => {
-    //     //todo - update navigation
-    //     // navigationRef.current?.navigate('');
-    //     handleHide();
-    //   },
-    // },
-    // {
-    //   id: "top",
-    //   label: "Top",
-    //   icon: (
-    //     <FontAwesome name={"bar-chart"} size={17} color={colors.appBgColor} />
-    //   ),
-    //   onPress: () => {
-    //     //todo - update navigation
-    //     navigationRef.current?.navigate("Model");
-    //     handleHide();
-    //   },
-    // },
     {
       id: "explore",
       label: "Explore",
@@ -220,7 +228,7 @@ export const MainDrawer = ({
       ),
       onPress: () => {
         //todo - update navigation
-        // navigationRef.current?.navigate('');
+        navigationRef.current?.navigate("Wallet");
         handleHide();
       },
     },
@@ -234,7 +242,6 @@ export const MainDrawer = ({
         handleHide();
       },
     },
-
     {
       id: "followerList",
       label: "Follower List",
@@ -255,8 +262,6 @@ export const MainDrawer = ({
         />
       ),
       onPress: () => {
-        // todo - should update logout redux
-
         handleHide();
       },
     },
@@ -265,8 +270,6 @@ export const MainDrawer = ({
       label: "Earnings History",
       icon: <FontAwesome name={"money"} size={17} color={colors.appBgColor} />,
       onPress: () => {
-        // todo - should update logout redux
-
         handleHide();
       },
     },
@@ -277,8 +280,6 @@ export const MainDrawer = ({
         <FontAwesome name={"cc-paypal"} size={17} color={colors.appBgColor} />
       ),
       onPress: () => {
-        // todo - should update logout redux
-
         handleHide();
       },
     },
@@ -289,7 +290,6 @@ export const MainDrawer = ({
         <FontAwesome name={"sign-out"} size={17} color={colors.appBgColor} />
       ),
       onPress: () => {
-        // todo - should update logout redux
         handleLogout();
         handleHide();
         navigationRef.current?.navigate("IntroNav", {
@@ -298,14 +298,12 @@ export const MainDrawer = ({
       },
     },
   ];
-
   const renderMenuItem = ({ item }: any) => {
     return (
       <Box mt={1} marginTop={3}>
         <TouchableOpacity style={styles.menuButton} onPress={item.onPress}>
           <HStack space={3}>
             <Box flexDirection="row">{item.icon}</Box>
-
             <Box flexDirection="row" marginLeft={3}>
               <Text size={"sm"} bold>
                 {item.label}
@@ -316,7 +314,6 @@ export const MainDrawer = ({
       </Box>
     );
   };
-
   useEffect(() => {
     hasTouchedDrawer && handleShow();
   }, [showDrawer]);
@@ -334,13 +331,13 @@ export const MainDrawer = ({
       <Flex flex={5} style={styles.drawerContainer}>
         <View>{renderProfile()}</View>
         <Divider />
-        <View px={18} py={22}>
+        <ScrollView px={18} py={14}>
           <FlatList
             data={loggedIn ? menuLoggedInItems : menuGuest}
             renderItem={renderMenuItem}
             keyExtractor={(item) => item.id}
           />
-        </View>
+        </ScrollView>
       </Flex>
       <Flex
         flex={2}
@@ -357,7 +354,6 @@ export const MainDrawer = ({
     </Animatable.View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     display: "none",
@@ -372,7 +368,6 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
   },
   drawerContainer: {
-    flex: 5,
     backgroundColor: "#fff",
   },
   shadowContainer: {
@@ -389,7 +384,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
 });
-
 const mapStateToProp = (state: any) => ({
   user: state.user.current,
   loggedIn: state.auth.loggedIn,
