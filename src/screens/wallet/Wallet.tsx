@@ -37,8 +37,6 @@ const Wallet = ({ user }: IProps): React.ReactElement => {
   const [performers, setPerformers] = useState([] as Array<IPerformer>);
   const navigation = useNavigation() as any;
 
-  useEffect(() => {}, []);
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Box flex={1} mx="auto" w="100%">

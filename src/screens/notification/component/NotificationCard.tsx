@@ -1,16 +1,4 @@
-import {
-  Alert,
-  Avatar,
-  Box,
-  Heading,
-  HStack,
-  Menu,
-  Row,
-  VStack,
-  Text,
-  ScrollView,
-  Image,
-} from "native-base";
+import { Alert, Box, HStack, Text, Image } from "native-base";
 import { INotification } from "src/interfaces";
 import { useSelector, useDispatch } from "react-redux";
 import React, { useContext, useEffect, useState } from "react";
@@ -22,9 +10,7 @@ import {
   fetchNotificaion,
   setReadItem,
 } from "services/redux/notification/actions";
-import { useNavigation } from "@react-navigation/core";
-import { SocketContext } from "../../../socket";
-import { FlatList, SafeAreaView, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import styles from "./style";
 import { colors } from "utils/theme";
 
@@ -35,9 +21,7 @@ interface IProps {
 const SEND_NOTIFICATION = "send_notification";
 
 const NotificationCard = ({ notification }: IProps): React.ReactElement => {
-  const socket = useContext(SocketContext);
   const [read, setRead] = useState(false);
-  const navigation = useNavigation() as any;
 
   const notifications = useSelector(
     createSelector(
@@ -65,15 +49,6 @@ const NotificationCard = ({ notification }: IProps): React.ReactElement => {
   useEffect(() => {
     fetchData();
   }, [read]);
-
-  useEffect(() => {
-    if (socket) {
-      socket.on(SEND_NOTIFICATION, onReceiveNotification);
-    }
-    return () => {
-      socket.off(SEND_NOTIFICATION, onReceiveNotification);
-    };
-  }, [socket]);
 
   const redirect = (notification) => {
     switch (notification.type) {
@@ -117,14 +92,7 @@ const NotificationCard = ({ notification }: IProps): React.ReactElement => {
               resizeMode="cover"
             />
           </Box>
-          {/* <VStack alignSelf="center" space={1}>
-            <Heading fontSize={17} w="100%" color={colors.lightText}>
-              Hi
-            </Heading>
-            <Text fontSize={14} color={colors.lightText}>
 
-            </Text>
-          </VStack> */}
           <View>
             <Text my={3} w={185} fontSize={14} color={colors.lightText}>
               {notification && notification.title}

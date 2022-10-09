@@ -42,7 +42,6 @@ interface IProps {
   };
 }
 const Home = ({
-  handleGetFeeds,
   feedState,
   handleGetMore,
   current,
@@ -87,8 +86,8 @@ const Home = ({
       }
     });
   }) as any;
-  const getFeeds = async () => {
-    await handleGetRecommendFeeds({
+  const getFeeds = () => {
+    handleGetRecommendFeeds({
       list: 3,
       q: keyword,
       orientation,
@@ -107,23 +106,24 @@ const Home = ({
     try {
       if ((feedPage + 1) * itemPerPage >= totalFeeds) {
         !isLoadTrendingFeed && setLoadTrendingFeed(true);
-        feedPage !== 0 && setfeedPage(0);
+        await setfeedPage(0);
         return await loadmoreTrendingFeeds();
       }
       if (isLoadTrendingFeed) {
         return loadmoreTrendingFeeds();
       }
 
-      !isLoadTrendingFeed &&
-        (await handleGetMore({
+      if (isLoadTrendingFeed) {
+        handleGetMore({
           q: keyword,
           orientation,
           limit: itemPerPage,
           offset: itemPerPage * (feedPage + 1),
           isHome: false,
           type: tab === "video" ? "video" : "photo",
-        }));
-      setfeedPage(feedPage + 1);
+        });
+        setfeedPage(feedPage + 1);
+      }
     } catch (e) {
       Alert.alert("Something went wrong, please try again later");
     }
@@ -181,6 +181,8 @@ const Home = ({
     <BottomTabBarHeightContext.Consumer>
       {(tabBarHeight: any) => (
         <SafeAreaView style={styles.container}>
+          {console.log("Render")}
+
           <FlatList
             data={feedState.items}
             renderItem={renderItem}

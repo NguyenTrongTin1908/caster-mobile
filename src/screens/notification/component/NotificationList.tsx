@@ -13,74 +13,18 @@ import styles from "../style";
 import BadgeText from "components/uis/BadgeText";
 import NotificationCard from "./NotificationCard";
 
-// interface NotificationListItemProps extends ListItemProps {
-//   id: string;
-// }
-
-// const NotificationListItem = React.memo(
-//   ({ id, ...props }: NotificationListItemProps) => {
-//     const notification: INotification = useSelector(
-//       createSelector(
-//         [(state: any) => state.notification.notificationMapping[id]],
-//         (data) => ({ ...data })
-//       ),
-//       shallowEqual
-//     );
-
-//     const dispatch = useDispatch();
-
-//     const fetchData = () => {
-//       dispatch(fetchNotificaion());
-//     };
-
-//     const onClickItem = () => {
-//       if (!notification.read) {
-//         // goi api PUT read
-//         notificationService.read(notification._id);
-//         dispatch(setReadItem(notification._id));
-//       }
-//       fetchData();
-//     };
-
-//     return (
-//       <>
-
-//         <List.Item key={notification._id} {...props} className={notification.read === false ? 'notification-unread' : 'list-item-meta'}>
-//           <List.Item.Meta
-//             avatar={<Avatar src={notification.thumbnail || '/no-image.jpg'} />}
-//             title={<a href="https://ant.design">{capitalizeFirstLetter(notification.title)}</a>}
-//             description={moment(notification.updatedAt).fromNow()}
-//           />
-//           {notification.read === false ? (
-//             <>
-//               <span>{ }</span>
-//               <Button type="link" onClick={onClickItem}>
-//                 <ExclamationCircleOutlined title="dismiss" className="icon-dismiss" />
-//               </Button>
-//             </>
-//           ) : (
-//             <p>
-//               {' '}
-//             </p>
-//           )}
-//         </List.Item>
-//       </>
-//     );
-//   }
-// );
-
 const SEND_NOTIFICATION = "send_notification";
 
 const NotificationList = () => {
   const socket = useContext(SocketContext);
   const [read, setRead] = useState(false);
-  const navigation = useNavigation() as any;
 
   const notifications = useSelector(
     createSelector(
       (state: any) => state.notification.success,
       (state: any) => state.notification.error,
       (state: any) => state.notification.dataSource,
+
       (success, error, data) => {
         if (success && !error) return data;
         return [];
@@ -126,7 +70,7 @@ const NotificationList = () => {
 
   // const renderEmpty = () => (
   //   <View>
-  //     {!performerLoading && !performers.length && (
+  //     {!loading && !notifications.length && (
   //       <BadgeText content={"There is no performer available!"} />
   //     )}
   //   </View>

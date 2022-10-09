@@ -116,7 +116,11 @@ export interface IPerformer {
   sposorship: boolean,
 
 
+
   }
+  stripeCardIds: string[];
+  stripeCustomerId: string;
+
 }
 
 export interface IBanking {
