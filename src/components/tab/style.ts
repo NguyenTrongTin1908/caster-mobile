@@ -7,12 +7,12 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     position: 'absolute',
-    height:50,
-    width:50
+    height: 50,
+    width: 50,
     // flexDirection: 'row',
     // justifyContent: 'space-between',
     // backgroundColor: 'transparent',
-    // zIndex:10000
+    zIndex: 10000
   },
   left: {
     top: 0,

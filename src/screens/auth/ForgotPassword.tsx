@@ -12,12 +12,12 @@ import {
   Divider,
   Spinner,
   HStack,
-  Image
+  Image,
+  Link
 } from 'native-base';
 import { Controller, useForm } from 'react-hook-form';
 import LinearGradient from 'react-native-linear-gradient';
 import { Fonts, padding, Sizes } from 'utils/theme';
-
 
 import KeyboardDismiss from 'components/uis/KeyboardDismiss';
 import React, { useContext, useEffect, useState } from 'react';
@@ -63,7 +63,7 @@ const ForgotPassword = (): React.ReactElement => {
         });
         return navigation.navigate('IntroNav/Login');
       })
-      .catch(async (e) => {
+      .catch(async e => {
         // const error = await Promise.resolve(e);
         setSubmitting(false);
         Alert.alert('An error occurred, please try again!');
@@ -72,11 +72,7 @@ const ForgotPassword = (): React.ReactElement => {
 
   return (
     <KeyboardDismiss>
-      <VStack
-        flex={1}
-        w="100%"
-        mx="auto"
-        justifyContent="space-between">
+      <VStack flex={1} w="100%" mx="auto" justifyContent="space-between">
         <KeyboardAvoidingView>
           <ImageBackground
             style={{ width: '100%', height: '100%' }}
@@ -89,7 +85,6 @@ const ForgotPassword = (): React.ReactElement => {
               style={{ flex: 1, paddingHorizontal: Sizes.fixPadding * 2.0 }}>
               <Box px={padding.p5} py={20}>
                 <HStack space={2} alignSelf="center" mb={20}>
-
                   <Heading alignSelf="center" fontSize={30} color={colors.lightText} bold letterSpacing={-1}>
                     Forgot Password
                   </Heading>
@@ -137,7 +132,6 @@ const ForgotPassword = (): React.ReactElement => {
                     control={control}
                     render={({ field: { onChange, value } }) => (
                       <Input
-
                         p={4}
                         borderColor={colors.inpBorderColor}
                         onChangeText={val => onChange(val)}
@@ -149,17 +143,14 @@ const ForgotPassword = (): React.ReactElement => {
                         placeholder="Email"
                         placeholderTextColor={colors.lightText}
                         style={{ ...styles.textFieldContentStyle }}
+                        borderRadius={30}
                       />
                     )}
                     name="email"
                     rules={{ required: 'Email is required.' }}
                     defaultValue=""
                   />
-                  {errors.email && (
-                    <ErrorMessage
-                      message={errors.email?.message || 'Email is required.'}
-                    />
-                  )}
+                  {errors.email && <ErrorMessage message={errors.email?.message || 'Email is required.'} />}
                 </FormControl>
 
                 <Flex alignSelf="center" width={'100%'}>
@@ -176,6 +167,16 @@ const ForgotPassword = (): React.ReactElement => {
                     </LinearGradient>
                   </TouchableOpacity>
                 </Flex>
+                <HStack style={{ ...styles.loginRedirect }}>
+                  <Text fontSize={12} color={colors.primary}>
+                    ARE YOU MEMBER?{' '}
+                  </Text>
+                  <Link onPress={(): void => navigation.navigate('IntroNav/Login')}>
+                    <Text fontSize={12} color={colors.secondary}>
+                      LOGIN
+                    </Text>
+                  </Link>
+                </HStack>
               </Box>
             </LinearGradient>
           </ImageBackground>
@@ -185,7 +186,6 @@ const ForgotPassword = (): React.ReactElement => {
   );
 };
 
-
 const styles = StyleSheet.create({
   textFieldContentStyle: {
     alignItems: 'center',
@@ -194,7 +194,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: Sizes.fixPadding * 2.0,
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
     borderRadius: Sizes.fixPadding * 2.5,
-    marginBottom: Sizes.fixPadding,
     fontWeight: 'bold',
     color: colors.lightText
   },
@@ -209,9 +208,9 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   loginRedirect: {
-    alignSelf: "center",
+    alignSelf: 'center',
     marginTop: Sizes.fixPadding + 10.0
-  },
+  }
 });
 
 export default ForgotPassword;

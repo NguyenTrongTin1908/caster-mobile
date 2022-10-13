@@ -1,30 +1,19 @@
-import React, { useEffect, useContext, useState, useRef } from "react";
-import { connect } from "react-redux";
-import { useNavigation } from "@react-navigation/core";
-import { getFeeds, moreFeeds } from "services/redux/feed/actions";
-import {
-  getRecommendFeeds,
-  moreRecommendFeeds,
-  getTrendingFeeds,
-} from "services/redux/feed/actions";
-import {
-  Dimensions,
-  FlatList,
-  View,
-  SafeAreaView,
-  Platform,
-  Alert,
-} from "react-native";
-const { height } = Dimensions.get("window");
-import styles from "./style";
-import FeedCard from "components/feed/feed-card";
-import { IFeed } from "interfaces/feed";
-import { BottomTabBarHeightContext } from "@react-navigation/bottom-tabs";
-import { getStatusBarHeight } from "react-native-status-bar-height";
-import FeedTab from "components/tab/FeedTab";
-import HeaderMenu from "components/tab/HeaderMenu";
-import { IPerformer } from "src/interfaces";
-let deviceH = Dimensions.get("screen").height;
+import React, { useEffect, useContext, useState, useRef } from 'react';
+import { connect } from 'react-redux';
+import { useNavigation } from '@react-navigation/core';
+import { getFeeds, moreFeeds } from 'services/redux/feed/actions';
+import { getRecommendFeeds, moreRecommendFeeds, getTrendingFeeds } from 'services/redux/feed/actions';
+import { Dimensions, FlatList, View, SafeAreaView, Platform, Alert } from 'react-native';
+const { height } = Dimensions.get('window');
+import styles from './style';
+import FeedCard from 'components/feed/feed-card';
+import { IFeed } from 'interfaces/feed';
+import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
+import FeedTab from 'components/tab/FeedTab';
+import HeaderMenu from 'components/tab/HeaderMenu';
+import { IPerformer } from 'src/interfaces';
+let deviceH = Dimensions.get('screen').height;
 let bottomNavBarH = deviceH - height;
 interface IProps {
   current: IPerformer;
@@ -48,34 +37,34 @@ const Home = ({
   feedRecommendState,
   handleGetRecommendFeeds,
   handleGetMoreRecommendFeeds,
-  handleGetTrendingFeeds,
+  handleGetTrendingFeeds
 }: IProps): React.ReactElement => {
   const navigation = useNavigation() as any;
-  const [tab, setTab] = useState("video");
+  const [tab, setTab] = useState('video');
   const [itemPerPage, setitemPerPage] = useState(12);
   const [feedPage, setfeedPage] = useState(0);
-  const [orientation, setOrientation] = useState("");
-  const [keyword, setKeyword] = useState("");
+  const [orientation, setOrientation] = useState('');
+  const [keyword, setKeyword] = useState('');
   const [isLoadTrendingFeed, setLoadTrendingFeed] = useState(false);
   const mediaRefs = useRef([]) as any;
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
-    getFeeds();
   }, [useContext]);
+
   useEffect(() => {
     getFeeds();
   }, [tab]);
+
   useEffect(() => {
     feedState.total !== undefined && loadmoreFeeds();
   }, [isLoadTrendingFeed]);
+
   useEffect(() => {
-    feedState.success &&
-      !feedState.items.length &&
-      feedState.total !== undefined &&
-      loadmoreFeeds();
+    feedState.success && !feedState.items.length && feedState.total !== undefined && loadmoreFeeds();
   }, [feedState]);
+
   const onViewableItemsChange = useRef(({ changed }) => {
-    changed.forEach((element) => {
+    changed.forEach(element => {
       const cell = mediaRefs.current[element.key];
       if (cell) {
         if (element.isViewable) {
@@ -86,6 +75,7 @@ const Home = ({
       }
     });
   }) as any;
+
   const getFeeds = () => {
     handleGetRecommendFeeds({
       list: 3,
@@ -93,11 +83,12 @@ const Home = ({
       orientation,
       limit: itemPerPage,
       offset: itemPerPage * feedPage,
-      type: tab === "video" ? "video" : "photo",
+      type: tab === 'video' ? 'video' : 'photo'
     });
   };
+
   const handleTabChange = async () => {
-    tab === "video" ? setTab("photo") : setTab("video");
+    tab === 'video' ? setTab('photo') : setTab('video');
     setfeedPage(0);
   };
 
@@ -120,14 +111,15 @@ const Home = ({
           limit: itemPerPage,
           offset: itemPerPage * (feedPage + 1),
           isHome: false,
-          type: tab === "video" ? "video" : "photo",
+          type: tab === 'video' ? 'video' : 'photo'
         });
         setfeedPage(feedPage + 1);
       }
     } catch (e) {
-      Alert.alert("Something went wrong, please try again later");
+      Alert.alert('Something went wrong, please try again later');
     }
   };
+
   const loadmoreTrendingFeeds = async () => {
     const { items: recommendFeeds } = feedRecommendState;
     const { total: totalFeeds } = feedState;
@@ -139,9 +131,9 @@ const Home = ({
       await handleGetMore({
         limit: itemPerPage,
         offset: feedPage * itemPerPage,
-        type: tab === "video" ? "video" : "photo",
-        sortBy: "mostViewInCurrentDay",
-        excludeIds: recommendFeeds.map((item) => item._id).join(","),
+        type: tab === 'video' ? 'video' : 'photo',
+        sortBy: 'mostViewInCurrentDay',
+        excludeIds: recommendFeeds.map(item => item._id).join(',')
       });
       setfeedPage(feedPage + 1);
     } catch (e) {}
@@ -156,27 +148,20 @@ const Home = ({
               style={[
                 {
                   height:
-                    Platform.OS === "ios"
+                    Platform.OS === 'ios'
                       ? deviceH - (tabBarHeight + getStatusBarHeight(true))
-                      : deviceH - (bottomNavBarH + tabBarHeight),
+                      : deviceH - (bottomNavBarH + tabBarHeight)
                 },
-                index % 2 == 0
-                  ? { backgroundColor: "#000000" }
-                  : { backgroundColor: "#000000" },
-              ]}
-            >
-              <FeedCard
-                feed={item}
-                mediaRefs={mediaRefs}
-                currentTab={tab}
-                current={current}
-              />
+                index % 2 == 0 ? { backgroundColor: '#000000' } : { backgroundColor: '#000000' }
+              ]}>
+              <FeedCard feed={item} mediaRefs={mediaRefs} currentTab={tab} current={current} />
             </View>
           );
         }}
       </BottomTabBarHeightContext.Consumer>
     );
   };
+
   return (
     <BottomTabBarHeightContext.Consumer>
       {(tabBarHeight: any) => (
@@ -185,8 +170,8 @@ const Home = ({
             data={feedState.items}
             renderItem={renderItem}
             pagingEnabled={true}
-            keyExtractor={(item) => item._id}
-            decelerationRate={"fast"}
+            keyExtractor={item => item._id}
+            decelerationRate={'fast'}
             showsVerticalScrollIndicator={false}
             onViewableItemsChanged={onViewableItemsChange.current}
             windowSize={2}
@@ -196,14 +181,14 @@ const Home = ({
             maxToRenderPerBatch={2}
             removeClippedSubviews
             snapToInterval={
-              Platform.OS === "ios"
+              Platform.OS === 'ios'
                 ? deviceH - (tabBarHeight + getStatusBarHeight(true))
                 : deviceH - (bottomNavBarH + tabBarHeight)
             }
             viewabilityConfig={{
-              itemVisiblePercentThreshold: 100,
+              itemVisiblePercentThreshold: 100
             }}
-            snapToAlignment={"start"}
+            snapToAlignment={'start'}
           />
           <HeaderMenu />
           <FeedTab onTabChange={handleTabChange} tab={tab}></FeedTab>
@@ -212,17 +197,18 @@ const Home = ({
     </BottomTabBarHeightContext.Consumer>
   );
 };
+
 const mapStateToProp = (state: any): any => ({
   ...state.user,
   isLoggedIn: state.auth.loggedIn,
   feedState: { ...state.feed?.feeds },
-  feedRecommendState: { ...state.feed.recommendFeeds },
+  feedRecommendState: { ...state.feed.recommendFeeds }
 });
 const mapDispatch = {
   handleGetRecommendFeeds: getRecommendFeeds,
   handleGetMoreRecommendFeeds: moreRecommendFeeds,
   handleGetTrendingFeeds: getTrendingFeeds,
   handleGetFeeds: getFeeds,
-  handleGetMore: moreFeeds,
+  handleGetMore: moreFeeds
 };
 export default connect(mapStateToProp, mapDispatch)(Home);
