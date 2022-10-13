@@ -34,4 +34,6 @@ export interface IFeed {
   pinnedAt: Date;
   pollDescription: string;
   stats: any;
+  objectInfo: any;
+  createdBy:any
 }

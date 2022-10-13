@@ -31,7 +31,7 @@ const FeedStats = ({
   currentUser,
 }: IProps): React.ReactElement => {
   const [requesting, setRequesting] = useState(false);
-  const [isBookMarked, setBookmark] = useState(false);
+  const [isBookMarked, setBookmark] = useState(item.isBookMarked);
   const navigation = useNavigation() as any;
   const spinValue = new Animated.Value(0);
   const handleRedirect = () => {

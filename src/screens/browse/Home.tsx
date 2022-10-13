@@ -181,8 +181,6 @@ const Home = ({
     <BottomTabBarHeightContext.Consumer>
       {(tabBarHeight: any) => (
         <SafeAreaView style={styles.container}>
-          {console.log("Render")}
-
           <FlatList
             data={feedState.items}
             renderItem={renderItem}

@@ -26,12 +26,15 @@ import Hashtag from "screens/hashtag/Hashtag";
 import ListFollow from "screens/follow/listFollow";
 import Trending from "screens/trending/Trending";
 import ModelProfile from "screens/model/profile/ModelProfile";
+import Bookmarks from "screens/model/bookmarks/Bookmarks";
 import Profile from "screens/profile/Profile";
 import FollowPost from "screens/followPost/FollowPost";
 import PushNotificationSetting from "screens/notification/component/PushNotificationSetting";
 import NotificationPage from "screens/notification/Notification";
 import Wallet from "screens/wallet/Wallet";
 import TokenPackage from "screens/token-package/TokenPackage";
+import ModelOrderPage from "screens/model/my-order";
+import OrderDetailPage from "screens/model/my-order/detail";
 
 import EditProfile from "screens/profile/EditProfile";
 export type RootStackParamList = {
@@ -53,6 +56,7 @@ export type RootStackParamList = {
   Trending: undefined;
   Wallet: undefined;
   TokenPackage: undefined;
+  ModelOrderPage: undefined;
   // ChatRoom: { performer: IPerformer };
   // PrivateChatDetail: { performer: IPerformer; conversationId: string };
   PerformerDetail: { username: string };
@@ -66,6 +70,8 @@ export type RootStackParamList = {
   };
   Home: {};
   FeedDetail: { performerId: any; type: "video" | "photo" };
+  OrderDetailPage: { id: any };
+  Bookmarks: undefined
 };
 export type RootStackNavigationProps<
   T extends keyof RootStackParamList = "default"
@@ -156,6 +162,14 @@ function RootNavigator({ loggedIn }): React.ReactElement {
           component={PrivateChatDetail}
         />
         <Stack.Screen
+          options={{
+            headerShown: false,
+            gestureEnabled: false,
+          }}
+          name="OrderDetailPage"
+          component={OrderDetailPage}
+        />
+        <Stack.Screen
           options={{ headerShown: false, gestureEnabled: false }}
           name="PerformerDetail"
           component={PerformerDetail}
@@ -184,6 +198,16 @@ function RootNavigator({ loggedIn }): React.ReactElement {
           options={{ headerShown: false, gestureEnabled: false }}
           name="TokenPackage"
           component={TokenPackage}
+        />
+         <Stack.Screen
+          options={{ headerShown: false, gestureEnabled: false }}
+          name="Bookmarks"
+          component={Bookmarks}
+        />
+        <Stack.Screen
+          options={{ headerShown: false, gestureEnabled: false }}
+          name="ModelOrderPage"
+          component={ModelOrderPage}
         />
         <Stack.Screen
           options={{ headerShown: false, gestureEnabled: false }}

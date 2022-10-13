@@ -41,7 +41,6 @@ import styles from "../model/profile/style";
 import moment from "moment";
 import ErrorMessage from "components/uis/ErrorMessage";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import DatePicker from "react-native-datepicker";
 import { BottomSheet } from "react-native-elements";
 import { mediaService } from "services/media.service";
 import HeaderMenu from "components/tab/HeaderMenu";

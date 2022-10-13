@@ -7,166 +7,231 @@ import {
   ScrollView,
   Switch,
   Checkbox,
+  FormControl,
 } from "native-base";
 import { colors } from "utils/theme";
 import Button from "components/uis/Button";
 import { useNavigation } from "@react-navigation/core";
 import { Alert, SafeAreaView } from "react-native";
 import { connect } from "react-redux";
-import { IPerformer, ICountry } from "src/interfaces";
+import { IPerformer } from "src/interfaces";
 import { Table, Row, Cell, TableWrapper } from "react-native-table-component";
 import { performerService } from "services/perfomer.service";
+import { setCurrentUser } from "services/redux/user/actions";
+
 import styles from "../style";
 import HeaderMenu from "components/tab/HeaderMenu";
+import { Controller, useForm } from "react-hook-form";
 interface IProps {
   current: IPerformer;
+  setCurrentUser: Function;
 }
-const PushNotificationSetting = ({ current }: IProps): React.ReactElement => {
+const PushNotificationSetting = ({
+  current,
+  setCurrentUser,
+}: IProps): React.ReactElement => {
+  const { control, handleSubmit } = useForm();
   const [list, setList] = useState(current.notificationSetting);
   const tableHeadGeneral = ["General", "Active"];
   const tableHeadTime = ["Time Sensative", "Active"];
   const tableHeadHost = ["Host", "Active"];
   const tableHeadSystem = ["System", "Active"];
+  const dataTable = ["name", "key"];
   const [submitting, setSubmitting] = useState(false);
-  const [render, setRender] = useState(false);
-  const [active, setActive] = useState(false);
+  const [receive, setReceive] = useState(
+    current.notificationSetting.receiveOnDesktop
+  );
+  const [active, setActive] = useState(current.notificationSetting.active);
   const navigation = useNavigation() as any;
-  const handleSubmit = async () => {
+  const [generalData, setGeneralData] = useState([]) as any;
+  const [timeData, setTimeData] = useState([]) as any;
+  const [systemData, setSystemData] = useState([]) as any;
+  const [hostData, setHostData] = useState([]) as any;
+
+  const submit = async ({
+    mail,
+    comment,
+    newContent,
+    follower,
+    followingGoLive,
+    followingPrivateChat,
+    moderator,
+    // sposorship,
+
+    privateChatRequest,
+    casterAdminMessage,
+    upgradedComplete,
+  }: any): Promise<void> => {
+    const data = {
+      mail,
+      comment,
+      newContent,
+      follower,
+      followingGoLive,
+      followingPrivateChat,
+      moderator,
+
+      // sposorship,
+      privateChatRequest,
+      casterAdminMessage,
+      upgradedComplete,
+    };
     try {
-      await performerService.updateNotificationSetting(current._id, list);
+      await performerService.updateNotificationSetting(current._id, {
+        ...list,
+        ...data,
+      });
+      setCurrentUser({ ...current, notificationSetting: { ...list, ...data } });
+
       Alert.alert("Updated successfully");
       navigation.navigate("NotificationPage");
     } catch (error) {
       Alert.alert("Error occured, please try again later");
     }
   };
-  // useEffect(() => {
-  //   setList(current.notificationSetting);
-  // }, []);
-  // useEffect(async () => {
-  //   await handleSubmit();
-  // }, [list]);
-  const generalData = [
-    [
-      {
-        name: "Direct Mail Messenger",
-      },
-      {
-        key: "mail",
-        status: list?.mail,
-      },
-    ],
-    [
-      {
-        name: "Comments",
-      },
-      {
-        key: "comment",
-        status: list?.comment,
-      },
-    ],
-    [
-      {
-        name: "New Followers",
-      },
-      {
-        key: "follower",
-        status: list?.follower,
-      },
-    ],
-    [
-      {
-        name: "New Content",
-      },
-      {
-        key: "newContent",
-        status: list?.newContent,
-      },
-    ],
-  ];
-  const timeData = [
-    [
-      {
-        name: "Following Goes Live",
-      },
-      {
-        key: "followingGoLive",
-        status: list?.followingGoLive,
-      },
-    ],
-    [
-      {
-        name: "Private Chat",
-      },
-      {
-        key: "followingPrivateChat",
-        status: list?.followingPrivateChat,
-      },
-    ],
-    [
-      {
-        name: "Moderator",
-      },
-      {
-        key: "moderator",
-        status: list?.moderator,
-      },
-    ],
-  ];
-  const hostData = [
-    [
-      {
-        name: "Sposorship",
-      },
-      {
-        key: "sposorship",
-        status: list?.sposorship,
-      },
-    ],
-    [
-      {
-        name: "Private Chat Request",
-      },
-      {
-        key: "privateChatRequest",
-        status: list?.privateChatRequest,
-      },
-    ],
-  ];
-  const systemData = [
-    [
-      {
-        name: "Caster Admin",
-      },
-      {
-        key: "casterAdminMessage",
-        status: list?.casterAdminMessage,
-      },
-    ],
-    [
-      {
-        name: "Upgraded Compelete",
-      },
-      {
-        key: "upgradedComplete",
-        status: list?.upgradedComplete,
-      },
-    ],
-  ];
-  const handleCheckBox = async (key: any, value) => {
+
+  const [generalSource] = useState([
+    {
+      name: "Direct Mail Messenger",
+      key: "mail",
+    },
+    {
+      name: "Comments",
+      key: "comment",
+    },
+    {
+      key: "follower",
+      name: "New Followers",
+    },
+    { name: "New Content", key: "newContent" },
+  ]);
+  const [timeSource] = useState([
+    {
+      name: "Following Goes Live",
+      key: "followingGoLive",
+    },
+
+    {
+      name: "Private Chat",
+      key: "followingPrivateChat",
+    },
+
+    {
+      name: "Moderator",
+      key: "moderator",
+    },
+  ]);
+  const [hostSource] = useState([
+    // {
+    //   name: "Sposorship",
+    //   key: "sposorship",
+    // },
+
+    {
+      name: "Private Chat Request",
+      key: "privateChatRequest",
+    },
+  ]);
+  const [systemSource] = useState([
+    {
+      name: "Caster Admin",
+      key: "casterAdminMessage",
+    },
+
+    {
+      name: "Upgraded Compelete",
+      key: "upgradedComplete",
+    },
+  ]);
+
+  const handleCheckBox = async () => {
     let data = list;
-    data[key] = value;
+    data["receiveOnDesktop"] = !receive;
     setList({ ...data });
-    // await setList({ ...list, [record.key]: !record.status });
+    setReceive(!receive);
   };
   const handleActive = () => {
-    // setList({ ...list, active: !list?.active });
     let data = list;
     data["active"] = !active;
     setList({ ...data });
     setActive(!active);
   };
+  useEffect(() => {
+    const array = [] as any;
+    if (generalSource && generalSource.length > 0) {
+      for (const item of generalSource) {
+        const arrayData = dataTable.map((key: any) => {
+          return item[key];
+        });
+        array.push(arrayData);
+      }
+    }
+    setGeneralData(array);
+  }, [generalSource]);
+  useEffect(() => {
+    const array = [] as any;
+    if (timeSource && timeSource.length > 0) {
+      for (const item of timeSource) {
+        const arrayData = dataTable.map((key: any) => {
+          return item[key];
+        });
+        array.push(arrayData);
+      }
+    }
+    setTimeData(array);
+  }, [timeSource]);
+  useEffect(() => {
+    const array = [] as any;
+    if (hostSource && hostSource.length > 0) {
+      for (const item of hostSource) {
+        const arrayData = dataTable.map((key: any) => {
+          return item[key];
+        });
+        array.push(arrayData);
+      }
+    }
+    setHostData(array);
+  }, [hostSource]);
+  useEffect(() => {
+    const array = [] as any;
+    if (systemSource && systemSource.length > 0) {
+      for (const item of systemSource) {
+        const arrayData = dataTable.map((key: any) => {
+          return item[key];
+        });
+        array.push(arrayData);
+      }
+    }
+    setSystemData(array);
+  }, [systemSource]);
 
+  const renderTableData = (data, index) => {
+    if (index > 0) {
+      return (
+        <FormControl>
+          <Controller
+            control={control}
+            render={({ field: { onChange, value } }) => {
+              return (
+                <View alignSelf={"center"}>
+                  <Checkbox
+                    value={value}
+                    onChange={(val) => onChange(val)}
+                    id={data}
+                    isChecked={value}
+                    aria-label={data}
+                  />
+                </View>
+              );
+            }}
+            name={data}
+            defaultValue={list[data]}
+          />
+        </FormControl>
+      );
+    }
+    return data;
+  };
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
@@ -181,7 +246,6 @@ const PushNotificationSetting = ({ current }: IProps): React.ReactElement => {
           Notification Setting
         </Heading>
         <View style={styles.container}>
-          <Text>{render}</Text>
           <View height={150}>
             <View style={styles.notificationRow}>
               <Text color={colors.lightText} fontSize={22}>
@@ -197,9 +261,9 @@ const PushNotificationSetting = ({ current }: IProps): React.ReactElement => {
             </View>
             <View style={styles.notificationRow}>
               <Checkbox
-                value="active"
-                isChecked={list.receiveOnDesktop}
-                onChange={(val) => handleCheckBox("receiveOnDesktop", val)}
+                value="receiveOnDesktop"
+                isChecked={receive}
+                onChange={handleCheckBox}
                 aria-label="receiveOnDesktop"
               ></Checkbox>
               <Text color={colors.lightText} fontSize={15}>
@@ -221,25 +285,8 @@ const PushNotificationSetting = ({ current }: IProps): React.ReactElement => {
                   {rowData.map((cellData: any, cellIndex) => (
                     <Cell
                       key={cellIndex}
-                      data={
-                        cellIndex === 1 ? (
-                          <View alignSelf={"center"}>
-                            <Checkbox
-                              key={cellIndex}
-                              value={cellData.key}
-                              isChecked={cellData.status}
-                              onChange={(val) =>
-                                handleCheckBox(cellData.key, val)
-                              }
-                              aria-label={cellData.key}
-                            ></Checkbox>
-                          </View>
-                        ) : (
-                          <View alignSelf={"center"}>
-                            <Text>{cellData.name}</Text>
-                          </View>
-                        )
-                      }
+                      textStyle={{ color: "#000" }}
+                      data={renderTableData(cellData, cellIndex)}
                     />
                   ))}
                 </TableWrapper>
@@ -258,25 +305,8 @@ const PushNotificationSetting = ({ current }: IProps): React.ReactElement => {
                   {rowData.map((cellData: any, cellIndex) => (
                     <Cell
                       key={cellIndex}
-                      data={
-                        cellIndex === 1 ? (
-                          <View alignSelf={"center"}>
-                            <Checkbox
-                              key={cellIndex}
-                              value={cellData.key}
-                              isChecked={cellData.status}
-                              onChange={(val) =>
-                                handleCheckBox(cellData.key, val)
-                              }
-                              aria-label={cellData.key}
-                            ></Checkbox>
-                          </View>
-                        ) : (
-                          <View alignSelf={"center"}>
-                            <Text>{cellData.name}</Text>
-                          </View>
-                        )
-                      }
+                      textStyle={{ color: "#000" }}
+                      data={renderTableData(cellData, cellIndex)}
                     />
                   ))}
                 </TableWrapper>
@@ -295,6 +325,67 @@ const PushNotificationSetting = ({ current }: IProps): React.ReactElement => {
                   {rowData.map((cellData: any, cellIndex) => (
                     <Cell
                       key={cellIndex}
+                      textStyle={{ color: "#000" }}
+                      data={renderTableData(cellData, cellIndex)}
+                    />
+                  ))}
+                </TableWrapper>
+              ))}
+            </Table>
+            <Table
+              borderStyle={{ borderColor: colors.darkText, borderWidth: 1 }}
+            >
+              <Row
+                data={tableHeadSystem}
+                style={styles.head}
+                textStyle={styles.textNoti}
+              />
+              {systemData.map((rowData, index) => (
+                <TableWrapper key={index} style={styles.row}>
+                  {rowData.map((cellData: any, cellIndex) => (
+                    <Cell
+                      key={cellIndex}
+                      textStyle={{ color: "#000" }}
+                      data={renderTableData(cellData, cellIndex)}
+                    />
+                  ))}
+                </TableWrapper>
+              ))}
+            </Table>
+            {/* <Table
+              borderStyle={{ borderColor: colors.darkText, borderWidth: 1 }}
+            >
+              <Row
+                data={tableHeadTime}
+                style={styles.head}
+                textStyle={styles.textNoti}
+              />
+              {timeData.map((rowData, index) => (
+                <TableWrapper key={index} style={styles.row}>
+                  {rowData.map((cellData: any, cellIndex) => (
+                    <Cell
+                      key={cellIndex}
+                      textStyle={{ color: "#000" }}
+                      data={cellData}
+                    />
+                  ))}
+                </TableWrapper>
+              ))}
+            </Table>
+            <Table
+              borderStyle={{ borderColor: colors.darkText, borderWidth: 1 }}
+            >
+              <Row
+                data={tableHeadHost}
+                style={styles.head}
+                textStyle={styles.textNoti}
+              />
+              {hostData.map((rowData, index) => (
+                <TableWrapper key={index} style={styles.row}>
+                  {rowData.map((cellData: any, cellIndex) => (
+                    <Cell
+                      key={cellIndex}
+                      textStyle={{ color: "#000" }}
                       data={
                         cellIndex === 1 ? (
                           <View alignSelf={"center"}>
@@ -332,6 +423,7 @@ const PushNotificationSetting = ({ current }: IProps): React.ReactElement => {
                   {rowData.map((cellData: any, cellIndex) => (
                     <Cell
                       key={cellIndex}
+                      textStyle={{ color: "#000" }}
                       data={
                         cellIndex === 1 ? (
                           <View alignSelf={"center"}>
@@ -355,13 +447,13 @@ const PushNotificationSetting = ({ current }: IProps): React.ReactElement => {
                   ))}
                 </TableWrapper>
               ))}
-            </Table>
+            </Table> */}
           </ScrollView>
         </View>
         <Box alignSelf="center" my={5}>
           <Button
             colorScheme="primary"
-            onPress={handleSubmit}
+            onPress={handleSubmit(submit)}
             disabled={submitting}
             label="Save Changes"
           />
@@ -371,8 +463,12 @@ const PushNotificationSetting = ({ current }: IProps): React.ReactElement => {
     </SafeAreaView>
   );
 };
+
+const mapDispatch = {
+  setCurrentUser,
+};
 const mapStates = (state: any) => ({
   ...state.user,
   isLoggedIn: state.auth.loggedIn,
 });
-export default connect(mapStates)(PushNotificationSetting);
+export default connect(mapStates, mapDispatch)(PushNotificationSetting);

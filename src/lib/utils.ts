@@ -1,7 +1,7 @@
 import {
   cloneDeep
 } from 'lodash';
-import * as pathToRegexp from 'path-to-regexp';
+// import * as pathToRegexp from 'path-to-regexp';
 
 /**
  * Convert an array to a tree-structured array.
@@ -17,7 +17,7 @@ export function arrayToTree(
   parentId = 'pid',
   children = 'children'
 ) {
-  const result = [];
+  const result = [] as any;
   const hash = {};
   const data = cloneDeep(array);
 
@@ -43,9 +43,9 @@ export function arrayToTree(
  * @param   {string}                  pathname   Specify the pathname to match.
  * @return  {array|null}              Return the result of the match or null.
  */
-export function pathMatchRegexp(regexp, pathname) {
-  return pathToRegexp.pathToRegexp(regexp).exec(pathname);
-}
+// export function pathMatchRegexp(regexp, pathname) {
+//   return pathToRegexp.pathToRegexp(regexp).exec(pathname);
+// }
 
 /**
  * In an array of objects, specify an object that traverses the objects whose parent ID matches.

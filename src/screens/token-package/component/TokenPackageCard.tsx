@@ -7,8 +7,9 @@ import Button from "components/uis/Button";
 
 interface IProps {
   item: ITokenPackage;
+  onOpenModal: Function;
 }
-const TokenPackageCard = ({ item }: IProps): JSX.Element => {
+const TokenPackageCard = ({ item, onOpenModal }: IProps): JSX.Element => {
   return (
     <Box
       bgColor={colors.boxBgColor}
@@ -60,7 +61,13 @@ const TokenPackageCard = ({ item }: IProps): JSX.Element => {
             >
               best deal
             </Text>
-            <Button ml="auto" colorScheme="primary" size="sm" label="GET" />
+            <Button
+              ml="auto"
+              colorScheme="primary"
+              size="sm"
+              label="Buy Now"
+              onPress={()=>onOpenModal()}
+            />
           </HStack>
         </VStack>
       </HStack>

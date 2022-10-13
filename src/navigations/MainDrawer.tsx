@@ -233,6 +233,18 @@ export const MainDrawer = ({
       },
     },
     {
+      id: "bookmarks",
+      label: "Bookmarks",
+      icon: (
+        <Feather name={"bookmark"} size={17} color={colors.appBgColor} />
+      ),
+      onPress: () => {
+        //todo - update navigation
+        navigationRef.current?.navigate("Bookmarks");
+        handleHide();
+      },
+    },
+    {
       id: "notificationPage",
       label: "Notifications And Mail",
       icon: <Entypo name={"bell"} size={17} color={colors.appBgColor} />,
@@ -262,6 +274,8 @@ export const MainDrawer = ({
         />
       ),
       onPress: () => {
+        navigationRef.current?.navigate("ModelOrderPage");
+
         handleHide();
       },
     },
