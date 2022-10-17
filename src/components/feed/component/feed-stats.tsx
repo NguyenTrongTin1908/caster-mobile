@@ -90,7 +90,7 @@ const FeedStats = ({
         >
           <ButtonFollow
             isHideOnClick={false}
-            targetId={item?.performer._id}
+            targetId={item?.performer?._id}
             sourceId={currentUser._id}
             isFollow={item?.performer.isFollowed}
             getPerformerList={() => {}}

@@ -74,7 +74,7 @@ export const MainDrawer = ({
             }}
           >
             <Image
-              source={{ uri: user?.avatar }}
+              source={ user?.avatar ? { uri: user?.avatar } : require("../assets/avatar-default.png")}
               alt="user-avatar"
               width={60}
               height={60}
@@ -89,7 +89,7 @@ export const MainDrawer = ({
               }}
             >
               <Text fontSize="lg" bold color={colors.light}>
-                {user?.name}
+                {user?.name ? `${user.name}` : `${user?.username}`}
               </Text>
             </TouchableOpacity>
             <Text fontSize="xs" color={colors.light} textTransform="capitalize">
@@ -170,7 +170,7 @@ export const MainDrawer = ({
         />
       ),
       onPress: () => {
-        // navigationRef.current?.navigate("Profile");
+        navigationRef.current?.navigate("PublicStream");
         handleHide();
       },
     },
@@ -185,7 +185,9 @@ export const MainDrawer = ({
         />
       ),
       onPress: () => {
-        // navigationRef.current?.navigate('MyFavorites');
+        navigationRef.current?.navigate("PrivateChatDetail", {
+          performer: user,
+        });
         handleHide();
       },
     },
@@ -235,9 +237,7 @@ export const MainDrawer = ({
     {
       id: "bookmarks",
       label: "Bookmarks",
-      icon: (
-        <Feather name={"bookmark"} size={17} color={colors.appBgColor} />
-      ),
+      icon: <Feather name={"bookmark"} size={17} color={colors.appBgColor} />,
       onPress: () => {
         //todo - update navigation
         navigationRef.current?.navigate("Bookmarks");

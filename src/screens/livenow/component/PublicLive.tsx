@@ -65,9 +65,11 @@ const PublicLive = (props: IProps): React.ReactElement => {
       <FlatList
         data={performers}
         renderItem={({ item }) =>
-          item._id !== props.current._id ? (
-            <PerformerCard performer={item} />
-          ) : null
+          (item._id !== props.current._id) ? (
+            <PerformerCard performer={item}  navigationScreen="ModelProfile"/>
+          ) : (
+            null
+          )
         }
         keyExtractor={(item, index) => item._id + "_" + index}
         style={styles.listModel}

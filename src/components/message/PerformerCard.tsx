@@ -24,8 +24,8 @@ const PerformerCard = ({
     <Box w="100%" my={2.5}>
       <TouchableOpacity
         onPress={() =>
-          navigation.navigate(navigationScreen, {
-            performer: JSON.stringify(performer)
+          navigation.navigate("Call", {
+            performer: performer
           })
         }>
         <HStack space={3}>

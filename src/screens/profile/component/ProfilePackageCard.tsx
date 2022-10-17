@@ -24,14 +24,13 @@ const ProfilePackageCard = ({
   item
 }: IProps): React.ReactElement => {
 
-  { item && console.log('item', item.files[0].thumbnails[0]) }
 
   return (
 
     <View
     >
-      {item.type === 'photo' && <Image source={{ uri: item.files[0].url }} style={styles.image} resizeMode={'cover'} />}
-      {item.type === 'video' && <Image source={{ uri: item.files[0].thumbnails[0] }} style={styles.image} resizeMode={'cover'} />}
+      {item.type === 'photo' && <Image source={{ uri: item?.files[0].url }} style={styles.image} resizeMode={'cover'} />}
+      {item.type === 'video' && <Image source={{ uri: item?.files[0].thumbnails[0] }} style={styles.image} resizeMode={'cover'} />}
     </View>
 
 
