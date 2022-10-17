@@ -1,39 +1,39 @@
-import React, { useEffect, useRef, useState } from 'react';
-import {
-  Button,
-  Dimensions,
-  StyleSheet,
-  View,
-} from 'react-native';
-import { SignalingChannel } from './SignalingChannel';
+import React, { useEffect, useRef, useState } from "react";
+import { Button, Dimensions, StyleSheet, View } from "react-native";
+import { SignalingChannel } from "./SignalingChannel";
 
-import { mediaDevices, MediaStream, RTCPeerConnection, RTCView } from "react-native-webrtc";
-import { config } from 'config';
-import { LocalView } from './styles';
+import {
+  mediaDevices,
+  MediaStream,
+  RTCPeerConnection,
+  RTCView,
+} from "react-native-webrtc";
+import { config } from "config";
+import { PublicStreamView } from "./styles";
 
 export const Publisher = ({
-  streamId = '',
-  styles={
+  streamId = "",
+  styles = {
     width: 193,
     height: 136,
-    position: 'absolute',
+    position: "absolute",
     bottom: 60,
     right: 12,
     zIndex: 2,
-    backgroundColor: '#cbb967'
-  }
+    backgroundColor: "#cbb967",
+  },
 }) => {
   const [started, setStarted] = useState(false);
   const [isFrontCamera, setIsFrontCamera] = useState(true);
-  const [audiMuted, setAudioMuted] = useState(false)
-  const [videoMuted, setVideoMuted] = useState(false)
-  console.log("streamId ",streamId)
+  const [audiMuted, setAudioMuted] = useState(false);
+  const [videoMuted, setVideoMuted] = useState(false);
+  console.log("streamId ", streamId);
 
   const [localStream, setLocalStream] = useState<MediaStream>();
 
   const localStreamRef = useRef<MediaStream>();
 
-  const peerConnection = useRef<RTCPeerConnection>()
+  const peerConnection = useRef<RTCPeerConnection>();
 
   const startStreaming = async () => {
     try {
@@ -44,9 +44,9 @@ export const Publisher = ({
       peerConnection.current = new RTCPeerConnection({
         iceServers: [
           {
-            url: 'stun:stun.l.google.com:19302'
-          }
-        ]
+            url: "stun:stun.l.google.com:19302",
+          },
+        ],
       });
       // console.log('peerConnection.current', peerConnection.current);
       peerConnection.current?.addStream(localStreamRef.current);
@@ -54,16 +54,16 @@ export const Publisher = ({
       peerConnection.current.onsignalingstatechange = () =>
         // console.log(peerConnection.current?.signalingState);
 
-      peerConnection.current.onicecandidateerror = console.log;
+        (peerConnection.current.onicecandidateerror = console.log);
       peerConnection.current.onicecandidate = (event) => {
         const candidate = event.candidate;
         if (candidate && signalingChannel.current?.isChannelOpen()) {
           signalingChannel.current?.sendJSON({
-            command: 'takeCandidate',
+            command: "takeCandidate",
             streamId,
             label: candidate.sdpMLineIndex.toString(),
             id: candidate.sdpMid,
-            candidate: candidate.candidate
+            candidate: candidate.candidate,
           });
         }
       };
@@ -73,43 +73,45 @@ export const Publisher = ({
     } catch (e) {
       console.log(e);
     }
-  }
+  };
 
-  const signalingChannel = useRef<SignalingChannel>(new SignalingChannel(config.ANT_SIGNALING_URL, {
-    onopen: () => {
-      signalingChannel.current?.sendJSON({
-        command: "publish",
-        streamId,
-      })
-    },
-    start: async () => {
-      signalingChannel.current?.sendJSON({
-        command: "takeConfiguration",
-        streamId,
-        type: "offer",
-        sdp: peerConnection?.current?.localDescription?.sdp,
-      })
-    },
-    stop: () => {
-      console.log("stop called")
-    },
-    takeCandidate: (data) => {
-      // console.log("onIceCandidate remote");
-      peerConnection.current?.addIceCandidate({
-        candidate: data?.candidate || "",
-        sdpMLineIndex: Number(data?.label) || 0,
-        sdpMid: data?.id || "",
-      })
-    },
-    takeConfiguration: (data) => {
-      // console.log("got answer")
-      const answer = data?.sdp || "";
-      peerConnection.current?.setRemoteDescription({
-        sdp: answer,
-        type: "answer"
-      })
-    }
-  }));
+  const signalingChannel = useRef<SignalingChannel>(
+    new SignalingChannel(config.ANT_SIGNALING_URL, {
+      onopen: () => {
+        signalingChannel.current?.sendJSON({
+          command: "publish",
+          streamId,
+        });
+      },
+      start: async () => {
+        signalingChannel.current?.sendJSON({
+          command: "takeConfiguration",
+          streamId,
+          type: "offer",
+          sdp: peerConnection?.current?.localDescription?.sdp,
+        });
+      },
+      stop: () => {
+        console.log("stop called");
+      },
+      takeCandidate: (data) => {
+        // console.log("onIceCandidate remote");
+        peerConnection.current?.addIceCandidate({
+          candidate: data?.candidate || "",
+          sdpMLineIndex: Number(data?.label) || 0,
+          sdpMid: data?.id || "",
+        });
+      },
+      takeConfiguration: (data) => {
+        // console.log("got answer")
+        const answer = data?.sdp || "";
+        peerConnection.current?.setRemoteDescription({
+          sdp: answer,
+          type: "answer",
+        });
+      },
+    })
+  );
 
   const start = async () => {
     if (!started) {
@@ -118,12 +120,12 @@ export const Publisher = ({
       signalingChannel.current?.open();
       return;
     }
-  }
+  };
 
   const renderButtons = () => {
     <View style={styles.bottom}>
       <Button
-        title={started ? 'Stop' : 'Start'}
+        title={started ? "Stop" : "Start"}
         color="white"
         onPress={async () => {
           if (!started) {
@@ -139,7 +141,7 @@ export const Publisher = ({
         }}
       />
       <Button
-        title={audiMuted ? 'UMA' : 'MA'}
+        title={audiMuted ? "UMA" : "MA"}
         color="white"
         onPress={() => {
           const localStreams = peerConnection.current?.getLocalStreams() || [];
@@ -152,7 +154,7 @@ export const Publisher = ({
         }}
       />
       <Button
-        title={videoMuted ? 'UMV' : 'MV'}
+        title={videoMuted ? "UMV" : "MV"}
         color="white"
         onPress={() => {
           const localStreams = peerConnection.current?.getLocalStreams() || [];
@@ -180,14 +182,18 @@ export const Publisher = ({
         }}
       />
     </View>;
-  }
+  };
 
   useEffect(() => {
     const getStream = async () => {
       let sourceId;
-      const sourceInfos = await mediaDevices.enumerateDevices()
+      const sourceInfos = await mediaDevices.enumerateDevices();
       for (const info of sourceInfos) {
-        if (info.kind == "videoinput" && info.facing == isFrontCamera ? "user" : "environment") {
+        if (
+          info.kind == "videoinput" && info.facing == isFrontCamera
+            ? "user"
+            : "environment"
+        ) {
           sourceId = info.deviceId;
         }
       }
@@ -201,9 +207,9 @@ export const Publisher = ({
             minHeight: Dimensions.get("window").height,
             minWidth: Dimensions.get("window").width,
           },
-          optional: sourceId
-        }
-      })
+          optional: sourceId,
+        },
+      });
 
       if (media) {
         localStreamRef.current = media as MediaStream;
@@ -213,25 +219,26 @@ export const Publisher = ({
         // console.log('start to call...');
         start();
       }
-    }
+    };
 
     getStream();
-  }, [])
+  }, []);
 
   useEffect(() => {
     return () => {
       signalingChannel.current.close();
-    }
-  }, [])
+    };
+  }, []);
 
-  if (!!localStream) return (
-    <LocalView
-      zOrder={2}
-      streamURL={localStream?.toURL()}
-      mirror={isFrontCamera}
-      objectFit="contain"
-    />
-  );
+  if (!!localStream)
+    return (
+      <PublicStreamView
+        zOrder={1}
+        streamURL={localStream?.toURL()}
+        style={{ flex: 1 }}
+        objectFit="contain"
+      />
+    );
 
   return null;
 };
@@ -244,6 +251,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     justifyContent: "space-evenly",
-    marginBottom: 30
-  }
-})
+    marginBottom: 30,
+  },
+});

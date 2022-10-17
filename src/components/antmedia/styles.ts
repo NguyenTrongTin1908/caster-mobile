@@ -8,7 +8,7 @@ export const RemoteView = styled(RTCView)`
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 100000;
+  z-index: 1;
   background: #000000;
 `;
 
@@ -22,4 +22,16 @@ export const LocalView = styled(RTCView)`
   background: #000000;
   /* align-self: flex-end; */
   /* margin-top: auto; */
+`;
+
+
+export const PublicStreamView = styled(RTCView)`
+position: absolute;
+flex: 1;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+z-index: 100;
+background: #000000;
 `;
