@@ -10,3 +10,4 @@ export * from './comment';
 export  * from './notification'
 export * from './setting'
 export * from './payment'
+export * from './stream'

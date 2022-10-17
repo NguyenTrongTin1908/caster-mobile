@@ -5,16 +5,16 @@ import BadgeText from 'components/uis/BadgeText';
 import LoadingSpinner from 'components/uis/LoadingSpinner';
 import MessageCard from 'components/message/MessageCard';
 import { messageService } from 'services/message.service';
-import { IUser } from 'interfaces/user';
 import { IMessage } from 'interfaces/conversation';
 import socketHolder from 'lib/socketHolder';
 import { connect } from 'react-redux';
 import { getMessagePrivateChat } from 'services/redux/chatRoom/actions';
+import { IPerformer } from 'src/interfaces';
 
 interface IProps {
   conversationId: string;
   recipientId: string;
-  authUser: IUser;
+  authUser: IPerformer;
   messagePrivate: IMessage;
   isSet: boolean;
   getMessagePrivateChat: Function;
@@ -35,7 +35,7 @@ const MessageList = ({
   const [message, setMessage] = useState({} as IMessage);
 
   const sendMessage = useRef(false);
-  
+
   const loadMessages = async (more = false) => {
     if (more && !moreable) return;
     setLoading(true);

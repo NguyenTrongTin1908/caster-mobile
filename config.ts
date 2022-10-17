@@ -36,6 +36,6 @@ export const config = {
     socketEndpint: 'https://api.caster.com',
     googleClientId: '144613614396-ldptu8hrf6th9a112amfp5qmnsjnirul.apps.googleusercontent.com'
   },
-  ANT_MEDIA_URL: 'https://streaming.happyfanx.com/LiveApp',
-  ANT_SIGNALING_URL: 'wss://streaming.happyfanx.com/LiveApp/websocket'
+  ANT_MEDIA_URL: 'https://streaming.afrivega.com/LiveApp',
+  ANT_SIGNALING_URL: 'wss://streaming.afrivega.com/LiveApp/websocket'
 };

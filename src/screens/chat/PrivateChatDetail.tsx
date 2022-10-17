@@ -21,7 +21,7 @@ interface IProps {
       conversationId: string;
     };
   };
-  current: IUser;
+  current: IPerformer;
   sendMessagePrivateStream: Function;
 }
 

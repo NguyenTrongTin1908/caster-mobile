@@ -27,6 +27,7 @@ export const Publisher = ({
   const [isFrontCamera, setIsFrontCamera] = useState(true);
   const [audiMuted, setAudioMuted] = useState(false)
   const [videoMuted, setVideoMuted] = useState(false)
+  console.log("streamId ",streamId)
 
   const [localStream, setLocalStream] = useState<MediaStream>();
 
@@ -47,11 +48,11 @@ export const Publisher = ({
           }
         ]
       });
-      console.log('peerConnection.current', peerConnection.current);
+      // console.log('peerConnection.current', peerConnection.current);
       peerConnection.current?.addStream(localStreamRef.current);
 
       peerConnection.current.onsignalingstatechange = () =>
-        console.log(peerConnection.current?.signalingState);
+        // console.log(peerConnection.current?.signalingState);
 
       peerConnection.current.onicecandidateerror = console.log;
       peerConnection.current.onicecandidate = (event) => {
@@ -93,7 +94,7 @@ export const Publisher = ({
       console.log("stop called")
     },
     takeCandidate: (data) => {
-      console.log("onIceCandidate remote");
+      // console.log("onIceCandidate remote");
       peerConnection.current?.addIceCandidate({
         candidate: data?.candidate || "",
         sdpMLineIndex: Number(data?.label) || 0,
@@ -101,7 +102,7 @@ export const Publisher = ({
       })
     },
     takeConfiguration: (data) => {
-      console.log("got answer")
+      // console.log("got answer")
       const answer = data?.sdp || "";
       peerConnection.current?.setRemoteDescription({
         sdp: answer,
@@ -209,7 +210,7 @@ export const Publisher = ({
         setLocalStream(media as MediaStream);
 
         // start to call
-        console.log('start to call...');
+        // console.log('start to call...');
         start();
       }
     }

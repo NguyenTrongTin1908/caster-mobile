@@ -35,6 +35,7 @@ import Wallet from "screens/wallet/Wallet";
 import TokenPackage from "screens/token-package/TokenPackage";
 import ModelOrderPage from "screens/model/my-order";
 import OrderDetailPage from "screens/model/my-order/detail";
+import PublicStream from "screens/live/PublicStream";
 
 import EditProfile from "screens/profile/EditProfile";
 export type RootStackParamList = {
@@ -58,7 +59,7 @@ export type RootStackParamList = {
   TokenPackage: undefined;
   ModelOrderPage: undefined;
   // ChatRoom: { performer: IPerformer };
-  // PrivateChatDetail: { performer: IPerformer; conversationId: string };
+  PrivateChatDetail: { performer: IPerformer; conversationId: string };
   PerformerDetail: { username: string };
   MediaPreview: {
     path: string;
@@ -69,9 +70,10 @@ export type RootStackParamList = {
     type: "video" | "photo";
   };
   Home: {};
+  PublicStream: undefined;
   FeedDetail: { performerId: any; type: "video" | "photo" };
   OrderDetailPage: { id: any };
-  Bookmarks: undefined
+  Bookmarks: undefined;
 };
 export type RootStackNavigationProps<
   T extends keyof RootStackParamList = "default"
@@ -103,6 +105,12 @@ function RootNavigator({ loggedIn }): React.ReactElement {
           options={{ headerShown: false }}
           name="Calling"
           component={Calling}
+        />
+
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="PublicStream"
+          component={PublicStream}
         />
         <Stack.Screen
           options={{ headerShown: false }}
@@ -199,7 +207,7 @@ function RootNavigator({ loggedIn }): React.ReactElement {
           name="TokenPackage"
           component={TokenPackage}
         />
-         <Stack.Screen
+        <Stack.Screen
           options={{ headerShown: false, gestureEnabled: false }}
           name="Bookmarks"
           component={Bookmarks}

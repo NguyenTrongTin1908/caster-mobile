@@ -4,6 +4,7 @@ import { PERMISSIONS, requestMultiple, RESULTS } from 'react-native-permissions'
 
 import { Text, VStack, Center, View, Box, Image } from 'native-base';
 import { streamService } from 'services/stream.service';
+import {tokenService} from 'services/token.service';
 import socketHolder from 'lib/socketHolder';
 import { Publisher } from 'components/antmedia/Publisher';
 import { Viewer } from 'components/antmedia/Viewer';
@@ -40,6 +41,17 @@ const PrivateCall = ({ route }) => {
   const remoteStreamRef = useRef({
     id: '',
   }).current;
+
+  useEffect(() => {
+    askPermissions();
+    handleSocketsJoin();
+
+    return () => {
+      privateRequestHolder = null;
+      chargerTimeout && clearTimeout(chargerTimeout);
+      handleSocketLeave();
+    };
+  }, []);
 
   const askAndroidPerissions = async () => {
     const cameraGranted = await PermissionsAndroid.request(
@@ -172,8 +184,8 @@ const PrivateCall = ({ route }) => {
   const hangUp = async () => {
     // TODO - send socket event to stop, wait for local stream stop then navigate
     // return back
-    navigation.navigate('PerformerDetail', {
-      username: performer.username
+    navigation.navigate('Model', {
+
     });
   };
 
@@ -181,7 +193,7 @@ const PrivateCall = ({ route }) => {
     try {
       const conversationId = privateRequest?.conversation?._id || privateRequestHolder?.conversation?._id;
       if (!conversationId) throw new Error('Cannot find conversation!');
-      await streamService.sendPaidToken(conversationId);
+      await tokenService.sendPaidToken(conversationId);
 
       chargerTimeout = setTimeout(() => chargeInterval(), 60 * 1000);
     } catch (e) {
@@ -207,16 +219,7 @@ const PrivateCall = ({ route }) => {
   };
 
 
-  useEffect(() => {
-    askPermissions();
-    handleSocketsJoin();
 
-    return () => {
-      privateRequestHolder = null;
-      chargerTimeout && clearTimeout(chargerTimeout);
-      handleSocketLeave();
-    };
-  }, []);
 
   if (!permissionGranted) return (
     <View>
@@ -233,7 +236,7 @@ const PrivateCall = ({ route }) => {
   return (
     <Container is-playing>
       <Image
-        source={{ uri: performer?.avatar }}
+        source={performer?.avatar ?{ uri: performer?.avatar } : require('../../assets/default-avatar.png')}
         style={{ width: '100%', height: '100%' }}
         resizeMode="cover"
         alignSelf="center"
@@ -248,7 +251,7 @@ const PrivateCall = ({ route }) => {
         alignItems="center"
       >
         <Image
-          source={{ uri: performer?.avatar }}
+          source={performer?.avatar ?{ uri: performer?.avatar } : require('../../assets/default-avatar.png')}
           resizeMode="cover"
           alignSelf="center"
           style={{ width: 80, height: 80 }}

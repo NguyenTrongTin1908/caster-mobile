@@ -5,12 +5,12 @@ import { SignalingChannel } from './SignalingChannel';
 import {
   MediaStream,
   RTCPeerConnection,
-  RTCSessionDescriptionType
+  RTCSessionDescription
 } from 'react-native-webrtc';
 import { config } from 'config';
 import { RemoteView } from './styles';
 
-export const Viewer = ({ 
+export const Viewer = ({
   streamId,
   onJoined = () => {}
 }) => {
@@ -19,13 +19,13 @@ export const Viewer = ({
   const peerConnection = useRef<RTCPeerConnection>();
 
   const startStreaming = async (
-    remoteDescription: RTCSessionDescriptionType
+    remoteDescription: any
   ) => {
     peerConnection.current = new RTCPeerConnection({
       iceServers: []
     });
 
-    peerConnection.current.onaddstream = (event) => {
+    peerConnection.current.onaddstream = (event : any) => {
       console.log('on add stream');
       setRemoteStream(event.stream);
 
@@ -47,7 +47,7 @@ export const Viewer = ({
 
     peerConnection.current.onicecandidateerror = console.log;
 
-    peerConnection.current.onicecandidate = (event) => {
+    peerConnection.current.onicecandidate = (event :any) => {
       const candidate = event.candidate;
       if (
         candidate &&
@@ -67,7 +67,7 @@ export const Viewer = ({
 
     await peerConnection.current?.setRemoteDescription(remoteDescription);
 
-    const answer = await peerConnection.current.createAnswer();
+    const answer = await peerConnection.current.createAnswer() as any;
     await peerConnection.current.setLocalDescription(answer);
   };
 
