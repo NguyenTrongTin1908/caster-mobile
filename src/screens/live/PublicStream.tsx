@@ -23,11 +23,9 @@ import { colors } from "utils/theme";
 import { isAndroid } from "utils/common";
 import { Publisher } from "components/antmedia/Publisher";
 import PublisherIOS from "components/antmedia/PublisherIOS";
+import ChatBox from "components/streamChat/chat-box";
+// import EmojiSelector from "react-native-emoji-selector";
 
-// eslint-disable-next-line no-shadow
-// enum EVENT_NAME {
-//   ROOM_INFORMATIOM_CHANGED = "public-room-changed",
-// }
 interface IProps {
   resetStreamMessage: Function;
   getStreamConversation: Function;
@@ -48,7 +46,7 @@ const PublicStream = ({
 
   const [loading, setLoading] = useState(false);
   const [initialized, setInitialized] = useState(false);
-  const [sessionId, setSessionid] = useState("");
+  const [sessionId, setSessionid] = useState(null) as any;
   const [total, setTotal] = useState(0);
   const [members, setMembers] = useState([]);
   const [permissionGranted, setPermissionGranted] = useState(false);
@@ -56,7 +54,10 @@ const PublicStream = ({
 
   useEffect(() => {
     askPermissions();
-    joinPublicRoom();
+    // joinPublicRoom();
+    return () => {
+      leavePublicRoom();
+    };
   }, []);
 
   const askAndroidPerissions = async () => {
@@ -120,9 +121,10 @@ const PublicStream = ({
     publisherRef2 = dataFunc;
   };
   const stop = () => {
-    if (!initialized) {
-      return;
-    }
+    // if (!initialized) {
+    //   return;
+    // }
+    leavePublicRoom();
   };
   const callback = (info: WEBRTC_ADAPTOR_INFORMATIONS) => {
     if (activeConversation && activeConversation.data) {
@@ -130,16 +132,22 @@ const PublicStream = ({
       const socket = socketHolder.getSocket() as any;
       if (info === WEBRTC_ADAPTOR_INFORMATIONS.INITIALIZED) {
         setInitialized(true);
-        if (publisherRef.publish) publisherRef.publish(sessionId);
-        else publisherRef2.publish(sessionId);
+        console.log("INITIALIZED");
+        // if (publisherRef.publish) publisherRef.publish(sessionId);
+        // else publisherRef2.publish(sessionId);
       } else if (info === WEBRTC_ADAPTOR_INFORMATIONS.PUBLISH_STARTED) {
         const conversation = { ...activeConversation.data };
         socket.emit("public-stream/live", { conversationId: conversation._id });
+        console.log("public");
+
         setLoading(false);
       } else if (info === WEBRTC_ADAPTOR_INFORMATIONS.PUBLISH_FINISHED) {
+        console.log("finished");
+
         setLoading(false);
       } else if (info === WEBRTC_ADAPTOR_INFORMATIONS.CLOSED) {
         setLoading(false);
+        console.log("close");
         setInitialized(false);
       }
     }
@@ -150,17 +158,24 @@ const PublicStream = ({
       setLoading(true);
       const resp = await streamService.goLive();
       const { conversation } = resp.data;
-      const { streamId } = resp.data;
+      const { streamId } = conversation;
+      const { sessionId } = resp.data;
 
       if (conversation && conversation._id) {
         getStreamConversation({
           conversation,
         });
+
         socket &&
           (await socket.emit("public-stream/join", {
             conversationId: conversation._id,
           }));
+        socket &&
+          (await socket.emit("public-stream/live", {
+            conversationId: conversation._id,
+          }));
         setLocalStreamId(streamId);
+        await setSessionid(sessionId);
       }
     } catch (e) {
       const error = await Promise.resolve(e);
@@ -168,40 +183,48 @@ const PublicStream = ({
       setLoading(false);
     }
   };
+
   const leavePublicRoom = () => {
     const socket = socketHolder.getSocket() as any;
+    console.log("Stop");
+
     if (socket && activeConversation && activeConversation.data) {
       const conversation = { ...activeConversation.data };
       socket.emit("public-stream/leave", { conversationId: conversation._id });
       resetStreamMessage();
+      setSessionid(null);
+      setInitialized(false);
     }
-  };
-  const renderLocalVideo = () => {
-    // if (!localStreamId) return null;
-    console.log("renderLocalVideo");
-
-    if (isAndroid()) {
-      return <Publisher streamId={localStreamId} />;
-    }
-
-    return <PublisherIOS streamId={localStreamId} />;
   };
   const start = async () => {
     setLoading(true);
     try {
-      const resp = await streamService.goLive();
-      const { sessionId } = resp.data;
-      setSessionid(sessionId);
-      console.log("public: ", publisherRef);
+      // const resp = await streamService.goLive();
+      // const { sessionId } = resp.data;
+      // await setSessionid(sessionId);
+      setInitialized(true);
+      joinPublicRoom();
+      console.log("Start");
+
+      // console.log("public: ", publisherRef);
       // console.log("public2: ", publisherRef2)
-      if (publisherRef.start) publisherRef.start();
-      else publisherRef2.start();
+      // if (publisherRef.start) publisherRef.start();
+      // else publisherRef2.start();
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log("error_broadcast", await e);
     } finally {
       setLoading(false);
     }
+  };
+
+  const renderLocalVideo = () => {
+    console.log("renderLocalVideo");
+    if (isAndroid()) {
+      return <Publisher streamId={localStreamId} onChange={callback} />;
+    }
+
+    return <PublisherIOS streamId={localStreamId} />;
   };
 
   return (
@@ -218,7 +241,10 @@ const PublicStream = ({
       </Heading>
 
       <HeaderMenu />
-      <View flex={1}>{renderLocalVideo()}</View>
+      <View flex={1}>{sessionId && renderLocalVideo()}</View>
+
+      <ChatBox />
+
       <View>
         {!initialized ? (
           <Button onPress={() => start()}>Start Streaming</Button>
@@ -226,6 +252,15 @@ const PublicStream = ({
           <Button onPress={() => stop()}>Stop Streaming</Button>
         )}
       </View>
+      {/* <View style={styles.emotion}>
+        {
+          <EmojiSelector
+            showSearchBar={false}
+            showSectionTitles={false}
+            onEmojiSelected={() => {}}
+          />
+        }
+      </View> */}
     </SafeAreaView>
   );
 };

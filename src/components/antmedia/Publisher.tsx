@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Dimensions, StyleSheet, View } from "react-native";
 import { SignalingChannel } from "./SignalingChannel";
+import { WEBRTC_ADAPTOR_INFORMATIONS } from "components/antmedia/constants";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import {
   mediaDevices,
@@ -13,15 +15,16 @@ import { PublicStreamView } from "./styles";
 
 export const Publisher = ({
   streamId = "",
-  styles = {
-    width: 193,
-    height: 136,
-    position: "absolute",
-    bottom: 60,
-    right: 12,
-    zIndex: 2,
-    backgroundColor: "#cbb967",
-  },
+  // styles = {
+  //   width: 193,
+  //   height: 136,
+  //   position: "absolute",
+  //   bottom: 60,
+  //   right: 12,
+  //   zIndex: 2,
+  //   backgroundColor: "#cbb967",
+  // },
+  onChange,
 }) => {
   const [started, setStarted] = useState(false);
   const [isFrontCamera, setIsFrontCamera] = useState(true);
@@ -82,6 +85,7 @@ export const Publisher = ({
           command: "publish",
           streamId,
         });
+        onChange(WEBRTC_ADAPTOR_INFORMATIONS.INITIALIZED);
       },
       start: async () => {
         signalingChannel.current?.sendJSON({
@@ -90,9 +94,11 @@ export const Publisher = ({
           type: "offer",
           sdp: peerConnection?.current?.localDescription?.sdp,
         });
+        onChange(WEBRTC_ADAPTOR_INFORMATIONS.PUBLISH_STARTED);
       },
       stop: () => {
         console.log("stop called");
+        onChange(WEBRTC_ADAPTOR_INFORMATIONS.PUBLISH_FINISHED);
       },
       takeCandidate: (data) => {
         // console.log("onIceCandidate remote");
@@ -123,26 +129,27 @@ export const Publisher = ({
   };
 
   const renderButtons = () => {
-    <View style={styles.bottom}>
-      <Button
-        title={started ? "Stop" : "Start"}
-        color="white"
-        onPress={async () => {
-          if (!started) {
-            setStarted(true);
-            await startStreaming();
-            signalingChannel.current?.open();
-            return;
-          }
+    return (
+      <View style={styles.bottom}>
+        <Button
+          title={started ? "Stop" : "Start"}
+          color="red"
+          onPress={async () => {
+            if (!started) {
+              setStarted(true);
+              await startStreaming();
+              signalingChannel.current?.open();
+              return;
+            }
 
-          setStarted(false);
-          peerConnection.current?.close();
-          signalingChannel.current?.close();
-        }}
-      />
-      <Button
+            setStarted(false);
+            peerConnection.current?.close();
+            signalingChannel.current.close();
+          }}
+        />
+        {/* <Button
         title={audiMuted ? "UMA" : "MA"}
-        color="white"
+        color="red"
         onPress={() => {
           const localStreams = peerConnection.current?.getLocalStreams() || [];
           for (const stream of localStreams) {
@@ -155,7 +162,7 @@ export const Publisher = ({
       />
       <Button
         title={videoMuted ? "UMV" : "MV"}
-        color="white"
+        color="red"
         onPress={() => {
           const localStreams = peerConnection.current?.getLocalStreams() || [];
           for (const stream of localStreams) {
@@ -168,7 +175,7 @@ export const Publisher = ({
       />
       <Button
         title="SC"
-        color="white"
+        color="red"
         onPress={() => {
           const localStreams = peerConnection.current?.getLocalStreams() || [];
           for (const stream of localStreams) {
@@ -180,8 +187,9 @@ export const Publisher = ({
           }
           setIsFrontCamera((c) => !c);
         }}
-      />
-    </View>;
+      /> */}
+      </View>
+    );
   };
 
   useEffect(() => {
@@ -232,12 +240,15 @@ export const Publisher = ({
 
   if (!!localStream)
     return (
-      <PublicStreamView
-        zOrder={1}
-        streamURL={localStream?.toURL()}
-        style={{ flex: 1 }}
-        objectFit="contain"
-      />
+      <SafeAreaView style={{ flex: 1, marginBottom: 80 }}>
+        <PublicStreamView
+          zOrder={1}
+          streamURL={localStream?.toURL()}
+          style={{ flex: 1 }}
+          objectFit="contain"
+        />
+        {/* {renderButtons()} */}
+      </SafeAreaView>
     );
 
   return null;
@@ -250,7 +261,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     width: "100%",
-    justifyContent: "space-evenly",
-    marginBottom: 30,
+    justifyContent: "center",
+    marginBottom: 0,
+    zIndex: 10000,
   },
 });
