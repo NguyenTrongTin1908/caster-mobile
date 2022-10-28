@@ -58,6 +58,9 @@ export class PerformerService extends APIRequest {
   updateNotificationSetting(id: string, payload: any) {
     return this.put(`/performers/${id}/notification-settings`, payload);
   }
+  findOne(id: string, headers?: { [key: string]: string }) {
+    return this.get(`/performers/${id}`, headers);
+  }
 
 
 }

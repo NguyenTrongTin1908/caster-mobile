@@ -18,11 +18,7 @@ interface Props {
   isLoggedIn: boolean;
   current: IPerformer;
   handleLogout: Function;
-  route: {
-    params: {
-      performer: any;
-    };
-  };
+  route: any;
 }
 const ModelProfile = ({
   handleLogout,
@@ -31,7 +27,7 @@ const ModelProfile = ({
 }: Props): React.ReactElement => {
   const navigation = useNavigation() as any;
   const [showOptions, setshowOptions] = useState(false);
-  const performer = JSON.parse(route.params.performer);
+  const { performer } = route.params;
 
   useEffect(() => {
     navigation.setOptions({

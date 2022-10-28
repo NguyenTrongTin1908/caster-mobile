@@ -64,8 +64,8 @@ const PrivateLive = (props: IProps): React.ReactElement => {
         data={performers}
         style={styles.listModel}
         renderItem={({ item }) =>
-          (item._id !== props.current._id) ? (
-            <PerformerCard performer={item} navigationScreen="ModelProfile" />
+          item._id !== props.current._id ? (
+            <PerformerCard performer={item} navigationScreen="Call" />
           ) : null
         }
         keyExtractor={(item, index) => item._id + "_" + index}

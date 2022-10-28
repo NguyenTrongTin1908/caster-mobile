@@ -10,6 +10,9 @@ export * from './post.service';
 export * from './stream.service';
 
 export * from './token-package.service';
+export * from './token-transaction.service';
+
+export * from './gift.service';
 
 export * from './report.service';
 export * from './follow.service';

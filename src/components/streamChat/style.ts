@@ -1,9 +1,12 @@
 import { Platform, StyleSheet } from 'react-native';
 import { colors, Fonts, Sizes } from 'utils/theme';
 import { Dimensions, StatusBar } from 'react-native';
+import { Center } from 'native-base';
+import { color } from 'react-native-reanimated';
 
 const { width, height } = Dimensions.get('window');
 let deviceH = Dimensions.get('screen').height;
+let deviceV = Dimensions.get('screen').width;
 const STATUS_BAR_HEIGHT = StatusBar.currentHeight || 24;
 let bottomNavBarH = deviceH - height + STATUS_BAR_HEIGHT;
 const styles = StyleSheet.create({
@@ -24,9 +27,17 @@ const styles = StyleSheet.create({
     paddingBottom: Sizes.fixPadding * 3.0
   },
 
+
+
   songRow: {
     flexDirection: 'row',
     alignItems: 'center'
+  },
+  chatbox: {
+    position: "absolute",
+    height : 100,
+    top: deviceH/2-140
+
   },
   rightContainer: {
     alignSelf: 'flex-end',
@@ -90,18 +101,44 @@ const styles = StyleSheet.create({
     borderRadius: Sizes.fixPadding,
     alignItems: 'center',
     overflow: 'hidden'
+  }
+  ,
+  chatText : {
+    fontSize : Sizes.fixPadding *2,
+    color : colors.lightText,
+    marginHorizontal: Sizes.fixPadding,
+    textAlignVertical:"center",
+
+  },
+  chatLine : {
+    marginBottom: Sizes.fixPadding,
+    flexDirection : "row"
+
+  },
+  sendComment: {
+    marginLeft: 'auto',
+    alignItems:'center',
+        justifyContent:'center'
+
+
+  },
+  messageComponent: {
+    position: "absolute", top: deviceH/2 -25, left: 0, right: 0,width: deviceV
+
   },
   emotion: {
-    position : 'absolute',
-    top : 0,
-    width: "100%",
-    height:"90%",
-    zIndex: 10000,
-    alignSelf: 'center',
+   position : 'absolute',
+   backgroundColor:colors.lightText,
+
+   top: 0,
+   width: deviceV,
+   height:deviceH -300,
+   maxHeight: deviceH-300,
+   overflow:"scroll",
 
 
 
-   },
+  },
 });
 
 export default styles;

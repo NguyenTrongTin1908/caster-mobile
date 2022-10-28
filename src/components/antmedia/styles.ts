@@ -26,12 +26,7 @@ export const LocalView = styled(RTCView)`
 
 
 export const PublicStreamView = styled(RTCView)`
-position: absolute;
 flex: 1;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
 z-index: 100;
 background: #000000;
 `;
