@@ -92,9 +92,9 @@ const ModelProfile = ({
           </View>
         </View>
         <Text style={styles.textName}>
-          {performer && performer?.name != " "
-            ? `${performer.name}`
-            : `${performer.username}`}
+          {(performer && performer?.name != " ")
+            ? `${performer?.name}`
+            : `${performer?.username}`}
         </Text>
 
         {/* <TouchableOpacity activeOpacity={0.7} style={styles.editButtonStyle}>

@@ -36,6 +36,7 @@ import TokenPackage from "screens/token-package/TokenPackage";
 import ModelOrderPage from "screens/model/my-order";
 import OrderDetailPage from "screens/model/my-order/detail";
 import PublicStream from "screens/live/PublicStream";
+import ViewPublicStream from "screens/live/ViewPublicStream";
 
 import EditProfile from "screens/profile/EditProfile";
 export type RootStackParamList = {
@@ -58,6 +59,7 @@ export type RootStackParamList = {
   Wallet: undefined;
   TokenPackage: undefined;
   ModelOrderPage: undefined;
+  ViewPublicStream: {performer: IPerformer};
   // ChatRoom: { performer: IPerformer };
   PrivateChatDetail: { performer: IPerformer; conversationId: string };
   PerformerDetail: { username: string };
@@ -111,6 +113,11 @@ function RootNavigator({ loggedIn }): React.ReactElement {
           options={{ headerShown: false }}
           name="PublicStream"
           component={PublicStream}
+        />
+         <Stack.Screen
+          options={{ headerShown: false }}
+          name="ViewPublicStream"
+          component={ViewPublicStream}
         />
         <Stack.Screen
           options={{ headerShown: false }}

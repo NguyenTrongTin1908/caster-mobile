@@ -66,7 +66,7 @@ const PublicLive = (props: IProps): React.ReactElement => {
         data={performers}
         renderItem={({ item }) =>
           (item._id !== props.current._id) ? (
-            <PerformerCard performer={item}  navigationScreen="ModelProfile"/>
+            <PerformerCard performer={item}  navigationScreen="ViewPublicStream"/>
           ) : (
             null
           )

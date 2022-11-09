@@ -12,7 +12,6 @@ import {
 } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import styles from "./style";
-import { Button } from "native-base";
 import { IFeed } from "interfaces/feed";
 import ListComments from "components/comment/list-comments";
 import { connect } from "react-redux";
@@ -109,7 +108,7 @@ const FeedStats = ({
             onPress={() =>
               navigation.navigate("ModelProfile", {
                 screen: "ModelProfile",
-                performer: JSON.stringify(item?.performer),
+                performer: item?.performer,
               })
             }
           >

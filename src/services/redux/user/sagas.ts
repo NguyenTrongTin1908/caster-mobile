@@ -41,12 +41,12 @@ const userSagas = [
       try {
         yield put(setUpdating(true));
         const updated = yield performerService.updateMe(data.payload._id, data.payload);
-        yield put(updateUserSuccess(updated.data));
+        yield put(updateProfileSuccess(updated.data));
       } catch (e) {
         // TODO - alert error
         const error = yield Promise.resolve(e);
         console.log(error?.message || 'Error occured, please try again later');
-        yield put(updateUserFail(error));
+        yield put(updateProfileFail(error));
       } finally {
         yield put(setUpdating(false));
       }

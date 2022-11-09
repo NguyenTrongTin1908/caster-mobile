@@ -127,7 +127,7 @@ const Profile = ({ current, handleLogout, route }: Props): React.ReactElement =>
           </View>
         </View>
         <Text style={styles.textName}>
-          {current && current?.name != ' ' ? `${current.name}` : `${current?.username}`}
+          {(current && current?.name != ' ') ? `${current?.name}` : `${current?.username}`}
         </Text>
         <View style={{ flexDirection: 'row', alignSelf: 'center', marginTop: 5 }}>
           <TouchableOpacity

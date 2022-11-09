@@ -3,7 +3,7 @@ import { Button, View, Heading } from "native-base";
 import { connect } from "react-redux";
 import { IUser } from "src/interfaces";
 import { streamService } from "../../services";
-import { PermissionsAndroid } from "react-native";
+import { PermissionsAndroid, Text } from "react-native";
 import {
   PERMISSIONS,
   requestMultiple,
@@ -19,11 +19,12 @@ import { WEBRTC_ADAPTOR_INFORMATIONS } from "components/antmedia/constants";
 import styles from "./style";
 import { SafeAreaView } from "react-native-safe-area-context";
 import HeaderMenu from "components/tab/HeaderMenu";
-import { colors } from "utils/theme";
+import { colors, Sizes } from "utils/theme";
 import { isAndroid } from "utils/common";
 import { Publisher } from "components/antmedia/Publisher";
 import PublisherIOS from "components/antmedia/PublisherIOS";
 import ChatBox from "components/streamChat/chat-box";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 // import EmojiSelector from "react-native-emoji-selector";
 
 interface IProps {
@@ -55,6 +56,10 @@ const PublicStream = ({
   useEffect(() => {
     askPermissions();
     // joinPublicRoom();
+    const socket = socketHolder.getSocket() as any;
+
+    socket.on('public-room-changed',handler);
+
     return () => {
       leavePublicRoom();
     };
@@ -110,7 +115,7 @@ const PublicStream = ({
     } else {
     }
   };
-  const handler = ({ total, members }) => {
+  const handleMember = ({ total, members }) => {
     setTotal(total);
     setMembers(members);
   };
@@ -199,17 +204,10 @@ const PublicStream = ({
   const start = async () => {
     setLoading(true);
     try {
-      // const resp = await streamService.goLive();
-      // const { sessionId } = resp.data;
-      // await setSessionid(sessionId);
+
       setInitialized(true);
       joinPublicRoom();
-      console.log("Start");
 
-      // console.log("public: ", publisherRef);
-      // console.log("public2: ", publisherRef2)
-      // if (publisherRef.start) publisherRef.start();
-      // else publisherRef2.start();
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log("error_broadcast", await e);
@@ -217,6 +215,11 @@ const PublicStream = ({
       setLoading(false);
     }
   };
+  const handler = ( {total, members} ) => {
+    console.log("Vo")
+    setTotal(total);
+    setMembers(members)
+  }
 
   const renderLocalVideo = () => {
     console.log("renderLocalVideo");
@@ -241,6 +244,26 @@ const PublicStream = ({
       </Heading>
 
       <HeaderMenu />
+     {sessionId && <View
+          style={{
+            position:'absolute',
+            marginTop: Sizes.fixPadding + 160.0,
+            alignItems: "center",
+            alignSelf:"flex-end",
+            zIndex: 1000
+
+          }}
+        >
+          <MaterialIcons name="visibility" color={colors.light} size={28} />
+          <Text
+            style={{
+              marginTop: Sizes.fixPadding - 7.0,
+              color: colors.lightText,
+            }}
+          >
+            {total}
+          </Text>
+        </View> }
       <View flex={1}>{sessionId && renderLocalVideo()}</View>
 
       <ChatBox />
