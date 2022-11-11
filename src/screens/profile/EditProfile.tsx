@@ -1,14 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import {
-
-  Text,
-
-  View,
-  Heading,
-
-  Image
-} from 'native-base';
-import {  useForm } from 'react-hook-form';
+import { Text, View, Heading, Image, useToast } from 'native-base';
+import { useForm } from 'react-hook-form';
 import { colors, Sizes } from 'utils/theme';
 import ImagePicker from 'react-native-image-crop-picker';
 import { useNavigation } from '@react-navigation/core';
@@ -46,6 +38,7 @@ const EditProfile = ({
   updateCurrentUserAvatar: handleUpdateAvt,
   updateCurrentUserCover: handleUpdateCover
 }: IProps): React.ReactElement => {
+  const toast = useToast();
   const [countries, setCountries] = useState([] as Array<ICountry>);
   const [bodyInfo, setBodyInfo] = useState([] as any);
   const [showBottomSheet, setShowButtonSheet] = useState(false);
@@ -79,7 +72,9 @@ const EditProfile = ({
         ...data
       });
 
-      Alert.alert('Posted successfully!');
+      toast.show({
+        title: 'Updated successfully!'
+      });
       navigation.navigate('Profile');
     } catch {
       Alert.alert('Something went wrong, please try again later');
@@ -164,10 +159,13 @@ const EditProfile = ({
     } catch (error) {}
   };
 
-  useEffect(async () => {
-    const [countries, bodyInfo] = await Promise.all([utilsService.countriesList(), utilsService.bodyInfo()]);
-    setCountries(countries?.data);
-    setBodyInfo(bodyInfo?.data);
+  useEffect(() => {
+    async function loadData() {
+      const [countries, bodyInfo] = await Promise.all([utilsService.countriesList(), utilsService.bodyInfo()]);
+      setCountries(countries?.data);
+      setBodyInfo(bodyInfo?.data);
+    }
+    loadData();
   }, []);
 
   return (

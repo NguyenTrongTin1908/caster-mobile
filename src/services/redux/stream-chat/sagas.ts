@@ -23,17 +23,14 @@ import {
 const streamMessageSagas = [
   {
     on: getStreamConversation,
-    * worker(data: IReduxAction<Record<string, any>>) {
+    *worker(data: IReduxAction<Record<string, any>>) {
       try {
         const { conversation } = data.payload;
         const { type } = conversation;
-        const resp = type === 'stream_public'
-          ? yield messageService.findPublicConversationPerformer(
-            conversation.performerId
-          )
-          : yield messageService.getConversationByStreamId(
-            conversation.streamId
-          );
+        const resp =
+          type === 'stream_public'
+            ? yield messageService.findPublicConversationPerformer(conversation.performerId)
+            : yield messageService.getConversationByStreamId(conversation.streamId);
         if (resp && resp.data) {
           yield put(getStreamConversationSuccess({ data: resp.data }));
           yield put(
@@ -53,11 +50,9 @@ const streamMessageSagas = [
   },
   {
     on: loadStreamMessages,
-    * worker(data: IReduxAction<Record<string, any>>) {
+    *worker(data: IReduxAction<Record<string, any>>) {
       try {
-        const {
-          conversationId, offset, limit
-        } = data.payload;
+        const { conversationId, offset, limit } = data.payload;
         yield put(fetchingStreamMessage({ conversationId }));
         const resp = yield messageService.getPublicMessages(conversationId, {
           offset,
@@ -66,8 +61,8 @@ const streamMessageSagas = [
         yield put(
           loadStreamMessagesSuccess({
             conversationId,
-            items: resp.data.data,
-            total: resp.data.total
+            items: resp.data,
+            total: resp.total
           })
         );
       } catch (e) {
@@ -78,14 +73,10 @@ const streamMessageSagas = [
   },
   {
     on: loadMoreStreamMessages,
-    * worker(data: IReduxAction<Record<string, any>>) {
+    *worker(data: IReduxAction<Record<string, any>>) {
       try {
-        const messageMap = select(
-          (state) => state.streamMessage.messages
-        ) as any;
-        const {
-          conversationId, offset, limit
-        } = data.payload;
+        const messageMap = select(state => state.streamMessage.messages) as any;
+        const { conversationId, offset, limit } = data.payload;
         if (messageMap && messageMap.fetching) {
           return;
         }
@@ -110,7 +101,7 @@ const streamMessageSagas = [
   },
   {
     on: sendStreamMessage,
-    * worker(req: IReduxAction<any>) {
+    *worker(req: IReduxAction<any>) {
       try {
         const { conversationId, data } = req.payload;
         const resp = yield messageService.sendStreamMessage(conversationId, data);
@@ -123,7 +114,7 @@ const streamMessageSagas = [
   },
   {
     on: deleteMessage,
-    * worker(req: IReduxAction<any>) {
+    *worker(req: IReduxAction<any>) {
       try {
         const { messageId } = req.payload;
         const resp = yield messageService.deleteMessage(messageId);

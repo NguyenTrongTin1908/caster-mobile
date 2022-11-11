@@ -17,8 +17,7 @@ import {
 } from './actions';
 
 const initialMessageState = {
-  activeConversation: {
-  },
+  activeConversation: {},
   sendMessage: {
     sending: false
   },
@@ -42,8 +41,12 @@ const streamMessageReducer = [
       return {
         ...state,
         activeConversation: {
+          ...state.activeConversation,
           fetching: false,
-          data: data.payload.data
+          data: {
+            ...state.activeConversation.data,
+            ...data.payload.data
+          }
         }
       };
     }
@@ -79,10 +82,7 @@ const streamMessageReducer = [
       const { conversationMap } = state;
       const { conversationId, items, total } = data.payload;
       conversationMap[conversationId] = {
-        items: [
-          ...items.reverse(),
-          ...conversationMap[conversationId].items || []
-        ],
+        items: [...items.reverse(), ...(conversationMap[conversationId].items || [])],
         total,
         fetching: false
       };
@@ -132,7 +132,7 @@ const streamMessageReducer = [
   {
     on: receiveStreamMessageSuccess,
     reducer(state: any, data: IReduxAction<any>) {
-      console.log("Data")
+      console.log('Data');
       const nextState = { ...state };
       const { conversationId } = data.payload;
       if (!nextState.conversationMap[conversationId] || !nextState.conversationMap[conversationId].items) {
@@ -140,9 +140,7 @@ const streamMessageReducer = [
           items: []
         };
       }
-      nextState.conversationMap[conversationId].items.push(
-        data.payload
-      );
+      nextState.conversationMap[conversationId].items.push(data.payload);
       return {
         ...nextState,
         receiveMessage: data.payload
@@ -194,7 +192,4 @@ const streamMessageReducer = [
   }
 ];
 
-export default merge(
-  {},
-  createReducers('streamMessage', [streamMessageReducer], initialMessageState)
-);
+export default merge({}, createReducers('streamMessage', [streamMessageReducer], initialMessageState));
