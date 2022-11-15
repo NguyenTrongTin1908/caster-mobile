@@ -122,7 +122,6 @@ class Socket extends React.Component<ISocketProps> {
 
   render() {
     const { children } = this.props;
-    console.log('socket >>>>>', this.socket);
     return <SocketContext.Provider value={this.socket}>{React.Children.only(children)}</SocketContext.Provider>;
   }
 }
