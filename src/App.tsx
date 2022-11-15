@@ -43,12 +43,12 @@ function App(): React.ReactElement {
 function ProviderWrapper(): React.ReactElement {
   return (
     <RootProvider>
-      <>
-        <MainDrawer />
-        <Socket>
+      <Socket>
+        <>
+          <MainDrawer />
           <App />
-        </Socket>
-      </>
+        </>
+      </Socket>
     </RootProvider>
   );
 }

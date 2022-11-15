@@ -1,5 +1,5 @@
 import * as Animatable from 'react-native-animatable';
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useContext, useState } from 'react';
 import { connect } from 'react-redux';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { ScrollView, Box, FlatList, Flex, HStack, VStack, Text, View, Image, Divider } from 'native-base';
@@ -14,6 +14,8 @@ import { IPerformer } from 'src/interfaces';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import socketHolder from 'lib/socketHolder';
+import { SocketContext } from '../socket';
 interface DrawerProps {
   user: IPerformer;
   loggedIn: boolean;
@@ -29,6 +31,8 @@ export const MainDrawer = ({
   handleLogout
 }: DrawerProps): JSX.Element => {
   const viewRef = useRef(null) as any;
+  const socketContext = useContext(SocketContext) as any;
+  const { status: socketContextStatus } = useContext(SocketContext) as any;
   const handleShow = () => {
     if (!showDrawer) viewRef.current.fadeOutLeft(800);
     else {
@@ -271,6 +275,32 @@ export const MainDrawer = ({
   useEffect(() => {
     hasTouchedDrawer && handleShow();
   }, [showDrawer]);
+
+  const handleSocket = async socket => {
+    if (!socket || !socket.status) return;
+    socket.status === 'connected' &&
+      socket.on('private-chat-request', data => {
+        console.log('data>>>>>>>', data);
+      });
+  };
+
+  const handleDisconnect = socket => {
+    if (!socket || !socket.status) return;
+    socket.off('private-chat-request');
+  };
+
+  useEffect(() => {
+    if (!socketContextStatus) return;
+    setTimeout(() => {
+      const socket = socketHolder.getSocket() as any;
+      handleSocket(socket);
+    }, 500);
+    return function clean() {
+      const socket = socketHolder.getSocket() as any;
+      handleDisconnect(socket);
+    };
+  }, [socketContextStatus]);
+
   return (
     <Animatable.View
       style={[

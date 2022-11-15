@@ -1,27 +1,19 @@
-import React, { useEffect, useState, useContext } from "react";
-import { View, SafeAreaView } from "react-native";
-import {
-  Box,
-  FlatList,
-  Heading,
-  HStack,
-  Radio,
-  Spacer,
-  Text,
-} from "native-base";
-import { useNavigation } from "@react-navigation/core";
-import PerformerCard from "components/message/PerformerCard";
-import { performerService } from "services/perfomer.service";
-import { IPerformer } from "interfaces/performer";
-import LoadingSpinner from "components/uis/LoadingSpinner";
-import BackButton from "components/uis/BackButton";
-import { colors } from "utils/theme";
-import styles from "./style";
-import { IBody, ICountry } from "interfaces/utils";
-import { utilsService } from "services/utils.service";
-import AdvancedFilter from "./profile/component/AdvancedFilter";
-import HeaderMenu from "components/tab/HeaderMenu";
-import BadgeText from "components/uis/BadgeText";
+import React, { useEffect, useState, useContext } from 'react';
+import { View, SafeAreaView } from 'react-native';
+import { Box, FlatList, Heading, HStack, Radio, Spacer, Text } from 'native-base';
+import { useNavigation } from '@react-navigation/core';
+import PerformerCard from 'components/message/PerformerCard';
+import { performerService } from 'services/perfomer.service';
+import { IPerformer } from 'interfaces/performer';
+import LoadingSpinner from 'components/uis/LoadingSpinner';
+import BackButton from 'components/uis/BackButton';
+import { colors } from 'utils/theme';
+import styles from './style';
+import { IBody, ICountry } from 'interfaces/utils';
+import { utilsService } from 'services/utils.service';
+import AdvancedFilter from './profile/component/AdvancedFilter';
+import HeaderMenu from 'components/tab/HeaderMenu';
+import BadgeText from 'components/uis/BadgeText';
 
 interface IProps {
   countries: ICountry[];
@@ -35,36 +27,24 @@ const Model = ({}: IProps): React.ReactElement => {
   const [filter, setFilter] = useState({} as any);
   const [page, setPage] = useState(0);
   const [moreable, setMoreable] = useState(true);
-  const [radioValue, setRadioValue] = useState("mostFollowed");
+  const [radioValue, setRadioValue] = useState('mostFollowed');
   const navigation = useNavigation() as any;
-  useEffect(async () => {
-    const [countries, bodyInfo] = await Promise.all([
-      utilsService.countriesList(),
-      utilsService.bodyInfo(),
-    ]);
-    setCountries(countries?.data);
-    setBodyInfo(bodyInfo?.data);
-  }, []);
+  useEffect(() => {
+    async function loadData() {
+      const [countries, bodyInfo] = await Promise.all([utilsService.countriesList(), utilsService.bodyInfo()]);
+      setCountries(countries?.data);
+      setBodyInfo(bodyInfo?.data);
+    }
 
-  const {
-    heights = [],
-    weights = [],
-    bodyTypes = [],
-    genders = [],
-    sexualOrientations = [],
-    ethnicities = [],
-    hairs = [],
-    eyes = [],
-    butts = [],
-    ages = [],
-  } = bodyInfo;
+    loadData();
+  }, []);
   useEffect(() => {
     navigation.setOptions({
       headerShown: false,
-      headerTitleAlign: "center",
-      title: "Top Caster",
+      headerTitleAlign: 'center',
+      title: 'Top Caster',
       headerLeft: () => <BackButton />,
-      headerRight: null,
+      headerRight: null
     });
   }, [useContext]);
 
@@ -83,7 +63,7 @@ const Model = ({}: IProps): React.ReactElement => {
       offset: refresh ? 0 : newPage * 10,
       limit: 10,
       sortBy: radioValue,
-      ...filter,
+      ...filter
     });
 
     if (!refresh && data.length < 10) {
@@ -96,7 +76,7 @@ const Model = ({}: IProps): React.ReactElement => {
     setPerformerLoading(false);
   };
 
-  const handleSubmit = async (value) => {
+  const handleSubmit = async value => {
     setPage(0);
     setPerformers([]);
     await setFilter({ ...filter, ...value });
@@ -107,11 +87,7 @@ const Model = ({}: IProps): React.ReactElement => {
     setRadioValue(val);
   };
   const renderEmpty = () => (
-    <View>
-      {!performerLoading && !performers.length && (
-        <BadgeText content={"There is no performer available!"} />
-      )}
-    </View>
+    <View>{!performerLoading && !performers.length && <BadgeText content={'There is no performer available!'} />}</View>
   );
 
   useEffect(() => {
@@ -120,13 +96,7 @@ const Model = ({}: IProps): React.ReactElement => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Box flex={1} mx="auto" w="100%">
-        <Heading
-          mb={4}
-          fontSize={36}
-          textAlign="center"
-          color={colors.lightText}
-          bold
-        >
+        <Heading mb={4} fontSize={36} textAlign="center" color={colors.lightText} bold>
           Top Caster
         </Heading>
         <View>
@@ -134,21 +104,18 @@ const Model = ({}: IProps): React.ReactElement => {
             <Radio.Group
               name="RadioGroupModel"
               value={radioValue}
-              onChange={(val) => {
+              onChange={val => {
                 handleSubmitRadio(val);
               }}
               defaultValue="mostFollowed"
-              style={styles.radioModel}
-            >
+              style={styles.radioModel}>
               <Spacer direction="vertical">
                 <Radio value="mostFollowed">
                   <Text color={colors.lightText}>Most Followed</Text>
                 </Radio>
 
                 <Radio value="earningCurrentMonth">
-                  <Text color={colors.lightText}>
-                    Most Supported this month
-                  </Text>
+                  <Text color={colors.lightText}>Most Supported this month</Text>
                 </Radio>
                 <Radio value="mostView">
                   <Text color={colors.lightText}>Most total views</Text>
@@ -156,20 +123,14 @@ const Model = ({}: IProps): React.ReactElement => {
               </Spacer>
             </Radio.Group>
             <View>
-              <AdvancedFilter
-                onSubmit={handleSubmit}
-                countries={countries}
-                bodyInfo={bodyInfo}
-              ></AdvancedFilter>
+              <AdvancedFilter onSubmit={handleSubmit} countries={countries} bodyInfo={bodyInfo}></AdvancedFilter>
             </View>
           </HStack>
         </View>
         <FlatList
           data={performers}
-          renderItem={({ item }) => (
-            <PerformerCard performer={item} navigationScreen="ModelProfile" />
-          )}
-          keyExtractor={(item, index) => item._id + "_" + index}
+          renderItem={({ item }) => <PerformerCard performer={item} navigationScreen="ModelProfile" />}
+          keyExtractor={(item, index) => item._id + '_' + index}
           style={styles.listModel}
           onEndReachedThreshold={0.5}
           onEndReached={() => loadPerformers(true, false)}
