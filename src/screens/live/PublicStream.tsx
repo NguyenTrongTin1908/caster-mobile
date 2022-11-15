@@ -166,8 +166,6 @@ const PublicStream = ({
 
   const leavePublicRoom = () => {
     const socket = socketHolder.getSocket() as any;
-    console.log('Stop');
-
     if (socket && activeConversation && activeConversation.data) {
       const conversation = { ...activeConversation.data };
       socket.emit('public-stream/leave', { conversationId: conversation._id });
@@ -195,7 +193,6 @@ const PublicStream = ({
   };
 
   const renderLocalVideo = () => {
-    console.log('renderLocalVideo');
     if (isAndroid()) {
       return <Publisher streamId={localStreamId} onChange={callback} />;
     }

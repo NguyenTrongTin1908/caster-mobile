@@ -19,7 +19,6 @@ export const HLSViewer = forwardRef(({ streamId, onJoined = () => {}, settings }
 
   useEffect(() => {
     return () => {
-      ref && ref.current && ref.current.seek(0);
       pause();
       if (getLiveStreamOrVodURLInterval) {
         clearInterval(getLiveStreamOrVodURLInterval);
@@ -101,7 +100,7 @@ export const HLSViewer = forwardRef(({ streamId, onJoined = () => {}, settings }
       return;
     }
     setUri(src);
-    setVideoKey(1);
+    setVideoKey(videoKey + 1);
     setTimeout(() => {
       play();
     }, 500);

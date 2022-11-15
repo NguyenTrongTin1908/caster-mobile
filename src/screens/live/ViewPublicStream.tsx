@@ -123,7 +123,6 @@ const ViewPublicStream = ({
   };
 
   const onChange = ({ total, members, conversationId }) => {
-    console.log('onChange>>>', total, conversationId);
     if (activeConversation?.data?._id && activeConversation.data._id === conversationId) {
       setTotal(total);
       setMembers(members);
