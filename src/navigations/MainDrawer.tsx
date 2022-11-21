@@ -276,15 +276,17 @@ export const MainDrawer = ({
     hasTouchedDrawer && handleShow();
   }, [showDrawer]);
 
-  const handleSocket = async socket => {
+  const handleSocket = async () => {
+    const socket = socketHolder.getSocket() as any;
     if (!socket || !socket.status) return;
-    socket.status === 'connected' &&
+    socketContextStatus === 'connected' &&
       socket.on('private-chat-request', data => {
         console.log('data>>>>>>>', data);
       });
   };
 
-  const handleDisconnect = socket => {
+  const handleDisconnect = () => {
+    const socket = socketHolder.getSocket() as any;
     if (!socket || !socket.status) return;
     socket.off('private-chat-request');
   };
@@ -292,12 +294,11 @@ export const MainDrawer = ({
   useEffect(() => {
     if (!socketContextStatus) return;
     setTimeout(() => {
-      const socket = socketHolder.getSocket() as any;
-      handleSocket(socket);
-    }, 500);
-    return function clean() {
-      const socket = socketHolder.getSocket() as any;
-      handleDisconnect(socket);
+      handleSocket();
+    }, 100);
+
+    return function clear() {
+      handleDisconnect();
     };
   }, [socketContextStatus]);
 
