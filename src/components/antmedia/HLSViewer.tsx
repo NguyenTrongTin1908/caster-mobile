@@ -114,6 +114,8 @@ export const HLSViewer = forwardRef(({ streamId, onJoined = () => {}, settings }
   }));
 
   const renderVideo = () => {
+    console.log(uri);
+
     if (!uri)
       return (
         <Text color={'red.200'} textAlign={'center'}>

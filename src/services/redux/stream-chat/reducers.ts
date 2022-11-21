@@ -132,7 +132,6 @@ const streamMessageReducer = [
   {
     on: receiveStreamMessageSuccess,
     reducer(state: any, data: IReduxAction<any>) {
-      console.log('Data');
       const nextState = { ...state };
       const { conversationId } = data.payload;
       if (!nextState.conversationMap[conversationId] || !nextState.conversationMap[conversationId].items) {

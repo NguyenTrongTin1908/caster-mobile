@@ -193,11 +193,12 @@ const PublicStream = ({
   };
 
   const renderLocalVideo = () => {
-    if (isAndroid()) {
-      return <Publisher streamId={localStreamId} onChange={callback} />;
-    }
+    return <Publisher streamId={localStreamId} onChange={callback} />;
+    // if (isAndroid()) {
+    //   return <Publisher streamId={localStreamId} onChange={callback} />;
+    // }
 
-    return <PublisherIOS streamId={localStreamId} />;
+    // return <PublisherIOS streamId={localStreamId} onChange={callback} />;
   };
 
   return (

@@ -92,7 +92,6 @@ const ViewPublicStream = ({
         // if (subscrbierRef.current?.playHLS) subscrbierRef.current?.playHLS(sessionId);
         // else if (subscriberRef2.playHLS) subscriberRef2.playHLS(sessionId);
         if (!subscriberRef2.playing) {
-          console.log('playing === false');
           subscriberRef2.playHLS();
         }
       }

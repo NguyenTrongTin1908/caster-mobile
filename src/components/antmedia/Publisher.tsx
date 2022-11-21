@@ -25,7 +25,6 @@ export const Publisher = ({
   const [isFrontCamera, setIsFrontCamera] = useState(true);
   const [audiMuted, setAudioMuted] = useState(false);
   const [videoMuted, setVideoMuted] = useState(false);
-  console.log('streamId ', streamId);
 
   const [localStream, setLocalStream] = useState<MediaStream>();
 

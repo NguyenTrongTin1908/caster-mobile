@@ -3,19 +3,17 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useAntMedia } from 'rn-antmedia';
 import { config } from 'config';
 
-import {
-  LocalView
-} from './styles';
+import { LocalView, PublicStreamView } from './styles';
+import { WEBRTC_ADAPTOR_INFORMATIONS } from './constants';
 
 type fn = () => void;
 
 interface Props {
   streamId: string;
+  onChange: Function;
 }
 
-const PublisherIOS = ({
-  streamId
-}: Props) => {
+const PublisherIOS = ({ streamId, onChange }: Props) => {
   const publishStatusRef = useRef<boolean>(false);
   const [localMedia, setLocalMedia] = useState('');
   const events = useRef<{
@@ -53,9 +51,10 @@ const PublisherIOS = ({
         case 'pong':
           break;
         case 'joined':
-          console.log('joined', 'join')
+          console.log('joined', 'join');
           this.initPeerConnection(streamId, 'publish');
           this.publish(streamId);
+          onChange(WEBRTC_ADAPTOR_INFORMATIONS.PUBLISH_STARTED);
           break;
         default:
           break;
@@ -71,6 +70,7 @@ const PublisherIOS = ({
       return;
     }
     adaptor.leave(streamId);
+    onChange(WEBRTC_ADAPTOR_INFORMATIONS.PUBLISH_FINISHED);
   }, [adaptor]);
 
   const handleJoin = () => {
@@ -90,10 +90,7 @@ const PublisherIOS = ({
   useEffect(() => {
     if (adaptor) {
       const verify = () => {
-        if (
-          adaptor.localStream.current &&
-          adaptor.localStream.current.toURL()
-        ) {
+        if (adaptor.localStream.current && adaptor.localStream.current.toURL()) {
           return setLocalMedia(adaptor.localStream.current.toURL());
         }
         setTimeout(verify, 3000);
@@ -121,7 +118,7 @@ const PublisherIOS = ({
     return null;
   }
 
-  return <LocalView zOrder={2} objectFit="contain" streamURL={localMedia} />;
+  return <PublicStreamView zOrder={2} objectFit="contain" streamURL={localMedia} />;
 };
 
 export default PublisherIOS;
