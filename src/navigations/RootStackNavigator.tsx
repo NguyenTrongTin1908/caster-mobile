@@ -37,6 +37,8 @@ import ModelOrderPage from "screens/model/my-order";
 import OrderDetailPage from "screens/model/my-order/detail";
 import PublicStream from "screens/live/PublicStream";
 import ViewPublicStream from "screens/live/ViewPublicStream";
+import GoLivePage from "screens/model/waitingRoom/PublicWaitingRoom";
+
 
 import EditProfile from "screens/profile/EditProfile";
 export type RootStackParamList = {
@@ -76,6 +78,7 @@ export type RootStackParamList = {
   FeedDetail: { performerId: any; type: "video" | "photo" };
   OrderDetailPage: { id: any };
   Bookmarks: undefined;
+  GoLivePage: undefined;
 };
 export type RootStackNavigationProps<
   T extends keyof RootStackParamList = "default"
@@ -118,6 +121,11 @@ function RootNavigator({ loggedIn }): React.ReactElement {
           options={{ headerShown: false }}
           name="ViewPublicStream"
           component={ViewPublicStream}
+        />
+         <Stack.Screen
+          options={{ headerShown: false }}
+          name="GoLivePage"
+          component={GoLivePage}
         />
         <Stack.Screen
           options={{ headerShown: false }}

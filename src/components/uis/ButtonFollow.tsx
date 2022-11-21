@@ -77,7 +77,7 @@ const ButtonFollow = ({
         colorScheme="secondary"
         onPress={handleFollow}
       >
-        {status ? "Follow" : "Unfollow"}
+        {status ? "Unfollow" : "Follow"}
       </Button>
     </View>
   );

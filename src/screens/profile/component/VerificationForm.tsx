@@ -73,7 +73,6 @@ const VerificationForm = ({
     //   const datePick = new Date(+year, month - 1, +day);
     //   data.dateOfBirth = datePick.toISOString();
     // }
-    console.log("Data : ", data);
     try {
       handleUpdatePerformer({
         ...current,
