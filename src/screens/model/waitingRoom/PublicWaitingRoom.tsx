@@ -70,7 +70,7 @@ const GoLivePage = ({ error, currentUser }: IProps) => {
       <View style={styles.footerGolive}>
         <TouchableOpacity
           activeOpacity={0.7}
-          style={styles.goliveButton}
+          style={[styles.goliveButton,{opacity: isAccept ? 1 : 0.5}]}
           onPress={() => handleRedirect()}
           disabled={!isAccept}
         >

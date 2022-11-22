@@ -38,7 +38,9 @@ import OrderDetailPage from "screens/model/my-order/detail";
 import PublicStream from "screens/live/PublicStream";
 import ViewPublicStream from "screens/live/ViewPublicStream";
 import GoLivePage from "screens/model/waitingRoom/PublicWaitingRoom";
-
+import PrivateChatWaitingRoom from "screens/model/waitingRoom/PrivateWaitingRoom";
+import PrivateUserWaitingRoom from "screens/user/private-waiting-room/PrivateUserWaitingRoom";
+import PrivateUserAcceptRoom from "screens/user/private-accept-room/PrivateUserAccept";
 
 import EditProfile from "screens/profile/EditProfile";
 export type RootStackParamList = {
@@ -61,7 +63,7 @@ export type RootStackParamList = {
   Wallet: undefined;
   TokenPackage: undefined;
   ModelOrderPage: undefined;
-  ViewPublicStream: {performer: IPerformer};
+  ViewPublicStream: undefined;
   // ChatRoom: { performer: IPerformer };
   PrivateChatDetail: { performer: IPerformer; conversationId: string };
   PerformerDetail: { username: string };
@@ -79,6 +81,9 @@ export type RootStackParamList = {
   OrderDetailPage: { id: any };
   Bookmarks: undefined;
   GoLivePage: undefined;
+  PrivateChatWaitingRoom: undefined;
+  PrivateUserWaitingRoom: { performer: IPerformer };
+  PrivateUserAcceptRoom: { performer: IPerformer };
 };
 export type RootStackNavigationProps<
   T extends keyof RootStackParamList = "default"
@@ -117,15 +122,30 @@ function RootNavigator({ loggedIn }): React.ReactElement {
           name="PublicStream"
           component={PublicStream}
         />
-         <Stack.Screen
+        <Stack.Screen
           options={{ headerShown: false }}
           name="ViewPublicStream"
           component={ViewPublicStream}
         />
-         <Stack.Screen
+        <Stack.Screen
           options={{ headerShown: false }}
           name="GoLivePage"
           component={GoLivePage}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="PrivateChatWaitingRoom"
+          component={PrivateChatWaitingRoom}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="PrivateUserWaitingRoom"
+          component={PrivateUserWaitingRoom}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="PrivateUserAcceptRoom"
+          component={PrivateUserAcceptRoom}
         />
         <Stack.Screen
           options={{ headerShown: false }}

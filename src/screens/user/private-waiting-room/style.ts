@@ -1,6 +1,8 @@
 import { Platform, StyleSheet } from 'react-native';
 import { colors, Fonts, Sizes } from 'utils/theme';
 import { Dimensions, StatusBar } from 'react-native';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
+
 
 const { width, height } = Dimensions.get('window');
 let deviceH = Dimensions.get('screen').height;
@@ -26,6 +28,66 @@ const styles = StyleSheet.create({
     padding : 5
 
 
+  },
+  textName:{
+    color:colors.lightText,
+    marginTop:112.0,
+    alignSelf: 'center',
+    fontSize: 23.0,
+    fontWeight: 'bold',
+  },
+  converPhoto: {
+    width: '100%',
+    height: 80,
+  },
+  avContainer: {
+    height: 120,
+    width: 120,
+    borderRadius: 200,
+    position: 'absolute',
+    alignSelf: 'center',
+    marginTop: getStatusBarHeight(true) +35,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avEdit: {
+    height: 120,
+    width: 120,
+    borderRadius: 200,
+    position: 'absolute',
+    alignSelf: 'center',
+    marginTop: 100 + getStatusBarHeight(true),
+    zIndex: 9999,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avBlueRound: {
+    height: '90%',
+    width: '90%',
+    borderRadius: 200,
+    borderWidth: 5,
+    borderColor: 'blue',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  bgImage: {
+    height: '85%',
+    width: '85%',
+    borderRadius: 200,
+    borderWidth: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  activeNowTick: {
+    height: 20,
+    width: 20,
+    backgroundColor: 'green',
+    borderRadius: 30,
+    position: 'absolute',
+    right: -5,
+    bottom: 15,
+    borderWidth: 3,
+    borderColor: 'white',
   },
   moderatorBox: {
 
@@ -87,10 +149,24 @@ const styles = StyleSheet.create({
 
 
   },
-  privatePriceChat: {
+  privateChatPrice: {
     justifyContent:"center",
     flexDirection: "row",
+
+
+  },
+  privateTextLicense: {
+    justifyContent:"center",
+    flexDirection: "row",
+    padding:Sizes.fixPadding + 10.0,
     fontSize: Sizes.fixPadding + 10.0,
+    marginBottom: Sizes.fixPadding
+
+  },
+  privateChatFee: {
+    justifyContent:"space-between",
+    flexDirection: "row",
+
 
   },
   notifySection: {

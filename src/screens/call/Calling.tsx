@@ -1,21 +1,21 @@
-import { Box, Image, Text, View } from 'native-base';
-import Feather from 'react-native-vector-icons/Feather';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import React from 'react';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { useNavigation } from '@react-navigation/core';
-import { StyleSheet } from 'react-native';
+import { Box, Image, Text, View } from "native-base";
+import Feather from "react-native-vector-icons/Feather";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import React from "react";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { useNavigation } from "@react-navigation/core";
+import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
   button: {
     width: 60,
     height: 60,
     borderRadius: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
-  bg1: { backgroundColor: '#1ED760' },
-  bg2: { backgroundColor: '#FE294D' },
+  bg1: { backgroundColor: "#1ED760" },
+  bg2: { backgroundColor: "#FE294D" },
 });
 
 interface IProps {
@@ -30,19 +30,19 @@ interface IProps {
   };
 }
 
-export default function Calling({ route }: IProps) {
+const Calling = ({ route }: IProps): React.ReactElement => {
   const { username, performerId, privateCallPrice, conversationId, avatar } =
     route.params;
   const navigation = useNavigation() as any;
 
   const hangingUp = () => {
-    navigation.navigate('PerformerDetail', {
+    navigation.navigate("PerformerDetail", {
       username,
     });
   };
 
   const stream = () => {
-    navigation.navigate('Call', {
+    navigation.navigate("Call", {
       performerId,
       privateCallPrice,
       conversationId,
@@ -53,7 +53,7 @@ export default function Calling({ route }: IProps) {
     <Box flex={1}>
       <Image
         source={{ uri: avatar }}
-        style={{ width: '100%', height: '100%' }}
+        style={{ width: "100%", height: "100%" }}
         resizeMode="cover"
         alignSelf="center"
         flex={1}
@@ -77,7 +77,8 @@ export default function Calling({ route }: IProps) {
             color="#ffffff"
           />
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, styles.bg1]} 
+        <TouchableOpacity
+          style={[styles.button, styles.bg1]}
           // onPress={stream}
         >
           <Feather name="phone" size={24} color="#ffffff" />
@@ -101,7 +102,7 @@ export default function Calling({ route }: IProps) {
         <View>
           <Text
             color="white"
-            style={{ fontWeight: 'bold', fontSize: 24, marginTop: 13 }}
+            style={{ fontWeight: "bold", fontSize: 24, marginTop: 13 }}
           >
             {username}
           </Text>
@@ -114,4 +115,5 @@ export default function Calling({ route }: IProps) {
       </View>
     </Box>
   );
-}
+};
+export default Calling;

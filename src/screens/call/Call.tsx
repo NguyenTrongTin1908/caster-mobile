@@ -1,26 +1,25 @@
 import React, { useEffect, useRef, useState } from "react";
-import { PermissionsAndroid, StyleSheet } from "react-native";
+import { PermissionsAndroid, SafeAreaView, StyleSheet } from "react-native";
 import {
   PERMISSIONS,
   requestMultiple,
   RESULTS,
 } from "react-native-permissions";
-
-import { Text, VStack, Center, View, Box, Image } from "native-base";
-import { streamService } from "services/stream.service";
+import { Text, View, Heading } from "native-base";
 import { tokenService } from "services/token.service";
 import socketHolder from "lib/socketHolder";
 import { Private } from "components/antmedia/Private";
 import { Viewer } from "components/antmedia/Viewer";
-import { Container } from "./styles";
-
-import Feather from "react-native-vector-icons/Feather";
+import { StreamSettings, HLS, WEBRTC, PUBLIC_CHAT } from "../../interfaces";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { TouchableOpacity } from "react-native-gesture-handler";
-
 import { useNavigation } from "@react-navigation/core";
 import { isAndroid } from "utils/common";
 import PublisherIOS from "components/antmedia/PublisherIOS";
+import { connect } from "react-redux";
+import { HLSViewer } from "components/antmedia/HLSViewer";
+import HeaderMenu from "components/tab/HeaderMenu";
+import { colors, Sizes } from "utils/theme";
 
 enum EVENT {
   JOINED_THE_ROOM = "JOINED_THE_ROOM",
@@ -30,26 +29,31 @@ enum EVENT {
   MODEL_JOIN_ROOM = "MODEL_JOIN_ROOM",
   SEND_PAID_TOKEN = "SEND_PAID_TOKEN",
 }
+interface IProps {
+  localStreamId: any;
+  route: any;
+  settings: any;
+  remoteStreamId: any;
+}
 
 let privateRequestHolder;
 let chargerTimeout;
-const PrivateCall = ({ route }) => {
-  const navigation = useNavigation() as any;
 
-  const { performer } = route.params;
+const PrivateCall = ({ route, settings }: IProps) => {
+  const navigation = useNavigation() as any;
+  let subscrbierRef: any;
+  let subscriberRef2: any;
+
+  const { performer, localStreamId, remoteStreamId } = route.params;
   const [permissionGranted, setPermissionGranted] = useState(false);
-  const [localStreamId, setLocalStreamId] = useState(null as any);
-  const [remoteStreamId, setRemoteStreamId] = useState("");
   const [privateRequest, setPrivateRequest] = useState({} as any);
-  const localStreamRef = useRef({ id: "" }).current;
+  const localStreamRef = useRef({ id: localStreamId }).current;
   const remoteStreamRef = useRef({
-    id: "",
+    id: remoteStreamId,
   }).current;
 
   useEffect(() => {
     askPermissions();
-    handleSocketsJoin();
-
     return () => {
       privateRequestHolder = null;
       chargerTimeout && clearTimeout(chargerTimeout);
@@ -94,7 +98,6 @@ const PrivateCall = ({ route }) => {
       PERMISSIONS.IOS.CAMERA,
       PERMISSIONS.IOS.MICROPHONE,
     ]);
-    // console.log('statuses', statuses);
     return {
       cameraGranted: statuses[PERMISSIONS.IOS.CAMERA] === RESULTS.GRANTED,
       audioGranted: statuses[PERMISSIONS.IOS.MICROPHONE] === RESULTS.GRANTED,
@@ -110,51 +113,6 @@ const PrivateCall = ({ route }) => {
     } else {
       // TODO - check me here
     }
-  };
-
-  const joinPrivateConversation = (conversationId) => {
-    const socket = socketHolder.getSocket() as any;
-
-    // emit this event to receive info of JOINED_THE_ROOM below
-    socket.emit(EVENT.JOIN_ROOM, {
-      conversationId,
-    });
-  };
-
-  const handleSocketsJoin = async () => {
-    const socket = socketHolder.getSocket() as any;
-
-    if (!socket) return;
-    socket.on(EVENT.JOINED_THE_ROOM, ({ streamId, conversationId }) => {
-      if (!localStreamRef.id) {
-        socket.emit("private-stream/join", {
-          conversationId,
-          streamId,
-        });
-        localStreamRef.id = streamId;
-        setLocalStreamId(streamId);
-      } else {
-        remoteStreamRef.id = streamId;
-      }
-    });
-
-    socket.on("private-stream/streamJoined", ({ conversationId, streamId }) => {
-      if (localStreamRef.id !== streamId) {
-        // remoteStreamId
-        // console.log(
-        //   'model join >>> private-stream/streamJoined',
-        //   conversationId,
-        //   streamId
-        // );
-        const cId =
-          privateRequest?.conversation?._id ||
-          privateRequestHolder?.conversation?._id;
-        if (cId === conversationId) {
-          remoteStreamRef.id = streamId;
-          setRemoteStreamId(streamId);
-        }
-      }
-    });
   };
 
   const handleSocketLeave = () => {
@@ -176,21 +134,15 @@ const PrivateCall = ({ route }) => {
       });
     }
   };
-
-  const requestPrivateCall = async () => {
-    if (!performer) return;
-    const { _id: performerId } = performer as any;
-    streamService.requestPrivateChat(performerId).then((res) => {
-      privateRequestHolder = res.data;
-      setPrivateRequest(res.data);
-      const { conversation } = res.data;
-      joinPrivateConversation(conversation._id);
-    });
+  const setStreamRef = (dataFunc) => {
+    subscriberRef2 = dataFunc;
   };
 
   const hangUp = async () => {
     // TODO - send socket event to stop, wait for local stream stop then navigate
-    // return back
+    privateRequestHolder = null;
+    chargerTimeout && (await clearTimeout(chargerTimeout));
+    await handleSocketLeave();
     navigation.navigate("Model", {});
   };
 
@@ -220,12 +172,19 @@ const PrivateCall = ({ route }) => {
   };
 
   const renderPerformerVideo = () => {
+    const { optionForBroadcast } = settings;
     if (!remoteStreamRef.id) return null;
-    return (
-      !!remoteStreamRef.id && (
-        <Viewer streamId={remoteStreamRef.id} onJoined={chargeInterval} />
-      )
-    );
+    return optionForBroadcast === WEBRTC
+      ? !!remoteStreamRef.id && (
+          <Viewer streamId={remoteStreamRef.id} onJoined={chargeInterval} />
+        )
+      : !!remoteStreamRef.id && (
+          <HLSViewer
+            streamId={remoteStreamRef.id}
+            ref={(viewRef) => setStreamRef(viewRef)}
+            settings={settings}
+          />
+        );
   };
 
   if (!permissionGranted)
@@ -234,7 +193,6 @@ const PrivateCall = ({ route }) => {
         <Text>
           You need to provide video and audio permission to start the call
         </Text>
-
         <TouchableOpacity onPress={askPermissions}>
           <Text>Send request</Text>
         </TouchableOpacity>
@@ -242,87 +200,33 @@ const PrivateCall = ({ route }) => {
     );
 
   return (
-    <Container is-playing>
-      <Image
-        source={
-          performer?.avatar
-            ? { uri: performer?.avatar }
-            : require("../../assets/default-avatar.png")
-        }
-        style={{ width: "100%", height: "100%" }}
-        resizeMode="cover"
-        alignSelf="center"
-        flex={1}
-        alt="background"
-      />
-      <View
-        position="absolute"
-        top={160}
-        justifyContent="center"
-        w="100%"
-        alignItems="center"
+    <SafeAreaView style={{ flex: 1 }}>
+      <Heading
+        mb={4}
+        fontSize={30}
+        textAlign="center"
+        letterSpacing={-1}
+        color={colors.lightText}
+        bold
       >
-        <Image
-          source={
-            performer?.avatar
-              ? { uri: performer?.avatar }
-              : require("../../assets/default-avatar.png")
-          }
-          resizeMode="cover"
-          alignSelf="center"
-          style={{ width: 80, height: 80 }}
-          borderRadius={50}
-          alt="background"
-        />
-        <View>
-          <Text
-            color="white"
-            style={{ fontWeight: "bold", fontSize: 24, marginTop: 13 }}
-          >
-            {performer?.name || performer?.username}
-          </Text>
-        </View>
-        <View>
-          <Text color="white" style={{ fontSize: 17, marginTop: 2 }}>
-            {performer?.privateCallPrice} tokens per minute
-          </Text>
-          {privateRequest?.conversation && <Text>Contacting...</Text>}
-        </View>
-      </View>
+        Private Chat
+      </Heading>
+      <View flex={1}>
+        {renderLocalVideo()}
 
-      <View
-        flexDirection="row"
-        justifyContent="center"
-        position="absolute"
-        bottom={94}
-        w="100%"
-        left={0}
-        zIndex={3}
-      >
+        {renderPerformerVideo()}
+      </View>
+      <View style={styles.footerGolive}>
         <TouchableOpacity
-          style={[styles.button, styles.bg2, { marginRight: 55 }]}
+          activeOpacity={0.7}
+          style={styles.goliveButton}
           onPress={hangUp}
         >
-          <MaterialCommunityIcons
-            name="phone-hangup"
-            size={24}
-            color="#ffffff"
-          />
+          <Text style={styles.btnText}>Stop Streaming</Text>
         </TouchableOpacity>
-        {!privateRequest?.conversation && (
-          <TouchableOpacity
-            style={[styles.button, styles.bg1]}
-            onPress={requestPrivateCall}
-          >
-            <Feather name="phone" size={24} color="#ffffff" />
-          </TouchableOpacity>
-        )}
       </View>
-
-      {renderLocalVideo()}
-
-      {renderPerformerVideo()}
-    </Container>
+      <HeaderMenu />
+    </SafeAreaView>
   );
 };
 
@@ -334,8 +238,37 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  footerGolive: {
+    flexDirection: "column",
+    justifyContent: "space-around",
+  },
+  goliveButton: {
+    backgroundColor: colors.gray,
+    borderColor: colors.darkText,
+    borderWidth: 2.0,
+    borderRadius: Sizes.fixPadding - 5.0,
+    justifyContent: "center",
+    textAlign: "center",
+    width: "100%",
+    height: 50.0,
+  },
+  btnText: {
+    color: colors.lightText,
+    // alignSelf: 'center',
+    textAlign: "center",
+    fontWeight: "bold",
+  },
+
   bg1: { backgroundColor: "#1ED760" },
   bg2: { backgroundColor: "#FE294D" },
 });
 
-export default PrivateCall;
+const mapStateToProps = (state) => ({
+  currentUser: state.user.current,
+  activeConversation: state.streamMessage.activeConversation,
+  system: { ...state.system },
+  settings: { ...state.system.data },
+});
+const mapDispatch = {};
+
+export default connect(mapStateToProps, mapDispatch)(PrivateCall);
