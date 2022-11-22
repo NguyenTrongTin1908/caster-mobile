@@ -118,7 +118,6 @@ const MessageList = ({
   };
 
   const renderMessages = () => {
-    console.log("Data : ", message);
     const messages = message.items;
     let i = 0;
     const messageCount = messages && messages.length;

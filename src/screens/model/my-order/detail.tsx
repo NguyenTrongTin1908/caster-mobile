@@ -18,7 +18,7 @@ import { connect } from "react-redux";
 import { SafeAreaView } from "react-native";
 import HeaderMenu from "components/tab/HeaderMenu";
 import { colors } from "utils/theme";
-import styles from "./style"
+import styles from "./style";
 
 // import { getResponseError } from "lib/utils";
 
@@ -75,27 +75,8 @@ const OrderDetailPage = ({ route }: IProps): React.ReactElement => {
   const getData = async () => {
     try {
       const order = await orderService.findById(route.params.id);
-      console.log("DATA  :", order.data);
-      const Data = [
-        {
-          orderNumber: "1",
-          productInfo: "abc",
-          totalPrice: 2,
-          deliveryStatus: "ss",
-          createdAt: Date.now(),
-          _id: "1",
-        },
-        {
-          orderNumber: "2",
-          productInfo: "fff",
-          totalPrice: 52,
-          deliveryStatus: "ss",
-          createdAt: Date.now(),
-          _id: "2",
-        },
-      ];
 
-      setOrder(Data);
+      setOrder(order.data);
       setShippingCode("");
       setDeliveryStatus("ss");
     } catch (e) {
@@ -141,64 +122,49 @@ const OrderDetailPage = ({ route }: IProps): React.ReactElement => {
             </Item>
           </Descriptions> */}
 
-            <View backgroundColor={colors.lightGray} w="100%" alignSelf={"center"} h="80%" alignContent={"center"} >
+          <View
+            backgroundColor={colors.lightGray}
+            w="100%"
+            alignSelf={"center"}
+            h="80%"
+            alignContent={"center"}
+          >
             <View style={styles.orderItem}>
-            <Text  style={styles.orderTitleText} >
-            Product Info :
-              </Text>
-            <Text style={styles.orderText}>
-              {order?.productInfo?.name || "N/A"}
-              </Text>
-            </View>
-
-            <View style={styles.orderItem}>
-            <Text  style={styles.orderTitleText} >
-            Type :
-              </Text>
+              <Text style={styles.orderTitleText}>Product Info :</Text>
               <Text style={styles.orderText}>
-              {order?.productInfo?.type || "N/A"}
-              </Text>
-
-            </View>
-
-            <View style={styles.orderItem}>
-            <Text  style={styles.orderTitleText} >
-            Unit Price :
-              </Text>
-            <Text style={styles.orderText}>
-              {order?.unitPrice || "N/A"}
-              </Text>
-            </View>
-            <View style={styles.orderItem}>
-            <Text  style={styles.orderTitleText} >
-            Quantity :
-              </Text>
-            <Text style={styles.orderText}>
-              {order?.quantity || "0"}
-              </Text>
-            </View>
-            <View style={styles.orderItem}>
-            <Text  style={styles.orderTitleText} >
-            Total Price :
-              </Text>
-            <Text style={styles.orderText}>
-              {order?.totalPrice || "N/A"}
+                {order?.productInfo?.name || "N/A"}
               </Text>
             </View>
 
             <View style={styles.orderItem}>
-            <Text  style={styles.orderTitleText} >
-            Delivery Address :
-              </Text>
-            <Text style={styles.orderText}>
-              {order?.deliveryAddress || "N/A"}
+              <Text style={styles.orderTitleText}>Type :</Text>
+              <Text style={styles.orderText}>
+                {order?.productInfo?.type || "N/A"}
               </Text>
             </View>
+
+            <View style={styles.orderItem}>
+              <Text style={styles.orderTitleText}>Unit Price :</Text>
+              <Text style={styles.orderText}>{order?.unitPrice || "N/A"}</Text>
+            </View>
+            <View style={styles.orderItem}>
+              <Text style={styles.orderTitleText}>Quantity :</Text>
+              <Text style={styles.orderText}>{order?.quantity || "0"}</Text>
+            </View>
+            <View style={styles.orderItem}>
+              <Text style={styles.orderTitleText}>Total Price :</Text>
+              <Text style={styles.orderText}>{order?.totalPrice || "N/A"}</Text>
             </View>
 
+            <View style={styles.orderItem}>
+              <Text style={styles.orderTitleText}>Delivery Address :</Text>
+              <Text style={styles.orderText}>
+                {order?.deliveryAddress || "N/A"}
+              </Text>
+            </View>
+          </View>
 
-
-            {/* <View>
+          {/* <View>
               <Image source={re } width="20px" alt="coin" />
             <Text >
 
@@ -226,12 +192,12 @@ const OrderDetailPage = ({ route }: IProps): React.ReactElement => {
             </View>
           </View> */}
           {/* {order?.productInfo?.type === "physical" ? ( */}
-            {/* <View style={{ marginBottom: 10 }}>
+          {/* <View style={{ marginBottom: 10 }}>
               <Text color={colors.lightText}>
                 Delivery Address: {order?.deliveryAddress || "N/A"}
               </Text>
             </View> */}
-            {/* <View style={{ marginBottom: 10 }}>
+          {/* <View style={{ marginBottom: 10 }}>
               <Text>Shipping Code:</Text>
               <Input
                 placeholder="Enter shipping code here"
@@ -239,9 +205,9 @@ const OrderDetailPage = ({ route }: IProps): React.ReactElement => {
                 onChange={(e) => setShippingCode(e.target.toString())}
               />
             </View> */}
-            {/* <View style={{ marginBottom: 10 }}>
+          {/* <View style={{ marginBottom: 10 }}>
               <Text>Delivery Status: </Text> */}
-              {/* <Select
+          {/* <Select
                 onValueChange={(e) => {
                   setDeliveryStatus(e);
                 }}
@@ -271,13 +237,12 @@ const OrderDetailPage = ({ route }: IProps): React.ReactElement => {
                   Refunded
                 </Select.Item>
               </Select> */}
-            {/* <View style={{ marginBottom: 10 }}>
+          {/* <View style={{ marginBottom: 10 }}>
               <Button onPress={onUpdate} disabled={submitting}>
                 Update
               </Button> */}
-
-            </View>
-          {/* ) : (
+        </View>
+        {/* ) : (
             <View style={{ marginBottom: "10px" }}>
               Delivery Status: <Tag color="green">Delivered</Tag>
             </View>

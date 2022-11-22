@@ -83,7 +83,6 @@ const ChatBox = ({
       setRemoving(false);
     }
   };
-  console.log("Stream", activeConversation?.data?.streamId);
 
   return (
     // <KeyboardDismiss>
