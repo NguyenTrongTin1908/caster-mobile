@@ -16,6 +16,7 @@ interface IProps {
     params: { q: string };
   };
   current: IPerformer;
+  isLoggedIn: boolean;
 }
 
 const PublicLive = (props: IProps): React.ReactElement => {
@@ -59,7 +60,9 @@ const PublicLive = (props: IProps): React.ReactElement => {
       <FlatList
         data={performers}
         renderItem={({ item }) =>
-          item._id !== props.current._id ? <PerformerCard performer={item} navigationScreen="ViewPublicStream" /> : null
+          item._id !== props.current._id && props.isLoggedIn ? (
+            <PerformerCard performer={item} navigationScreen="ViewPublicStream" />
+          ) : null
         }
         keyExtractor={(item, index) => item._id + '_' + index}
         style={styles.listModel}

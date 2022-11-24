@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, Heading, Image, useToast } from 'native-base';
+import { Text, View, Heading, Image, useToast, KeyboardAvoidingView, ScrollView } from 'native-base';
 import { useForm } from 'react-hook-form';
 import { colors, Sizes } from 'utils/theme';
 import ImagePicker from 'react-native-image-crop-picker';
 import { useNavigation } from '@react-navigation/core';
-import { Alert, ImageBackground, SafeAreaView, TouchableOpacity } from 'react-native';
+import { Alert, ImageBackground, Platform, SafeAreaView, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { IPerformer, ICountry } from 'src/interfaces';
 import { utilsService } from 'services/utils.service';
@@ -24,6 +24,8 @@ import { authService } from 'services/auth.service';
 import VerificationForm from './component/VerificationForm';
 import UpdateProfileForm from './component/UpdateProfileForm';
 import SettingFeeForm from './component/SettingFeeForm';
+import KeyboardDismiss from 'components/uis/KeyboardDismiss';
+import BackButton from 'components/uis/BackButton';
 
 interface IProps {
   current: IPerformer;
@@ -170,122 +172,133 @@ const EditProfile = ({
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <HeaderMenu />
-      <View style={styles.container}>
-        <Heading mb={4} fontSize={34} textAlign="center" color={colors.lightText} bold>
-          Edit Profile
-        </Heading>
-        <View style={styles.converPhoto}>
-          <Image
-            source={current?.cover ? { uri: current?.cover } : require('../../assets/bg.jpg')}
-            height={'100%'}
-            alt="cover"
-          />
-          <TouchableOpacity
-            activeOpacity={0.9}
-            onPress={() => {
-              setShowButtonSheet(true), setType('cover');
-            }}
-            style={styles.userCoverStyle}>
-            <MaterialCommunityIcons name="camera-plus" size={27} color={colors.lightText} />
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.avEdit}>
-          <View style={styles.avBlueRound}>
-            <ImageBackground
-              source={
-                current?.avatar
-                  ? {
-                      uri: current?.avatar
-                    }
-                  : require('../../assets/avatar-default.png')
-              }
-              style={styles.userProfilePhotoStyle}
-              borderRadius={50.0}>
+      <KeyboardAvoidingView
+        h={{
+          base: '100%',
+          lg: 'auto'
+        }}
+        // keyboardVerticalOffset={120}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <KeyboardDismiss>
+          <View style={styles.container}>
+            <Heading mb={4} fontSize={34} textAlign="center" color={colors.lightText} bold>
+              Edit Profile
+            </Heading>
+            <View style={styles.converPhoto}>
+              <Image
+                source={current?.cover ? { uri: current?.cover } : require('../../assets/bg.jpg')}
+                height={'100%'}
+                alt="cover"
+              />
               <TouchableOpacity
                 activeOpacity={0.9}
                 onPress={() => {
-                  setShowButtonSheet(true), setType('avatar');
+                  setShowButtonSheet(true), setType('cover');
                 }}
-                style={styles.userProfilePhotoBlurContentStyle}>
+                style={styles.userCoverStyle}>
                 <MaterialCommunityIcons name="camera-plus" size={27} color={colors.lightText} />
               </TouchableOpacity>
-            </ImageBackground>
-          </View>
-        </View>
-        <Text style={styles.textName}>
-          {current && current?.name != ' ' ? `${current.name}` : `${current?.username}`}
-        </Text>
+            </View>
 
-        <View style={{ flex: 1, marginTop: -15 }}>
-          <TabView
-            scenes={[
-              {
-                key: 'basicSettings',
-                title: 'Basic Settings',
-                sence: UpdateProfileForm
-              },
-              {
-                key: 'idDocuments',
-                title: 'ID Documents',
-                sence: VerificationForm
-              },
-              {
-                key: 'feeSettings',
-                title: 'Fee Settings',
-                sence: SettingFeeForm
-              }
-            ]}
-          />
-        </View>
-        <BottomSheet isVisible={showBottomSheet} containerStyle={{ backgroundColor: 'rgba(0.5, 0.50, 0, 0.50)' }}>
-          <TouchableOpacity
-            activeOpacity={0.9}
-            onPress={() => setShowButtonSheet(false)}
-            style={styles.bottomSheetContentStyle}>
-            <Text>Choose Option</Text>
-            <View
-              style={{
-                backgroundColor: '#CFC6C6',
-                height: 1.0,
-                marginBottom: Sizes.fixPadding + 2.0,
-                marginTop: Sizes.fixPadding - 5.0
-              }}></View>
-            <TouchableOpacity onPress={() => openCamera()}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  marginHorizontal: Sizes.fixPadding * 2.0
-                }}>
-                <MaterialIcons name="photo-camera" size={24} color={Colors.blackColor} />
-                <Text
-                  style={{
-                    marginLeft: Sizes.fixPadding
-                  }}>
-                  Camera
-                </Text>
+            <View style={styles.avEdit}>
+              <View style={styles.avBlueRound}>
+                <ImageBackground
+                  source={
+                    current?.avatar
+                      ? {
+                          uri: current?.avatar
+                        }
+                      : require('../../assets/avatar-default.png')
+                  }
+                  style={styles.userProfilePhotoStyle}
+                  borderRadius={50.0}>
+                  <TouchableOpacity
+                    activeOpacity={0.9}
+                    onPress={() => {
+                      setShowButtonSheet(true), setType('avatar');
+                    }}
+                    style={styles.userProfilePhotoBlurContentStyle}>
+                    <MaterialCommunityIcons name="camera-plus" size={27} color={colors.lightText} />
+                  </TouchableOpacity>
+                </ImageBackground>
               </View>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => openGallery()}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  marginTop: Sizes.fixPadding,
-                  marginHorizontal: Sizes.fixPadding * 2.0
-                }}>
-                <MaterialIcons name="photo-album" size={22} color={Colors.blackColor} />
-                <Text
+            </View>
+            <Text style={styles.textName}>
+              {current && current?.name != ' ' ? `${current.name}` : `${current?.username}`}
+            </Text>
+
+            <View style={{ flex: 1 }}>
+              <TabView
+                scenes={[
+                  {
+                    key: 'basicSettings',
+                    title: 'Basic Settings',
+                    sence: UpdateProfileForm
+                  },
+                  {
+                    key: 'idDocuments',
+                    title: 'ID Documents',
+                    sence: VerificationForm
+                  },
+                  {
+                    key: 'feeSettings',
+                    title: 'Fee Settings',
+                    sence: SettingFeeForm
+                  }
+                ]}
+              />
+            </View>
+            <BottomSheet isVisible={showBottomSheet} containerStyle={{ backgroundColor: 'rgba(0.5, 0.50, 0, 0.50)' }}>
+              <TouchableOpacity
+                activeOpacity={0.9}
+                onPress={() => setShowButtonSheet(false)}
+                style={styles.bottomSheetContentStyle}>
+                <Text>Choose Option</Text>
+                <View
                   style={{
-                    marginLeft: Sizes.fixPadding
-                  }}>
-                  Choose from gallery
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </TouchableOpacity>
-        </BottomSheet>
-      </View>
+                    backgroundColor: '#CFC6C6',
+                    height: 1.0,
+                    marginBottom: Sizes.fixPadding + 2.0,
+                    marginTop: Sizes.fixPadding - 5.0
+                  }}></View>
+                <TouchableOpacity onPress={() => openCamera()}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      marginHorizontal: Sizes.fixPadding * 2.0
+                    }}>
+                    <MaterialIcons name="photo-camera" size={24} color={Colors.blackColor} />
+                    <Text
+                      style={{
+                        marginLeft: Sizes.fixPadding
+                      }}>
+                      Camera
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => openGallery()}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      marginTop: Sizes.fixPadding,
+                      marginHorizontal: Sizes.fixPadding * 2.0
+                    }}>
+                    <MaterialIcons name="photo-album" size={22} color={Colors.blackColor} />
+                    <Text
+                      style={{
+                        marginLeft: Sizes.fixPadding
+                      }}>
+                      Choose from gallery
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </TouchableOpacity>
+            </BottomSheet>
+          </View>
+        </KeyboardDismiss>
+      </KeyboardAvoidingView>
+      {/* <HeaderMenu /> */}
+      <BackButton />
     </SafeAreaView>
   );
 };

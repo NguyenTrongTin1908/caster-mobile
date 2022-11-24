@@ -1,6 +1,6 @@
-import React, { useEffect, useContext, useState, useRef } from 'react';
+import React, { useEffect, useContext, useState, useRef, useCallback } from 'react';
 import { connect } from 'react-redux';
-import { useNavigation } from '@react-navigation/core';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { getFeeds, moreFeeds } from 'services/redux/feed/actions';
 import { getRecommendFeeds, moreRecommendFeeds, getTrendingFeeds } from 'services/redux/feed/actions';
 import { Dimensions, FlatList, View, SafeAreaView, Platform, Alert } from 'react-native';
@@ -46,6 +46,7 @@ const Home = ({
   const [orientation, setOrientation] = useState('');
   const [keyword, setKeyword] = useState('');
   const [isLoadTrendingFeed, setLoadTrendingFeed] = useState(false);
+  const [lastViewableItem, setLastViewableItem] = useState(null) as any;
   const mediaRefs = useRef([]) as any;
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
@@ -54,6 +55,27 @@ const Home = ({
   useEffect(() => {
     getFeeds();
   }, [tab]);
+
+  const checkBeforeLeaving = lastViewableItem => {
+    if (lastViewableItem) {
+      const cell = mediaRefs.current[lastViewableItem.key];
+      if (cell && cell.playing) {
+        cell.setStatus(false);
+      }
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      if (lastViewableItem) {
+        const cell = mediaRefs.current[lastViewableItem.key];
+        if (cell && !cell.playing) {
+          cell.setStatus(true);
+        }
+      }
+      return () => checkBeforeLeaving(lastViewableItem);
+    }, [lastViewableItem])
+  );
 
   useEffect(() => {
     feedState.total !== undefined && loadmoreFeeds();
@@ -68,6 +90,7 @@ const Home = ({
       const cell = mediaRefs.current[element.key];
       if (cell) {
         if (element.isViewable) {
+          setLastViewableItem(element);
           cell.setStatus(true);
         } else {
           cell.setStatus(false);

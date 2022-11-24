@@ -1,17 +1,37 @@
-import React from "react";
-import { TouchableWithoutFeedback } from "react-native";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import navigationHolder from "lib/navigationHolder";
+import React from 'react';
+import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import navigationHolder from 'lib/navigationHolder';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
+import { Box } from 'native-base';
 
-export default function BackButton(): React.ReactElement {
+interface IProps {
+  style?: any;
+  color?: string;
+}
+
+export default function BackButton({
+  style = {
+    top: getStatusBarHeight(true),
+    left: 0,
+    right: 0,
+    position: 'absolute',
+    height: 50,
+    width: 50,
+    zIndex: 10000
+  },
+  color = 'white'
+}: IProps): React.ReactElement {
   const goBack = () => {
     const nav = navigationHolder.getNav();
     nav?.current?.goBack();
   };
 
   return (
-    <TouchableWithoutFeedback style={{ padding: 10 }} onPress={goBack}>
-      <MaterialIcons name="keyboard-arrow-left" size={24} color="black" />
-    </TouchableWithoutFeedback>
+    <TouchableOpacity style={style ? { ...style } : { padding: 10 }} onPress={goBack}>
+      <Box width={'100%'} height={'100%'} justifyContent="center" alignItems={'center'}>
+        <MaterialIcons name="keyboard-arrow-left" size={32} color={color} />
+      </Box>
+    </TouchableOpacity>
   );
 }

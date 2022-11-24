@@ -51,8 +51,7 @@ export const MainDrawer = ({
   addPrivateRequest,
 }: DrawerProps): JSX.Element => {
   const viewRef = useRef(null) as any;
-  const socketContext = useContext(SocketContext) as any;
-  const { status : socketContextStatus  } = useContext(SocketContext) as any;
+  const { status: socketContextStatus } = useContext(SocketContext) as any;
   const handleShow = () => {
     if (!showDrawer) viewRef.current.fadeOutLeft(800);
     else {
@@ -115,7 +114,10 @@ export const MainDrawer = ({
           </VStack>
           <Box mt={3} ml="auto">
             <TouchableOpacity
-              onPress={() => navigationRef.current?.navigate("EditProfile")}
+              onPress={() => {
+                navigationRef.current?.navigate("EditProfile");
+                handleHide();
+              }}
             >
               <Feather name="edit" size={17} color={colors.light} />
             </TouchableOpacity>

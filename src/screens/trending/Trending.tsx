@@ -1,24 +1,18 @@
-import React, { useEffect, useContext, useState, useRef } from "react";
-import { useNavigation } from "@react-navigation/core";
-import { feedService } from "services/feed.service";
-import {
-  Dimensions,
-  FlatList,
-  View,
-  SafeAreaView,
-  Platform,
-} from "react-native";
-const { height } = Dimensions.get("window");
-import styles from "./style";
-import FeedCard from "components/feed/feed-card";
-import { IFeed } from "interfaces/feed";
-import { BottomTabBarHeightContext } from "@react-navigation/bottom-tabs";
-import { getStatusBarHeight } from "react-native-status-bar-height";
-import FeedTab from "components/tab/FeedTab";
-import HeaderMenu from "components/tab/HeaderMenu";
-import { connect } from "react-redux";
-import { IPerformer } from "src/interfaces";
-let deviceH = Dimensions.get("screen").height;
+import React, { useEffect, useContext, useState, useRef, useCallback } from 'react';
+import { useFocusEffect, useNavigation } from '@react-navigation/core';
+import { feedService } from 'services/feed.service';
+import { Dimensions, FlatList, View, SafeAreaView, Platform } from 'react-native';
+const { height } = Dimensions.get('window');
+import styles from './style';
+import FeedCard from 'components/feed/feed-card';
+import { IFeed } from 'interfaces/feed';
+import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
+import FeedTab from 'components/tab/FeedTab';
+import HeaderMenu from 'components/tab/HeaderMenu';
+import { connect } from 'react-redux';
+import { IPerformer } from 'src/interfaces';
+let deviceH = Dimensions.get('screen').height;
 let bottomNavBarH = deviceH - height;
 interface IProps {
   current: IPerformer;
@@ -26,67 +20,72 @@ interface IProps {
 }
 const Trending = ({ current }: IProps): React.ReactElement => {
   const navigation = useNavigation() as any;
-  const [tab, setTab] = useState("video");
-  const [itemPerPage, setitemPerPage] = useState(12);
-  const [feedPage, setfeedPage] = useState(0);
-  const [orientation, setOrientation] = useState("");
-  const [keyword, setKeyword] = useState("");
+  const [tab, setTab] = useState('video');
+  const [itemPerPage, setItemPerPage] = useState(12);
+  const [feedPage, setFeedPage] = useState(0);
+  const [orientation, setOrientation] = useState('');
+  const [keyword, setKeyword] = useState('');
   const mediaRefs = useRef([]) as any;
-  const [feeds, setfeeds] = useState([] as Array<IFeed>);
-  const [trendingfeeds, settrendingfeeds] = useState([] as Array<IFeed>);
+  const [feeds, setFeeds] = useState([] as Array<IFeed>);
+  const [trendingFeeds, setTrendingfeeds] = useState([] as Array<IFeed>);
+  const [lastViewableItem, setLastViewableItem] = useState(null) as any;
+
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
-    loadfeeds();
+    loadFeeds();
   }, [useContext]);
-  const loadfeeds = async () => {
+
+  const loadFeeds = async () => {
     const { data } = await feedService.trendingSearch({
       q: keyword,
       orientation,
       limit: itemPerPage,
       offset: itemPerPage * feedPage,
       isHome: true,
-      sortBy: "mostViewInCurrentDay",
-      type: tab === "video" ? "video" : "photo",
+      sortBy: 'mostViewInCurrentDay',
+      type: tab === 'video' ? 'video' : 'photo'
     });
-    setfeeds(feeds.concat(data.data));
-    settrendingfeeds(feeds.concat(data.data));
+    setFeeds(feeds.concat(data.data));
+    setTrendingfeeds(feeds.concat(data.data));
   };
-  const loadmoreFeeds = async () => {
-    setfeedPage(feedPage + 1);
+
+  const loadMoreFeeds = async () => {
+    setFeedPage(feedPage + 1);
     const { data } = await feedService.userSearch({
       q: keyword,
       orientation,
       limit: itemPerPage,
       offset: itemPerPage * feedPage,
       isHome: false,
-      type: tab === "video" ? "video" : "photo",
-      sortBy: "mostViewInCurrentDay",
-      excludeIds: trendingfeeds.map((item) => item._id).join(","),
+      type: tab === 'video' ? 'video' : 'photo',
+      sortBy: 'mostViewInCurrentDay',
+      excludeIds: trendingFeeds.map(item => item._id).join(',')
     });
-    data.data.length == 0
-      ? resetloadFeeds()
-      : setfeeds(feeds.concat(data.data));
+    data.data.length == 0 ? resetLoadFeeds() : setFeeds(feeds.concat(data.data));
   };
-  const resetloadFeeds = async () => {
-    setfeedPage(feedPage + 1);
+
+  const resetLoadFeeds = async () => {
+    setFeedPage(feedPage + 1);
     const { data } = await feedService.userSearch({
       q: keyword,
       orientation,
       limit: itemPerPage,
       offset: 0,
       isHome: false,
-      type: tab === "video" ? "video" : "photo",
-      sortBy: "mostViewInCurrentDay",
-      excludeIds: trendingfeeds.map((item) => item._id).join(","),
+      type: tab === 'video' ? 'video' : 'photo',
+      sortBy: 'mostViewInCurrentDay',
+      excludeIds: trendingFeeds.map(item => item._id).join(',')
     });
-    setfeeds(feeds.concat(data.data));
-    setfeedPage(1);
+    setFeeds(feeds.concat(data.data));
+    setFeedPage(1);
   };
+
   const onViewableItemsChange = useRef(({ changed }) => {
-    changed.forEach((element) => {
+    changed.forEach(element => {
       const cell = mediaRefs.current[element.key];
       if (cell) {
         if (element.isViewable) {
+          setLastViewableItem(element);
           cell.setStatus(true);
         } else {
           cell.setStatus(false);
@@ -94,10 +93,11 @@ const Trending = ({ current }: IProps): React.ReactElement => {
       }
     });
   }) as any;
+
   const handleTabChange = async () => {
-    tab === "video" ? setTab("photo") : setTab("video");
-    setfeeds([]);
-    setfeedPage(0);
+    tab === 'video' ? setTab('photo') : setTab('video');
+    setFeeds([]);
+    setFeedPage(0);
   };
   const renderItem = ({ item, index }: { item: IFeed; index: number }) => {
     return (
@@ -108,22 +108,14 @@ const Trending = ({ current }: IProps): React.ReactElement => {
               style={[
                 {
                   height:
-                    Platform.OS === "ios"
+                    Platform.OS === 'ios'
                       ? deviceH - (tabBarHeight + getStatusBarHeight(true))
-                      : deviceH - (bottomNavBarH + tabBarHeight),
+                      : deviceH - (bottomNavBarH + tabBarHeight)
                 },
                 ,
-                index % 2 == 0
-                  ? { backgroundColor: "#000000" }
-                  : { backgroundColor: "#000000" },
-              ]}
-            >
-              <FeedCard
-                feed={item}
-                mediaRefs={mediaRefs}
-                currentTab={tab}
-                current={current}
-              />
+                index % 2 == 0 ? { backgroundColor: '#000000' } : { backgroundColor: '#000000' }
+              ]}>
+              <FeedCard feed={item} mediaRefs={mediaRefs} currentTab={tab} current={current} />
             </View>
           );
         }}
@@ -132,8 +124,30 @@ const Trending = ({ current }: IProps): React.ReactElement => {
   };
 
   useEffect(() => {
-    loadfeeds();
+    loadFeeds();
   }, [tab]);
+
+  const checkBeforeLeaving = lastViewableItem => {
+    if (lastViewableItem) {
+      const cell = mediaRefs.current[lastViewableItem.key];
+      if (cell && cell.playing) {
+        cell.setStatus(false);
+      }
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      if (lastViewableItem) {
+        const cell = mediaRefs.current[lastViewableItem.key];
+        if (cell && !cell.playing) {
+          cell.setStatus(true);
+        }
+      }
+      return () => checkBeforeLeaving(lastViewableItem);
+    }, [lastViewableItem])
+  );
+
   return (
     <BottomTabBarHeightContext.Consumer>
       {(tabBarHeight: any) => (
@@ -142,24 +156,24 @@ const Trending = ({ current }: IProps): React.ReactElement => {
             data={feeds}
             renderItem={renderItem}
             pagingEnabled={true}
-            keyExtractor={(item) => item._id}
-            decelerationRate={"fast"}
+            keyExtractor={item => item._id}
+            decelerationRate={'fast'}
             showsVerticalScrollIndicator={false}
             onViewableItemsChanged={onViewableItemsChange.current}
             windowSize={4}
-            onEndReached={loadmoreFeeds}
+            onEndReached={loadMoreFeeds}
             initialNumToRender={0}
             maxToRenderPerBatch={2}
             removeClippedSubviews
             snapToInterval={
-              Platform.OS === "ios"
+              Platform.OS === 'ios'
                 ? deviceH - (tabBarHeight + getStatusBarHeight(true))
                 : deviceH - (bottomNavBarH + tabBarHeight)
             }
             viewabilityConfig={{
-              itemVisiblePercentThreshold: 100,
+              itemVisiblePercentThreshold: 100
             }}
-            snapToAlignment={"start"}
+            snapToAlignment={'start'}
           />
           <HeaderMenu />
           <FeedTab onTabChange={handleTabChange} tab={tab}></FeedTab>
@@ -170,6 +184,6 @@ const Trending = ({ current }: IProps): React.ReactElement => {
 };
 const mapStateToProp = (state: any): any => ({
   ...state.user,
-  isLoggedIn: state.auth.loggedIn,
+  isLoggedIn: state.auth.loggedIn
 });
 export default connect(mapStateToProp)(Trending);

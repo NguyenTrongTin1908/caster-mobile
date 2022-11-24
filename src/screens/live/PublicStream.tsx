@@ -1,31 +1,24 @@
-import React, { useEffect, useState } from "react";
-import { Button, View, Heading, Text } from "native-base";
-import { connect } from "react-redux";
-import { IUser } from "src/interfaces";
-import { streamService } from "../../services";
-import { PermissionsAndroid } from "react-native";
-import {
-  PERMISSIONS,
-  requestMultiple,
-  RESULTS,
-} from "react-native-permissions";
-import socketHolder from "lib/socketHolder";
+import React, { useEffect, useState } from 'react';
+import { Button, View, Heading, Text } from 'native-base';
+import { connect } from 'react-redux';
+import { IUser } from 'src/interfaces';
+import { streamService } from '../../services';
+import { PermissionsAndroid } from 'react-native';
+import { PERMISSIONS, requestMultiple, RESULTS } from 'react-native-permissions';
+import socketHolder from 'lib/socketHolder';
 
-import {
-  getStreamConversation,
-  resetStreamMessage,
-} from "services/redux/stream-chat/actions";
-import { WEBRTC_ADAPTOR_INFORMATIONS } from "components/antmedia/constants";
-import styles from "./style";
-import { SafeAreaView } from "react-native-safe-area-context";
-import HeaderMenu from "components/tab/HeaderMenu";
-import { colors, Sizes } from "utils/theme";
-import { isAndroid } from "utils/common";
-import { Publisher } from "components/antmedia/Publisher";
-import PublisherIOS from "components/antmedia/PublisherIOS";
-import ChatBox from "components/streamChat/chat-box";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-// import EmojiSelector from "react-native-emoji-selector";
+import { getStreamConversation, resetStreamMessage } from 'services/redux/stream-chat/actions';
+import { WEBRTC_ADAPTOR_INFORMATIONS } from 'components/antmedia/constants';
+import styles from './style';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import HeaderMenu from 'components/tab/HeaderMenu';
+import { colors, Sizes } from 'utils/theme';
+import { isAndroid } from 'utils/common';
+import { Publisher } from 'components/antmedia/Publisher';
+import PublisherIOS from 'components/antmedia/PublisherIOS';
+import ChatBox from 'components/streamChat/chat-box';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import BackButton from 'components/uis/BackButton'; // import EmojiSelector from "react-native-emoji-selector";
 
 interface IProps {
   resetStreamMessage: Function;
@@ -40,7 +33,7 @@ const PublicStream = ({
   getStreamConversation,
   activeConversation,
   currentUser,
-  system,
+  system
 }: IProps) => {
   let publisherRef: any;
   let publisherRef2: any;
@@ -58,7 +51,7 @@ const PublicStream = ({
     // joinPublicRoom();
     const socket = socketHolder.getSocket() as any;
 
-    socket.on("public-room-changed", handler);
+    socket.on('public-room-changed', handler);
 
     return () => {
       leavePublicRoom();
@@ -66,50 +59,35 @@ const PublicStream = ({
   }, []);
 
   const askAndroidPerissions = async () => {
-    const cameraGranted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.CAMERA,
-      {
-        title: "Camera Permission",
-        message:
-          "Application needs access to your camera " +
-          "so you can start video call.",
-        buttonNeutral: "Ask Me Later",
-        buttonNegative: "Cancel",
-        buttonPositive: "OK",
-      }
-    );
-    const audioGranted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-      {
-        title: "Record Audio Permission",
-        message:
-          "Application needs access to your audio " +
-          "so you can start video call.",
-        buttonNeutral: "Ask Me Later",
-        buttonNegative: "Cancel",
-        buttonPositive: "OK",
-      }
-    );
+    const cameraGranted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA, {
+      title: 'Camera Permission',
+      message: 'Application needs access to your camera ' + 'so you can start video call.',
+      buttonNeutral: 'Ask Me Later',
+      buttonNegative: 'Cancel',
+      buttonPositive: 'OK'
+    });
+    const audioGranted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO, {
+      title: 'Record Audio Permission',
+      message: 'Application needs access to your audio ' + 'so you can start video call.',
+      buttonNeutral: 'Ask Me Later',
+      buttonNegative: 'Cancel',
+      buttonPositive: 'OK'
+    });
     return {
       cameraGranted: cameraGranted === PermissionsAndroid.RESULTS.GRANTED,
-      audioGranted: audioGranted === PermissionsAndroid.RESULTS.GRANTED,
+      audioGranted: audioGranted === PermissionsAndroid.RESULTS.GRANTED
     };
   };
   const askIOSPermissions = async () => {
-    const statuses = await requestMultiple([
-      PERMISSIONS.IOS.CAMERA,
-      PERMISSIONS.IOS.MICROPHONE,
-    ]);
+    const statuses = await requestMultiple([PERMISSIONS.IOS.CAMERA, PERMISSIONS.IOS.MICROPHONE]);
     return {
       cameraGranted: statuses[PERMISSIONS.IOS.CAMERA] === RESULTS.GRANTED,
-      audioGranted: statuses[PERMISSIONS.IOS.MICROPHONE] === RESULTS.GRANTED,
+      audioGranted: statuses[PERMISSIONS.IOS.MICROPHONE] === RESULTS.GRANTED
     };
   };
 
   const askPermissions = async () => {
-    const { cameraGranted, audioGranted } = isAndroid()
-      ? await askAndroidPerissions()
-      : await askIOSPermissions();
+    const { cameraGranted, audioGranted } = isAndroid() ? await askAndroidPerissions() : await askIOSPermissions();
     if (cameraGranted && audioGranted) {
       setPermissionGranted(true);
     } else {
@@ -119,7 +97,7 @@ const PublicStream = ({
     setTotal(total);
     setMembers(members);
   };
-  const setStreamRef = (dataFunc) => {
+  const setStreamRef = dataFunc => {
     publisherRef2 = dataFunc;
   };
   const stop = () => {
@@ -134,22 +112,22 @@ const PublicStream = ({
       const socket = socketHolder.getSocket() as any;
       if (info === WEBRTC_ADAPTOR_INFORMATIONS.INITIALIZED) {
         setInitialized(true);
-        console.log("INITIALIZED");
+        console.log('INITIALIZED');
         // if (publisherRef.publish) publisherRef.publish(sessionId);
         // else publisherRef2.publish(sessionId);
       } else if (info === WEBRTC_ADAPTOR_INFORMATIONS.PUBLISH_STARTED) {
         const conversation = { ...activeConversation.data };
-        socket.emit("public-stream/live", { conversationId: conversation._id });
-        console.log("public");
+        socket.emit('public-stream/live', { conversationId: conversation._id });
+        console.log('public');
 
         setLoading(false);
       } else if (info === WEBRTC_ADAPTOR_INFORMATIONS.PUBLISH_FINISHED) {
-        console.log("finished");
+        console.log('finished');
 
         setLoading(false);
       } else if (info === WEBRTC_ADAPTOR_INFORMATIONS.CLOSED) {
         setLoading(false);
-        console.log("close");
+        console.log('close');
         setInitialized(false);
       }
     }
@@ -165,16 +143,16 @@ const PublicStream = ({
 
       if (conversation && conversation._id) {
         getStreamConversation({
-          conversation,
+          conversation
         });
 
         socket &&
-          (await socket.emit("public-stream/join", {
-            conversationId: conversation._id,
+          (await socket.emit('public-stream/join', {
+            conversationId: conversation._id
           }));
         socket &&
-          (await socket.emit("public-stream/live", {
-            conversationId: conversation._id,
+          (await socket.emit('public-stream/live', {
+            conversationId: conversation._id
           }));
         setLocalStreamId(streamId);
         await setSessionid(sessionId);
@@ -190,7 +168,7 @@ const PublicStream = ({
     const socket = socketHolder.getSocket() as any;
     if (socket && activeConversation && activeConversation.data) {
       const conversation = { ...activeConversation.data };
-      socket.emit("public-stream/leave", { conversationId: conversation._id });
+      socket.emit('public-stream/leave', { conversationId: conversation._id });
       resetStreamMessage();
       setSessionid(null);
       setInitialized(false);
@@ -203,13 +181,13 @@ const PublicStream = ({
       joinPublicRoom();
     } catch (e) {
       // eslint-disable-next-line no-console
-      console.log("error_broadcast", await e);
+      console.log('error_broadcast', await e);
     } finally {
       setLoading(false);
     }
   };
   const handler = ({ total, members }) => {
-    console.log("Vo");
+    console.log('Vo');
     setTotal(total);
     setMembers(members);
   };
@@ -225,40 +203,31 @@ const PublicStream = ({
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <Heading
-        mb={4}
-        fontSize={30}
-        textAlign="center"
-        letterSpacing={-1}
-        color={colors.lightText}
-        bold
-      >
+      <Heading mb={4} fontSize={30} textAlign="center" letterSpacing={-1} color={colors.lightText} bold>
         Live Broadcaster
       </Heading>
 
-      <HeaderMenu />
+      <BackButton />
       {sessionId && (
         <View
           style={{
-            position: "absolute",
+            position: 'absolute',
             marginTop: Sizes.fixPadding + 180.0,
-            alignItems: "center",
-            alignSelf: "flex-end",
-            zIndex: 1000,
-          }}
-        >
+            alignItems: 'center',
+            alignSelf: 'flex-end',
+            zIndex: 1000
+          }}>
           <MaterialIcons name="visibility" color={colors.light} size={28} />
           <Text
             style={{
               marginTop: Sizes.fixPadding - 7.0,
-              color: colors.lightText,
-            }}
-          >
+              color: colors.lightText
+            }}>
             {total}
           </Text>
         </View>
       )}
-      <View flex={1} flexDirection={"column"} position={"relative"}>
+      <View flex={1} flexDirection={'column'} position={'relative'}>
         {sessionId && renderLocalVideo()}
         {/* <ChatBox /> */}
       </View>
@@ -274,13 +243,13 @@ const PublicStream = ({
   );
 };
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   currentUser: state.user.current,
   activeConversation: state.streamMessage.activeConversation,
-  system: { ...state.system },
+  system: { ...state.system }
 });
 const mapDispatchs = {
   getStreamConversation,
-  resetStreamMessage,
+  resetStreamMessage
 };
 export default connect(mapStateToProps, mapDispatchs)(PublicStream);

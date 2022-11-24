@@ -61,7 +61,7 @@ export interface IPerformer {
   createdBy: string;
   createdAt: Date;
   updatedAt: Date;
-  offlineAt:Date
+  offlineAt: Date;
   isOnline: number;
   verifiedAccount: boolean;
   verifiedEmail: boolean;
@@ -98,29 +98,24 @@ export interface IPerformer {
     linkedIn: string;
   };
   isPerformer: boolean;
-  notificationSetting:
-
-  {
-  active: boolean,
-  receiveOnDesktop: boolean,
-  mail: boolean,
-  comment: boolean,
-  follower: boolean,
-  newContent: boolean,
-  followingGoLive: boolean,
-  followingPrivateChat: boolean,
-  moderator: boolean,
-  privateChatRequest: boolean,
-  casterAdminMessage: boolean,
-  upgradedComplete: boolean,
-  sposorship: boolean,
-
-
-
-  }
+  notificationSetting: {
+    active: boolean;
+    receiveOnDesktop: boolean;
+    mail: boolean;
+    comment: boolean;
+    follower: boolean;
+    newContent: boolean;
+    followingGoLive: boolean;
+    followingPrivateChat: boolean;
+    moderator: boolean;
+    privateChatRequest: boolean;
+    casterAdminMessage: boolean;
+    upgradedComplete: boolean;
+    sposorship: boolean;
+  };
   stripeCardIds: string[];
   stripeCustomerId: string;
-
+  password?: string;
 }
 
 export interface IBanking {
