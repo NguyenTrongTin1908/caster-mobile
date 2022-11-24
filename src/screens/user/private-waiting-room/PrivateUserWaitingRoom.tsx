@@ -10,6 +10,7 @@ import { useToast } from "native-base";
 import { updateUser, updatePerformer } from "services/redux/user/actions";
 import { streamService } from "services/stream.service";
 import socketHolder from "lib/socketHolder";
+import { getStreamConversationSuccess } from "services/redux/stream-chat/actions";
 
 import { IPerformer } from "src/interfaces";
 
@@ -34,6 +35,7 @@ interface IProps {
   updateUser: Function;
   updatePerformer: Function;
   route: any;
+  getStreamConversationSuccess: Function;
 }
 
 const PrivateUserWaitingRoom = ({
@@ -43,6 +45,7 @@ const PrivateUserWaitingRoom = ({
   updateUser: handleUpdateUser,
   privateRequests,
   route,
+  getStreamConversationSuccess: dispatchGetStreamConversationSuccess,
 }: IProps) => {
   let authenticate = true;
 
@@ -102,6 +105,9 @@ const PrivateUserWaitingRoom = ({
         setPrivateRequest(res.data);
         const { conversation } = res.data;
         joinPrivateConversation(conversation._id);
+        dispatchGetStreamConversationSuccess({
+          data: conversation,
+        });
         return navigation.navigate("PrivateUserAcceptRoom", {
           performer: performer,
           privateRequest: res.data,
@@ -236,6 +242,10 @@ const mapStates = (state: any) => ({
   currentUser: { ...state.user.current },
   privateRequests: state.streaming.privateRequests,
 });
-const mapDispatch = { updateUser, updatePerformer };
+const mapDispatch = {
+  updateUser,
+  updatePerformer,
+  getStreamConversationSuccess,
+};
 
 export default connect(mapStates, mapDispatch)(PrivateUserWaitingRoom);

@@ -1,4 +1,4 @@
-import React, { createRef, useEffect, useState } from "react";
+import React, { createRef, useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import moment from "moment";
 import {
@@ -14,8 +14,22 @@ import styles from "./style";
 // import './MessageList.less';
 import Compose from "./Compose";
 import Message from "./Message";
-import { FlatList, TextInput, TouchableOpacity } from "react-native";
-import { View } from "native-base";
+import {
+  FlatList,
+  SafeAreaView,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
+import { HStack, View } from "native-base";
+import EmojiSelector from "react-native-emoji-selector";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { sendMessagePrivateStream } from "services/redux/chatRoom/actions";
+import { sendStreamMessage } from "services/redux/stream-chat/actions";
+
+import modal from "../comment/modal";
+import ChatFooter from "../message/ChatFooter";
+import SendTip from "../message/SendTip";
+import Button from "components/uis/Button";
 
 interface IProps {
   loadMoreStreamMessages: Function;
@@ -26,6 +40,7 @@ interface IProps {
   deleteMessage: Function;
   deleteMessageSuccess: Function;
   loggedIn?: boolean;
+  sendStreamMessage: Function;
 }
 
 const canDelete = ({ isDeleted, senderId, performerId }, user): boolean => {
@@ -55,6 +70,7 @@ const MessageList = ({
   user,
   deleteMessage: remove,
   deleteMessageSuccess,
+  sendStreamMessage,
   loggedIn,
 }: IProps) => {
   let messagesRef: any;
@@ -66,6 +82,9 @@ const MessageList = ({
 
   const [offset, setOffset] = useState(1);
   const [onloadmore, setOnloadmore] = useState(false);
+  const [showEmoji, setShowEmoji] = useState(false);
+  const [modal, setModal] = useState(false);
+  const inputText = useRef("");
 
   useEffect(() => {
     if (messagesRef) messagesRef = createRef();
@@ -188,7 +207,7 @@ const MessageList = ({
     // this.scrollToBottom();
 
     return (
-      <View style={styles.chatbox}>
+      <View flex={1} maxH={150}>
         <FlatList
           data={tempMessages}
           renderItem={({ item }: any) => (
@@ -235,6 +254,33 @@ const MessageList = ({
       });
     }
   };
+  const ButtonPrivateChatDetail = ({ ...props }) => (
+    <HStack my={3} space={2} alignSelf="center">
+      <Button {...props} />
+    </HStack>
+  );
+
+  const onSelectEmoji = (emoji) => {
+    inputText.current = `${inputText.current}${emoji}`;
+    setShowEmoji(false);
+  };
+
+  const onPressEmoji = (currentText) => {
+    inputText.current = currentText || "";
+    setShowEmoji(true);
+  };
+
+  const sendMessage = (message) => {
+    const text = message.data.input;
+    console.log("Data", conversation.type);
+    sendStreamMessage({
+      conversationId: conversation._id,
+      data: {
+        text,
+      },
+      type: conversation.type,
+    });
+  };
 
   // render() {
   //   const { conversation } = this.props;
@@ -260,9 +306,42 @@ const MessageList = ({
     //     </>
     //   )}
     // </div>
-    <View>
-      {renderMessages()}
-      <Compose conversation={conversation} />
+    <SafeAreaView style={{ flex: 1 }}>
+      <View flex={1}>{renderMessages()}</View>
+
+      {showEmoji && <EmojiSelector onEmojiSelected={onSelectEmoji} />}
+      {!showEmoji && (
+        <ChatFooter
+          authUser={user}
+          conversationId={conversation._id}
+          Button={ButtonPrivateChatDetail}
+          setModal={setModal}
+          sendMessageStream={sendMessage}
+          PrivateBtnSendMessage={({ ...props }) => (
+            <Ionicons
+              name="send-outline"
+              size={34}
+              style={{
+                width: 50,
+                paddingHorizontal: 10,
+                alignItems: "center",
+              }}
+              color="#ff8284"
+              {...props}
+            />
+          )}
+          onPressEmoji={onPressEmoji}
+          defaultInput={inputText.current}
+        />
+      )}
+
+      {/* <SendTip
+        setModal={setModal}
+        modal={modal}
+        conversationId={conversation._id}
+        performerId={performer._id || ""}
+      /> */}
+      {/* <Compose conversation={conversation} /> */}
       {/* <View>
         <HStack width="100%">
           <View width="88%">
@@ -307,7 +386,7 @@ const MessageList = ({
           </View>
         </HStack>
       </View> */}
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -341,5 +420,7 @@ const mapDispatch = {
   receiveStreamMessageSuccess,
   deleteMessage,
   deleteMessageSuccess,
+  sendStreamMessage,
 };
+
 export default connect(mapStates, mapDispatch)(MessageList);

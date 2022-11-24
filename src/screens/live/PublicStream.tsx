@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Button, View, Heading } from 'native-base';
+import { Button, View, Heading, Text } from 'native-base';
 import { connect } from 'react-redux';
 import { IUser } from 'src/interfaces';
 import { streamService } from '../../services';
-import { PermissionsAndroid, Text } from 'react-native';
+import { PermissionsAndroid } from 'react-native';
 import { PERMISSIONS, requestMultiple, RESULTS } from 'react-native-permissions';
 import socketHolder from 'lib/socketHolder';
 
@@ -18,8 +18,7 @@ import { Publisher } from 'components/antmedia/Publisher';
 import PublisherIOS from 'components/antmedia/PublisherIOS';
 import ChatBox from 'components/streamChat/chat-box';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import BackButton from 'components/uis/BackButton';
-// import EmojiSelector from "react-native-emoji-selector";
+import BackButton from 'components/uis/BackButton'; // import EmojiSelector from "react-native-emoji-selector";
 
 interface IProps {
   resetStreamMessage: Function;
@@ -213,7 +212,7 @@ const PublicStream = ({
         <View
           style={{
             position: 'absolute',
-            marginTop: Sizes.fixPadding + 160.0,
+            marginTop: Sizes.fixPadding + 180.0,
             alignItems: 'center',
             alignSelf: 'flex-end',
             zIndex: 1000
@@ -228,9 +227,10 @@ const PublicStream = ({
           </Text>
         </View>
       )}
-      <View flex={1}>{sessionId && renderLocalVideo()}</View>
-
-      <ChatBox />
+      <View flex={1} flexDirection={'column'} position={'relative'}>
+        {sessionId && renderLocalVideo()}
+        {/* <ChatBox /> */}
+      </View>
 
       <View>
         {!initialized ? (

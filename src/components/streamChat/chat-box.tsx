@@ -86,7 +86,7 @@ const ChatBox = ({
 
   return (
     // <KeyboardDismiss>
-    <View style={styles.chatbox}>
+    <View style={styles.chatContainer}>
       {activeConversation &&
         activeConversation.data &&
         activeConversation.data.streamId && (

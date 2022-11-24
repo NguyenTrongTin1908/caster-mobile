@@ -33,19 +33,19 @@ const ChatFooter = ({
   PrivateBtnSendMessage,
   setModal,
   onPressEmoji,
-  defaultInput
+  defaultInput,
 }: IProps): React.ReactElement => {
-  const [input, setInput] = useState<string>(defaultInput || '');
+  const [input, setInput] = useState<string>(defaultInput || "");
 
   return (
     <>
-      <Button
+      {/* <Button
         performerId={performerId}
         conversationId={conversationId}
         colorScheme="secondary"
         label="Send tip"
         onPress={() => setModal(true)}
-      />
+      /> */}
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={110}
@@ -73,14 +73,16 @@ const ChatFooter = ({
                 height: "100%",
               }}
               onChangeText={(value) => setInput(value)}
-              bgColor={"rgba(0, 0, 0, 0.05)"}
+              bgColor={colors.lightText}
               InputRightElement={
                 <Box
                   bgColor={"rgba(0, 0, 0, 0.05)"}
                   h="100%"
                   justifyContent="center"
                 >
-                  <TouchableWithoutFeedback onPress={() => onPressEmoji && onPressEmoji(input)}>
+                  <TouchableWithoutFeedback
+                    onPress={() => onPressEmoji && onPressEmoji(input)}
+                  >
                     <Box
                       bgColor={colors.primary}
                       mr={3}
@@ -103,7 +105,11 @@ const ChatFooter = ({
             {PrivateBtnSendMessage && (
               <PrivateBtnSendMessage
                 onPress={() => {
-                  sendMessageStream({ message: input, id: conversationId });
+                  sendMessageStream({
+                    data: {
+                      input,
+                    },
+                  });
                   setInput("");
                 }}
               />

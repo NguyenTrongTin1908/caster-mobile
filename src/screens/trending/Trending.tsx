@@ -21,19 +21,21 @@ interface IProps {
 const Trending = ({ current }: IProps): React.ReactElement => {
   const navigation = useNavigation() as any;
   const [tab, setTab] = useState('video');
-  const [itemPerPage, setitemPerPage] = useState(12);
-  const [feedPage, setfeedPage] = useState(0);
+  const [itemPerPage, setItemPerPage] = useState(12);
+  const [feedPage, setFeedPage] = useState(0);
   const [orientation, setOrientation] = useState('');
   const [keyword, setKeyword] = useState('');
   const mediaRefs = useRef([]) as any;
-  const [feeds, setfeeds] = useState([] as Array<IFeed>);
-  const [trendingfeeds, settrendingfeeds] = useState([] as Array<IFeed>);
+  const [feeds, setFeeds] = useState([] as Array<IFeed>);
+  const [trendingFeeds, setTrendingfeeds] = useState([] as Array<IFeed>);
+  const [lastViewableItem, setLastViewableItem] = useState(null) as any;
+
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
-    loadfeeds();
+    loadFeeds();
   }, [useContext]);
 
-  const loadfeeds = async () => {
+  const loadFeeds = async () => {
     const { data } = await feedService.trendingSearch({
       q: keyword,
       orientation,
@@ -43,11 +45,12 @@ const Trending = ({ current }: IProps): React.ReactElement => {
       sortBy: 'mostViewInCurrentDay',
       type: tab === 'video' ? 'video' : 'photo'
     });
-    setfeeds(feeds.concat(data.data));
-    settrendingfeeds(feeds.concat(data.data));
+    setFeeds(feeds.concat(data.data));
+    setTrendingfeeds(feeds.concat(data.data));
   };
-  const loadmoreFeeds = async () => {
-    setfeedPage(feedPage + 1);
+
+  const loadMoreFeeds = async () => {
+    setFeedPage(feedPage + 1);
     const { data } = await feedService.userSearch({
       q: keyword,
       orientation,
@@ -56,12 +59,13 @@ const Trending = ({ current }: IProps): React.ReactElement => {
       isHome: false,
       type: tab === 'video' ? 'video' : 'photo',
       sortBy: 'mostViewInCurrentDay',
-      excludeIds: trendingfeeds.map(item => item._id).join(',')
+      excludeIds: trendingFeeds.map(item => item._id).join(',')
     });
-    data.data.length == 0 ? resetloadFeeds() : setfeeds(feeds.concat(data.data));
+    data.data.length == 0 ? resetLoadFeeds() : setFeeds(feeds.concat(data.data));
   };
-  const resetloadFeeds = async () => {
-    setfeedPage(feedPage + 1);
+
+  const resetLoadFeeds = async () => {
+    setFeedPage(feedPage + 1);
     const { data } = await feedService.userSearch({
       q: keyword,
       orientation,
@@ -70,16 +74,18 @@ const Trending = ({ current }: IProps): React.ReactElement => {
       isHome: false,
       type: tab === 'video' ? 'video' : 'photo',
       sortBy: 'mostViewInCurrentDay',
-      excludeIds: trendingfeeds.map(item => item._id).join(',')
+      excludeIds: trendingFeeds.map(item => item._id).join(',')
     });
-    setfeeds(feeds.concat(data.data));
-    setfeedPage(1);
+    setFeeds(feeds.concat(data.data));
+    setFeedPage(1);
   };
+
   const onViewableItemsChange = useRef(({ changed }) => {
     changed.forEach(element => {
       const cell = mediaRefs.current[element.key];
       if (cell) {
         if (element.isViewable) {
+          setLastViewableItem(element);
           cell.setStatus(true);
         } else {
           cell.setStatus(false);
@@ -87,10 +93,11 @@ const Trending = ({ current }: IProps): React.ReactElement => {
       }
     });
   }) as any;
+
   const handleTabChange = async () => {
     tab === 'video' ? setTab('photo') : setTab('video');
-    setfeeds([]);
-    setfeedPage(0);
+    setFeeds([]);
+    setFeedPage(0);
   };
   const renderItem = ({ item, index }: { item: IFeed; index: number }) => {
     return (
@@ -117,8 +124,30 @@ const Trending = ({ current }: IProps): React.ReactElement => {
   };
 
   useEffect(() => {
-    loadfeeds();
+    loadFeeds();
   }, [tab]);
+
+  const checkBeforeLeaving = lastViewableItem => {
+    if (lastViewableItem) {
+      const cell = mediaRefs.current[lastViewableItem.key];
+      if (cell && cell.playing) {
+        cell.setStatus(false);
+      }
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      if (lastViewableItem) {
+        const cell = mediaRefs.current[lastViewableItem.key];
+        if (cell && !cell.playing) {
+          cell.setStatus(true);
+        }
+      }
+      return () => checkBeforeLeaving(lastViewableItem);
+    }, [lastViewableItem])
+  );
+
   return (
     <BottomTabBarHeightContext.Consumer>
       {(tabBarHeight: any) => (
@@ -132,7 +161,7 @@ const Trending = ({ current }: IProps): React.ReactElement => {
             showsVerticalScrollIndicator={false}
             onViewableItemsChanged={onViewableItemsChange.current}
             windowSize={4}
-            onEndReached={loadmoreFeeds}
+            onEndReached={loadMoreFeeds}
             initialNumToRender={0}
             maxToRenderPerBatch={2}
             removeClippedSubviews

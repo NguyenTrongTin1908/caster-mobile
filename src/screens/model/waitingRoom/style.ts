@@ -81,29 +81,33 @@ const styles = StyleSheet.create({
   },
 
   statusPrivateBox: {
-    flex: 1,
     flexDirection:"row",
     justifyContent: 'center',
+    marginTop:20.0
 
 
   },
   privatePriceChat: {
     justifyContent:"center",
     flexDirection: "row",
-    fontSize: Sizes.fixPadding + 10.0,
+    marginTop: Sizes.fixPadding + 50.0,
 
   },
   notifySection: {
-    width : "50%",
+    width : "60%",
     justifyContent:"center",
     alignItems:"center",
     alignSelf: "center",
     textAlign: "center",
+    marginVertical: Sizes.fixPadding+80.0,
     backgroundColor: colors.lightText
 
 
   },
   textCenter: {},
+  privateChatText:{
+    fontSize: Sizes.fixPadding+ 8
+  },
 
 
   privatePriceChatSwitch: {
