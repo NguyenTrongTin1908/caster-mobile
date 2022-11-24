@@ -70,66 +70,6 @@ const UpdateProfileForm = ({
       Alert.alert('Something went wrong, please try again later');
     }
   };
-  // const verifyEmail = async () => {
-  //   try {
-  //     await setEmailSending(true);
-  //     const resp = await authService.verifyEmail({
-  //       sourceType: "performer",
-  //       source: current,
-  //     });
-  //     // this.handleCountdown();
-  //     resp.data && resp.data.message && Alert.alert(resp.data.message);
-  //   } catch (e) {
-  //     const error = await e;
-  //     Alert.alert("An error occured, please try again");
-  //   } finally {
-  //     await setEmailSending(false);
-  //   }
-  // };
-  //  const handleCountdown = async () => {
-  //     const { countTime } = this.state;
-  //     if (countTime === 0) {
-  //       clearInterval(this._intervalCountdown);
-  //       this.setState({ countTime: 60 });
-  //       return;
-  //     }
-  //     this.setState({ countTime: countTime - 1 });
-  //     this._intervalCountdown = setInterval(this.coundown.bind(this), 1000);
-  //   }
-  const openGallery = async () => {
-    ImagePicker.openPicker({
-      width: 300,
-      height: 300,
-      cropping: true
-    }).then(async image => {
-      if (type === 'avatar') {
-        const dataUrl = await performerService.getAvatarUploadUrl();
-        const url = `https://api.caster.com${dataUrl}`;
-        handleUpdate(url, image.path, 'avatar');
-      } else {
-        const dataUrl = await performerService.getCoverUploadUrl();
-        const url = `https://api.caster.com${dataUrl}`;
-        handleUpdate(url, image.path, 'cover');
-      }
-    });
-  };
-  const openCamera = async () => {
-    ImagePicker.openCamera({
-      width: 300,
-      height: 300,
-      cropping: true
-    }).then(async image => {
-      if (type === 'avatar') {
-        const dataUrl = await performerService.getAvatarUploadUrl();
-        const url = `https://api.caster.com${dataUrl}`;
-        handleUpdate(url, image.path, 'avatar');
-      } else {
-        const dataUrl = await performerService.getCoverUploadUrl();
-        const url = `https://api.caster.com${dataUrl}`;
-        handleUpdate(url, image.path, 'cover');
-      }
-    });
-  };
   const handleUpdate = async (uploadUrl: string, path: string, type: string) => {
     try {
       const resp = (await mediaService.upload(uploadUrl, [
@@ -144,10 +84,14 @@ const UpdateProfileForm = ({
       resp.data.type === 'avatar' ? handleUpdateAvt(resp.data.url) : handleUpdateCover(resp.data.url);
     } catch (error) {}
   };
-  useEffect(async () => {
-    const [countries, bodyInfo] = await Promise.all([utilsService.countriesList(), utilsService.bodyInfo()]);
-    setCountries(countries?.data);
-    setBodyInfo(bodyInfo?.data);
+  useEffect(() => {
+    async function loadData() {
+      const [countries, bodyInfo] = await Promise.all([utilsService.countriesList(), utilsService.bodyInfo()]);
+      setCountries(countries?.data);
+      setBodyInfo(bodyInfo?.data);
+    }
+
+    loadData();
   }, []);
   return (
     <View style={styles.container}>
@@ -485,10 +429,10 @@ const UpdateProfileForm = ({
           {errors.confirm && <ErrorMessage message={errors.confirm?.message || 'Comfirm is required.'} />}
         </FormControl>
         <Divider borderColor={colors.divider} />
+        <Box alignSelf="center" my={5}>
+          <Button colorScheme="primary" onPress={handleSubmit(onSubmit)} disabled={submitting} label="Save Changes" />
+        </Box>
       </ScrollView>
-      <Box alignSelf="center" my={5}>
-        <Button colorScheme="primary" onPress={handleSubmit(onSubmit)} disabled={submitting} label="Save Changes" />
-      </Box>
     </View>
   );
 };

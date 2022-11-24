@@ -18,6 +18,7 @@ import { Publisher } from 'components/antmedia/Publisher';
 import PublisherIOS from 'components/antmedia/PublisherIOS';
 import ChatBox from 'components/streamChat/chat-box';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import BackButton from 'components/uis/BackButton';
 // import EmojiSelector from "react-native-emoji-selector";
 
 interface IProps {
@@ -207,7 +208,7 @@ const PublicStream = ({
         Live Broadcaster
       </Heading>
 
-      <HeaderMenu />
+      <BackButton />
       {sessionId && (
         <View
           style={{

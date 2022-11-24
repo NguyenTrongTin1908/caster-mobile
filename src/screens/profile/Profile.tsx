@@ -113,11 +113,15 @@ const Profile = ({ current, handleLogout, route }: Props): React.ReactElement =>
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
-        <Image source={current?.cover ? { uri: current?.cover } : { uri: '' }} style={styles.converPhoto} alt="cover" />
+        <Image
+          source={current?.cover ? { uri: current?.cover } : require('assets/bg.jpg')}
+          style={styles.converPhoto}
+          alt="cover"
+        />
         <View style={styles.avContainer}>
           <View style={styles.avBlueRound}>
             <Image
-              source={current?.avatar ? { uri: current?.avatar } : { uri: '' }}
+              source={current?.avatar ? { uri: current?.avatar } : require('assets/avatar-default.png')}
               alt={'avatar'}
               size={100}
               borderRadius={80}
@@ -127,7 +131,7 @@ const Profile = ({ current, handleLogout, route }: Props): React.ReactElement =>
           </View>
         </View>
         <Text style={styles.textName}>
-          {(current && current?.name != ' ') ? `${current?.name}` : `${current?.username}`}
+          {current && current?.name != ' ' ? `${current?.name}` : `${current?.username}`}
         </Text>
         <View style={{ flexDirection: 'row', alignSelf: 'center', marginTop: 5 }}>
           <TouchableOpacity
