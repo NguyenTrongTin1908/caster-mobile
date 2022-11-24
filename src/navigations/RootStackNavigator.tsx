@@ -41,6 +41,7 @@ import GoLivePage from "screens/model/waitingRoom/PublicWaitingRoom";
 import PrivateChatWaitingRoom from "screens/model/waitingRoom/PrivateWaitingRoom";
 import PrivateUserWaitingRoom from "screens/user/private-waiting-room/PrivateUserWaitingRoom";
 import PrivateUserAcceptRoom from "screens/user/private-accept-room/PrivateUserAccept";
+import PrivateChat from "screens/privatechat/PrivateChat";
 
 import EditProfile from "screens/profile/EditProfile";
 export type RootStackParamList = {
@@ -66,6 +67,7 @@ export type RootStackParamList = {
   ViewPublicStream: undefined;
   // ChatRoom: { performer: IPerformer };
   PrivateChatDetail: { performer: IPerformer; conversationId: string };
+  PrivateChat: undefined;
   PerformerDetail: { username: string };
   MediaPreview: {
     path: string;
@@ -146,6 +148,11 @@ function RootNavigator({ loggedIn }): React.ReactElement {
           options={{ headerShown: false }}
           name="PrivateUserAcceptRoom"
           component={PrivateUserAcceptRoom}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="PrivateChat"
+          component={PrivateChat}
         />
         <Stack.Screen
           options={{ headerShown: false }}

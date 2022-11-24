@@ -27,7 +27,6 @@ enum EVENT {
 interface IProps {
   error: any;
   currentUser: IPerformer;
-  privateRequests: any[];
   updateUser: Function;
   updatePerformer: Function;
   route: any;
@@ -64,8 +63,9 @@ const PrivateUserAcceptRoom = ({
   useEffect(() => {
     if (remoteStreamId) {
       navigation.navigate("Call", {
-        localStreamId: localStreamId,
-        remoteStreamId: remoteStreamId,
+        localStreamId,
+        remoteStreamId,
+        privateRequest,
       });
     }
   }, [remoteStreamId]);
@@ -184,7 +184,6 @@ const PrivateUserAcceptRoom = ({
 const mapStates = (state: any) => ({
   ui: { ...state.ui },
   currentUser: { ...state.user.current },
-  privateRequests: state.streaming.privateRequests,
 });
 const mapDispatch = { updateUser, updatePerformer };
 

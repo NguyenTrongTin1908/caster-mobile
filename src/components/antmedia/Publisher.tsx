@@ -1,15 +1,20 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Button, Dimensions, StyleSheet, View } from 'react-native';
-import { SignalingChannel } from './SignalingChannel';
-import { WEBRTC_ADAPTOR_INFORMATIONS } from 'components/antmedia/constants';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useEffect, useRef, useState } from "react";
+import { Button, Dimensions, StyleSheet, View } from "react-native";
+import { SignalingChannel } from "./SignalingChannel";
+import { WEBRTC_ADAPTOR_INFORMATIONS } from "components/antmedia/constants";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { mediaDevices, MediaStream, RTCPeerConnection, RTCView } from 'react-native-webrtc';
-import { config } from 'config';
-import { PublicStreamView } from './styles';
+import {
+  mediaDevices,
+  MediaStream,
+  RTCPeerConnection,
+  RTCView,
+} from "react-native-webrtc";
+import { config } from "config";
+import { PublicStreamView } from "./styles";
 
 export const Publisher = ({
-  streamId = '',
+  streamId = "",
   // styles = {
   //   width: 193,
   //   height: 136,
@@ -19,7 +24,7 @@ export const Publisher = ({
   //   zIndex: 2,
   //   backgroundColor: "#cbb967",
   // },
-  onChange
+  onChange,
 }) => {
   const [started, setStarted] = useState(false);
   const [isFrontCamera, setIsFrontCamera] = useState(true);
@@ -41,9 +46,9 @@ export const Publisher = ({
       peerConnection.current = new RTCPeerConnection({
         iceServers: [
           {
-            url: 'stun:stun.l.google.com:19302'
-          }
-        ]
+            url: "stun:stun.l.google.com:19302",
+          },
+        ],
       });
       // console.log('peerConnection.current', peerConnection.current);
       peerConnection.current?.addStream(localStreamRef.current);
@@ -52,15 +57,15 @@ export const Publisher = ({
         // console.log(peerConnection.current?.signalingState);
 
         (peerConnection.current.onicecandidateerror = console.log);
-      peerConnection.current.onicecandidate = event => {
+      peerConnection.current.onicecandidate = (event) => {
         const candidate = event.candidate;
         if (candidate && signalingChannel.current?.isChannelOpen()) {
           signalingChannel.current?.sendJSON({
-            command: 'takeCandidate',
+            command: "takeCandidate",
             streamId,
             label: candidate.sdpMLineIndex.toString(),
             id: candidate.sdpMid,
-            candidate: candidate.candidate
+            candidate: candidate.candidate,
           });
         }
       };
@@ -76,40 +81,40 @@ export const Publisher = ({
     new SignalingChannel(config.ANT_SIGNALING_URL, {
       onopen: () => {
         signalingChannel.current?.sendJSON({
-          command: 'publish',
-          streamId
+          command: "publish",
+          streamId,
         });
         onChange(WEBRTC_ADAPTOR_INFORMATIONS.INITIALIZED);
       },
       start: async () => {
         signalingChannel.current?.sendJSON({
-          command: 'takeConfiguration',
+          command: "takeConfiguration",
           streamId,
-          type: 'offer',
-          sdp: peerConnection?.current?.localDescription?.sdp
+          type: "offer",
+          sdp: peerConnection?.current?.localDescription?.sdp,
         });
         onChange(WEBRTC_ADAPTOR_INFORMATIONS.PUBLISH_STARTED);
       },
       stop: () => {
-        console.log('stop called');
+        console.log("stop called");
         onChange(WEBRTC_ADAPTOR_INFORMATIONS.PUBLISH_FINISHED);
       },
-      takeCandidate: data => {
+      takeCandidate: (data) => {
         // console.log("onIceCandidate remote");
         peerConnection.current?.addIceCandidate({
-          candidate: data?.candidate || '',
+          candidate: data?.candidate || "",
           sdpMLineIndex: Number(data?.label) || 0,
-          sdpMid: data?.id || ''
+          sdpMid: data?.id || "",
         });
       },
-      takeConfiguration: data => {
+      takeConfiguration: (data) => {
         // console.log("got answer")
-        const answer = data?.sdp || '';
+        const answer = data?.sdp || "";
         peerConnection.current?.setRemoteDescription({
           sdp: answer,
-          type: 'answer'
+          type: "answer",
         });
-      }
+      },
     })
   );
 
@@ -126,7 +131,7 @@ export const Publisher = ({
     return (
       <View style={styles.bottom}>
         <Button
-          title={started ? 'Stop' : 'Start'}
+          title={started ? "Stop" : "Start"}
           color="red"
           onPress={async () => {
             if (!started) {
@@ -191,7 +196,11 @@ export const Publisher = ({
       let sourceId;
       const sourceInfos = (await mediaDevices.enumerateDevices()) as any;
       for (const info of sourceInfos) {
-        if (info.kind == 'videoinput' && info.facing == isFrontCamera ? 'user' : 'environment') {
+        if (
+          info.kind == "videoinput" && info.facing == isFrontCamera
+            ? "user"
+            : "environment"
+        ) {
           sourceId = info.deviceId;
         }
       }
@@ -199,14 +208,14 @@ export const Publisher = ({
       const media = await mediaDevices.getUserMedia({
         audio: true,
         video: {
-          facingMode: isFrontCamera ? 'user' : 'environment',
+          facingMode: isFrontCamera ? "user" : "environment",
           mandatory: {
             minFrameRate: 30,
-            minHeight: Dimensions.get('window').height,
-            minWidth: Dimensions.get('window').width
+            minHeight: Dimensions.get("window").height,
+            minWidth: Dimensions.get("window").width,
           },
-          optional: sourceId
-        }
+          optional: sourceId,
+        },
       });
 
       if (media) {
@@ -230,10 +239,13 @@ export const Publisher = ({
 
   if (!!localStream)
     return (
-      <SafeAreaView style={{ flex: 1, marginBottom: 80 }}>
-        <PublicStreamView zOrder={1} streamURL={localStream?.toURL()} style={{ flex: 1 }} objectFit="contain" />
-        {/* {renderButtons()} */}
-      </SafeAreaView>
+      // <SafeAreaView style={{ flex: 1 }}>
+      <PublicStreamView
+        zOrder={1}
+        streamURL={localStream?.toURL()}
+        objectFit="contain"
+      />
+      // </SafeAreaView>
     );
 
   return null;
@@ -241,13 +253,13 @@ export const Publisher = ({
 
 const styles = StyleSheet.create({
   bottom: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    justifyContent: "center",
     marginBottom: 0,
-    zIndex: 10000
-  }
+    zIndex: 10000,
+  },
 });

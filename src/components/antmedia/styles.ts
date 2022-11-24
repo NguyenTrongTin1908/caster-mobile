@@ -29,4 +29,5 @@ export const PublicStreamView = styled(RTCView)`
 flex: 1;
 z-index: 100;
 background: #000000;
+minHeight:400;
 `;

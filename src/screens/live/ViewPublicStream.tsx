@@ -1,25 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import { Button, View, Heading, Text } from 'native-base';
-import { connect } from 'react-redux';
-import { IPerformer, IUser } from '../../interfaces';
-import { messageService, streamService } from '../../services';
-import { Alert } from 'react-native';
-import socketHolder from 'lib/socketHolder';
+import React, { useEffect, useState } from "react";
+import { Button, View, Heading, Text } from "native-base";
+import { connect } from "react-redux";
+import { IPerformer, IUser } from "../../interfaces";
+import { messageService, streamService } from "../../services";
+import { Alert } from "react-native";
+import socketHolder from "lib/socketHolder";
 
 import {
   getStreamConversation,
   resetStreamMessage,
   loadStreamMessages,
   getStreamConversationSuccess,
-  resetAllStreamMessage
-} from 'services/redux/stream-chat/actions';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import HeaderMenu from 'components/tab/HeaderMenu';
-import { colors } from 'utils/theme';
-import { giftService } from 'services/index';
-import { performerService } from 'services/perfomer.service';
-import { StreamSettings, HLS, WEBRTC, PUBLIC_CHAT } from '../../interfaces';
-import { HLSViewer } from 'components/antmedia/HLSViewer';
+  resetAllStreamMessage,
+} from "services/redux/stream-chat/actions";
+import { SafeAreaView } from "react-native-safe-area-context";
+import HeaderMenu from "components/tab/HeaderMenu";
+import { colors } from "utils/theme";
+import { giftService } from "services/index";
+import { performerService } from "services/perfomer.service";
+import { StreamSettings, HLS, WEBRTC, PUBLIC_CHAT } from "../../interfaces";
+import { HLSViewer } from "components/antmedia/HLSViewer";
+import ChatBox from "components/streamChat/chat-box";
 // eslint-disable-next-line no-shadow
 // enum EVENT_NAME {
 //   ROOM_INFORMATIOM_CHANGED = "public-room-changed",
@@ -38,9 +39,9 @@ interface IProps {
 }
 
 enum STREAM_EVENT {
-  JOIN_BROADCASTER = 'join-broadcaster',
-  MODEL_LEFT = 'model-left',
-  ROOM_INFORMATIOM_CHANGED = 'public-room-changed'
+  JOIN_BROADCASTER = "join-broadcaster",
+  MODEL_LEFT = "model-left",
+  ROOM_INFORMATIOM_CHANGED = "public-room-changed",
 }
 let conversationHolder;
 let subscrbierRef: any;
@@ -55,7 +56,7 @@ const ViewPublicStream = ({
   currentUser,
   system,
   settings,
-  route
+  route,
 }: IProps) => {
   const [loading, setLoading] = useState(false);
   const [initialized, setInitialized] = useState(false);
@@ -83,7 +84,7 @@ const ViewPublicStream = ({
   }, []);
 
   const subscribe = async ({ performerId }) => {
-    console.log(STREAM_EVENT.JOIN_BROADCASTER + '>>>>>>>>', performerId);
+    console.log(STREAM_EVENT.JOIN_BROADCASTER + ">>>>>>>>", performerId);
     const { optionForBroadcast } = settings;
     try {
       const resp = await streamService.joinPublicChat(performerId);
@@ -108,9 +109,10 @@ const ViewPublicStream = ({
   const handleSocketLeave = () => {
     // TODO - handle me
     const socket = socketHolder.getSocket() as any;
-    const conversationId = activeConversation?.data?._id || conversationHolder?._id;
+    const conversationId =
+      activeConversation?.data?._id || conversationHolder?._id;
     if (conversationId) {
-      socket.emit('public-stream/leave', { conversationId });
+      socket.emit("public-stream/leave", { conversationId });
       resetStreamMessage();
       setSessionid(null);
       setInitialized(false);
@@ -122,7 +124,10 @@ const ViewPublicStream = ({
   };
 
   const onChange = ({ total, members, conversationId }) => {
-    if (activeConversation?.data?._id && activeConversation.data._id === conversationId) {
+    if (
+      activeConversation?.data?._id &&
+      activeConversation.data._id === conversationId
+    ) {
       setTotal(total);
       setMembers(members);
     }
@@ -140,7 +145,10 @@ const ViewPublicStream = ({
       const resp = await performerService.findOne(username);
       const { streamingStatus } = resp.data;
       // poster(streamingStatus);
-      if (oldStreamingStatus !== streamingStatus && streamingStatus === PUBLIC_CHAT) {
+      if (
+        oldStreamingStatus !== streamingStatus &&
+        streamingStatus === PUBLIC_CHAT
+      ) {
         /**
          * Update stream status, broadcast
          */
@@ -148,7 +156,7 @@ const ViewPublicStream = ({
     } catch (e) {
       const error = await Promise.resolve(e);
       // eslint-disable-next-line no-console
-      console.log('error>>>>', error);
+      console.log("error>>>>", error);
     }
   };
 
@@ -157,7 +165,9 @@ const ViewPublicStream = ({
     const socket = socketHolder.getSocket() as any;
     if (performer) {
       try {
-        const resp = await messageService.findPublicConversationPerformer(performer._id);
+        const resp = await messageService.findPublicConversationPerformer(
+          performer._id
+        );
         const conversation = resp.data;
         conversationHolder = conversation;
         if (conversation && conversation._id) {
@@ -166,19 +176,21 @@ const ViewPublicStream = ({
             conversationId: conversation._id,
             limit: 25,
             offset: 0,
-            type: conversation.type
+            type: conversation.type,
           });
           socket &&
-            socket.emit('public-stream/join', {
-              conversationId: conversation._id
+            socket.emit("public-stream/join", {
+              conversationId: conversation._id,
             });
         } else {
-          throw new Promise(resolve => resolve('No available broadcast. Try again later'));
+          throw new Promise((resolve) =>
+            resolve("No available broadcast. Try again later")
+          );
         }
       } catch (e) {
         const error = await Promise.resolve(e);
         // eslint-disable-next-line no-console
-        console.log('error123456>>>>', error);
+        console.log("error123456>>>>", error);
       }
     }
   };
@@ -191,40 +203,49 @@ const ViewPublicStream = ({
 
     // subscriberRef2.pause();
 
-    Alert.alert('Model has left the room!');
+    Alert.alert("Model has left the room!");
   };
 
-  const setStreamRef = dataFunc => {
+  const setStreamRef = (dataFunc) => {
     subscriberRef2 = dataFunc;
   };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <Heading mb={4} fontSize={30} textAlign="center" letterSpacing={-1} color={colors.lightText} bold>
+      <Heading
+        mb={4}
+        fontSize={30}
+        textAlign="center"
+        letterSpacing={-1}
+        color={colors.lightText}
+        bold
+      >
         Live Broadcaster
       </Heading>
-      <View flex={1}>
+      <View flex={1} flexDirection={"column"} position={"relative"}>
         <HLSViewer
           streamId={activeConversation?.data?.streamId}
-          ref={viewRef => setStreamRef(viewRef)}
+          ref={(viewRef) => setStreamRef(viewRef)}
           settings={settings}
         />
+        <ChatBox />
       </View>
+
       <HeaderMenu />
     </SafeAreaView>
   );
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   currentUser: state.user.current,
   activeConversation: state.streamMessage.activeConversation,
   system: { ...state.system },
-  settings: { ...state.system.data }
+  settings: { ...state.system.data },
 });
 const mapDispatch = {
   loadStreamMessages,
   getStreamConversationSuccess,
   resetStreamMessage,
-  resetAllStreamMessage
+  resetAllStreamMessage,
 };
 export default connect(mapStateToProps, mapDispatch)(ViewPublicStream);

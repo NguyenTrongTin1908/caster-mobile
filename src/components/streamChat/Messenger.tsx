@@ -16,8 +16,10 @@ const StreamMessenger = ({
   activeConversation,
   loggedIn,
 }: IProps): React.ReactElement => {
+  console.log("EEEEEE");
+
   return (
-    <View>
+    <View flex={1}>
       {activeConversation &&
       activeConversation.data &&
       activeConversation.data.streamId ? (

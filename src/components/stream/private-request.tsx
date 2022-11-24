@@ -26,7 +26,7 @@ export const PrivateRequest = ({
   istimeDeline,
   isChecked,
 }: IProps) => {
-  const [time, setTime] = useState(1200);
+  const [time, setTime] = useState(120);
   const [loop, setLoop] = useState(istimeDeline);
   const socket = socketHolder.getSocket() as any;
 
