@@ -30,6 +30,7 @@ import modal from "../comment/modal";
 import ChatFooter from "../message/ChatFooter";
 import SendTip from "../message/SendTip";
 import Button from "components/uis/Button";
+import { giftService } from "services/gift.service";
 
 interface IProps {
   loadMoreStreamMessages: Function;
@@ -84,6 +85,8 @@ const MessageList = ({
   const [onloadmore, setOnloadmore] = useState(false);
   const [showEmoji, setShowEmoji] = useState(false);
   const [modal, setModal] = useState(false);
+  const [favoriteGift, setFavoriteGift] = useState({});
+
   const inputText = useRef("");
 
   useEffect(() => {
@@ -113,6 +116,7 @@ const MessageList = ({
       socket && socket.off(`message_created_conversation_${conversation._id}`);
       socket && socket.off(`message_deleted_conversation_${conversation._id}`);
     };
+    getfavoriteGift();
   }, []);
 
   // componentWillUnmount() {
@@ -134,6 +138,11 @@ const MessageList = ({
   const onDelete = (messageId) => {
     if (!messageId) return;
     deleteMessage({ messageId });
+  };
+
+  const getfavoriteGift = async () => {
+    const respGift = await (await giftService.favoriteGift()).data;
+    setFavoriteGift(respGift.data[0]);
   };
 
   const renderMessages = () => {
@@ -207,7 +216,7 @@ const MessageList = ({
     // this.scrollToBottom();
 
     return (
-      <View flex={1} maxH={150}>
+      <View flex={1} maxH={200} minH={200}>
         <FlatList
           data={tempMessages}
           renderItem={({ item }: any) => (
@@ -233,11 +242,6 @@ const MessageList = ({
   };
 
   const handleScroll = (conversation, event) => {
-    // const {
-    //   message: { fetching, items, total },
-    //   loadMoreStreamMessages: loadMore,
-    // } = this.props;
-    // const { offset } = this.state;
     const { fetching, items, total } = message;
     const canloadmore = total > items.length;
     const ele = event.target;
@@ -269,6 +273,10 @@ const MessageList = ({
     inputText.current = currentText || "";
     setShowEmoji(true);
   };
+  const favoriteHandle = (gift) => {
+    setFavoriteGift(gift);
+    giftService.addfavoriteGift({ giftId: gift._id });
+  };
 
   const sendMessage = (message) => {
     const text = message.data.input;
@@ -282,111 +290,50 @@ const MessageList = ({
     });
   };
 
-  // render() {
-  //   const { conversation } = this.props;
-  //   const {
-  //     message: { fetching },
-  //   } = this.props;
   if (messagesRef) messagesRef = createRef();
 
   return (
-    // <div
-    //   className="message-list"
-    //   ref={this.messagesRef}
-    //   onScroll={this.handleScroll.bind(this, conversation)}
-    // >
-    //   {conversation && conversation._id && (
-    //     <>
-    //       <div className="message-list-container">
-    //         {fetching && <p className="text-center">fetching...</p>}
-    // {this.renderMessages()}
+    <View style={{ flex: 1 }}>
+      <>
+        <View>{renderMessages()}</View>
 
-    //       </div>
-    //       <Compose conversation={conversation} />
-    //     </>
-    //   )}
-    // </div>
-    <SafeAreaView style={{ flex: 1 }}>
-      <View flex={1}>{renderMessages()}</View>
-
-      {showEmoji && <EmojiSelector onEmojiSelected={onSelectEmoji} />}
-      {!showEmoji && (
-        <ChatFooter
-          authUser={user}
-          conversationId={conversation._id}
-          Button={ButtonPrivateChatDetail}
-          setModal={setModal}
-          sendMessageStream={sendMessage}
-          PrivateBtnSendMessage={({ ...props }) => (
-            <Ionicons
-              name="send-outline"
-              size={34}
-              style={{
-                width: 50,
-                paddingHorizontal: 10,
-                alignItems: "center",
-              }}
-              color="#ff8284"
-              {...props}
-            />
-          )}
-          onPressEmoji={onPressEmoji}
-          defaultInput={inputText.current}
-        />
-      )}
-
-      {/* <SendTip
-        setModal={setModal}
-        modal={modal}
-        conversationId={conversation._id}
-        performerId={performer._id || ""}
-      /> */}
-      {/* <Compose conversation={conversation} /> */}
-      {/* <View>
-        <HStack width="100%">
-          <View width="88%">
-            <FormControl>
-              <Controller
-                control={control}
-                render={({ field: { onChange, value } }) => (
-                  <TextInput
-                    selectionColor={colors.gray}
-                    value={value}
-                    placeholder={"Add a comment here"}
-                    placeholderTextColor={colors.gray}
-                    secureTextEntry={true}
-                    multiline
-                    numberOfLines={6}
-                    onChangeText={(val) => onChange(val)}
-                    style={{
-                      backgroundColor: colors.lightGray,
-                      borderRadius: 50,
-                      width: "100%",
-                      height: 40,
-                      alignItems: "center",
-                    }}
-                  />
-                )}
-                name="content"
-                rules={{ required: "Comment is required" }}
-                defaultValue=""
-              />
-            </FormControl>
-          </View>
-
-          <View width="10%" style={styles.sendComment}>
-            <TouchableOpacity>
+        {showEmoji && <EmojiSelector onEmojiSelected={onSelectEmoji} />}
+        {!showEmoji && (
+          <ChatFooter
+            authUser={user}
+            conversationId={conversation._id}
+            Button={ButtonPrivateChatDetail}
+            setModal={setModal}
+            sendMessageStream={sendMessage}
+            PrivateBtnSendMessage={({ ...props }) => (
               <Ionicons
-                name="send-sharp"
-                size={22}
-                color={"crimson"}
-                style={styles.sendComment}
+                name="send-outline"
+                size={34}
+                style={{
+                  width: 50,
+                  paddingHorizontal: 10,
+                  alignItems: "center",
+                }}
+                color="#ff8284"
+                {...props}
               />
-            </TouchableOpacity>
-          </View>
-        </HStack>
-      </View> */}
-    </SafeAreaView>
+            )}
+            onPressEmoji={onPressEmoji}
+            defaultInput={inputText.current}
+          />
+        )}
+
+        <SendTip
+          setModal={setModal}
+          aria-label="Send Tip"
+          modal={modal}
+          conversationId={conversation._id}
+          performerId={conversation.performerId || ""}
+          saveFavorite={favoriteHandle}
+          favorGift={favoriteGift}
+        />
+      </>
+    </View>
   );
 };
 

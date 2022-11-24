@@ -15,12 +15,12 @@ import {
 } from "services/redux/stream-chat/actions";
 import { SafeAreaView } from "react-native-safe-area-context";
 import HeaderMenu from "components/tab/HeaderMenu";
-import { colors } from "utils/theme";
-import { giftService } from "services/index";
+import { colors, Sizes } from "utils/theme";
 import { performerService } from "services/perfomer.service";
 import { StreamSettings, HLS, WEBRTC, PUBLIC_CHAT } from "../../interfaces";
 import { HLSViewer } from "components/antmedia/HLSViewer";
 import ChatBox from "components/streamChat/chat-box";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 // eslint-disable-next-line no-shadow
 // enum EVENT_NAME {
 //   ROOM_INFORMATIOM_CHANGED = "public-room-changed",
@@ -65,10 +65,8 @@ const ViewPublicStream = ({
   const [members, setMembers] = useState([]);
   const [permissionGranted, setPermissionGranted] = useState(false);
   const [localStreamId, setLocalStreamId] = useState(null as any);
-  const [favoriteGift, setFavoriteGift] = useState({});
 
   useEffect(() => {
-    getfavoriteGift();
     interval = setInterval(updatePerformerInfo, 60 * 1000);
     joinPerformerPublicRoom();
     const socket = socketHolder.getSocket() as any;
@@ -131,11 +129,6 @@ const ViewPublicStream = ({
       setTotal(total);
       setMembers(members);
     }
-  };
-
-  const getfavoriteGift = async () => {
-    const respGift = await (await giftService.favoriteGift()).data;
-    setFavoriteGift(respGift.data[0]);
   };
 
   const updatePerformerInfo = async () => {
@@ -222,6 +215,25 @@ const ViewPublicStream = ({
       >
         Live Broadcaster
       </Heading>
+      <View
+        style={{
+          position: "absolute",
+          marginTop: Sizes.fixPadding + 180.0,
+          alignItems: "center",
+          alignSelf: "flex-end",
+          zIndex: 1000,
+        }}
+      >
+        <MaterialIcons name="visibility" color={colors.light} size={28} />
+        <Text
+          style={{
+            marginTop: Sizes.fixPadding - 7.0,
+            color: colors.lightText,
+          }}
+        >
+          {total}
+        </Text>
+      </View>
       <View flex={1} flexDirection={"column"} position={"relative"}>
         <HLSViewer
           streamId={activeConversation?.data?.streamId}

@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     left: 0.0,
     right: 0.0,
     zIndex: 1000,
-    backgroundColor: "rgba(52, 52, 52, 0.8)",
+    backgroundColor: "rgba(52, 52, 52, 0.3)",
   },
 });
 

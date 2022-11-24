@@ -52,7 +52,7 @@ export const MainDrawer = ({
 }: DrawerProps): JSX.Element => {
   const viewRef = useRef(null) as any;
   const socketContext = useContext(SocketContext) as any;
-  const { status: socketContextStatus } = useContext(SocketContext) as any;
+  const { status : socketContextStatus  } = useContext(SocketContext) as any;
   const handleShow = () => {
     if (!showDrawer) viewRef.current.fadeOutLeft(800);
     else {

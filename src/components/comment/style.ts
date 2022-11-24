@@ -1,21 +1,17 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
+import { colors } from "utils/theme";
 import { Colors, Fonts, Sizes } from "../../constants/styles";
 
-
-
-
 const styles = StyleSheet.create({
-
-
-
   container: { flex: 1 },
   modalComment: {
-    marginBottom  : 50
+    marginBottom: 50,
   },
+
   commentItem: {
     // marginHorizontal: Sizes.fixPadding + 5.0,
     // marginVertical: Sizes.fixPadding,
-    flexDirection: 'row',
+    flexDirection: "row",
     // justifyContent: 'space-between',
     // alignItems: 'center'
   },
@@ -40,17 +36,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   sendComment: {
-    marginLeft: 'auto',
-    alignItems:'center',
-        justifyContent:'center'
-
-
+    marginLeft: "auto",
+    alignItems: "center",
+    justifyContent: "center",
   },
   centeredView: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 22
+    marginTop: 22,
   },
   modalView: {
     margin: 20,
@@ -61,16 +55,16 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 2
+      height: 2,
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5
+    elevation: 5,
   },
   button: {
     borderRadius: 20,
     padding: 10,
-    elevation: 2
+    elevation: 2,
   },
   buttonOpen: {
     backgroundColor: "#F194FF",
@@ -81,13 +75,16 @@ const styles = StyleSheet.create({
   textStyle: {
     color: "white",
     fontWeight: "bold",
-    textAlign: "center"
+    textAlign: "center",
   },
   modalText: {
     marginBottom: 15,
-    textAlign: "center"
-  }
-
+    textAlign: "center",
+  },
+  activeGift: {
+    borderColor: colors.secondary,
+    borderWidth: 2,
+  },
 });
 
 export default styles;

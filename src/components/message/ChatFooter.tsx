@@ -39,13 +39,13 @@ const ChatFooter = ({
 
   return (
     <>
-      {/* <Button
+      <Button
         performerId={performerId}
         conversationId={conversationId}
         colorScheme="secondary"
         label="Send tip"
         onPress={() => setModal(true)}
-      /> */}
+      />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={110}

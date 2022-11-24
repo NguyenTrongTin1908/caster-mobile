@@ -259,7 +259,7 @@ const Call = ({ route, settings, currentUser }: IProps) => {
         <ChatBox />
       </View>
 
-      {/* <View style={styles.footerGolive}>
+      <View style={styles.footerGolive}>
         <TouchableOpacity
           activeOpacity={0.7}
           style={styles.goliveButton}
@@ -267,7 +267,7 @@ const Call = ({ route, settings, currentUser }: IProps) => {
         >
           <Text style={styles.btnText}>Stop Streaming</Text>
         </TouchableOpacity>
-      </View> */}
+      </View>
       <HeaderMenu />
     </SafeAreaView>
   );
