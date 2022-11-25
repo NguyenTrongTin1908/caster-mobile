@@ -189,7 +189,7 @@ export const MainDrawer = ({
         />
       ),
       onPress: () => {
-        navigationRef.current?.navigate("PublicStream");
+        navigationRef.current?.navigate("GoLivePage");
         handleHide();
       },
     },

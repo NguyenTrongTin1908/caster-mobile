@@ -33,6 +33,7 @@ const GoLivePage = ({ error, currentUser }: IProps) => {
   let noredirect = true;
 
   const [isAccept, setIsAccept] = useState(false);
+  const [isDelay, setDelay] = useState(false);
   const navigation = useNavigation() as any;
 
   const handleRedirect = () => {
@@ -61,7 +62,14 @@ const GoLivePage = ({ error, currentUser }: IProps) => {
         <Text style={Fonts.whiteColor21SemiBold}>
           Delay all chat comments 15 secords for moderator screening
         </Text>
-        <Switch style={{ alignSelf: "center", marginTop: 20 }}></Switch>
+
+        <Switch
+          onToggle={() => {
+            setDelay(!isDelay);
+          }}
+          isChecked={!!isDelay}
+          style={{ alignSelf: "center", marginTop: 20 }}
+        ></Switch>
       </View>
       <View style={styles.moderatorBox}>
         <Text style={Fonts.whiteColor18Bold}>Moderators</Text>
@@ -70,7 +78,7 @@ const GoLivePage = ({ error, currentUser }: IProps) => {
       <View style={styles.footerGolive}>
         <TouchableOpacity
           activeOpacity={0.7}
-          style={[styles.goliveButton,{opacity: isAccept ? 1 : 0.5}]}
+          style={[styles.goliveButton, { opacity: isAccept ? 1 : 0.5 }]}
           onPress={() => handleRedirect()}
           disabled={!isAccept}
         >

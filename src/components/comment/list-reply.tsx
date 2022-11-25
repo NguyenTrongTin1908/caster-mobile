@@ -2,14 +2,13 @@ import ReplyItem from "./reply-item";
 import { IPerformer } from "interfaces/index";
 import { View } from "native-base";
 import { FlatList } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   moreComment,
   createComment,
   deleteComment,
 } from "services/redux/comment/actions";
 import { connect } from "react-redux";
-import LoadingSpinner from "../uis/LoadingSpinner";
 interface IProps {
   user: IPerformer;
   canReply?: boolean;
@@ -66,9 +65,6 @@ const ListReplys = React.memo(
             onEndReached={() => handleGetmore()}
             inverted
           />
-        )}
-        {commentMapping[item._id] && commentMapping[item._id].requesting && (
-          <LoadingSpinner />
         )}
       </View>
     );

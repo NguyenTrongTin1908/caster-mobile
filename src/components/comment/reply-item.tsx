@@ -51,7 +51,7 @@ const ReplyItem = React.memo(
     };
     const onOpenComment = async () => {
       handleGetReply();
-      setOpenReply(!isOpenReply);
+      !isOpenReply && setOpenReply(true);
     };
     const handleGetReply = async () => {
       getComments({

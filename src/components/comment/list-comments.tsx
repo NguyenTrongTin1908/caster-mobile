@@ -4,7 +4,6 @@ import { Actionsheet, View, useDisclose, HStack, Image } from "native-base";
 import { FlatList, Text, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import LoadingSpinner from "components/uis/LoadingSpinner";
 import CommentForm from "./comment-form";
 import { colors, Sizes } from "utils/theme";
 
@@ -125,9 +124,7 @@ const ListComments = React.memo(
               onEndReached={() => handleGetmore()}
               inverted
             />
-            {commentMapping[feed._id] &&
-              commentMapping[feed._id].requesting &&
-              comments.length < feed.totalComment && <LoadingSpinner />}
+            {commentMapping[feed._id] && commentMapping[feed._id].requesting}
             <HStack space={2} w="100%">
               <View w="15%">
                 <Image

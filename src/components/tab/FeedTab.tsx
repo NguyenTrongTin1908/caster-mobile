@@ -1,8 +1,8 @@
-import React from 'react';
-import { View, Text } from 'native-base';
-import { TouchableOpacity } from 'react-native';
-import { colors, Sizes } from 'utils/theme';
-import styles from './style';
+import React from "react";
+import { View, Text } from "native-base";
+import { TouchableOpacity } from "react-native";
+import { colors, Sizes } from "utils/theme";
+import styles from "./style";
 
 interface IProps {
   onTabChange: Function;
@@ -13,7 +13,12 @@ interface IProps {
   }[];
   style?: { [key: string]: any };
 }
-const FeedTab = ({ onTabChange, tab, tabs, style = {} }: IProps): React.ReactElement => {
+const FeedTab = ({
+  onTabChange,
+  tab,
+  tabs,
+  style = {},
+}: IProps): React.ReactElement => {
   return (
     <View style={{ ...styles.tabView, ...style }}>
       {tabs.map((item, index) => {
@@ -22,9 +27,10 @@ const FeedTab = ({ onTabChange, tab, tabs, style = {} }: IProps): React.ReactEle
             <TouchableOpacity onPress={() => onTabChange(item.key)}>
               <Text
                 style={{
-                  color: tab === item.key ? colors.lightText : '#979797',
-                  fontSize: 20
-                }}>
+                  color: tab === item.key ? colors.tabView : "#979797",
+                  fontSize: 20,
+                }}
+              >
                 {item.title}
               </Text>
             </TouchableOpacity>
@@ -34,7 +40,7 @@ const FeedTab = ({ onTabChange, tab, tabs, style = {} }: IProps): React.ReactEle
                   marginHorizontal: Sizes.fixPadding + 5.0,
                   height: 18.0,
                   width: 2.0,
-                  backgroundColor: colors.lightText
+                  backgroundColor: colors.lightText,
                 }}
               />
             ) : null}

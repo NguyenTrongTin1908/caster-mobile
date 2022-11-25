@@ -13,7 +13,7 @@ import socketHolder from "lib/socketHolder";
 
 interface IProps {
   privateRequest: any;
-  onClick: Function;
+  onSelect: Function;
   selected: boolean;
   istimeDeline: boolean;
   isChecked: boolean;
@@ -21,13 +21,14 @@ interface IProps {
 
 export const PrivateRequest = ({
   privateRequest,
-  onClick,
+  onSelect,
   selected,
   istimeDeline,
   isChecked,
 }: IProps) => {
   const [time, setTime] = useState(120);
   const [loop, setLoop] = useState(istimeDeline);
+  // const [selected, setSelected] = useState(false);
   const socket = socketHolder.getSocket() as any;
 
   const dispatch = useDispatch();
@@ -56,7 +57,6 @@ export const PrivateRequest = ({
       console.log(resp);
     } catch (e: any) {
       const err = e;
-      // Alert.error(err?.message || "Error occured, please try again later");
     }
   };
 
@@ -90,15 +90,20 @@ export const PrivateRequest = ({
     setLoop(istimeDeline);
   }, [istimeDeline]);
 
+  const handleSelect = () => {
+    onSelect();
+  };
+
   return (
     <TouchableOpacity
-      onPress={() => onClick()}
+      onPress={() => handleSelect()}
       style={styles.privateRequestItem}
     >
       <Checkbox
         style={styles.checkboxPrivateChat}
         value={privateRequest}
         aria-label="privateRequest"
+        isChecked={isChecked}
       ></Checkbox>
       <Text>{time}</Text>
       <Image

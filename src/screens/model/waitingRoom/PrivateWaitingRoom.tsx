@@ -3,8 +3,6 @@ import {
   Checkbox,
   Switch,
   Select,
-  Row,
-  Alert,
   Heading,
   View,
   Text,
@@ -12,7 +10,6 @@ import {
 import { TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { performerService } from "services/perfomer.service";
 import { useNavigation } from "@react-navigation/core";
 import { colors, Sizes, Fonts } from "utils/theme";
 import styles from "./style";
@@ -21,14 +18,10 @@ import { useToast } from "native-base";
 import { updateUser, updatePerformer } from "services/redux/user/actions";
 import { streamService } from "services/stream.service";
 import { PrivateRequest } from "components/stream/private-request";
-
 import { IPerformer } from "src/interfaces";
-
 import { SafeAreaView } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
-
-const Option = Select;
 
 interface IProps {
   error: any;
@@ -45,18 +38,12 @@ const PrivateChatWaitingRoom = ({
   updateUser: handleUpdateUser,
   privateRequests,
 }: IProps) => {
-  let authenticate = true;
-
-  let noredirect = true;
   const toast = useToast();
-
   const [isAvailable, setIsAvailable] = useState(0);
   const [privateChatPrice, setPrivateChatPrice] = useState(0);
-  const [openInput, setOpenInput] = useState(false);
   const [isAccept, setIsAccept] = useState(false);
-  const [isReset, setIsReset] = useState(false);
+  const [isReset, setIsReset] = useState(true);
   const [selectedRequest, setSelectedRequest] = useState(null) as any;
-
   const navigation = useNavigation() as any;
 
   useEffect(() => {
@@ -77,10 +64,6 @@ const PrivateChatWaitingRoom = ({
     }
   };
 
-  const handleDeline = () => {
-    setIsReset(true);
-  };
-
   const setPrice = () => {
     if (privateChatPrice <= 0) {
       return toast.show({
@@ -93,8 +76,6 @@ const PrivateChatWaitingRoom = ({
     });
     // Call the API to set the price
     return toast.show({ description: "Set the price successfully" });
-
-    setOpenInput(false);
   };
 
   const togglePrivateChatStatus = async () => {
@@ -120,7 +101,7 @@ const PrivateChatWaitingRoom = ({
       <View style={styles.container}>
         <View style={styles.privatePriceChat}>
           <Text style={styles.privateChatText} color={colors.lightText}>
-            {currentUser.privateChat}
+            {currentUser.privateChatPrice}
           </Text>
 
           <Ionicons name="heart" color={colors.ruby} size={25}></Ionicons>
@@ -128,7 +109,6 @@ const PrivateChatWaitingRoom = ({
             {" "}
             / per minute
           </Text>
-
           <AntDesign
             onPress={() => navigation.navigate("EditProfile")}
             name="edit"
@@ -153,7 +133,6 @@ const PrivateChatWaitingRoom = ({
             <Text style={styles.subText}>
               {isAvailable ? "Available" : "Not Available"}
             </Text>
-
             <Switch
               isChecked={!!isAvailable}
               style={{ alignSelf: "center", marginTop: 20 }}
@@ -171,7 +150,7 @@ const PrivateChatWaitingRoom = ({
                   privateRequest={privateRequest}
                   key={privateRequest.conversationId}
                   aria-label={privateRequest.conversationId}
-                  onClick={() => {
+                  onSelect={() => {
                     setSelectedRequest(privateRequest);
                     setIsReset(true);
                   }}
