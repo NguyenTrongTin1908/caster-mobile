@@ -16,6 +16,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { Menu } from 'react-native-material-menu';
 import { color } from 'native-base/lib/typescript/theme/styled-system';
 import HeaderMenu from 'components/tab/HeaderMenu';
+import BackButton from 'components/uis/BackButton';
 interface Props {
   current: IPerformer;
   isLoggedIn: boolean;
@@ -161,7 +162,8 @@ const Profile = ({ current, handleLogout, route }: Props): React.ReactElement =>
           />
         </View>
       </View>
-      <HeaderMenu />
+      {/* <HeaderMenu /> */}
+      <BackButton />
     </SafeAreaView>
   );
 };
