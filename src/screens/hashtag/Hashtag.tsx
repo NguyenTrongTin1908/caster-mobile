@@ -1,25 +1,19 @@
-import React, { useEffect, useContext, useState, useRef } from "react";
-import { useNavigation } from "@react-navigation/core";
-import { feedService } from "services/feed.service";
-import {
-  Dimensions,
-  FlatList,
-  View,
-  SafeAreaView,
-  Platform,
-} from "react-native";
-const { height } = Dimensions.get("window");
-import styles from "./style";
-import FeedCard from "components/feed/feed-card";
-import { IFeed } from "interfaces/feed";
-import { BottomTabBarHeightContext } from "@react-navigation/bottom-tabs";
-import { getStatusBarHeight } from "react-native-status-bar-height";
-import FeedTab from "components/tab/FeedTab";
-import { IPerformer } from "src/interfaces";
-import HeaderMenu from "components/tab/HeaderMenu";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import React, { useEffect, useContext, useState, useRef } from 'react';
+import { useNavigation } from '@react-navigation/core';
+import { feedService } from 'services/feed.service';
+import { Dimensions, FlatList, View, SafeAreaView, Platform } from 'react-native';
+const { height } = Dimensions.get('window');
+import styles from './style';
+import FeedCard from 'components/feed/feed-card';
+import { IFeed } from 'interfaces/feed';
+import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
+import FeedTab from 'components/tab/FeedTab';
+import { IPerformer } from 'src/interfaces';
+import HeaderMenu from 'components/tab/HeaderMenu';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-let deviceH = Dimensions.get("screen").height;
+let deviceH = Dimensions.get('screen').height;
 let bottomNavBarH = deviceH - height;
 interface IProps {
   current: IPerformer;
@@ -28,16 +22,12 @@ interface IProps {
     params: { query: string; currentTab: string };
   };
 }
-const Hashtag = ({
-  current,
-  isLoggedIn,
-  route,
-}: IProps): React.ReactElement => {
+const Hashtag = ({ current, isLoggedIn, route }: IProps): React.ReactElement => {
   const navigation = useNavigation() as any;
   const [tab, setTab] = useState(route.params.currentTab);
   const [itemPerPage, setitemPerPage] = useState(12);
   const [feedPage, setfeedPage] = useState(0);
-  const [keyword, setKeyword] = useState("");
+  const [keyword, setKeyword] = useState('');
   const mediaRefs = useRef([]) as any;
   const [feeds, setfeeds] = useState([] as Array<IFeed>);
   const [trendingfeeds, settrendingfeeds] = useState([] as Array<IFeed>);
@@ -53,7 +43,7 @@ const Hashtag = ({
       limit: itemPerPage,
       offset: itemPerPage * feedPage,
       isHome: false,
-      type: tab === "video" ? "video" : "photo",
+      type: tab === 'video' ? 'video' : 'photo'
     });
     setfeeds(feeds.concat(data.data));
     settrendingfeeds(feeds.concat(data.data));
@@ -65,12 +55,12 @@ const Hashtag = ({
       limit: itemPerPage,
       offset: itemPerPage * feedPage,
       isHome: false,
-      type: tab === "video" ? "video" : "photo",
+      type: tab === 'video' ? 'video' : 'photo'
     });
     setfeeds(feeds.concat(data.data));
   };
   const onViewableItemsChange = useRef(({ changed }) => {
-    changed.forEach((element) => {
+    changed.forEach(element => {
       const cell = mediaRefs.current[element.key];
       if (cell) {
         if (element.isViewable) {
@@ -81,8 +71,8 @@ const Hashtag = ({
       }
     });
   }) as any;
-  const handleTabChange = async () => {
-    tab === "video" ? setTab("photo") : setTab("video");
+  const handleTabChange = async tab => {
+    setTab(tab);
     setfeeds([]);
     setfeedPage(0);
   };
@@ -94,23 +84,12 @@ const Hashtag = ({
             <View
               style={[
                 {
-                  height:
-                    Platform.OS === "ios"
-                      ? deviceH - getStatusBarHeight(true)
-                      : deviceH - bottomNavBarH,
+                  height: Platform.OS === 'ios' ? deviceH - getStatusBarHeight(true) : deviceH - bottomNavBarH
                 },
                 ,
-                index % 2 == 0
-                  ? { backgroundColor: "#000000" }
-                  : { backgroundColor: "#000000" },
-              ]}
-            >
-              <FeedCard
-                feed={item}
-                mediaRefs={mediaRefs}
-                currentTab={tab}
-                current={current}
-              />
+                index % 2 == 0 ? { backgroundColor: '#000000' } : { backgroundColor: '#000000' }
+              ]}>
+              <FeedCard feed={item} mediaRefs={mediaRefs} currentTab={tab} current={current} />
             </View>
           );
         }}
@@ -127,27 +106,33 @@ const Hashtag = ({
         data={feeds}
         renderItem={renderItem}
         pagingEnabled={true}
-        keyExtractor={(item) => item._id}
-        decelerationRate={"fast"}
+        keyExtractor={item => item._id}
+        decelerationRate={'fast'}
         showsVerticalScrollIndicator={false}
         onViewableItemsChanged={onViewableItemsChange.current}
         windowSize={2}
         initialNumToRender={0}
         maxToRenderPerBatch={2}
         removeClippedSubviews
-        snapToInterval={
-          Platform.OS === "ios"
-            ? deviceH - (insets.bottom + insets.top)
-            : deviceH - bottomNavBarH
-        }
+        snapToInterval={Platform.OS === 'ios' ? deviceH - (insets.bottom + insets.top) : deviceH - bottomNavBarH}
         viewabilityConfig={{
-          itemVisiblePercentThreshold: 100,
+          itemVisiblePercentThreshold: 100
         }}
-        snapToAlignment={"start"}
+        snapToAlignment={'start'}
       />
       <HeaderMenu />
 
-      <FeedTab onTabChange={handleTabChange} tab={tab}></FeedTab>
+      <FeedTab
+        onTabChange={handleTabChange}
+        tab={tab}
+        tabs={[
+          {
+            key: 'video',
+            title: 'Video'
+          },
+          { key: 'photo', title: 'Photo' }
+        ]}
+      />
     </SafeAreaView>
   );
 };

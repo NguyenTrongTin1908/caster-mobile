@@ -94,8 +94,8 @@ const Trending = ({ current }: IProps): React.ReactElement => {
     });
   }) as any;
 
-  const handleTabChange = async () => {
-    tab === 'video' ? setTab('photo') : setTab('video');
+  const handleTabChange = async tab => {
+    setTab(tab);
     setFeeds([]);
     setFeedPage(0);
   };
@@ -176,7 +176,17 @@ const Trending = ({ current }: IProps): React.ReactElement => {
             snapToAlignment={'start'}
           />
           <HeaderMenu />
-          <FeedTab onTabChange={handleTabChange} tab={tab}></FeedTab>
+          <FeedTab
+            onTabChange={handleTabChange}
+            tab={tab}
+            tabs={[
+              {
+                key: 'video',
+                title: 'Video'
+              },
+              { key: 'photo', title: 'Photo' }
+            ]}
+          />
         </SafeAreaView>
       )}
     </BottomTabBarHeightContext.Consumer>

@@ -106,12 +106,12 @@ const Home = ({
       orientation,
       limit: itemPerPage,
       offset: itemPerPage * feedPage,
-      type: tab === 'video' ? 'video' : 'photo'
+      type: tab
     });
   };
 
-  const handleTabChange = async () => {
-    tab === 'video' ? setTab('photo') : setTab('video');
+  const handleTabChange = async tab => {
+    setTab(tab);
     setfeedPage(0);
   };
 
@@ -214,7 +214,17 @@ const Home = ({
             snapToAlignment={'start'}
           />
           <HeaderMenu />
-          <FeedTab onTabChange={handleTabChange} tab={tab}></FeedTab>
+          <FeedTab
+            onTabChange={handleTabChange}
+            tab={tab}
+            tabs={[
+              {
+                key: 'video',
+                title: 'Video'
+              },
+              { key: 'photo', title: 'Photo' }
+            ]}
+          />
         </SafeAreaView>
       )}
     </BottomTabBarHeightContext.Consumer>
