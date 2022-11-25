@@ -7,38 +7,44 @@ import styles from "./style";
 interface IProps {
   onTabChange: Function;
   tab: string;
+  title: string;
 }
-const FeedTab = ({ onTabChange, tab }: IProps): React.ReactElement => {
+const FeedTab = ({ onTabChange, tab, title }: IProps): React.ReactElement => {
   return (
-    <View style={styles.tabView}>
-      <TouchableOpacity onPress={() => onTabChange()}>
-        <Text
-          style={{
-            color: tab === "video" ? colors.lightText : "#979797",
-            fontSize: 20,
-          }}
-        >
-          Video
-        </Text>
-      </TouchableOpacity>
-      <View
+    <View style={styles.tabContainer}>
+      <Text
         style={{
-          marginHorizontal: Sizes.fixPadding + 5.0,
-          height: 18.0,
-          width: 2.0,
-          backgroundColor: colors.lightText,
+          color: tab === "video" ? colors.lightText : "#979797",
+          fontSize: 15,
         }}
-      />
-      <TouchableOpacity onPress={() => onTabChange()}>
-        <Text
-          style={{
-            color: tab === "video" ? "#979797" : colors.lightText,
-            fontSize: 20,
-          }}
-        >
-          Photo
-        </Text>
-      </TouchableOpacity>
+      >
+        {title}
+      </Text>
+
+      <View style={styles.tabView}>
+        <TouchableOpacity onPress={() => onTabChange()}>
+          <Text
+            style={{
+              color: tab === "video" ? colors.tabView : "#979797",
+              fontSize: 20,
+              marginHorizontal: 7,
+            }}
+          >
+            Video
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => onTabChange()}>
+          <Text
+            style={{
+              color: tab === "video" ? "#979797" : colors.tabView,
+              fontSize: 20,
+              marginHorizontal: 7,
+            }}
+          >
+            Photo
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

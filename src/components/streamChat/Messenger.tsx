@@ -11,17 +11,19 @@ interface IProps {
   loggedIn?: boolean;
   getStreamConversation: Function;
   activeConversation: any;
+  canSendMessage: boolean;
 }
 const StreamMessenger = ({
   activeConversation,
   loggedIn,
+  canSendMessage,
 }: IProps): React.ReactElement => {
   return (
     <View flex={1}>
       {activeConversation &&
       activeConversation.data &&
       activeConversation.data.streamId ? (
-        <MessageList loggedIn={loggedIn} />
+        <MessageList loggedIn={loggedIn} canSendMessage={canSendMessage} />
       ) : (
         <p>No conversation found.</p>
       )}

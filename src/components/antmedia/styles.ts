@@ -1,5 +1,5 @@
-import { RTCView } from 'react-native-webrtc';
-import styled from 'styled-components/native';
+import { RTCView } from "react-native-webrtc";
+import styled from "styled-components/native";
 
 export const RemoteView = styled(RTCView)`
   position: absolute;
@@ -13,21 +13,20 @@ export const RemoteView = styled(RTCView)`
 `;
 
 export const LocalView = styled(RTCView)`
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 0px;
+  right: 0px;
   z-index: 2;
   background: #000000;
   /* align-self: flex-end; */
   /* margin-top: auto; */
 `;
 
-
 export const PublicStreamView = styled(RTCView)`
-flex: 1;
-z-index: 100;
-background: #000000;
-minHeight:400;
+  flex: 1;
+  z-index: 100;
+  background: #000000;
+  minheight: 400;
 `;

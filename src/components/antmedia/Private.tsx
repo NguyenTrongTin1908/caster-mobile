@@ -146,47 +146,6 @@ export const Private = ({
             signalingChannel.current.close();
           }}
         />
-        {/* <Button
-        title={audiMuted ? "UMA" : "MA"}
-        color="red"
-        onPress={() => {
-          const localStreams = peerConnection.current?.getLocalStreams() || [];
-          for (const stream of localStreams) {
-            stream.getAudioTracks().forEach((each) => {
-              each.enabled = audiMuted;
-            });
-          }
-          setAudioMuted((m) => !m);
-        }}
-      />
-      <Button
-        title={videoMuted ? "UMV" : "MV"}
-        color="red"
-        onPress={() => {
-          const localStreams = peerConnection.current?.getLocalStreams() || [];
-          for (const stream of localStreams) {
-            stream.getVideoTracks().forEach((each) => {
-              each.enabled = videoMuted;
-            });
-          }
-          setVideoMuted((m) => !m);
-        }}
-      />
-      <Button
-        title="SC"
-        color="red"
-        onPress={() => {
-          const localStreams = peerConnection.current?.getLocalStreams() || [];
-          for (const stream of localStreams) {
-            stream.getVideoTracks().forEach((each) => {
-              // @ts-ignore
-              // easiest way is to switch camera this way
-              each._switchCamera();
-            });
-          }
-          setIsFrontCamera((c) => !c);
-        }}
-      /> */}
       </View>
     );
   };

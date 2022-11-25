@@ -7,26 +7,14 @@ import {
   deleteMessage,
   deleteMessageSuccess,
 } from "services/redux/stream-chat/actions";
-import { IUser, IPerformer } from "src/interfaces";
+import { IPerformer } from "src/interfaces";
 import socketHolder from "lib/socketHolder";
-import styles from "./style";
-
-// import './MessageList.less';
-import Compose from "./Compose";
 import Message from "./Message";
-import {
-  FlatList,
-  SafeAreaView,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
+import { FlatList } from "react-native";
 import { HStack, View } from "native-base";
 import EmojiSelector from "react-native-emoji-selector";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { sendMessagePrivateStream } from "services/redux/chatRoom/actions";
 import { sendStreamMessage } from "services/redux/stream-chat/actions";
-
-import modal from "../comment/modal";
 import ChatFooter from "../message/ChatFooter";
 import SendTip from "../message/SendTip";
 import Button from "components/uis/Button";
@@ -42,6 +30,7 @@ interface IProps {
   deleteMessageSuccess: Function;
   loggedIn?: boolean;
   sendStreamMessage: Function;
+  canSendMessage: boolean;
 }
 
 const canDelete = ({ isDeleted, senderId, performerId }, user): boolean => {
@@ -73,20 +62,15 @@ const MessageList = ({
   deleteMessageSuccess,
   sendStreamMessage,
   loggedIn,
+  canSendMessage,
 }: IProps) => {
   let messagesRef: any;
-
-  // state = {
-  //   offset: 1,
-  //   onloadmore: false,
-  // };
 
   const [offset, setOffset] = useState(1);
   const [onloadmore, setOnloadmore] = useState(false);
   const [showEmoji, setShowEmoji] = useState(false);
   const [modal, setModal] = useState(false);
   const [favoriteGift, setFavoriteGift] = useState({});
-
   const inputText = useRef("");
 
   useEffect(() => {
@@ -119,18 +103,10 @@ const MessageList = ({
     getfavoriteGift();
   }, []);
 
-  // componentWillUnmount() {
-  //   const { conversation } = this.props;
-  //   const socket = socketHolder.getSocket() as any;
-  //   socket && socket.off(`message_created_conversation_${conversation._id}`);
-  //   socket && socket.off(`message_deleted_conversation_${conversation._id}`);
-  // }
-
   const onMessage = (message, type) => {
     if (!message) {
       return;
     }
-
     type === "created" && create(message);
     type === "deleted" && remove(message);
   };
@@ -189,34 +165,20 @@ const MessageList = ({
         }
       }
       if (current._id) {
-        tempMessages.push(
-          // <Message
-          //   onDelete={this.onDelete.bind(this, current._id)}
-          //   canDelete={canDelete(current, user)}
-          //   isOwner={isOwner}
-          //   key={i}
-          //   isMine={isMine}
-          //   startsSequence={startsSequence}
-          //   endsSequence={endsSequence}
-          //   showTimestamp={showTimestamp}
-          //   data={current}
-          // />
-          {
-            ...current,
-            ["startsSequence"]: startsSequence,
-            ["endsSequence"]: endsSequence,
-            ["showTimestamp"]: showTimestamp,
-            ["isMine"]: isMine,
-          }
-        );
+        tempMessages.push({
+          ...current,
+          ["startsSequence"]: startsSequence,
+          ["endsSequence"]: endsSequence,
+          ["showTimestamp"]: showTimestamp,
+          ["isMine"]: isMine,
+        });
       }
       // Proceed to the next message.
       i += 1;
     }
-    // this.scrollToBottom();
 
     return (
-      <View flex={1} maxH={200} minH={200}>
+      <View flex={1} maxH={180} minH={180}>
         <FlatList
           data={tempMessages}
           renderItem={({ item }: any) => (
@@ -233,7 +195,6 @@ const MessageList = ({
             />
           )}
           keyExtractor={(item: any, index) => item._id + "_" + index}
-          // style={styles.listModel}
           onEndReachedThreshold={0.5}
           // onEndReached={() => fetchData()}
         />
@@ -298,7 +259,7 @@ const MessageList = ({
         <View>{renderMessages()}</View>
 
         {showEmoji && <EmojiSelector onEmojiSelected={onSelectEmoji} />}
-        {!showEmoji && (
+        {!showEmoji && canSendMessage && (
           <ChatFooter
             authUser={user}
             conversationId={conversation._id}

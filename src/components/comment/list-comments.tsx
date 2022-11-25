@@ -1,17 +1,7 @@
 import CommentItem from "./comment-item";
-import { IComment, IPerformer } from "interfaces/index";
-import { Actionsheet, View, useDisclose, HStack, Image, } from "native-base";
-import {
-  FlatList,
-  KeyboardAvoidingView,
-  Modal,
-  Platform,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Pressable,
-  Alert
-} from "react-native";
+import { IPerformer } from "interfaces/index";
+import { Actionsheet, View, useDisclose, HStack, Image } from "native-base";
+import { FlatList, Text, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import LoadingSpinner from "components/uis/LoadingSpinner";
@@ -26,7 +16,6 @@ import {
 } from "services/redux/comment/actions";
 import { connect } from "react-redux";
 import BadgeText from "../uis/BadgeText";
-import styles from "./style"
 interface IProps {
   user: IPerformer;
   canReply?: boolean;
@@ -35,7 +24,7 @@ interface IProps {
   moreComment: Function;
   deleteComment: Function;
   createComment: Function;
-  commentMapping:any
+  commentMapping: any;
 }
 const ListComments = React.memo(
   ({
@@ -46,42 +35,38 @@ const ListComments = React.memo(
     moreComment,
     deleteComment,
     createComment,
-    commentMapping
+    commentMapping,
   }: IProps): React.ReactElement => {
     const [itemPerPage, setitemPerPage] = useState(5);
     const [commentPage, setcommentPage] = useState(0);
     const [requesting, setRequesting] = useState(true);
     const { onOpen, isOpen, onClose } = useDisclose();
-    const [modalVisible, setModalVisible] = useState(false);
-    const [totalComment,setTotalComment]= useState(feed.totalComment)
+    const [totalComment, setTotalComment] = useState(feed.totalComment);
 
     const comments = commentMapping.hasOwnProperty(feed._id)
-    ? commentMapping[feed._id].items
-    : [];
-    const handleOpenComment = async() => {
-      setcommentPage(0)
+      ? commentMapping[feed._id].items
+      : [];
+    const handleOpenComment = async () => {
+      setcommentPage(0);
       handleShowComment();
       onOpen();
     };
 
     const handleShowComment = async () => {
       try {
-        setRequesting(true)
+        setRequesting(true);
         await getComments({
           objectId: feed._id,
           objectType: "feed",
           limit: itemPerPage,
           offset: 0,
         });
-        setRequesting(false)
-      } catch (error) {
-
-      }
-
+        setRequesting(false);
+      } catch (error) {}
     };
     const handleGetmore = async () => {
       setcommentPage(commentPage + 1);
-       moreComment({
+      moreComment({
         objectId: feed._id,
         objectType: "feed",
         limit: itemPerPage,
@@ -91,29 +76,31 @@ const ListComments = React.memo(
     const handleCreateComment = async (data) => {
       try {
         createComment(data);
-        setTotalComment(totalComment+1)
-
+        setTotalComment(totalComment + 1);
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
-
     };
     const handleDeleteComment = async (item) => {
       deleteComment(item._id);
-      handleShowComment()
+      handleShowComment();
     };
     const renderItem = ({ item }) => {
       return (
-      <View>
-        <CommentItem canReply={canReply} key={item._id} item={item} onDelete={handleDeleteComment}/>
-        {/* <CommentItem canReply={canReply} key={item._id} item={item} onOpenModal={() => setModalVisible(!modalVisible)}/> */}
-      </View>
-      )
+        <View>
+          <CommentItem
+            canReply={canReply}
+            key={item._id}
+            item={item}
+            onDelete={handleDeleteComment}
+          />
+        </View>
+      );
     };
     const renderEmpty = () => (
       <View>
         {!requesting && !comments.length && (
-          <BadgeText content={'There is no comment available!'} />
+          <BadgeText content={"There is no comment available!"} />
         )}
       </View>
     );
@@ -135,24 +122,12 @@ const ListComments = React.memo(
               showsVerticalScrollIndicator={false}
               style={{ width: "100%" }}
               onEndReachedThreshold={0.1}
-              onEndReached={()=>handleGetmore()}
+              onEndReached={() => handleGetmore()}
+              inverted
             />
-           {(commentMapping[feed._id] && commentMapping[feed._id].requesting && (comments.length < feed.totalComment)) && <LoadingSpinner />}
-           {/* <Modal
-              animationType="slide"
-              transparent={true}
-              visible={true}
-              onRequestClose={() => {
-              Alert.alert("Modal has been closed.");
-              setModalVisible(!modalVisible);
-            }}
-            >
-            <View style={styles.container}>
-              <View style={styles.header}>
-                <Text style={styles.text}>Hello</Text>
-              </View>
-            </View>
-          </Modal> */}
+            {commentMapping[feed._id] &&
+              commentMapping[feed._id].requesting &&
+              comments.length < feed.totalComment && <LoadingSpinner />}
             <HStack space={2} w="100%">
               <View w="15%">
                 <Image
@@ -185,14 +160,14 @@ const ListComments = React.memo(
           </Actionsheet.Content>
         </Actionsheet>
         <Text
-            style={{
-              marginTop: Sizes.fixPadding - 7.0,
-              color: colors.lightText,
-              textAlign: "center"
-            }}
-          >
-            {totalComment}
-          </Text>
+          style={{
+            marginTop: Sizes.fixPadding - 7.0,
+            color: colors.lightText,
+            textAlign: "center",
+          }}
+        >
+          {totalComment}
+        </Text>
       </View>
     );
   }
@@ -211,4 +186,4 @@ const mapDispatch = {
   deleteComment,
   createComment,
 };
-export default connect(mapStates,mapDispatch)(ListComments);
+export default connect(mapStates, mapDispatch)(ListComments);

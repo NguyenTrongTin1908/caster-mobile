@@ -147,7 +147,11 @@ const Hashtag = ({
       />
       <HeaderMenu />
 
-      <FeedTab onTabChange={handleTabChange} tab={tab}></FeedTab>
+      <FeedTab
+        onTabChange={handleTabChange}
+        tab={tab}
+        title="Hashtag"
+      ></FeedTab>
     </SafeAreaView>
   );
 };

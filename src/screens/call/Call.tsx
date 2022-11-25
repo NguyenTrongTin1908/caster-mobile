@@ -238,7 +238,6 @@ const Call = ({ route, settings, currentUser }: IProps) => {
         </TouchableOpacity>
       </View>
     );
-  console.log(" localStreamRefId : ", localStreamRefId);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -256,7 +255,7 @@ const Call = ({ route, settings, currentUser }: IProps) => {
         {renderLocalVideo()}
 
         {renderPerformerVideo()}
-        <ChatBox />
+        <ChatBox canSendMessage />
       </View>
 
       <View style={styles.footerGolive}>

@@ -125,7 +125,11 @@ const FeedDetail = ({ route, current }: IProps): React.ReactElement => {
       />
       <HeaderMenu />
 
-      <FeedTab onTabChange={handleTabChange} tab={tab}></FeedTab>
+      <FeedTab
+        onTabChange={handleTabChange}
+        tab={tab}
+        title="Related"
+      ></FeedTab>
     </SafeAreaView>
   );
 };

@@ -155,7 +155,7 @@ const PrivateUserWaitingRoom = ({
           }}
         >
           <ButtonFollow
-            isHideOnClick={false}
+            isHideOnClick
             targetId={performer._id}
             sourceId={currentUser._id}
             isFollow={performer.isFollowed}
