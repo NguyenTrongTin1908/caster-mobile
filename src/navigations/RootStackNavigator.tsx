@@ -42,6 +42,7 @@ import PrivateChatWaitingRoom from "screens/model/waitingRoom/PrivateWaitingRoom
 import PrivateUserWaitingRoom from "screens/user/private-waiting-room/PrivateUserWaitingRoom";
 import PrivateUserAcceptRoom from "screens/user/private-accept-room/PrivateUserAccept";
 import PrivateChat from "screens/privatechat/PrivateChat";
+import Blank from "screens/blank";
 
 import EditProfile from "screens/profile/EditProfile";
 export type RootStackParamList = {
@@ -65,6 +66,7 @@ export type RootStackParamList = {
   TokenPackage: undefined;
   ModelOrderPage: undefined;
   ViewPublicStream: undefined;
+  Blank: undefined;
   // ChatRoom: { performer: IPerformer };
   PrivateChatDetail: { performer: IPerformer; conversationId: string };
   PrivateChat: undefined;
@@ -108,6 +110,11 @@ function RootNavigator({ loggedIn }): React.ReactElement {
       onReady={() => navigationHolder.setNav(navigationRef)}
     >
       <Stack.Navigator initialRouteName={defaultRouteName}>
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="Blank"
+          component={Blank}
+        />
         <Stack.Screen
           options={{ headerShown: false }}
           name="Call"

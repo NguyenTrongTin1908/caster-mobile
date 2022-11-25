@@ -67,17 +67,13 @@ const PrivateChatWaitingRoom = ({
   }, []);
 
   const handleRedirect = () => {
-    console.log("data", selectedRequest);
     if (!selectedRequest) {
       toast.show({
         description: "Please select a user to join private chat",
       });
     }
     if (isAvailable) {
-      return navigation.navigate("PrivateChat", {
-        conversationId: selectedRequest.conversationId,
-        performer: currentUser,
-      });
+      return navigation.navigate("Blank");
     }
   };
 
@@ -204,7 +200,13 @@ const PrivateChatWaitingRoom = ({
             <View style={styles.footerGolive}>
               <TouchableOpacity
                 activeOpacity={0.7}
-                style={styles.goliveButton}
+                style={[
+                  styles.goliveButton,
+                  {
+                    opacity: isAccept ? 1 : 0.5,
+                    backgroundColor: !isAccept ? colors.gray : colors.secondary,
+                  },
+                ]}
                 onPress={() => handleRedirect()}
                 disabled={!isAccept}
               >

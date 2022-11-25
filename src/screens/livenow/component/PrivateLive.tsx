@@ -41,7 +41,7 @@ const PrivateLive = (props: IProps): React.ReactElement => {
     if (refresh && !moreable) {
       setMoreable(true);
     }
-    setPerformers(refresh ? data : performers.concat(data));
+    setPerformers(refresh ? data : data);
     setPerformerLoading(false);
   };
   const renderEmpty = () => (
@@ -75,6 +75,8 @@ const PrivateLive = (props: IProps): React.ReactElement => {
         onEndReachedThreshold={0.5}
         onEndReached={() => loadPerformers(true, qString, false)}
         ListEmptyComponent={renderEmpty()}
+        onRefresh={() => loadPerformers()}
+        refreshing={performerLoading}
       />
       {performerLoading && <LoadingSpinner />}
     </Box>

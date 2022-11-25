@@ -10,6 +10,10 @@ import { View, Text } from "native-base";
 import Video from "react-native-video";
 import { messageService, streamService } from "../../services";
 import { StreamSettings } from "interfaces/stream";
+import { Dimensions, StatusBar } from "react-native";
+
+const { width, height } = Dimensions.get("window");
+let deviceH = Dimensions.get("screen").height;
 interface IProps {
   streamId?: string;
   onJoined?: Function;
@@ -139,7 +143,7 @@ export const HLSViewer = forwardRef(
             minHeight: 400,
             top: 0,
             left: 0,
-            bottom: 150,
+            bottom: deviceH / 6 + 10,
             right: 0,
             zIndex: 10,
           }}

@@ -70,15 +70,17 @@ const ButtonFollow = ({
           <Text fontWeight={"bold"}>Follow</Text>
         )}
       </TouchableOpacity> */}
-      <Button
-        width={60}
-        height={10}
-        size={18}
-        colorScheme="secondary"
-        onPress={handleFollow}
-      >
-        {status ? "Unfollow" : "Follow"}
-      </Button>
+      {!status && (
+        <Button
+          width={60}
+          height={10}
+          size={18}
+          colorScheme="secondary"
+          onPress={handleFollow}
+        >
+          {status ? "Unfollow" : "Follow"}
+        </Button>
+      )}
     </View>
   );
 };

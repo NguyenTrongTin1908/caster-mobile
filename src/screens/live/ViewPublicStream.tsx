@@ -21,6 +21,8 @@ import { StreamSettings, HLS, WEBRTC, PUBLIC_CHAT } from "../../interfaces";
 import { HLSViewer } from "components/antmedia/HLSViewer";
 import ChatBox from "components/streamChat/chat-box";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import dismissKeyboard from "react-native/Libraries/Utilities/dismissKeyboard";
+import KeyboardDismiss from "components/uis/KeyboardDismiss";
 // eslint-disable-next-line no-shadow
 // enum EVENT_NAME {
 //   ROOM_INFORMATIOM_CHANGED = "public-room-changed",
@@ -72,6 +74,7 @@ const ViewPublicStream = ({
     const socket = socketHolder.getSocket() as any;
 
     socket.on(STREAM_EVENT.JOIN_BROADCASTER, subscribe);
+
     socket.on(STREAM_EVENT.MODEL_LEFT, modelLeftHandler);
     socket.on(STREAM_EVENT.ROOM_INFORMATIOM_CHANGED, onChange);
 
@@ -91,7 +94,8 @@ const ViewPublicStream = ({
         // if (subscrbierRef.current?.playHLS) subscrbierRef.current?.playHLS(sessionId);
         // else if (subscriberRef2.playHLS) subscriberRef2.playHLS(sessionId);
         if (!subscriberRef2.playing) {
-          subscriberRef2.playHLS();
+          await subscriberRef2.playHLS();
+          onChange;
         }
       }
 
@@ -122,10 +126,10 @@ const ViewPublicStream = ({
   };
 
   const onChange = ({ total, members, conversationId }) => {
-    if (
-      activeConversation?.data?._id &&
-      activeConversation.data._id === conversationId
-    ) {
+    console.log("Ra");
+
+    if (activeConversation?.data?._id) {
+      console.log("Vooooo");
       setTotal(total);
       setMembers(members);
     }
@@ -204,46 +208,51 @@ const ViewPublicStream = ({
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <Heading
-        mb={4}
-        fontSize={30}
-        textAlign="center"
-        letterSpacing={-1}
-        color={colors.lightText}
-        bold
-      >
-        Live Broadcaster
-      </Heading>
-      <View
-        style={{
-          position: "absolute",
-          marginTop: Sizes.fixPadding + 180.0,
-          alignItems: "center",
-          alignSelf: "flex-end",
-          zIndex: 1000,
-        }}
-      >
-        <MaterialIcons name="visibility" color={colors.light} size={28} />
-        <Text
-          style={{
-            marginTop: Sizes.fixPadding - 7.0,
-            color: colors.lightText,
-          }}
-        >
-          {total}
-        </Text>
-      </View>
-      <View flex={1} flexDirection={"column"} position={"relative"}>
-        <HLSViewer
-          streamId={activeConversation?.data?.streamId}
-          ref={(viewRef) => setStreamRef(viewRef)}
-          settings={settings}
-        />
-        <ChatBox />
-      </View>
+    //
+    <SafeAreaView style={{ flex: 1 }} onTouchStart={dismissKeyboard}>
+      <KeyboardDismiss>
+        <>
+          <Heading
+            mb={4}
+            fontSize={30}
+            textAlign="center"
+            letterSpacing={-1}
+            color={colors.lightText}
+            bold
+          >
+            Live Broadcaster
+          </Heading>
 
-      <HeaderMenu />
+          <View
+            style={{
+              position: "absolute",
+              marginTop: Sizes.fixPadding + 180.0,
+              alignItems: "center",
+              alignSelf: "flex-end",
+              zIndex: 1000,
+            }}
+          >
+            <MaterialIcons name="visibility" color={colors.light} size={28} />
+            <Text
+              style={{
+                marginTop: Sizes.fixPadding - 7.0,
+                color: colors.lightText,
+              }}
+            >
+              {total}
+            </Text>
+          </View>
+          <View flex={1} flexDirection={"column"} position={"relative"}>
+            <HLSViewer
+              streamId={activeConversation?.data?.streamId}
+              ref={(viewRef) => setStreamRef(viewRef)}
+              settings={settings}
+            />
+            <ChatBox canSendMessage />
+          </View>
+          <HeaderMenu />
+        </>
+      </KeyboardDismiss>
     </SafeAreaView>
   );
 };

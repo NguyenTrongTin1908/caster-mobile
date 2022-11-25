@@ -1,5 +1,5 @@
-import CommentItem from "./comment-item";
-import { IComment, IPerformer } from "interfaces/index";
+import ReplyItem from "./reply-item";
+import { IPerformer } from "interfaces/index";
 import { View } from "native-base";
 import { FlatList } from "react-native";
 import React, { useEffect, useState } from "react";
@@ -16,7 +16,7 @@ interface IProps {
   item: any;
   createComment: Function;
   commentMapping: any;
-  replys:any
+  replys: any;
 }
 const ListReplys = React.memo(
   ({
@@ -24,17 +24,24 @@ const ListReplys = React.memo(
     canReply,
     commentMapping,
     createComment,
-    replys
-   }: IProps): React.ReactElement => {
+    replys,
+  }: IProps): React.ReactElement => {
     const renderItem = ({ item }) => {
-      return <CommentItem canReply={canReply} key={item._id} item={item} onDelete={handleDeleteComment} />;
+      return (
+        <ReplyItem
+          canReply={canReply}
+          key={item._id}
+          item={item}
+          onDelete={handleDeleteComment}
+        />
+      );
     };
     const [itemPerPage, setItemPerPage] = useState(6);
     const [commentPage, setCommentPage] = useState(0);
 
     const handleGetmore = async () => {
       setCommentPage(commentPage + 1);
-       moreComment({
+      moreComment({
         objectId: item._id,
         objectType: "comment",
         limit: itemPerPage,
@@ -47,18 +54,22 @@ const ListReplys = React.memo(
 
     return (
       <View marginLeft="10">
-       { commentMapping[item._id] && !commentMapping[item._id].requesting && <FlatList
-          data={replys}
-          showsVerticalScrollIndicator={false}
-          pagingEnabled={true}
-          renderItem={renderItem}
-          keyExtractor={(item) => item._id}
-          style={{ width: "100%" }}
-          onEndReachedThreshold={0.1}
-          onEndReached={()=>handleGetmore()}
-        />
-       }
-      {(commentMapping[item._id] && commentMapping[item._id].requesting ) && <LoadingSpinner />}
+        {commentMapping[item._id] && !commentMapping[item._id].requesting && (
+          <FlatList
+            data={replys}
+            showsVerticalScrollIndicator={false}
+            pagingEnabled={true}
+            renderItem={renderItem}
+            keyExtractor={(item) => item._id}
+            style={{ width: "100%" }}
+            onEndReachedThreshold={0.1}
+            onEndReached={() => handleGetmore()}
+            inverted
+          />
+        )}
+        {commentMapping[item._id] && commentMapping[item._id].requesting && (
+          <LoadingSpinner />
+        )}
       </View>
     );
   }
@@ -76,4 +87,4 @@ const mapDispatch = {
   deleteComment,
   createComment,
 };
-export default connect (mapStates, mapDispatch)(ListReplys);
+export default connect(mapStates, mapDispatch)(ListReplys);
