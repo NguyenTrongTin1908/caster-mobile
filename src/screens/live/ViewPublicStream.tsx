@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, View, Heading, Text } from "native-base";
+import { View, Heading, Text } from "native-base";
 import { connect } from "react-redux";
 import { IPerformer, IUser } from "../../interfaces";
 import { messageService, streamService } from "../../services";
@@ -7,7 +7,6 @@ import { Alert } from "react-native";
 import socketHolder from "lib/socketHolder";
 
 import {
-  getStreamConversation,
   resetStreamMessage,
   loadStreamMessages,
   getStreamConversationSuccess,
@@ -23,10 +22,7 @@ import ChatBox from "components/streamChat/chat-box";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import dismissKeyboard from "react-native/Libraries/Utilities/dismissKeyboard";
 import KeyboardDismiss from "components/uis/KeyboardDismiss";
-// eslint-disable-next-line no-shadow
-// enum EVENT_NAME {
-//   ROOM_INFORMATIOM_CHANGED = "public-room-changed",
-// }
+
 interface IProps {
   resetStreamMessage: Function;
   getStreamConversation: Function;
@@ -55,18 +51,14 @@ const ViewPublicStream = ({
   loadStreamMessages: dispatchLoadStreamMessages,
   getStreamConversationSuccess: dispatchGetStreamConversationSuccess,
   activeConversation,
-  currentUser,
-  system,
+
   settings,
   route,
 }: IProps) => {
-  const [loading, setLoading] = useState(false);
   const [initialized, setInitialized] = useState(false);
   const [sessionId, setSessionid] = useState(null) as any;
   const [total, setTotal] = useState(0);
   const [members, setMembers] = useState([]);
-  const [permissionGranted, setPermissionGranted] = useState(false);
-  const [localStreamId, setLocalStreamId] = useState(null as any);
 
   useEffect(() => {
     interval = setInterval(updatePerformerInfo, 60 * 1000);

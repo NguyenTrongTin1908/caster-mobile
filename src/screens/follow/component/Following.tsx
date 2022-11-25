@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import { Box, FlatList, Button } from "native-base";
 import PerformerCard from "components/message/PerformerCard";
-import { performerService } from "services/perfomer.service";
 import { followService } from "services/follow.service";
-import { IPerformer } from "interfaces/performer";
 import BadgeText from "components/uis/BadgeText";
 import LoadingSpinner from "components/uis/LoadingSpinner";
 import { IFeed } from "interfaces/Feed";

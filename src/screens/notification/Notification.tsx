@@ -1,10 +1,10 @@
 import Notification from "./component/Notification";
 import { Box, Heading } from "native-base";
-import React, { PureComponent } from "react";
-import { SafeAreaView, Touchable, TouchableOpacity, View } from "react-native";
+import React from "react";
+import { SafeAreaView, TouchableOpacity, View } from "react-native";
 import HeaderMenu from "components/tab/HeaderMenu";
 import styles from "./style";
-import { colors, Sizes } from "utils/theme";
+import { colors } from "utils/theme";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/core";
 import TabView from "components/uis/TabView";

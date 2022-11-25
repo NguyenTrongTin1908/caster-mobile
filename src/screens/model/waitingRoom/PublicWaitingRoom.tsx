@@ -1,26 +1,14 @@
-import {
-  Button,
-  Checkbox,
-  Switch,
-  Select,
-  Row,
-  Alert,
-  Heading,
-} from "native-base";
+import { Checkbox, Switch, Alert, Heading } from "native-base";
 import { Text, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import { performerService } from "services/perfomer.service";
 import { useNavigation } from "@react-navigation/core";
-import { colors, Sizes, Fonts } from "utils/theme";
+import { colors, Fonts } from "utils/theme";
 import styles from "./style";
 import HeaderMenu from "components/tab/HeaderMenu";
-
 import { IPerformer } from "src/interfaces";
-
 import { SafeAreaView, View } from "react-native";
-
-const Option = Select;
 
 interface IProps {
   error: any;
@@ -28,10 +16,6 @@ interface IProps {
 }
 
 const GoLivePage = ({ error, currentUser }: IProps) => {
-  let authenticate = true;
-
-  let noredirect = true;
-
   const [isAccept, setIsAccept] = useState(false);
   const [isDelay, setDelay] = useState(false);
   const navigation = useNavigation() as any;
@@ -62,7 +46,6 @@ const GoLivePage = ({ error, currentUser }: IProps) => {
         <Text style={Fonts.whiteColor21SemiBold}>
           Delay all chat comments 15 secords for moderator screening
         </Text>
-
         <Switch
           onToggle={() => {
             setDelay(!isDelay);

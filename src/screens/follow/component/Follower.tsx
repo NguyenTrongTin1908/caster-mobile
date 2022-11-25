@@ -3,11 +3,9 @@ import { View } from "react-native";
 import { Box, Checkbox, FlatList, Text } from "native-base";
 import PerformerCard from "components/message/PerformerCard";
 import { followService } from "services/follow.service";
-import { IPerformer } from "interfaces/performer";
 import BadgeText from "components/uis/BadgeText";
 import LoadingSpinner from "components/uis/LoadingSpinner";
 import { connect } from "react-redux";
-import { IFeed } from "interfaces/Feed";
 import styles from "./style";
 import { IUser } from "src/interfaces";
 import { colors, Fonts, Sizes } from "utils/theme";
@@ -20,7 +18,6 @@ interface IProps {
   };
   current: IUser;
   // OnFilterByFollower : Function
-
 }
 
 const Follower = (props: IProps): React.ReactElement => {
@@ -36,12 +33,11 @@ const Follower = (props: IProps): React.ReactElement => {
   }, []);
 
   useEffect(() => {
-    handleFilterByFollower()
-
+    handleFilterByFollower();
   }, [isChecked]);
 
   const loadPerformers = async (more = false, q = "", refresh = false) => {
-    if (more && !moreable || isChecked) return;
+    if ((more && !moreable) || isChecked) return;
     setPerformerLoading(true);
     const newPage = more ? page + 1 : page;
     setPage(refresh ? 0 : newPage);
@@ -62,7 +58,11 @@ const Follower = (props: IProps): React.ReactElement => {
     setPerformerLoading(false);
   };
 
-  const handleFilterByFollower = async (more = false, q = "", refresh = false ) => {
+  const handleFilterByFollower = async (
+    more = false,
+    q = "",
+    refresh = false
+  ) => {
     if (more && !moreable) return;
     setPerformerLoading(true);
     const newPage = 0;
@@ -82,16 +82,15 @@ const Follower = (props: IProps): React.ReactElement => {
       setMoreable(true);
     }
     if (isChecked) {
-      const listFollowFilter = performers.filter((el) => el.sourceInfo.isFollowed === false);
-      setPerformers(listFollowFilter );
+      const listFollowFilter = performers.filter(
+        (el) => el.sourceInfo.isFollowed === false
+      );
+      setPerformers(listFollowFilter);
       setPerformerLoading(false);
-
-    }
-    else {
-      setPerformers(data.data );
+    } else {
+      setPerformers(data.data);
       setPerformerLoading(false);
     }
-
   };
   const renderEmpty = () => (
     <View>
@@ -104,26 +103,31 @@ const Follower = (props: IProps): React.ReactElement => {
   return (
     <Box flex={1} mx="auto" w="100%">
       <View style={styles.checkBoxFollow}>
-      <Checkbox  isInvalid value="invalid" onChange={()=>setIsChecked(!isChecked)}>
-       <Text color={colors.lightText} fontSize={"lg"}>Show only model not following</Text>
-      </Checkbox>
-
+        <Checkbox
+          isInvalid
+          value="invalid"
+          onChange={() => setIsChecked(!isChecked)}
+        >
+          <Text color={colors.lightText} fontSize={"lg"}>
+            Show only model not following
+          </Text>
+        </Checkbox>
       </View>
 
-      <View style={{marginVertical:Sizes.fixPadding * 5}}>
-
-      <FlatList
-        data={performers}
-        renderItem={({ item }) =>
-          item.sourceInfo?._id && item.sourceInfo._id !== props.current._id ? (
-            <PerformerCard performer={item.sourceInfo} />
-          ) : null
-        }
-        keyExtractor={(item, index) => item._id + "_" + index}
-        onEndReachedThreshold={0.5}
-        onEndReached={() => loadPerformers(true, qString, false)}
-        ListEmptyComponent={renderEmpty()}
-      />
+      <View style={{ marginVertical: Sizes.fixPadding * 5 }}>
+        <FlatList
+          data={performers}
+          renderItem={({ item }) =>
+            item.sourceInfo?._id &&
+            item.sourceInfo._id !== props.current._id ? (
+              <PerformerCard performer={item.sourceInfo} />
+            ) : null
+          }
+          keyExtractor={(item, index) => item._id + "_" + index}
+          onEndReachedThreshold={0.5}
+          onEndReached={() => loadPerformers(true, qString, false)}
+          ListEmptyComponent={renderEmpty()}
+        />
       </View>
 
       {performerLoading && <LoadingSpinner />}

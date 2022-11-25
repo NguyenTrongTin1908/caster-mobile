@@ -10,15 +10,12 @@ import {
   RESULTS,
 } from "react-native-permissions";
 import socketHolder from "lib/socketHolder";
-
 import {
   getStreamConversation,
   resetStreamMessage,
 } from "services/redux/stream-chat/actions";
 import { WEBRTC_ADAPTOR_INFORMATIONS } from "components/antmedia/constants";
-import styles from "./style";
 import { SafeAreaView } from "react-native-safe-area-context";
-import HeaderMenu from "components/tab/HeaderMenu";
 import { colors, Sizes } from "utils/theme";
 import { isAndroid } from "utils/common";
 import { Publisher } from "components/antmedia/Publisher";

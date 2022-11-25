@@ -1,15 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { cancelPrivateRequest } from "services/redux/streaming/actions";
-
-// import { Image, message, Radio } from "antd";
-import { Alert, TouchableOpacity } from "react-native";
-import { Image, Radio, Text, View, Checkbox } from "native-base";
+import { TouchableOpacity } from "react-native";
+import { Image, Text, Checkbox } from "native-base";
 import styles from "./style";
-
 import { streamService } from "services/stream.service";
-import socketHolder from "lib/socketHolder";
-// import { CheckBox } from "react-native-elements";
 
 interface IProps {
   privateRequest: any;
@@ -22,14 +17,11 @@ interface IProps {
 export const PrivateRequest = ({
   privateRequest,
   onSelect,
-  selected,
   istimeDeline,
   isChecked,
 }: IProps) => {
   const [time, setTime] = useState(120);
   const [loop, setLoop] = useState(istimeDeline);
-  // const [selected, setSelected] = useState(false);
-  const socket = socketHolder.getSocket() as any;
 
   const dispatch = useDispatch();
   let Timer = null as any;
@@ -54,7 +46,6 @@ export const PrivateRequest = ({
       dispatch(cancelPrivateRequest(conversationId));
       clearTimeout(Timer);
       const resp = await streamService.cancelPrivateChat(conversationId);
-      console.log(resp);
     } catch (e: any) {
       const err = e;
     }

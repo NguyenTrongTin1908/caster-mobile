@@ -10,14 +10,7 @@ import { tokenService } from "services/token.service";
 import socketHolder from "lib/socketHolder";
 import { Private } from "components/antmedia/Private";
 import { Viewer } from "components/antmedia/Viewer";
-import {
-  StreamSettings,
-  HLS,
-  WEBRTC,
-  PUBLIC_CHAT,
-  IPerformer,
-} from "../../interfaces";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { WEBRTC, IPerformer } from "../../interfaces";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/core";
 import { isAndroid } from "utils/common";
@@ -26,13 +19,6 @@ import { connect } from "react-redux";
 import { HLSViewer } from "components/antmedia/HLSViewer";
 import HeaderMenu from "components/tab/HeaderMenu";
 import { colors, Sizes } from "utils/theme";
-import EmojiSelector from "react-native-emoji-selector";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import modal from "components/comment/modal";
-import ChatFooter from "components/message/ChatFooter";
-import SendTip from "components/message/SendTip";
-import { sendMessagePrivateStream } from "services/redux/chatRoom/actions";
-import Button from "components/uis/Button";
 import ChatBox from "components/streamChat/chat-box";
 
 enum EVENT {
@@ -56,17 +42,12 @@ let chargerTimeout;
 
 const Call = ({ route, settings, currentUser }: IProps) => {
   const navigation = useNavigation() as any;
-  let subscrbierRef: any;
   let subscriberRef2: any;
 
-  const { performer, localStreamId, remoteStreamId, privateRequest } =
-    route.params;
+  const { localStreamId, remoteStreamId, privateRequest } = route.params;
   const [permissionGranted, setPermissionGranted] = useState(false);
   const [localStreamRefId, setLocalStreamRefId] = useState(localStreamId);
   const [remoteStreamRefId, setRemoteStreamRefId] = useState(remoteStreamId);
-  const [showEmoji, setShowEmoji] = useState(false);
-  const [modal, setModal] = useState(false);
-  const inputText = useRef("");
   const toast = useToast();
 
   useEffect(() => {
@@ -209,22 +190,6 @@ const Call = ({ route, settings, currentUser }: IProps) => {
             onJoined={chargeInterval}
           />
         );
-  };
-
-  const ButtonPrivateChatDetail = ({ ...props }) => (
-    <HStack my={3} space={2} alignSelf="center">
-      <Button {...props} />
-    </HStack>
-  );
-
-  const onSelectEmoji = (emoji) => {
-    inputText.current = `${inputText.current}${emoji}`;
-    setShowEmoji(false);
-  };
-
-  const onPressEmoji = (currentText) => {
-    inputText.current = currentText || "";
-    setShowEmoji(true);
   };
 
   if (!permissionGranted)
