@@ -139,8 +139,9 @@ export const HLSViewer = forwardRef(
             minHeight: 400,
             top: 0,
             left: 0,
-            bottom: 0,
+            bottom: 150,
             right: 0,
+            zIndex: 10,
           }}
           paused={playing ? false : true}
           onReadyForDisplay={onReady}

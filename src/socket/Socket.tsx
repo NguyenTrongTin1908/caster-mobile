@@ -14,7 +14,7 @@ interface ISocketProps {
 }
 
 class Socket extends React.Component<ISocketProps> {
-  private socket;
+  private socket = { status: "" } as any;
 
   state = {
     updated: false,

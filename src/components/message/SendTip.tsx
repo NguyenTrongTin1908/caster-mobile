@@ -1,36 +1,65 @@
 import {
+  Alert,
+  Checkbox,
   Circle,
   HStack,
+  Image,
   Input,
   KeyboardAvoidingView,
+  ScrollView,
   Text,
   useToast,
   View,
-  VStack
-} from 'native-base';
-import React, { useEffect, useRef, useState } from 'react';
-import { Dimensions, Platform, Animated, ViewProps } from 'react-native';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
-import { messageService } from 'services/message.service';
-import { colors } from 'utils/theme';
-import Button from '../uis/Button';
+  VStack,
+} from "native-base";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  Dimensions,
+  Platform,
+  Animated,
+  ViewProps,
+  TouchableOpacity,
+} from "react-native";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { messageService } from "services/message.service";
+import { colors, Fonts } from "utils/theme";
+import Button from "../uis/Button";
+import { giftService, tokenTransctionService } from "services/index";
+import { SearchBar } from "react-native-elements/dist/searchbar/SearchBar";
+import styles from "../comment/style";
 
 interface Iprops {
   setModal: Function;
   modal: boolean;
   conversationId: string;
   performerId: string;
+  favorGift: any;
+  saveFavorite: Function;
 }
 
 export default function SendTip({
   setModal,
   modal,
   conversationId,
-  performerId
+  performerId,
+  favorGift,
+  saveFavorite,
 }: Iprops) {
-  const tokens = [10, 20, 30, 40, 50];
-  const [input, setInput] = useState<string>('');
-  const { width, height } = Dimensions.get('window');
+  const { width, height } = Dimensions.get("window");
+  const [favoriteGift, setFavoriteGift] = useState({});
+  const [searching, setSearching] = useState(false);
+  const [list, setList] = useState([] as any);
+  const [token, setToken] = useState(0);
+  const [giftFavorite, setGiftFavorite] = useState([] as any);
+  const [isConfirm, setIsConfirm] = useState(true);
+  const [isSave, setIsSave] = useState(false);
+  const [giftID, setGiftID] = useState("");
+  const [selectedId, setSelectedId] = useState(0);
+  const [filter, setFilter] = useState({
+    sortBy: "tokens",
+    sort: "asc",
+  } as any);
+
   const valueHiddenModal = height + 1200;
   const value = useRef(new Animated.Value(valueHiddenModal)).current;
   const toast = useToast();
@@ -39,7 +68,7 @@ export default function SendTip({
     Animated.timing(value, {
       toValue: valueHiddenModal,
       duration: 500,
-      useNativeDriver: false
+      useNativeDriver: false,
     }).start();
   };
 
@@ -47,30 +76,8 @@ export default function SendTip({
     Animated.timing(value, {
       toValue: 0,
       duration: 500,
-      useNativeDriver: false
+      useNativeDriver: false,
     }).start();
-  };
-
-  const sendToken = () => {
-    messageService
-      .sendToken(performerId, {
-        conversationId,
-        token: parseInt(input)
-      })
-      .then(() => {
-        toast.show({
-          description: 'Thank you, your tip has been sent successful'
-        });
-        setInput('');
-      })
-      .catch(async (e) => {
-        const res =  await e;
-        const msg = res.message;
-        toast.show({
-          description: msg
-        });
-        setInput('');
-      });
   };
 
   useEffect(() => {
@@ -80,107 +87,177 @@ export default function SendTip({
       fadeIn();
     }
   }, [modal]);
+  useEffect(() => {
+    search();
+  }, []);
+
+  const search = async () => {
+    try {
+      const resp = await giftService.search({ ...filter });
+      setList(resp.data.data);
+      console.log(favorGift);
+
+      if (favorGift) {
+        setToken(favorGift.tokens);
+        setGiftID(favorGift._id);
+        setIsSave(false);
+        setSelectedId(favorGift._id);
+      }
+    } catch (e: any) {
+      const error = await e;
+      toast.show({
+        description:
+          error.message || "Something went wrong, please try again later",
+      });
+    }
+  };
+
+  const handleSendGift = async () => {
+    if (isConfirm) {
+      try {
+        await tokenTransctionService.sendGift(performerId, {
+          giftId: giftID,
+          conversationId,
+          streamType: "",
+          sessionId: "",
+        });
+        toast.show({ description: "Send gift success" });
+        saveFavorite(giftFavorite);
+      } catch (e: any) {
+        const error = await e;
+        toast.show({ description: "Send gift success" });
+
+        error?.message[0] === "giftId should not be empty"
+          ? toast.show({ description: "Please select a gift" })
+          : toast.show({ description: error.message, color: "error" });
+      }
+    } else {
+      toast.show({
+        description: "Please confirm before send gift !! ",
+        color: "red",
+      });
+    }
+  };
 
   return (
     <>
-      <Animated.View
-        style={{
-          position: 'absolute',
-          top: value,
-          left: 0,
-          width,
-          height: height,
-          zIndex: 0
-        }}
-        onTouchStart={() => setModal(false)}
-      />
+      {modal && (
+        <Animated.View
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width,
+            height: height,
+            zIndex: 100,
+          }}
+          onTouchStart={() => setModal(false)}
+        />
+      )}
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'position'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : -150}
+        behavior={Platform.OS === "ios" ? "padding" : "position"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 100 : -150}
         style={{
-          position: 'absolute',
+          position: "absolute",
           left: 0,
           width,
           bottom: 0,
-          zIndex: modal ? 11 : -9
-        }}>
+          zIndex: modal ? 101 : -9,
+        }}
+      >
         <Animated.View
           style={{
             transform: [{ translateY: value }],
             borderTopLeftRadius: 15,
             borderTopRightRadius: 15,
-            backgroundColor: '#f5f5f5',
+            backgroundColor: "#f5f5f5",
             width,
-            paddingBottom: 20
-          }}>
+            paddingBottom: 20,
+          }}
+        >
           <View style={{ zIndex: 9999 }}>
-            <View
-              flex={1}
-              justifyContent="flex-end"
-              style={{ paddingTop: 30, paddingBottom: 32 }}>
-              <Text textAlign="center" color="#3C3C4399">
-                SEND TOKENS
-              </Text>
-            </View>
-            <View flex={1} justifyContent="flex-end" pb={60}>
-              <HStack alignItems="center" space={3} justifyContent="center">
-                {tokens.map((item, index) => (
-                  <TouchableWithoutFeedback
-                    onPress={() => setInput(`${item}`)}
-                    key={index}>
-                    <Circle size={16} bg="#ff6534" shadow={3}>
-                      <Text color="white">{item}</Text>
-                    </Circle>
-                  </TouchableWithoutFeedback>
-                ))}
-              </HStack>
-            </View>
-            <View
-              flex={1}
-              justifyContent="flex-end"
-              flexDirection="column"
-              px={5}
-              pb={17}>
-              <Text>ENTER CUSTOM AMOUT</Text>
-            </View>
-            <View flex={1} justifyContent="flex-end">
-              <>
-                <VStack
-                  px={5}
-                  style={{
-                    flexDirection: 'row',
-                    width: '100%'
-                  }}>
-                  <Input
-                    borderRadius={25}
-                    bg="transparent"
-                    px={2}
-                    flex={1}
-                    value={input}
-                    keyboardType="numeric"
-                    style={{
-                      fontSize: 18,
-                      borderRadius: 0,
-                      color: colors.darkText,
-                      height: '100%',
-                      borderBottomWidth: 1,
-                      borderWidth: 0,
-                      borderBottomColor: '#000000'
+            <View flex={1} justifyContent="center" paddingY={5}>
+              <ScrollView flex={1} horizontal={true}>
+                {list.map((item, index) => (
+                  <TouchableOpacity
+                    onPress={() => {
+                      setToken(item.tokens);
+                      setGiftID(item._id);
+                      setFavoriteGift(item);
+                      setIsSave(false);
+                      setSelectedId(item._id);
                     }}
-                    onChangeText={(value) => setInput(value)}
-                  />
-                  <Button
-                    colorScheme="secondary"
-                    label="Send"
-                    ml={2}
-                    w={100}
-                    h={50}
-                    px={5}
-                    alignItems="center"
-                    onPress={sendToken}
-                  />
-                </VStack>
-              </>
+                    key={index}
+                    style={{ paddingHorizontal: 10 }}
+                  >
+                    <Image
+                      source={
+                        item?.image.url
+                          ? { uri: item?.image.url }
+                          : require("../../assets/heart-purple.png")
+                      }
+                      alt={"avatar"}
+                      size={10}
+                      borderRadius={80}
+                      resizeMode="cover"
+                      style={selectedId === item._id ? styles.activeGift : null}
+                    />
+
+                    <Text
+                      color={colors.secondary}
+                      fontWeight="bold"
+                      alignSelf={"center"}
+                    >
+                      {item.tokens}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+
+            <View flex={1}>
+              <View
+                flexDirection={"row"}
+                justifyContent="center"
+                paddingBottom={5}
+              >
+                <Image
+                  source={require("../../assets/ruby.png")}
+                  alt={"avatar"}
+                  size={10}
+                  resizeMode="contain"
+                  alignSelf={"center"}
+                />
+                <Text
+                  color={colors.primary}
+                  fontSize={20}
+                  fontWeight="bold"
+                  alignSelf={"center"}
+                >
+                  {token}
+                </Text>
+                <View paddingX={3}>
+                  <Checkbox
+                    aria-label="confirm"
+                    isChecked={isConfirm}
+                    value="cbconfirm"
+                    onChange={() => setIsConfirm(!isConfirm)}
+                  ></Checkbox>
+
+                  <Text style={Fonts.blackColor16Bold}>Confirm</Text>
+                </View>
+              </View>
+
+              <Button
+                colorScheme="secondary"
+                label="Send"
+                w={100}
+                h={50}
+                px={5}
+                alignItems="center"
+                alignSelf="center"
+                onPress={handleSendGift}
+              />
             </View>
           </View>
         </Animated.View>

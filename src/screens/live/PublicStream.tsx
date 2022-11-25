@@ -239,15 +239,6 @@ const PublicStream = ({
           <Button onPress={() => stop()}>Stop Streaming</Button>
         )}
       </View>
-      {/* <View style={styles.emotion}>
-        {
-          <EmojiSelector
-            showSearchBar={false}
-            showSectionTitles={false}
-            onEmojiSelected={() => {}}
-          />
-        }
-      </View> */}
     </SafeAreaView>
   );
 };
