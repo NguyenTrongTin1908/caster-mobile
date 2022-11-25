@@ -13,6 +13,7 @@ import { getStatusBarHeight } from 'react-native-status-bar-height';
 import FeedTab from 'components/tab/FeedTab';
 import HeaderMenu from 'components/tab/HeaderMenu';
 import { IPerformer } from 'src/interfaces';
+import CustomHeader from 'components/uis/CustomHeader';
 let deviceH = Dimensions.get('screen').height;
 let bottomNavBarH = deviceH - height;
 interface IProps {
@@ -214,17 +215,24 @@ const Home = ({
             snapToAlignment={'start'}
           />
           <HeaderMenu />
-          <FeedTab
-            onTabChange={handleTabChange}
-            tab={tab}
-            tabs={[
-              {
-                key: 'video',
-                title: 'Video'
-              },
-              { key: 'photo', title: 'Photo' }
-            ]}
-          />
+          <CustomHeader
+            header={{
+              title: 'Home',
+              align: 'center'
+            }}
+            headerStyle={{ color: 'white', fontSize: 15 }}>
+            <FeedTab
+              onTabChange={handleTabChange}
+              tab={tab}
+              tabs={[
+                {
+                  key: 'video',
+                  title: 'Video'
+                },
+                { key: 'photo', title: 'Photo' }
+              ]}
+            />
+          </CustomHeader>
         </SafeAreaView>
       )}
     </BottomTabBarHeightContext.Consumer>

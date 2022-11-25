@@ -11,10 +11,11 @@ interface IProps {
     key: string;
     title: string;
   }[];
+  style?: { [key: string]: any };
 }
-const FeedTab = ({ onTabChange, tab, tabs }: IProps): React.ReactElement => {
+const FeedTab = ({ onTabChange, tab, tabs, style = {} }: IProps): React.ReactElement => {
   return (
-    <View style={styles.tabView}>
+    <View style={{ ...styles.tabView, ...style }}>
       {tabs.map((item, index) => {
         return (
           <>
