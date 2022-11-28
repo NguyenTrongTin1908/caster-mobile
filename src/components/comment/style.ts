@@ -15,6 +15,9 @@ const styles = StyleSheet.create({
     // justifyContent: 'space-between',
     // alignItems: 'center'
   },
+  optionCommentItem: {
+    paddingHorizontal: 5,
+  },
   header: {
     alignItems: "center",
     justifyContent: "center",

@@ -31,6 +31,7 @@ interface IProps {
   loggedIn?: boolean;
   sendStreamMessage: Function;
   canSendMessage: boolean;
+  canSendTip?: boolean;
 }
 
 const canDelete = ({ isDeleted, senderId, performerId }, user): boolean => {
@@ -63,6 +64,7 @@ const MessageList = ({
   sendStreamMessage,
   loggedIn,
   canSendMessage,
+  canSendTip,
 }: IProps) => {
   let messagesRef: any;
 
@@ -235,8 +237,15 @@ const MessageList = ({
     setShowEmoji(true);
   };
   const favoriteHandle = (gift) => {
-    setFavoriteGift(gift);
-    giftService.addfavoriteGift({ giftId: gift._id });
+    try {
+      if (gift && gift.length > 0) {
+        setFavoriteGift(gift);
+        console.log("Favorite : ", gift);
+        giftService.addfavoriteGift({ giftId: gift._id });
+      }
+    } catch (error) {
+      console.log("Error : ", error);
+    }
   };
 
   const sendMessage = (message) => {
@@ -265,6 +274,7 @@ const MessageList = ({
             conversationId={conversation._id}
             Button={ButtonPrivateChatDetail}
             setModal={setModal}
+            canSendTip={canSendTip}
             sendMessageStream={sendMessage}
             PrivateBtnSendMessage={({ ...props }) => (
               <Ionicons

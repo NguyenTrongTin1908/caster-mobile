@@ -102,6 +102,18 @@ const styles = StyleSheet.create({
     marginHorizontal: Sizes.fixPadding,
     textAlignVertical: "center",
   },
+  chatSystem: {
+    fontSize: Sizes.fixPadding * 2,
+    color: colors.secondary,
+    marginHorizontal: Sizes.fixPadding,
+    textAlignVertical: "center",
+  },
+  chatTimeStamp: {
+    fontSize: Sizes.fixPadding,
+    color: colors.lightText,
+    marginHorizontal: Sizes.fixPadding,
+    textAlignVertical: "center",
+  },
   chatLine: {
     marginBottom: Sizes.fixPadding,
     flexDirection: "row",

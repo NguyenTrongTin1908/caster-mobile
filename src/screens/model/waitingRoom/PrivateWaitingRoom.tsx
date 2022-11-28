@@ -60,7 +60,9 @@ const PrivateChatWaitingRoom = ({
       });
     }
     if (isAvailable) {
-      return navigation.navigate("Blank");
+      return navigation.navigate("PrivateChat", {
+        selectedRequest: selectedRequest,
+      });
     }
   };
 

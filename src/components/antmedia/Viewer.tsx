@@ -1,37 +1,45 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { SignalingChannel } from './SignalingChannel';
+import React, { useEffect, useRef, useState } from "react";
+import { StyleSheet, View } from "react-native";
+import { SignalingChannel } from "./SignalingChannel";
+import {
+  MediaStream,
+  RTCPeerConnection,
+  RTCSessionDescription,
+} from "react-native-webrtc";
+import { config } from "config";
+import { RemoteView } from "./styles";
+interface IProps {
+  streamId: string;
+  onJoined?: Function;
+}
 
-import { MediaStream, RTCPeerConnection, RTCSessionDescription } from 'react-native-webrtc';
-import { config } from 'config';
-import { RemoteView } from './styles';
-
-export const Viewer = ({ streamId, onJoined = () => {} }) => {
+export const Viewer = ({ streamId, onJoined }: IProps) => {
   const [remoteStream, setRemoteStream] = useState<MediaStream>();
-  console.log(streamId);
 
   const peerConnection = useRef<RTCPeerConnection>();
 
   const startStreaming = async (remoteDescription: any) => {
     peerConnection.current = new RTCPeerConnection({
-      iceServers: []
+      iceServers: [],
     });
-
     peerConnection.current.onaddstream = (event: any) => {
-      console.log('on add stream');
+      console.log("on add stream");
       setRemoteStream(event.stream);
-
       if (onJoined) {
         onJoined();
       }
     };
 
-    peerConnection.current.onremovestream = () => console.log('stream removed');
+    peerConnection.current.onremovestream = () => console.log("stream removed");
 
-    peerConnection.current.onconnectionstatechange = event =>
-      console.log('state change connection: ', peerConnection.current?.connectionState);
+    peerConnection.current.onconnectionstatechange = (event) =>
+      console.log(
+        "state change connection: ",
+        peerConnection.current?.connectionState
+      );
 
-    peerConnection.current.onsignalingstatechange = () => console.log(peerConnection.current?.signalingState);
+    peerConnection.current.onsignalingstatechange = () =>
+      console.log(peerConnection.current?.signalingState);
 
     peerConnection.current.onicecandidateerror = console.log;
 
@@ -40,15 +48,15 @@ export const Viewer = ({ streamId, onJoined = () => {} }) => {
       if (
         candidate &&
         signalingChannel.current?.isChannelOpen() &&
-        peerConnection.current?.signalingState === 'have-remote-offer'
+        peerConnection.current?.signalingState === "have-remote-offer"
       ) {
-        console.log('sending local ice candidates');
+        console.log("sending local ice candidates");
         signalingChannel.current?.sendJSON({
-          command: 'takeCandidate',
+          command: "takeCandidate",
           streamId,
           label: candidate.sdpMLineIndex.toString(),
           id: candidate.sdpMid,
-          candidate: candidate.candidate
+          candidate: candidate.candidate,
         });
       }
     };
@@ -63,38 +71,38 @@ export const Viewer = ({ streamId, onJoined = () => {} }) => {
     new SignalingChannel(config.ANT_SIGNALING_URL, {
       onopen: () => {
         signalingChannel.current?.sendJSON({
-          command: 'play',
-          streamId
+          command: "play",
+          streamId,
         });
       },
       start: async () => {},
       stop: () => {
-        console.log('stop called');
+        console.log("stop called");
       },
-      takeCandidate: data => {
-        console.log('onIceCandidate remote');
+      takeCandidate: (data) => {
+        console.log("onIceCandidate remote");
         peerConnection.current?.addIceCandidate({
-          candidate: data?.candidate || '',
+          candidate: data?.candidate || "",
           sdpMLineIndex: Number(data?.label) || 0,
-          sdpMid: data?.id || ''
+          sdpMid: data?.id || "",
         });
       },
-      takeConfiguration: async data => {
-        console.log('got offer: ', data?.type);
-        const offer = data?.sdp || '';
+      takeConfiguration: async (data) => {
+        console.log("got offer: ", data?.type);
+        const offer = data?.sdp || "";
 
         await startStreaming({
           sdp: offer,
-          type: data?.type || ''
+          type: data?.type || "",
         });
 
         signalingChannel.current?.sendJSON({
-          command: 'takeConfiguration',
+          command: "takeConfiguration",
           streamId,
-          type: 'answer',
-          sdp: peerConnection?.current?.localDescription?.sdp
+          type: "answer",
+          sdp: peerConnection?.current?.localDescription?.sdp,
         });
-      }
+      },
     })
   );
 
@@ -110,19 +118,24 @@ export const Viewer = ({ streamId, onJoined = () => {} }) => {
 
   return (
     !!remoteStream && (
-      <RemoteView zOrder={1} streamURL={remoteStream?.toURL()} style={{ flex: 1 }} objectFit="contain" />
+      <RemoteView
+        zOrder={1}
+        streamURL={remoteStream?.toURL()}
+        style={{ flex: 1 }}
+        objectFit="contain"
+      />
     )
   );
 };
 
 const styles = StyleSheet.create({
   bottom: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    justifyContent: 'space-evenly',
-    marginBottom: 30
-  }
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    justifyContent: "space-evenly",
+    marginBottom: 30,
+  },
 });

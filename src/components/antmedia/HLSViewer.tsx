@@ -21,7 +21,7 @@ interface IProps {
 }
 let getLiveStreamOrVodURLInterval: any;
 export const HLSViewer = forwardRef(
-  ({ streamId, onJoined = () => {}, settings }: IProps, parentRef) => {
+  ({ streamId, onJoined, settings }: IProps, parentRef) => {
     const [playing, setPlaying] = useState(false);
     const [readyForPlay, setReady] = useState(false);
     const [uri, setUri] = useState("");
@@ -30,6 +30,7 @@ export const HLSViewer = forwardRef(
 
     useEffect(() => {
       playHLS();
+      onJoined && onJoined();
       return () => {
         pause();
         if (getLiveStreamOrVodURLInterval) {

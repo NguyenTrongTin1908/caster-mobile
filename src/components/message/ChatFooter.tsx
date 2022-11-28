@@ -22,6 +22,7 @@ interface IProps {
   PrivateBtnSendMessage?: Function;
   onPressEmoji?: Function;
   defaultInput?: string;
+  canSendTip?: boolean;
 }
 
 const ChatFooter = ({
@@ -34,18 +35,21 @@ const ChatFooter = ({
   setModal,
   onPressEmoji,
   defaultInput,
+  canSendTip = true,
 }: IProps): React.ReactElement => {
   const [input, setInput] = useState<string>(defaultInput || "");
 
   return (
     <>
-      <Button
-        performerId={performerId}
-        conversationId={conversationId}
-        colorScheme="secondary"
-        label="Send tip"
-        onPress={() => setModal(true)}
-      />
+      {canSendTip && (
+        <Button
+          performerId={performerId}
+          conversationId={conversationId}
+          colorScheme="secondary"
+          label="Send gifts"
+          onPress={() => setModal(true)}
+        />
+      )}
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={110}

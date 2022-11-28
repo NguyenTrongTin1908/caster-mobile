@@ -122,6 +122,7 @@ export default function SendTip({
           sessionId: "",
         });
         toast.show({ description: "Send gift success" });
+        console.log("gift Favorite : ", giftFavorite);
         saveFavorite(giftFavorite);
       } catch (e: any) {
         const error = await e;
@@ -183,7 +184,7 @@ export default function SendTip({
                     onPress={() => {
                       setToken(item.tokens);
                       setGiftID(item._id);
-                      setFavoriteGift(item);
+                      setFavoriteGift(giftFavorite.push(item));
                       setIsSave(false);
                       setSelectedId(item._id);
                     }}

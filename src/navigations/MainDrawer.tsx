@@ -1,9 +1,8 @@
 import * as Animatable from "react-native-animatable";
-import React, { useRef, useEffect, useContext, useState } from "react";
+import React, { useRef, useEffect, useContext } from "react";
 import { connect } from "react-redux";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { Alert, StyleSheet, TouchableOpacity } from "react-native";
 import {
-  ScrollView,
   Box,
   FlatList,
   Flex,
@@ -13,7 +12,6 @@ import {
   View,
   Image,
   Divider,
-  Alert,
 } from "native-base";
 import { showDrawer as showDrawerHandler } from "services/redux/app-nav/actions";
 import Feather from "react-native-vector-icons/Feather";
@@ -25,8 +23,10 @@ import { colors } from "utils/theme";
 import { IPerformer } from "src/interfaces";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import socketHolder from "lib/socketHolder";
+import { updateBalance } from "services/redux/user/actions";
+import { useNavigation } from "@react-navigation/core";
+
 import {
   addPrivateRequest,
   accessPrivateRequest,
@@ -34,6 +34,7 @@ import {
 } from "services/redux/streaming/actions";
 
 import { SocketContext } from "../socket";
+import { messageService } from "src/services";
 interface DrawerProps {
   user: IPerformer;
   loggedIn: boolean;
@@ -41,6 +42,8 @@ interface DrawerProps {
   hasTouchedDrawer: boolean;
   handleLogout: Function;
   addPrivateRequest: Function;
+  updateBalance: Function;
+  cancelPrivateRequest: Function;
 }
 export const MainDrawer = ({
   loggedIn = false,
@@ -49,6 +52,8 @@ export const MainDrawer = ({
   user,
   handleLogout,
   addPrivateRequest,
+  updateBalance,
+  cancelPrivateRequest: handleCancelPrivateRequest,
 }: DrawerProps): JSX.Element => {
   const viewRef = useRef(null) as any;
   const { status: socketContextStatus } = useContext(SocketContext) as any;
@@ -359,13 +364,55 @@ export const MainDrawer = ({
     // this.setState({ openCallRequest: true });
   };
 
+  const handleUpdateBalance = (event) => {
+    updateBalance({ token: event.token, type: "diamond-balance" });
+  };
+
+  // const handleMessage = async (event) => {
+  // };
+  // const handlePaymentStatusCallback = ({ redirectUrl }) => {
+  //   if (redirectUrl) {
+  //     navigation.navigator(redirectUrl);
+  //   }
+  // }
+
+  // const handleCountNotificationMessage = async() {
+  //   const data = await (await messageService.countTotalNotRead()).data;
+  // }
+
+  const handleCancelPrivateChat = (data: {
+    conversationId: string;
+    user: IPerformer;
+  }) => {
+    Alert.alert(
+      `${
+        data?.user?.name || data?.user?.username
+      }'ve cancelled private call request`
+    );
+
+    handleCancelPrivateRequest(data.conversationId);
+  };
+
   const handleSocket = async () => {
     const socket = socketHolder.getSocket() as any;
     if (!socket || !socket.status) return;
-    socketContextStatus === "connected" &&
+    if (socketContextStatus === "connected") {
       socket.on("private-chat-request", (data) => {
         handlePrivateChat(data);
       });
+      socket.on("update_balance", (data) => {
+        handleUpdateBalance(data);
+      });
+      // socket.on("nofify_read_messages_in_conversation", (data) => {
+      //   handleMessage(data);
+      // });
+      // socket.on("payment_status_callback", (data) => {
+      //   handlePaymentStatusCallback(data);
+      // });
+      socket.on("private-chat-cancel", (data) => {
+        handleCancelPrivateChat(data);
+      });
+    }
   };
 
   const handleDisconnect = () => {
@@ -459,7 +506,10 @@ const mapStateToProp = (state: any) => ({
   hasTouchedDrawer: state.appNav.hasTouchedDrawer,
 });
 const mapDispatch = {
+  updateBalance,
   handleLogout: logout,
   addPrivateRequest,
+  accessPrivateRequest,
+  cancelPrivateRequest,
 };
 export default connect(mapStateToProp, mapDispatch)(MainDrawer);

@@ -13,6 +13,8 @@ import { IPerformer } from "src/interfaces";
 import { SafeAreaView } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import ButtonFollow from "components/uis/ButtonFollow";
+import { streamService } from "services/stream.service";
+import { cancelPrivateRequest } from "services/redux/streaming/actions";
 
 const Option = Select;
 enum EVENT {
@@ -30,6 +32,7 @@ interface IProps {
   updateUser: Function;
   updatePerformer: Function;
   route: any;
+  cancelPrivateRequest: Function;
 }
 
 const PrivateUserAcceptRoom = ({
@@ -38,25 +41,20 @@ const PrivateUserAcceptRoom = ({
   updatePerformer: handleUpdatePerformer,
   updateUser: handleUpdateUser,
   route,
+  cancelPrivateRequest: handleCancelPrivateRequest,
 }: IProps) => {
   const navigation = useNavigation() as any;
-
-  const [privateChatPrice, setPrivateChatPrice] = useState(0);
-  const [isAccept, setIsAccept] = useState(false);
+  const toast = useToast();
   const localStreamRef = useRef({ id: "" }).current;
   const [localStreamId, setLocalStreamId] = useState(null as any);
   const remoteStreamRef = useRef({
     id: "",
   }).current;
   const [remoteStreamId, setRemoteStreamId] = useState("");
-
   const { performer, privateRequest } = route.params;
   let privateRequestHolder;
 
   useEffect(() => {
-    if (currentUser) {
-      setPrivateChatPrice(privateChatPrice);
-    }
     handleSocketsJoin();
   }, []);
 
@@ -98,6 +96,21 @@ const PrivateUserAcceptRoom = ({
         }
       }
     });
+  };
+
+  const cancelPrivateRequest = async () => {
+    try {
+      const resp = await streamService.cancelPrivateChat(
+        privateRequest?.conversation?._id
+      );
+      if (resp.success) {
+        handleCancelPrivateRequest(privateRequest?.conversation?._id);
+        navigation.navigate("LiveNow");
+      }
+    } catch (e) {
+      const error = await Promise.resolve(e);
+      console.log(error);
+    }
   };
 
   return (
@@ -152,6 +165,7 @@ const PrivateUserAcceptRoom = ({
             : `${performer?.username}`}
         </Text>
       </View>
+
       <View style={styles.privateTextLicense}>
         <Text color={colors.lightText}>
           The Auto Tip for this private video chat room will be automatically
@@ -161,7 +175,7 @@ const PrivateUserAcceptRoom = ({
       <View style={styles.privateChatFee}>
         <Text color={colors.lightText}>Auto Tip</Text>
         <View style={styles.privateChatPrice}>
-          <Text color={colors.lightText}>{currentUser.privateChat}</Text>
+          <Text color={colors.lightText}>{performer?.privateChatPrice}</Text>
           <Ionicons name="heart" color={colors.ruby} size={25}></Ionicons>
           <Text color={colors.lightText}> / per minute</Text>
         </View>
@@ -171,7 +185,7 @@ const PrivateUserAcceptRoom = ({
         <TouchableOpacity
           activeOpacity={0.7}
           style={styles.goliveButton}
-          disabled={!isAccept}
+          onPress={cancelPrivateRequest}
         >
           <Text style={styles.btnText}>Cancel</Text>
         </TouchableOpacity>
@@ -185,6 +199,6 @@ const mapStates = (state: any) => ({
   ui: { ...state.ui },
   currentUser: { ...state.user.current },
 });
-const mapDispatch = { updateUser, updatePerformer };
+const mapDispatch = { updateUser, updatePerformer, cancelPrivateRequest };
 
 export default connect(mapStates, mapDispatch)(PrivateUserAcceptRoom);

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Heading, Text } from "native-base";
+import { View, Heading, Text, Image } from "native-base";
 import { connect } from "react-redux";
 import { IPerformer, IUser } from "../../interfaces";
 import { messageService, streamService } from "../../services";
@@ -22,6 +22,7 @@ import ChatBox from "components/streamChat/chat-box";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import dismissKeyboard from "react-native/Libraries/Utilities/dismissKeyboard";
 import KeyboardDismiss from "components/uis/KeyboardDismiss";
+import ButtonFollow from "components/uis/ButtonFollow";
 
 interface IProps {
   resetStreamMessage: Function;
@@ -51,7 +52,7 @@ const ViewPublicStream = ({
   loadStreamMessages: dispatchLoadStreamMessages,
   getStreamConversationSuccess: dispatchGetStreamConversationSuccess,
   activeConversation,
-
+  currentUser,
   settings,
   route,
 }: IProps) => {
@@ -59,6 +60,8 @@ const ViewPublicStream = ({
   const [sessionId, setSessionid] = useState(null) as any;
   const [total, setTotal] = useState(0);
   const [members, setMembers] = useState([]);
+  const { performer } = route.params;
+
 
   useEffect(() => {
     interval = setInterval(updatePerformerInfo, 60 * 1000);
@@ -118,10 +121,7 @@ const ViewPublicStream = ({
   };
 
   const onChange = ({ total, members, conversationId }) => {
-    console.log("Ra");
-
     if (activeConversation?.data?._id) {
-      console.log("Vooooo");
       setTotal(total);
       setMembers(members);
     }
@@ -129,7 +129,6 @@ const ViewPublicStream = ({
 
   const updatePerformerInfo = async () => {
     try {
-      const { performer } = route.params;
       const { username, streamingStatus: oldStreamingStatus } = performer;
       const resp = await performerService.findOne(username);
       const { streamingStatus } = resp.data;
@@ -150,7 +149,6 @@ const ViewPublicStream = ({
   };
 
   const joinPerformerPublicRoom = async () => {
-    const { performer } = route.params;
     const socket = socketHolder.getSocket() as any;
     if (performer) {
       try {
@@ -185,7 +183,6 @@ const ViewPublicStream = ({
   };
 
   const modelLeftHandler = ({ performerId }) => {
-    const { performer } = route.params;
     if (performerId !== performer._id) {
       return;
     }
@@ -219,6 +216,36 @@ const ViewPublicStream = ({
             style={{
               position: "absolute",
               marginTop: Sizes.fixPadding + 180.0,
+              alignItems: "center",
+              alignSelf: "flex-end",
+              zIndex: 1000,
+            }}
+          >
+                <ButtonFollow
+            isHideOnClick
+            targetId={performer?._id}
+            sourceId={currentUser._id}
+            isFollow={performer.isFollowed}
+            getPerformerList={() => {}}
+          />
+             <Image
+              source={
+                performer?.avatar
+                  ? { uri: performer?.avatar }
+                  : require("../../assets/avatar-default.png")
+              }
+              alt={"avatar"}
+              size={45}
+              borderRadius={80}
+            />
+          </View>
+
+
+          <View
+            style={{
+              position: "absolute",
+              top: Sizes.fixPadding + 280.0,
+              right: Sizes.fixPadding ,
               alignItems: "center",
               alignSelf: "flex-end",
               zIndex: 1000,

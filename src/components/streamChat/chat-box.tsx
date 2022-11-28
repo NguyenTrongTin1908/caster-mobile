@@ -18,6 +18,7 @@ interface IProps {
   members?: IUser[];
   loggedIn?: boolean;
   canSendMessage: boolean;
+  canSendTip?: boolean;
 }
 const checkPermission = (performer, conversation) => {
   if (
@@ -40,6 +41,7 @@ const ChatBox = ({
   members,
   loggedIn,
   canSendMessage,
+  canSendTip,
 }: IProps) => {
   const [removing, setRemoving] = React.useState(false);
   const [canReset, setCanReset] = React.useState(false);
@@ -71,15 +73,17 @@ const ChatBox = ({
   };
 
   return (
-    // <KeyboardDismiss>
     <View style={styles.chatContainer}>
       {activeConversation &&
         activeConversation.data &&
         activeConversation.data.streamId && (
-          <MessageList loggedIn={loggedIn} canSendMessage={canSendMessage} />
+          <MessageList
+            loggedIn={loggedIn}
+            canSendMessage={canSendMessage}
+            canSendTip={canSendTip}
+          />
         )}
     </View>
-    // </KeyboardDismiss>
   );
 };
 

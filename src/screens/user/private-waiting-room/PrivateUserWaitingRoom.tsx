@@ -11,9 +11,7 @@ import { updateUser, updatePerformer } from "services/redux/user/actions";
 import { streamService } from "services/stream.service";
 import socketHolder from "lib/socketHolder";
 import { getStreamConversationSuccess } from "services/redux/stream-chat/actions";
-
 import { IPerformer } from "src/interfaces";
-
 import { SafeAreaView } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import ButtonFollow from "components/uis/ButtonFollow";
@@ -43,50 +41,23 @@ const PrivateUserWaitingRoom = ({
   currentUser,
   updatePerformer: handleUpdatePerformer,
   updateUser: handleUpdateUser,
-  privateRequests,
   route,
   getStreamConversationSuccess: dispatchGetStreamConversationSuccess,
 }: IProps) => {
-  let authenticate = true;
-
-  let noredirect = true;
   const toast = useToast();
-
   const [isAvailable, setIsAvailable] = useState(0);
   const [privateChatPrice, setPrivateChatPrice] = useState(0);
-  const [openInput, setOpenInput] = useState(false);
   const [isAccept, setIsAccept] = useState(false);
-  const [isReset, setIsReset] = useState(false);
-  const [selectedRequest, setSelectedRequest] = useState(null) as any;
-  const [privateRequest, setPrivateRequest] = useState({} as any);
-
   const { performer } = route.params;
-  let privateRequestHolder;
-
   const navigation = useNavigation() as any;
 
   useEffect(() => {
-    if (currentUser) {
-      setIsAvailable(currentUser.privateChat);
+    if (performer) {
+      setIsAvailable(performer.privateChat);
       setPrivateChatPrice(privateChatPrice);
     }
   }, []);
 
-  const handleRedirect = () => {
-    if (!selectedRequest) {
-      toast.show({
-        description: "Please select a user to join private chat",
-      });
-    }
-    if (isAvailable) {
-      return navigation.navigate("Call", {
-        performer: performer,
-      });
-    }
-    return toast.show({
-      description: "Please accept all terms & conditions before go live",
-    });
-  };
   const joinPrivateConversation = (conversationId) => {
     const socket = socketHolder.getSocket() as any;
 
@@ -95,14 +66,12 @@ const PrivateUserWaitingRoom = ({
       conversationId,
     });
   };
+
   const requestPrivateCall = async () => {
     if (!performer) return;
     const { _id: performerId } = performer as any;
-
     if (isAvailable) {
       streamService.requestPrivateChat(performerId).then((res) => {
-        privateRequestHolder = res.data;
-        setPrivateRequest(res.data);
         const { conversation } = res.data;
         joinPrivateConversation(conversation._id);
         dispatchGetStreamConversationSuccess({
@@ -116,23 +85,19 @@ const PrivateUserWaitingRoom = ({
     }
   };
 
-  const handleDeline = () => {
-    setIsReset(true);
-  };
-
-  const setPrice = () => {
-    if (privateChatPrice <= 0) {
-      return toast.show({
-        description: "The price cannot be set lower than 0",
-      });
-    }
-    handleUpdatePerformer({
-      ...currentUser,
-      ...{ privateChatPrice },
-    });
-    // Call the API to set the price
-    return toast.show({ description: "Set the price successfully" });
-  };
+  // const setPrice = () => {
+  //   if (privateChatPrice <= 0) {
+  //     return toast.show({
+  //       description: "The price cannot be set lower than 0",
+  //     });
+  //   }
+  //   handleUpdatePerformer({
+  //     ...currentUser,
+  //     ...{ privateChatPrice },
+  //   });
+  //   // Call the API to set the price
+  //   return toast.show({ description: "Set the price successfully" });
+  // };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -204,7 +169,7 @@ const PrivateUserWaitingRoom = ({
       <View style={styles.privateChatFee}>
         <Text color={colors.lightText}>Room Fee</Text>
         <View style={styles.privateChatPrice}>
-          <Text color={colors.lightText}>{currentUser.privateChat}</Text>
+          <Text color={colors.lightText}>{currentUser.privateChatPrice}</Text>
 
           <Ionicons name="heart" color={colors.ruby} size={25}></Ionicons>
           <Text color={colors.lightText}> / per minute</Text>

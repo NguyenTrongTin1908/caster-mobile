@@ -5,15 +5,13 @@ import {
   requestMultiple,
   RESULTS,
 } from "react-native-permissions";
-import { Text, View, Heading, HStack } from "native-base";
+import { Text, View, Heading, HStack, useToast } from "native-base";
 import Button from "components/uis/Button";
-
 import { tokenService } from "services/token.service";
 import socketHolder from "lib/socketHolder";
 import { Private } from "components/antmedia/Private";
 import { Viewer } from "components/antmedia/Viewer";
-import { StreamSettings, HLS, WEBRTC, PUBLIC_CHAT } from "../../interfaces";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { WEBRTC } from "../../interfaces";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/core";
 import { isAndroid } from "utils/common";
@@ -24,18 +22,12 @@ import HeaderMenu from "components/tab/HeaderMenu";
 import { colors, Sizes } from "utils/theme";
 import { streamService } from "services/stream.service";
 import { accessPrivateRequest } from "services/redux/streaming/actions";
-import { SocketContext, Event } from "../../socket";
 import { updateBalance } from "services/redux/user/actions";
 import {
   getStreamConversationSuccess,
   resetStreamMessage,
 } from "services/redux/stream-chat/actions";
-import EmojiSelector from "react-native-emoji-selector";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import modal from "components/comment/modal";
-import ChatFooter from "components/message/ChatFooter";
-import SendTip from "components/message/SendTip";
-import { sendMessagePrivateStream } from "services/redux/chatRoom/actions";
+import ChatBox from "components/streamChat/chat-box";
 
 enum EVENT {
   JOINED_THE_ROOM = "JOINED_THE_ROOM",
@@ -55,6 +47,7 @@ interface IProps {
   resetStreamMessage: Function;
   updateBalance: Function;
   currentUser: any;
+  activeConversation: any;
 }
 
 let privateRequestHolder;
@@ -63,17 +56,17 @@ let chargerTimeout;
 const PrivateChat = ({
   route,
   settings,
-  accessPrivateRequest,
+  accessPrivateRequest: access,
   getStreamConversationSuccess: dispatchGetStreamConversationSuccess,
   resetStreamMessage,
   updateBalance,
   currentUser,
+  activeConversation,
 }: IProps) => {
   const navigation = useNavigation() as any;
   let subscrbierRef: any;
   let subscriberRef2: any;
-
-  const { performer, conversationId } = route.params;
+  const { selectedRequest } = route.params;
   const [roomJoined, setRoomJoined] = useState(false);
   const [modal, setModal] = useState(false);
   const [callTime, setCallTime] = useState(0);
@@ -81,6 +74,7 @@ const PrivateChat = ({
   const [total, setTotal] = useState(0);
   const [members, setMembers] = useState([]);
   const [showEmoji, setShowEmoji] = useState(false);
+  const [initialized, setInitialized] = useState(false);
   const inputText = useRef("");
   const [permissionGranted, setPermissionGranted] = useState(false);
   const [privateRequest, setPrivateRequest] = useState({} as any);
@@ -88,15 +82,49 @@ const PrivateChat = ({
   const remoteStreamRef = useRef({
     id: "",
   }).current;
+  const toast = useToast();
 
   useEffect(() => {
     askPermissions();
+    handleSocketsJoin();
+    access(selectedRequest.conversationId);
+    const socket = socketHolder.getSocket() as any;
+    socket.on("public-room-changed", handler);
     return () => {
       privateRequestHolder = null;
       chargerTimeout && clearTimeout(chargerTimeout);
       handleSocketLeave();
     };
   }, []);
+
+  const handleSocketsJoin = async () => {
+    const socket = socketHolder.getSocket() as any;
+    if (!socket) return;
+    socket.on(EVENT.JOINED_THE_ROOM, ({ streamId, conversationId }) => {
+      if (!localStreamRef.id) {
+        socket.emit("private-stream/join", {
+          conversationId,
+          streamId,
+        });
+        console.log("Voooooo");
+        localStreamRef.id = streamId;
+        // setLocalStreamId(streamId);
+      } else {
+        remoteStreamRef.id = streamId;
+      }
+    });
+
+    socket.on("private-stream/streamJoined", ({ conversationId, streamId }) => {
+      if (localStreamRef.id !== streamId) {
+        const cId = selectedRequest?.conversationId;
+
+        if (cId === conversationId) {
+          remoteStreamRef.id = streamId;
+          // setRemoteStreamId(streamId);
+        }
+      }
+    });
+  };
 
   const askAndroidPerissions = async () => {
     const cameraGranted = await PermissionsAndroid.request(
@@ -152,12 +180,27 @@ const PrivateChat = ({
     }
   };
 
-  const acceptRequest = async () => {
-    if (!conversationId) return;
-    const socket = socketHolder.getSocket() as any;
+  const hangUp = async () => {
+    // TODO - send socket event to stop, wait for local stream stop then navigate
+    privateRequestHolder = null;
+    chargerTimeout && (await clearTimeout(chargerTimeout));
+    await handleSocketLeave();
+    remoteStreamRef.id = "";
+    localStreamRef.id = "";
 
+    toast.show({
+      description: "Private call has ended",
+    });
+    navigation.navigate("LiveNow", {});
+  };
+
+  const acceptRequest = async () => {
+    if (!selectedRequest.conversationId) return;
+    const socket = socketHolder.getSocket() as any;
     try {
-      const resp = await streamService.acceptPrivateChat(conversationId);
+      const resp = await streamService.acceptPrivateChat(
+        selectedRequest.conversationId
+      );
       if (resp && resp.data) {
         const { sessionId, conversation } = resp.data;
         await socket.emit(EVENT.JOIN_ROOM, {
@@ -171,6 +214,7 @@ const PrivateChat = ({
         dispatchGetStreamConversationSuccess({
           data: conversation,
         });
+        setInitialized(true);
       }
     } catch (e) {
       const error = await Promise.resolve(e);
@@ -196,73 +240,39 @@ const PrivateChat = ({
       });
     }
   };
+
   const setStreamRef = (dataFunc) => {
     subscriberRef2 = dataFunc;
   };
 
-  const hangUp = async () => {
-    // TODO - send socket event to stop, wait for local stream stop then navigate
-    privateRequestHolder = null;
-    chargerTimeout && (await clearTimeout(chargerTimeout));
-    await handleSocketLeave();
-    navigation.navigate("Model", {});
+  const handler = ({ total, members }) => {
+    setTotal(total);
+    setMembers(members);
   };
 
-  const chargeInterval = async () => {
-    try {
-      const conversationId =
-        privateRequest?.conversation?._id ||
-        privateRequestHolder?.conversation?._id;
-      if (!conversationId) throw new Error("Cannot find conversation!");
-      await tokenService.sendPaidToken(conversationId);
+  const renderLocalVideo = () => {
+    if (!localStreamRef.id) return null;
 
-      chargerTimeout = setTimeout(() => chargeInterval(), 60 * 1000);
-    } catch (e) {
-      // console.log('charge error', e);
-      hangUp();
+    if (isAndroid()) {
+      return <Private streamId={localStreamRef.id} />;
     }
-  };
-  const onSelectEmoji = (emoji) => {
-    inputText.current = `${inputText.current}${emoji}`;
-    setShowEmoji(false);
+
+    return <PublisherIOS streamId={localStreamRef.id} />;
   };
 
-  const onPressEmoji = (currentText) => {
-    inputText.current = currentText || "";
-    setShowEmoji(true);
+  const renderPerformerVideo = () => {
+    const { optionForBroadcast } = settings;
+    if (!remoteStreamRef.id) return null;
+    return optionForBroadcast === WEBRTC
+      ? !!remoteStreamRef.id && <Viewer streamId={remoteStreamRef.id} />
+      : !!remoteStreamRef.id && (
+          <HLSViewer
+            streamId={remoteStreamRef.id}
+            ref={(viewRef) => setStreamRef(viewRef)}
+            settings={settings}
+          />
+        );
   };
-  const ButtonPrivateChatDetail = ({ ...props }) => (
-    <HStack my={3} space={2} alignSelf="center">
-      <Button {...props} />
-    </HStack>
-  );
-
-  // const renderLocalVideo = () => {
-  //   if (!localStreamId) return null;
-
-  //   if (isAndroid()) {
-  //     return <Private streamId={localStreamId} />;
-  //   }
-
-  //   return <PublisherIOS streamId={localStreamId} />;
-  // };
-
-  // const renderPerformerVideo = () => {
-  //   const { optionForBroadcast } = settings;
-  //   if (!remoteStreamRef.id) return null;
-  //   return optionForBroadcast === WEBRTC
-  //     ? !!remoteStreamRef.id && (
-  //         <Viewer streamId={remoteStreamRef.id} onJoined={chargeInterval} />
-  //       )
-  //     : !!remoteStreamRef.id && (
-  //         <HLSViewer
-  //           streamId={remoteStreamRef.id}
-  //           ref={(viewRef) => setStreamRef(viewRef)}
-  //           settings={settings}
-  //         />
-  //       );
-  // };
-
   if (!permissionGranted)
     return (
       <View>
@@ -288,49 +298,30 @@ const PrivateChat = ({
         Private Chat
       </Heading>
       <View flex={1}>
-        {/* {renderLocalVideo()}
+        {renderLocalVideo()}
 
-        {renderPerformerVideo()} */}
+        {renderPerformerVideo()}
+        {<ChatBox canSendMessage canSendTip={false} />}
       </View>
-      {showEmoji && <EmojiSelector onEmojiSelected={onSelectEmoji} />}
-      {!showEmoji && (
-        <ChatFooter
-          authUser={currentUser}
-          conversationId={conversationId}
-          Button={ButtonPrivateChatDetail}
-          setModal={setModal}
-          sendMessageStream={sendMessagePrivateStream}
-          PrivateBtnSendMessage={({ ...props }) => (
-            <Ionicons
-              name="send-outline"
-              size={34}
-              style={{
-                width: 50,
-                paddingHorizontal: 10,
-                alignItems: "center",
-              }}
-              color="#ff8284"
-              {...props}
-            />
-          )}
-          onPressEmoji={onPressEmoji}
-          defaultInput={inputText.current}
-        />
-      )}
-      <SendTip
-        setModal={setModal}
-        modal={modal}
-        conversationId={conversationId}
-        performerId={performer._id || ""}
-      />
+
       <View style={styles.footerGolive}>
-        <TouchableOpacity
-          activeOpacity={0.7}
-          style={styles.goliveButton}
-          onPress={acceptRequest}
-        >
-          <Text style={styles.btnText}>Start Streaming</Text>
-        </TouchableOpacity>
+        {!initialized ? (
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={styles.goliveButton}
+            onPress={acceptRequest}
+          >
+            <Text style={styles.btnText}>Start Streaming</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={styles.goliveButton}
+            onPress={hangUp}
+          >
+            <Text style={styles.btnText}>Stop Streaming</Text>
+          </TouchableOpacity>
+        )}
       </View>
       <HeaderMenu />
     </SafeAreaView>

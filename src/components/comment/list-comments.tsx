@@ -2,7 +2,7 @@ import CommentItem from "./comment-item";
 import { IPerformer } from "interfaces/index";
 import { Actionsheet, View, useDisclose, HStack, Image } from "native-base";
 import { FlatList, Text, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import CommentForm from "./comment-form";
 import { colors, Sizes } from "utils/theme";
@@ -41,10 +41,13 @@ const ListComments = React.memo(
     const [requesting, setRequesting] = useState(true);
     const { onOpen, isOpen, onClose } = useDisclose();
     const [totalComment, setTotalComment] = useState(feed.totalComment);
-
     const comments = commentMapping.hasOwnProperty(feed._id)
       ? commentMapping[feed._id].items
       : [];
+
+    useEffect(() => {
+      comments.length !== 0 && setTotalComment(comments.length);
+    }, [comments]);
     const handleOpenComment = async () => {
       setcommentPage(0);
       handleShowComment();
@@ -82,7 +85,7 @@ const ListComments = React.memo(
     };
     const handleDeleteComment = async (item) => {
       deleteComment(item._id);
-      handleShowComment();
+      setTotalComment(totalComment - 1);
     };
     const renderItem = ({ item }) => {
       return (
@@ -99,7 +102,7 @@ const ListComments = React.memo(
     const renderEmpty = () => (
       <View>
         {!requesting && !comments.length && (
-          <BadgeText content={"There is no comment available!"} />
+          <Text style={{ fontSize: 16, fontWeight: "bold" }}>No comments</Text>
         )}
       </View>
     );
@@ -114,6 +117,7 @@ const ListComments = React.memo(
         </TouchableOpacity>
         <Actionsheet isOpen={isOpen} onClose={onClose} padding={0}>
           <Actionsheet.Content height={400}>
+            {renderEmpty()}
             <FlatList
               keyExtractor={(item) => item._id}
               data={comments}

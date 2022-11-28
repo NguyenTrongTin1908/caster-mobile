@@ -1,5 +1,5 @@
-import { merge } from 'lodash';
-import { createReducers } from 'lib/redux';
+import { merge } from "lodash";
+import { createReducers } from "lib/redux";
 import {
   setCurrentUser,
   updateProfile,
@@ -7,14 +7,14 @@ import {
   updateProfileSuccess,
   updateCurrentUserAvatar,
   updateCurrentUserCover,
-  resetUpdateProfile
-} from './actions';
-import { IReduxAction } from 'src/interfaces';
-import { defaultStore } from 'utils/store';
+  resetUpdateProfile,
+  updateBalance,
+} from "./actions";
+import { defaultStore } from "utils/store";
 
 const initialState = {
   current: null,
-  updateProfile: defaultStore
+  updateProfile: defaultStore,
 };
 
 const userReducers = [
@@ -22,8 +22,8 @@ const userReducers = [
     on: setCurrentUser,
     reducer: (state: any, data: any) => ({
       ...state,
-      current: data.payload
-    })
+      current: data.payload,
+    }),
   },
   {
     on: updateProfile,
@@ -31,9 +31,9 @@ const userReducers = [
       ...state,
       updateProfile: {
         ...state.updateProfile,
-        requesting: true
-      }
-    })
+        requesting: true,
+      },
+    }),
   },
   {
     on: updateProfileSuccess,
@@ -43,9 +43,9 @@ const userReducers = [
       updateProfile: {
         requesting: false,
         error: null,
-        success: true
-      }
-    })
+        success: true,
+      },
+    }),
   },
   {
     on: updateProfileFail,
@@ -54,37 +54,54 @@ const userReducers = [
       updateProfile: {
         requesting: false,
         error: data.payload,
-        success: false
-      }
-    })
+        success: false,
+      },
+    }),
   },
   {
     on: updateCurrentUserAvatar,
     reducer: (state: any, data: any) => ({
-        ...state,
-        current: {
-          ...state.current,
-          avatar: data.payload
-      }
-    })
+      ...state,
+      current: {
+        ...state.current,
+        avatar: data.payload,
+      },
+    }),
   },
   {
     on: updateCurrentUserCover,
     reducer: (state: any, data: any) => ({
-        ...state,
-        current: {
-          ...state.current,
-          cover: data.payload
-        }
-    })
+      ...state,
+      current: {
+        ...state.current,
+        cover: data.payload,
+      },
+    }),
   },
   {
     on: resetUpdateProfile,
     reducer: (state: any) => ({
       ...state,
-      updateProfile: { ...defaultStore }
-    })
-  }
+      updateProfile: { ...defaultStore },
+    }),
+  },
+  {
+    on: updateBalance,
+    reducer(state: any, data: any) {
+      const { token, type } = data.payload;
+      const newState =
+        type == "ruby-balance"
+          ? {
+              ...state.current,
+              rubyBalance: (state.current.rubyBalance += token),
+            }
+          : { ...state.current, balance: (state.current.balance += token) };
+      return {
+        ...state,
+        current: { ...newState },
+      };
+    },
+  },
 ];
 
-export default merge({}, createReducers('user', [userReducers], initialState));
+export default merge({}, createReducers("user", [userReducers], initialState));

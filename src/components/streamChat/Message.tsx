@@ -57,40 +57,12 @@ export default function Message(props: IProps) {
           <Text style={styles.chatText}>{data.text}</Text>
         </View>
       )}
+      {data.text && data.isSystem && (
+        <Text style={styles.chatSystem}>{data.text}</Text>
+      )}
+      {showTimestamp && !data.isSystem && (
+        <Text style={styles.chatTimeStamp}>{friendlyTimestamp}</Text>
+      )}
     </View>
-    // <div className={classNames}>
-    //   {data.text && !data.isSystem && (
-    //     <div className="bubble-container">
-    //       <div className="bubble" title={friendlyTimestamp}>
-    //         {canDelete && (
-    //           <Dropdown overlay={menu} placement="topRight">
-    //             <span>
-    //               <InfoCircleOutlined />{' '}
-    //             </span>
-    //           </Dropdown>
-    //         )}
-    //         {data.senderInfo && (
-    //           <span className="u-name">
-    //             {isOwner && <CrownTwoTone twoToneColor="#eb2f96" />}
-    //             {data.senderInfo.username}
-    //             {data.type !== 'tip' ? ': ' : ' '}
-    //           </span>
-    //         )}
-    //         {!data.imageUrl && data.text}{' '}
-    //         {data.imageUrl && (
-    //           <a
-    //             title="Click to view full content"
-    //             href={data.imageUrl.indexOf('http') === -1 ? '#' : data.imageUrl}
-    //             target="_blank"
-    //             rel="noreferrer">
-    //             <img src={data.imageUrl} width="180px" alt="" />
-    //           </a>
-    //         )}
-    //       </div>
-    //     </div>
-    //   )}
-    //   {data.text && data.isSystem && <p style={{ textAlign: 'center', fontSize: '10px' }}>{data.text}</p>}
-    //   {showTimestamp && !data.isSystem && <div className="timestamp">{friendlyTimestamp}</div>}
-    // </div>
   );
 }

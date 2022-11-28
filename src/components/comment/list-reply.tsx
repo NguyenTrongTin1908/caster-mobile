@@ -9,6 +9,7 @@ import {
   deleteComment,
 } from "services/redux/comment/actions";
 import { connect } from "react-redux";
+import CommentItem from "./comment-item";
 interface IProps {
   user: IPerformer;
   canReply?: boolean;
@@ -27,7 +28,7 @@ const ListReplys = React.memo(
   }: IProps): React.ReactElement => {
     const renderItem = ({ item }) => {
       return (
-        <ReplyItem
+        <CommentItem
           canReply={canReply}
           key={item._id}
           item={item}

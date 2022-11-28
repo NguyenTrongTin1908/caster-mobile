@@ -1,11 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
-import { PermissionsAndroid, SafeAreaView, StyleSheet } from "react-native";
+import {
+  Image,
+  PermissionsAndroid,
+  SafeAreaView,
+  StyleSheet,
+} from "react-native";
 import {
   PERMISSIONS,
   requestMultiple,
   RESULTS,
 } from "react-native-permissions";
-import { Text, View, Heading, useToast, HStack } from "native-base";
+import { Text, View, Heading, useToast, HStack, Button } from "native-base";
 import { tokenService } from "services/token.service";
 import socketHolder from "lib/socketHolder";
 import { Private } from "components/antmedia/Private";
@@ -20,6 +25,9 @@ import { HLSViewer } from "components/antmedia/HLSViewer";
 import HeaderMenu from "components/tab/HeaderMenu";
 import { colors, Sizes } from "utils/theme";
 import ChatBox from "components/streamChat/chat-box";
+import ButtonFollow from "components/uis/ButtonFollow";
+import SendTip from "components/message/SendTip";
+import { giftService } from "../../services";
 
 enum EVENT {
   JOINED_THE_ROOM = "JOINED_THE_ROOM",
@@ -48,6 +56,9 @@ const Call = ({ route, settings, currentUser }: IProps) => {
   const [permissionGranted, setPermissionGranted] = useState(false);
   const [localStreamRefId, setLocalStreamRefId] = useState(localStreamId);
   const [remoteStreamRefId, setRemoteStreamRefId] = useState(remoteStreamId);
+  const [favoriteGift, setFavoriteGift] = useState({});
+  const [modal, setModal] = useState(false);
+
   const toast = useToast();
 
   useEffect(() => {
@@ -138,7 +149,6 @@ const Call = ({ route, settings, currentUser }: IProps) => {
 
   const hangUp = async () => {
     // TODO - send socket event to stop, wait for local stream stop then navigate
-    console.log("HAngUp");
     privateRequestHolder = null;
     chargerTimeout && (await clearTimeout(chargerTimeout));
     await handleSocketLeave();
@@ -160,8 +170,8 @@ const Call = ({ route, settings, currentUser }: IProps) => {
 
       chargerTimeout = setTimeout(() => chargeInterval(), 60 * 1000);
     } catch (e) {
-      // console.log('charge error', e);
-      hangUp();
+      console.log("charge error", e);
+      // hangUp();
     }
   };
 
@@ -173,6 +183,17 @@ const Call = ({ route, settings, currentUser }: IProps) => {
     }
 
     return <PublisherIOS streamId={localStreamRefId} />;
+  };
+  const favoriteHandle = (gift) => {
+    try {
+      if (gift && gift.length > 0) {
+        setFavoriteGift(gift);
+        console.log("Favorite : ", gift);
+        giftService.addfavoriteGift({ giftId: gift[0]._id });
+      }
+    } catch (error) {
+      console.log("Error : ", error);
+    }
   };
 
   const renderPerformerVideo = () => {
@@ -216,10 +237,54 @@ const Call = ({ route, settings, currentUser }: IProps) => {
       >
         Private Chat
       </Heading>
+      {/* <View
+            style={{
+              position: "absolute",
+              marginTop: Sizes.fixPadding + 180.0,
+              alignItems: "center",
+              alignSelf: "flex-end",
+              zIndex: 1000,
+            }}
+          >
+                <ButtonFollow
+            isHideOnClick
+            targetId={performer?._id}
+            sourceId={currentUser._id}
+            isFollow={performer.isFollowed}
+            getPerformerList={() => {}}
+          />
+             <Image
+              source={
+                performer?.avatar
+                  ? { uri: performer?.avatar }
+                  : require("../../assets/avatar-default.png")
+              }
+              alt={"avatar"}
+              size={45}
+              borderRadius={80}
+            />
+          </View> */}
       <View flex={1} flexDirection={"column"} position={"relative"}>
         {renderLocalVideo()}
 
         {renderPerformerVideo()}
+        {/* <Button
+          performerId={performerId}
+          conversationId={conversationId}
+          colorScheme="secondary"
+          label="Send gifts"
+          onPress={() => setModal(true)}
+        />
+
+        <SendTip
+          setModal={setModal}
+          aria-label="Send Tip"
+          modal={modal}
+          conversationId={privateRequest?.conversation?._id}
+          performerId={privateRequest?.conversation?.performerId || ""}
+          saveFavorite={favoriteHandle}
+          favorGift={favoriteGift}
+        /> */}
         <ChatBox canSendMessage />
       </View>
 
