@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text } from "native-base";
+import { View, Text, Box } from "native-base";
 import { TouchableOpacity } from "react-native";
 import { colors, Sizes } from "utils/theme";
 import styles from "./style";
@@ -23,7 +23,12 @@ const FeedTab = ({
     <View style={{ ...styles.tabView, ...style }}>
       {tabs.map((item, index) => {
         return (
-          <>
+          <Box
+            flexDirection="row"
+            alignItems={"center"}
+            justifyContent={"center"}
+            key={index}
+          >
             <TouchableOpacity onPress={() => onTabChange(item.key)}>
               <Text
                 style={{
@@ -36,6 +41,7 @@ const FeedTab = ({
             </TouchableOpacity>
             {index % 2 == 0 ? (
               <View
+                key={`${index}-text`}
                 style={{
                   marginHorizontal: Sizes.fixPadding + 5.0,
                   height: 18.0,
@@ -44,7 +50,7 @@ const FeedTab = ({
                 }}
               />
             ) : null}
-          </>
+          </Box>
         );
       })}
     </View>

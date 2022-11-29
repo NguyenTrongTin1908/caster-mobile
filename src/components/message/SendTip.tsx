@@ -47,10 +47,8 @@ export default function SendTip({
 }: Iprops) {
   const { width, height } = Dimensions.get("window");
   const [favoriteGift, setFavoriteGift] = useState({});
-  const [searching, setSearching] = useState(false);
   const [list, setList] = useState([] as any);
   const [token, setToken] = useState(0);
-  const [giftFavorite, setGiftFavorite] = useState([] as any);
   const [isConfirm, setIsConfirm] = useState(true);
   const [isSave, setIsSave] = useState(false);
   const [giftID, setGiftID] = useState("");
@@ -95,7 +93,7 @@ export default function SendTip({
     try {
       const resp = await giftService.search({ ...filter });
       setList(resp.data.data);
-      console.log(favorGift);
+      // console.log(favorGift);
 
       if (favorGift) {
         setToken(favorGift.tokens);
@@ -122,8 +120,7 @@ export default function SendTip({
           sessionId: "",
         });
         toast.show({ description: "Send gift success" });
-        console.log("gift Favorite : ", giftFavorite);
-        saveFavorite(giftFavorite);
+        saveFavorite(favoriteGift);
       } catch (e: any) {
         const error = await e;
         toast.show({ description: "Send gift success" });
@@ -163,7 +160,7 @@ export default function SendTip({
           left: 0,
           width,
           bottom: 0,
-          zIndex: modal ? 101 : -9,
+          zIndex: modal ? 10000 : -9,
         }}
       >
         <Animated.View
@@ -184,7 +181,7 @@ export default function SendTip({
                     onPress={() => {
                       setToken(item.tokens);
                       setGiftID(item._id);
-                      setFavoriteGift(giftFavorite.push(item));
+                      setFavoriteGift([item]);
                       setIsSave(false);
                       setSelectedId(item._id);
                     }}
@@ -193,7 +190,7 @@ export default function SendTip({
                   >
                     <Image
                       source={
-                        item?.image.url
+                        item?.image?.url
                           ? { uri: item?.image.url }
                           : require("../../assets/heart-purple.png")
                       }

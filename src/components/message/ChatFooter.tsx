@@ -41,7 +41,7 @@ const ChatFooter = ({
 
   return (
     <>
-      {canSendTip && (
+      {/* {canSendTip && (
         <Button
           performerId={performerId}
           conversationId={conversationId}
@@ -49,7 +49,7 @@ const ChatFooter = ({
           label="Send gifts"
           onPress={() => setModal(true)}
         />
-      )}
+      )} */}
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={110}

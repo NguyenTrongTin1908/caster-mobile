@@ -95,6 +95,7 @@ export const PrivateRequest = ({
         value={privateRequest}
         aria-label="privateRequest"
         isChecked={isChecked}
+        onChange={() => handleSelect()}
       ></Checkbox>
       <Text>{time}</Text>
       <Image

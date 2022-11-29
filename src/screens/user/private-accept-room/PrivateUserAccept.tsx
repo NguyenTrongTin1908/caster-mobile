@@ -131,6 +131,7 @@ const PrivateUserAcceptRoom = ({
           style={{
             flexDirection: "row",
             justifyContent: "center",
+            minHeight: 45,
           }}
         >
           <ButtonFollow

@@ -72,7 +72,6 @@ const MessageList = ({
   const [onloadmore, setOnloadmore] = useState(false);
   const [showEmoji, setShowEmoji] = useState(false);
   const [modal, setModal] = useState(false);
-  const [favoriteGift, setFavoriteGift] = useState({});
   const inputText = useRef("");
 
   useEffect(() => {
@@ -116,11 +115,6 @@ const MessageList = ({
   const onDelete = (messageId) => {
     if (!messageId) return;
     deleteMessage({ messageId });
-  };
-
-  const getfavoriteGift = async () => {
-    const respGift = await (await giftService.favoriteGift()).data;
-    setFavoriteGift(respGift.data[0]);
   };
 
   const renderMessages = () => {
@@ -294,7 +288,7 @@ const MessageList = ({
           />
         )}
 
-        <SendTip
+        {/* <SendTip
           setModal={setModal}
           aria-label="Send Tip"
           modal={modal}
@@ -302,7 +296,7 @@ const MessageList = ({
           performerId={conversation.performerId || ""}
           saveFavorite={favoriteHandle}
           favorGift={favoriteGift}
-        />
+        /> */}
       </>
     </View>
   );

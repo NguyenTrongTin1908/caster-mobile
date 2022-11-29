@@ -98,6 +98,7 @@ const PrivateUserWaitingRoom = ({
   //   // Call the API to set the price
   //   return toast.show({ description: "Set the price successfully" });
   // };
+  console.log("Accept  : ", isAccept);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -117,6 +118,7 @@ const PrivateUserWaitingRoom = ({
           style={{
             flexDirection: "row",
             justifyContent: "center",
+            minHeight: 45,
           }}
         >
           <ButtonFollow
@@ -180,7 +182,7 @@ const PrivateUserWaitingRoom = ({
       <View style={styles.footerGolive}>
         <TouchableOpacity
           activeOpacity={0.7}
-          style={styles.goliveButton}
+          style={[styles.goliveButton, { opacity: isAccept ? 1 : 0.5 }]}
           onPress={() => requestPrivateCall()}
           disabled={!isAccept}
         >
@@ -189,7 +191,7 @@ const PrivateUserWaitingRoom = ({
         <View style={styles.termBox}>
           <Text style={styles.subText}>Term & Conditions</Text>
           <Checkbox
-            value="golive"
+            value="acceptWaitingRoom"
             isChecked={isAccept}
             onChange={() => setIsAccept(!isAccept)}
           >

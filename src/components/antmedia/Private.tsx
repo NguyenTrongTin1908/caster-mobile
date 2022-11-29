@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button, Dimensions, StyleSheet, View } from "react-native";
 import { SignalingChannel } from "./SignalingChannel";
 import { WEBRTC_ADAPTOR_INFORMATIONS } from "components/antmedia/constants";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 import {
   mediaDevices,
@@ -30,11 +29,8 @@ export const Private = ({
   const [isFrontCamera, setIsFrontCamera] = useState(true);
   const [audiMuted, setAudioMuted] = useState(false);
   const [videoMuted, setVideoMuted] = useState(false);
-
   const [localStream, setLocalStream] = useState<MediaStream>();
-
   const localStreamRef = useRef<MediaStream>();
-
   const peerConnection = useRef<RTCPeerConnection>();
 
   const startStreaming = async () => {
@@ -57,7 +53,7 @@ export const Private = ({
         // console.log(peerConnection.current?.signalingState);
 
         (peerConnection.current.onicecandidateerror = console.log);
-      peerConnection.current.onicecandidate = (event) => {
+      peerConnection.current.onicecandidate = (event: any) => {
         const candidate = event.candidate;
         if (candidate && signalingChannel.current?.isChannelOpen()) {
           signalingChannel.current?.sendJSON({
@@ -180,9 +176,6 @@ export const Private = ({
       if (media) {
         localStreamRef.current = media as MediaStream;
         setLocalStream(media as MediaStream);
-
-        // start to call
-        // console.log('start to call...');
         start();
       }
     };

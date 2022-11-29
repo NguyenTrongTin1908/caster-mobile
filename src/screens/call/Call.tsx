@@ -1,16 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  Image,
+  Dimensions,
   PermissionsAndroid,
+  Platform,
   SafeAreaView,
-  StyleSheet,
+  StatusBar,
 } from "react-native";
 import {
   PERMISSIONS,
   requestMultiple,
   RESULTS,
 } from "react-native-permissions";
-import { Text, View, Heading, useToast, HStack, Button } from "native-base";
+import { Text, View, Heading, useToast } from "native-base";
 import { tokenService } from "services/token.service";
 import socketHolder from "lib/socketHolder";
 import { Private } from "components/antmedia/Private";
@@ -26,9 +27,16 @@ import HeaderMenu from "components/tab/HeaderMenu";
 import { colors, Sizes } from "utils/theme";
 import ChatBox from "components/streamChat/chat-box";
 import ButtonFollow from "components/uis/ButtonFollow";
+import FavoriteGift from "components/gift/favorite";
 import SendTip from "components/message/SendTip";
 import { giftService } from "../../services";
-
+import AntDesign from "react-native-vector-icons/AntDesign";
+const { width, height } = Dimensions.get("window");
+let deviceH = Dimensions.get("screen").height;
+const STATUS_BAR_HEIGHT = StatusBar.currentHeight || 24;
+let bottomNavBarH = deviceH - height + STATUS_BAR_HEIGHT;
+import styles from "./styles";
+import { WEBRTC_ADAPTOR_INFORMATIONS } from "components/antmedia/constants";
 enum EVENT {
   JOINED_THE_ROOM = "JOINED_THE_ROOM",
   JOIN_ROOM = "JOIN_ROOM",
@@ -43,26 +51,28 @@ interface IProps {
   settings: any;
   remoteStreamId: any;
   currentUser: IPerformer;
+  activeConversation: any;
 }
 
 let privateRequestHolder;
 let chargerTimeout;
 
-const Call = ({ route, settings, currentUser }: IProps) => {
+const Call = ({ route, settings, currentUser, activeConversation }: IProps) => {
   const navigation = useNavigation() as any;
   let subscriberRef2: any;
-
   const { localStreamId, remoteStreamId, privateRequest } = route.params;
+  const [loading, setLoading] = useState(false);
+  const [initialized, setInitialized] = useState(false);
   const [permissionGranted, setPermissionGranted] = useState(false);
   const [localStreamRefId, setLocalStreamRefId] = useState(localStreamId);
   const [remoteStreamRefId, setRemoteStreamRefId] = useState(remoteStreamId);
-  const [favoriteGift, setFavoriteGift] = useState({});
+  const [favoriteGift, setFavoriteGift] = useState({} as any);
   const [modal, setModal] = useState(false);
-
   const toast = useToast();
 
   useEffect(() => {
     askPermissions();
+    getfavoriteGift();
     return () => {
       privateRequestHolder = null;
       chargerTimeout && clearTimeout(chargerTimeout);
@@ -174,22 +184,55 @@ const Call = ({ route, settings, currentUser }: IProps) => {
       // hangUp();
     }
   };
+  const callback = (info: WEBRTC_ADAPTOR_INFORMATIONS) => {
+    if (activeConversation && activeConversation.data) {
+      // const socket = this.context;
+      const socket = socketHolder.getSocket() as any;
+      if (info === WEBRTC_ADAPTOR_INFORMATIONS.INITIALIZED) {
+        setInitialized(true);
+        console.log("INITIALIZED");
+        // if (publisherRef.publish) publisherRef.publish(sessionId);
+        // else publisherRef2.publish(sessionId);
+      } else if (info === WEBRTC_ADAPTOR_INFORMATIONS.PUBLISH_STARTED) {
+        const conversation = { ...activeConversation.data };
+        console.log("public");
+
+        setLoading(true);
+      } else if (info === WEBRTC_ADAPTOR_INFORMATIONS.PUBLISH_FINISHED) {
+        console.log("finished");
+
+        setLoading(false);
+      } else if (info === WEBRTC_ADAPTOR_INFORMATIONS.CLOSED) {
+        setLoading(false);
+        console.log("close");
+        setInitialized(false);
+      }
+    }
+  };
 
   const renderLocalVideo = () => {
     if (!localStreamRefId) return null;
-
     if (isAndroid()) {
-      return <Private streamId={localStreamRefId} />;
+      return <Private streamId={localStreamRefId} onChange={callback} />;
     }
 
-    return <PublisherIOS streamId={localStreamRefId} />;
+    return <PublisherIOS streamId={localStreamRefId} onChange={callback} />;
   };
-  const favoriteHandle = (gift) => {
+
+  const getfavoriteGift = async () => {
+    setLoading(false);
+    const respGift = await (await giftService.favoriteGift()).data;
+    console.log("Get favorite gift : ", respGift.data[0]);
+    setFavoriteGift(respGift.data[0]);
+    setLoading(true);
+  };
+
+  const favoriteHandle = async (gift) => {
     try {
       if (gift && gift.length > 0) {
-        setFavoriteGift(gift);
-        console.log("Favorite : ", gift);
-        giftService.addfavoriteGift({ giftId: gift[0]._id });
+        setFavoriteGift(gift[0]);
+
+        await giftService.addfavoriteGift({ giftId: gift[0]._id });
       }
     } catch (error) {
       console.log("Error : ", error);
@@ -237,57 +280,57 @@ const Call = ({ route, settings, currentUser }: IProps) => {
       >
         Private Chat
       </Heading>
-      {/* <View
-            style={{
-              position: "absolute",
-              marginTop: Sizes.fixPadding + 180.0,
-              alignItems: "center",
-              alignSelf: "flex-end",
-              zIndex: 1000,
-            }}
-          >
-                <ButtonFollow
-            isHideOnClick
-            targetId={performer?._id}
-            sourceId={currentUser._id}
-            isFollow={performer.isFollowed}
-            getPerformerList={() => {}}
-          />
-             <Image
-              source={
-                performer?.avatar
-                  ? { uri: performer?.avatar }
-                  : require("../../assets/avatar-default.png")
-              }
-              alt={"avatar"}
-              size={45}
-              borderRadius={80}
-            />
-          </View> */}
-      <View flex={1} flexDirection={"column"} position={"relative"}>
-        {renderLocalVideo()}
-
-        {renderPerformerVideo()}
-        {/* <Button
-          performerId={performerId}
-          conversationId={conversationId}
-          colorScheme="secondary"
-          label="Send gifts"
-          onPress={() => setModal(true)}
-        />
-
-        <SendTip
-          setModal={setModal}
-          aria-label="Send Tip"
-          modal={modal}
-          conversationId={privateRequest?.conversation?._id}
-          performerId={privateRequest?.conversation?.performerId || ""}
-          saveFavorite={favoriteHandle}
+      <View
+        style={{
+          position: "absolute",
+          top:
+            Platform.OS === "ios"
+              ? deviceH / 2 - (90 + 47)
+              : deviceH / 2 - (bottomNavBarH + 60),
+          right: Sizes.fixPadding - 5,
+          alignSelf: "flex-end",
+          zIndex: 1000,
+        }}
+      >
+        <FavoriteGift
+          performerId={privateRequest?.conversation?.performerId}
+          conversationId={activeConversation?.data?._id}
           favorGift={favoriteGift}
-        /> */}
-        <ChatBox canSendMessage />
+        />
+      </View>
+      <View
+        style={{
+          position: "absolute",
+          top:
+            Platform.OS === "ios"
+              ? deviceH / 2 - (90 + 47) + 80
+              : deviceH / 2 - (bottomNavBarH + 60) + 80,
+          right: Sizes.fixPadding - 5,
+          alignSelf: "flex-end",
+          zIndex: 1000,
+        }}
+      >
+        <TouchableOpacity onPress={() => setModal(true)}>
+          <AntDesign name="gift" color={colors.light} size={28} />
+        </TouchableOpacity>
       </View>
 
+      <View flex={1} flexDirection={"column"} position={"relative"}>
+        {renderLocalVideo()}
+        {renderPerformerVideo()}
+        <ChatBox canSendMessage />
+        {loading && (
+          <SendTip
+            setModal={setModal}
+            aria-label="Send Tip"
+            modal={modal}
+            conversationId={privateRequest?.conversation?._id}
+            performerId={privateRequest?.conversation?.performerId || ""}
+            saveFavorite={favoriteHandle}
+            favorGift={favoriteGift}
+          />
+        )}
+      </View>
       <View style={styles.footerGolive}>
         <TouchableOpacity
           activeOpacity={0.7}
@@ -301,39 +344,6 @@ const Call = ({ route, settings, currentUser }: IProps) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  button: {
-    width: 60,
-    height: 60,
-    borderRadius: 50,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  footerGolive: {
-    flexDirection: "column",
-    justifyContent: "space-around",
-  },
-  goliveButton: {
-    backgroundColor: colors.gray,
-    borderColor: colors.darkText,
-    borderWidth: 2.0,
-    borderRadius: Sizes.fixPadding - 5.0,
-    justifyContent: "center",
-    textAlign: "center",
-    width: "100%",
-    height: 50.0,
-  },
-  btnText: {
-    color: colors.lightText,
-    // alignSelf: 'center',
-    textAlign: "center",
-    fontWeight: "bold",
-  },
-
-  bg1: { backgroundColor: "#1ED760" },
-  bg2: { backgroundColor: "#FE294D" },
-});
 
 const mapStateToProps = (state) => ({
   currentUser: state.user.current,

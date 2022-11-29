@@ -2,8 +2,14 @@ import React, { useEffect, useState } from "react";
 import { View, Heading, Text, Image } from "native-base";
 import { connect } from "react-redux";
 import { IPerformer, IUser } from "../../interfaces";
-import { messageService, streamService } from "../../services";
-import { Alert } from "react-native";
+import { giftService, messageService, streamService } from "../../services";
+import {
+  Alert,
+  Dimensions,
+  Platform,
+  TouchableOpacity,
+  StatusBar,
+} from "react-native";
 import socketHolder from "lib/socketHolder";
 
 import {
@@ -23,6 +29,13 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import dismissKeyboard from "react-native/Libraries/Utilities/dismissKeyboard";
 import KeyboardDismiss from "components/uis/KeyboardDismiss";
 import ButtonFollow from "components/uis/ButtonFollow";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import FavoriteGift from "components/gift/favorite";
+import SendTip from "components/message/SendTip";
+const { width, height } = Dimensions.get("window");
+let deviceH = Dimensions.get("screen").height;
+const STATUS_BAR_HEIGHT = StatusBar.currentHeight || 24;
+let bottomNavBarH = deviceH - height + STATUS_BAR_HEIGHT;
 
 interface IProps {
   resetStreamMessage: Function;
@@ -61,11 +74,15 @@ const ViewPublicStream = ({
   const [total, setTotal] = useState(0);
   const [members, setMembers] = useState([]);
   const { performer } = route.params;
-
+  const [favoriteGift, setFavoriteGift] = useState({} as any);
+  const [loading, setLoading] = useState(false);
+  const [modal, setModal] = useState(false);
 
   useEffect(() => {
     interval = setInterval(updatePerformerInfo, 60 * 1000);
     joinPerformerPublicRoom();
+    getfavoriteGift();
+
     const socket = socketHolder.getSocket() as any;
 
     socket.on(STREAM_EVENT.JOIN_BROADCASTER, subscribe);
@@ -124,6 +141,27 @@ const ViewPublicStream = ({
     if (activeConversation?.data?._id) {
       setTotal(total);
       setMembers(members);
+    }
+  };
+
+  const getfavoriteGift = async () => {
+    setLoading(false);
+    const respGift = await (await giftService.favoriteGift()).data;
+    console.log("Get favorite gift : ", respGift.data[0]);
+    setFavoriteGift(respGift.data[0]);
+    setLoading(true);
+  };
+
+  const favoriteHandle = async (gift) => {
+    try {
+      if (gift && gift.length > 0) {
+        setFavoriteGift(gift[0]);
+        console.log("favorite handle : ", gift);
+
+        await giftService.addfavoriteGift({ giftId: gift[0]._id });
+      }
+    } catch (error) {
+      console.log("Error : ", error);
     }
   };
 
@@ -186,9 +224,7 @@ const ViewPublicStream = ({
     if (performerId !== performer._id) {
       return;
     }
-
     // subscriberRef2.pause();
-
     Alert.alert("Model has left the room!");
   };
 
@@ -215,20 +251,23 @@ const ViewPublicStream = ({
           <View
             style={{
               position: "absolute",
-              marginTop: Sizes.fixPadding + 180.0,
+              top:
+                Platform.OS === "ios"
+                  ? deviceH / 2 - (90 + 47) - 40
+                  : deviceH / 2 - (bottomNavBarH + 60) - 40,
               alignItems: "center",
               alignSelf: "flex-end",
               zIndex: 1000,
             }}
           >
-                <ButtonFollow
-            isHideOnClick
-            targetId={performer?._id}
-            sourceId={currentUser._id}
-            isFollow={performer.isFollowed}
-            getPerformerList={() => {}}
-          />
-             <Image
+            <ButtonFollow
+              isHideOnClick
+              targetId={performer?._id}
+              sourceId={currentUser._id}
+              isFollow={performer.isFollowed}
+              getPerformerList={() => {}}
+            />
+            <Image
               source={
                 performer?.avatar
                   ? { uri: performer?.avatar }
@@ -240,12 +279,14 @@ const ViewPublicStream = ({
             />
           </View>
 
-
           <View
             style={{
               position: "absolute",
-              top: Sizes.fixPadding + 280.0,
-              right: Sizes.fixPadding ,
+              top:
+                Platform.OS === "ios"
+                  ? deviceH / 2 - (90 + 47) + 20
+                  : deviceH / 2 - (bottomNavBarH + 60) + 20,
+              right: Sizes.fixPadding,
               alignItems: "center",
               alignSelf: "flex-end",
               zIndex: 1000,
@@ -261,6 +302,40 @@ const ViewPublicStream = ({
               {total}
             </Text>
           </View>
+          <View
+            style={{
+              position: "absolute",
+              top:
+                Platform.OS === "ios"
+                  ? deviceH / 2 - (90 + 47) + 80
+                  : deviceH / 2 - (bottomNavBarH + 60) + 80,
+              right: Sizes.fixPadding - 5,
+              alignSelf: "flex-end",
+              zIndex: 1000,
+            }}
+          >
+            <FavoriteGift
+              performerId={activeConversation?.data?.performerId}
+              conversationId={activeConversation?.data?._id}
+              favorGift={favoriteGift}
+            />
+          </View>
+          <View
+            style={{
+              position: "absolute",
+              top:
+                Platform.OS === "ios"
+                  ? deviceH / 2 - (90 + 47) + 160
+                  : deviceH / 2 - (bottomNavBarH + 60) + 160,
+              right: Sizes.fixPadding - 5,
+              alignSelf: "flex-end",
+              zIndex: 1000,
+            }}
+          >
+            <TouchableOpacity onPress={() => setModal(true)}>
+              <AntDesign name="gift" color={colors.light} size={28} />
+            </TouchableOpacity>
+          </View>
           <View flex={1} flexDirection={"column"} position={"relative"}>
             <HLSViewer
               streamId={activeConversation?.data?.streamId}
@@ -268,6 +343,17 @@ const ViewPublicStream = ({
               settings={settings}
             />
             <ChatBox canSendMessage />
+            {loading && (
+              <SendTip
+                setModal={setModal}
+                aria-label="Send Tip"
+                modal={modal}
+                conversationId={activeConversation?.data?._id}
+                performerId={activeConversation?.data?.performerId || ""}
+                saveFavorite={favoriteHandle}
+                favorGift={favoriteGift}
+              />
+            )}
           </View>
           <HeaderMenu />
         </>

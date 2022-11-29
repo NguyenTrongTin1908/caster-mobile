@@ -56,21 +56,7 @@ const ButtonFollow = ({
 
   return (
     <View>
-      {/* <TouchableOpacity activeOpacity={0.7} style={styles.editButtonStyle}>
-      <Text style={styles.subText}>Edit Profile</Text>
-    </TouchableOpacity> */}
-      {/* <TouchableOpacity
-        activeOpacity={0.5}
-        style={styles.followButtonStyle}
-        onPress={handleFollow}
-      >
-        {status ? (
-          <Text fontWeight={"bold"}> Unfollow </Text>
-        ) : (
-          <Text fontWeight={"bold"}>Follow</Text>
-        )}
-      </TouchableOpacity> */}
-      {!status && (
+      {status && isHideOnClick ? null : (
         <Button
           width={60}
           height={10}
