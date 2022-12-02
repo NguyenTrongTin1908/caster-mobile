@@ -1,22 +1,24 @@
-import { APIRequest } from './api-request';
+import { APIRequest } from "./api-request";
 
 export class MessageService extends APIRequest {
   getConversations(query?: Record<string, any>) {
-    return this.get(this.buildUrl('/conversations', query)).then(
-      (resp) => resp.data
-    );
+    return this.get(this.buildUrl("/conversations", query));
   }
 
   searchConversations(query?: Record<string, any>) {
-    return this.get(this.buildUrl('/conversations/search', query));
+    return this.get(this.buildUrl("/conversations/search", query));
   }
 
   createConversation(data: Record<string, string>) {
-    return this.post('/conversations', data);
+    return this.post("/conversations", data);
   }
 
   getConversationDetail(id: string) {
     return this.get(`/conversations/${id}`);
+  }
+
+  deleteConversation(id: string) {
+    return this.del(`/conversations/${id}`);
   }
 
   getConversationByStreamId(streamId: string) {
@@ -26,13 +28,13 @@ export class MessageService extends APIRequest {
   getMessages(conversationId: string, query?: Record<string, any>) {
     return this.get(
       this.buildUrl(`/messages/conversations/${conversationId}`, query)
-    ).then((resp) => resp.data);
+    );
   }
 
   getPublicMessages(conversationId: string, query?: Record<string, any>) {
     return this.get(
       this.buildUrl(`/messages/conversations/public/${conversationId}`, query)
-    ).then((resp) => resp.data);
+    );
   }
 
   sendMessage(conversationId: string, data: Record<string, any>) {
@@ -55,11 +57,11 @@ export class MessageService extends APIRequest {
   }
 
   countTotalNotRead() {
-    return this.get('/messages/counting-not-read-messages');
+    return this.get("/messages/counting-not-read-messages");
   }
 
-  readAllInConversation(conversationId: string | number, recipientId: string) {
-    return this.post('/messages/read-all', { conversationId, recipientId });
+  readAllInConversation(conversationId: string) {
+    return this.post(`/messages/read-all/${conversationId}`);
   }
 
   getMessageUploadUrl() {
@@ -75,7 +77,7 @@ export class MessageService extends APIRequest {
   }
 
   sendToken(conversationId: string | number, data: Record<string, any>) {
-    return this.post(`/member/send-tip-token/${conversationId}`, data)
+    return this.post(`/member/send-tip-token/${conversationId}`, data);
   }
 }
 

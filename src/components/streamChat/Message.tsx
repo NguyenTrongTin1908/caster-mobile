@@ -6,6 +6,7 @@ import { TextInput, TouchableOpacity } from "react-native";
 import { colors } from "utils/theme";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { Controller, useForm } from "react-hook-form";
+import { IPerformer } from "src/interfaces";
 
 // import { CrownTwoTone, InfoCircleOutlined } from '@ant-design/icons';
 // import { Menu, Dropdown } from 'antd';
@@ -20,8 +21,9 @@ interface IProps {
   endsSequence: boolean;
   showTimestamp: boolean;
   isOwner: boolean;
-  canDelete: boolean;
-  onDelete: Function;
+  canDelete?: boolean;
+  onDelete?: Function;
+  recipient: IPerformer;
 }
 
 export default function Message(props: IProps) {
@@ -34,6 +36,7 @@ export default function Message(props: IProps) {
     isOwner,
     canDelete,
     onDelete,
+    recipient,
   } = props;
   const friendlyTimestamp = moment(data.timestamp).format("LLLL");
   const randomColor = Math.floor(Math.random() * 16777215).toString(16);

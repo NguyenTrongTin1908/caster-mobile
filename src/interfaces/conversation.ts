@@ -1,5 +1,5 @@
-import { IUser } from './user';
-import { IPerformer } from './performer';
+import { IUser } from "./user";
+import { IPerformer } from "./performer";
 export interface IConversation {
   _id: string;
   name?: string;
@@ -14,10 +14,10 @@ export interface IConversation {
 }
 
 export interface IMessage {
-  _id: string
+  _id: string;
   conversationId: string;
   senderId: string;
-  senderInfo?: IUser;
+  senderInfo?: IPerformer;
   text: string;
   type: string;
   isSystem?: boolean;

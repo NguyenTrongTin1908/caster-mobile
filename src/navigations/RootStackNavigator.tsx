@@ -7,6 +7,7 @@ import { createNavigationContainerRef } from "@react-navigation/native";
 import { connect } from "react-redux";
 import React from "react";
 import navigationHolder from "lib/navigationHolder";
+import { IPerformer } from "interfaces/performer";
 import { colors } from "utils/theme";
 import IntroNav from "./IntroNav";
 import MainTabNav from "./MainTabNav";
@@ -17,7 +18,6 @@ import Call from "screens/call/Call";
 import Calling from "screens/call/Calling";
 import LiveNow from "screens/livenow/LiveNow";
 import FeedDetail from "screens/detail/feedDetail";
-import { IPerformer } from "interfaces/performer";
 import MediaPreview from "screens/media/MediaPreview";
 import Upload from "screens/feed/Upload";
 import Home from "screens/browse/Home";
@@ -29,7 +29,7 @@ import ModelProfile from "screens/model/profile/ModelProfile";
 import Bookmarks from "screens/model/bookmarks/Bookmarks";
 import Profile from "screens/profile/Profile";
 import FollowPost from "screens/followPost/FollowPost";
-import PushNotificationSetting from "screens/notification/component/PushNotificationSetting";
+import PushNotificationSetting from "screens/notification-setting/PushNotificationSetting";
 import NotificationPage from "screens/notification/Notification";
 import Wallet from "screens/wallet/Wallet";
 import TokenPackage from "screens/token-package/TokenPackage";
@@ -43,8 +43,8 @@ import PrivateUserWaitingRoom from "screens/user/private-waiting-room/PrivateUse
 import PrivateUserAcceptRoom from "screens/user/private-accept-room/PrivateUserAccept";
 import PrivateChat from "screens/privatechat/PrivateChat";
 import Blank from "screens/blank";
-
 import EditProfile from "screens/profile/EditProfile";
+
 export type RootStackParamList = {
   default: undefined;
   IntroNav: undefined;
@@ -67,7 +67,7 @@ export type RootStackParamList = {
   ModelOrderPage: undefined;
   ViewPublicStream: undefined;
   Blank: undefined;
-  // ChatRoom: { performer: IPerformer };
+  ChatRoom: { performer: IPerformer };
   PrivateChatDetail: { performer: IPerformer; conversationId: string };
   PrivateChat: undefined;
   PerformerDetail: { username: string };
@@ -175,14 +175,14 @@ function RootNavigator({ loggedIn }): React.ReactElement {
           name="MainTabNav"
           component={MainTabNav}
         />
-        {/* <Stack.Screen
+        <Stack.Screen
           options={{
             headerShown: false,
             gestureEnabled: false,
           }}
           name="ChatRoom"
           component={ChatRoom}
-        /> */}
+        />
         <Stack.Screen
           options={{
             headerShown: false,

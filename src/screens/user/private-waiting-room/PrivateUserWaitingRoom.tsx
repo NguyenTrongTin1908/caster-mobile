@@ -98,7 +98,6 @@ const PrivateUserWaitingRoom = ({
   //   // Call the API to set the price
   //   return toast.show({ description: "Set the price successfully" });
   // };
-  console.log("Accept  : ", isAccept);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>

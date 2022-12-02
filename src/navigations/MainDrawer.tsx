@@ -25,7 +25,6 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import socketHolder from "lib/socketHolder";
 import { updateBalance } from "services/redux/user/actions";
-import { useNavigation } from "@react-navigation/core";
 
 import {
   addPrivateRequest,
@@ -34,7 +33,6 @@ import {
 } from "services/redux/streaming/actions";
 
 import { SocketContext } from "../socket";
-import { messageService } from "src/services";
 interface DrawerProps {
   user: IPerformer;
   loggedIn: boolean;

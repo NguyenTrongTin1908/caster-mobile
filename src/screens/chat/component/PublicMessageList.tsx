@@ -1,117 +1,128 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { View } from 'react-native';
-import { Box, FlatList } from 'native-base';
-import BadgeText from 'components/uis/BadgeText';
-import LoadingSpinner from 'components/uis/LoadingSpinner';
-import MessageCard from 'components/message/MessageCard';
-import { messageService } from 'services/message.service';
-import { IUser } from 'interfaces/user';
-import { IMessage } from 'interfaces/conversation';
-import socketHolder from 'lib/socketHolder';
+import React from "react";
+import { Box, FlatList, View } from "native-base";
+import BadgeText from "components/uis/BadgeText";
+import MessageCard from "components/message/MessageCard";
+import { IPerformer } from "src/interfaces";
+import { connect } from "react-redux";
+import moment from "moment";
 
 interface IProps {
   conversationId: string;
-  authUser: IUser;
+  authUser: IPerformer;
+  message: any;
+  sendMessage: any;
+  conversation: any;
+  currentUser: any;
 }
 
 const MessageList = ({
-  conversationId,
-  authUser
+  message,
+  currentUser,
+  conversation,
 }: IProps): React.ReactElement => {
-  const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(0);
-  const [moreable, setMoreable] = useState(true);
-  const [messages, setMessages] = useState([] as Array<IMessage>);
-  const [message, setMessage] = useState({} as IMessage);
-  const sendMessage = useRef(false);
+  const renderMessages = () => {
+    const recipientInfo = conversation && conversation.recipientInfo;
+    const messages = message.items;
+    let i = 0;
+    const messageCount = messages.length;
+    const tempMessages = [] as any;
+    while (i < messageCount) {
+      const previous = messages[i - 1];
+      const current = messages[i];
+      const next = messages[i + 1];
+      const isMine = current.senderId === currentUser._id;
+      const currentMoment = moment(current.createdAt);
+      let prevBySameAuthor = false;
+      let nextBySameAuthor = false;
+      let startsSequence = true;
+      let endsSequence = true;
+      let showTimestamp = true;
 
-  const loadMessages = async (more = false) => {
-    if (more && !moreable) return;
-    setLoading(true);
-    const newPage = more ? page + 1 : page;
-    setPage(newPage);
+      if (previous) {
+        const previousMoment = moment(previous.createdAt);
+        const previousDuration = moment.duration(
+          currentMoment.diff(previousMoment)
+        );
+        prevBySameAuthor = previous.senderId === current.senderId;
 
-    const { data } = await messageService.getPublicMessages(conversationId, {
-      offset: newPage * 25,
-      limit: 25,
-      sort: 'desc'
-    });
+        if (prevBySameAuthor && previousDuration.as("hours") < 1) {
+          startsSequence = false;
+        }
 
-    if (data.length < 10) setMoreable(false);
-    setMessages(messages.concat(data));
+        if (previousDuration.as("hours") < 1) {
+          showTimestamp = false;
+        }
+      }
 
-    setLoading(false);
-  };
+      if (next) {
+        const nextMoment = moment(next.createdAt);
+        const nextDuration = moment.duration(nextMoment.diff(currentMoment));
+        nextBySameAuthor = next.senderId === current.senderId;
 
-  const renderEmpty = () => (
-    <View>
-      {!loading && !messages.length && (
-        <BadgeText content={'There is no message available!'} />
-      )}
-    </View>
-  );
-
-  const handleSocket = async (socket) => {
-    const joinRoom = () => {
-      // join room to listen socket event
-      socket.emit('public-stream/join', {
-        conversationId
-      });
-    };
-    joinRoom();
-
-    socket.on('reconnect', joinRoom);
-    // listen socket event
-    socket.on(`message_created_conversation_${conversationId}`, (data) => {
-      setMessage(data);
-      sendMessage.current = true;
-    });
-  };
-
-  const handleDisconnect = (socket) => {
-    if (!socket) return;
-    socket.off(`message_created_conversation_${conversationId}`);
-    socket.emit('public-stream/leave', {
-      conversationId
-    });
-  };
-
-  useEffect(() => {
-    loadMessages();
-  }, []);
-
-  useEffect(() => {
-    const socket = socketHolder.getSocket();
-    if (socket) handleSocket(socket);
-
-    return () => {
-      handleDisconnect(socket);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (sendMessage.current) {
-      setMessages([message].concat(messages));
-      sendMessage.current = false;
+        if (nextBySameAuthor && nextDuration.as("hours") < 1) {
+          endsSequence = false;
+        }
+      }
+      if (current._id) {
+        tempMessages.push({
+          ...current,
+          ["startsSequence"]: startsSequence,
+          ["endsSequence"]: endsSequence,
+          ["showTimestamp"]: showTimestamp,
+          ["isMine"]: isMine,
+          ["recipientInfo"]: recipientInfo,
+        });
+      }
+      // Proceed to the next message.
+      i += 1;
     }
-  }, [message]);
 
-  return (
-    <Box flex={1}>
-      {loading && <LoadingSpinner />}
-      <FlatList
-        inverted
-        data={messages}
-        renderItem={({ item }) => (
-          <MessageCard message={item} isMe={authUser._id === item.senderId} />
-        )}
-        keyExtractor={(item, index) => item._id + '_' + index}
-        onEndReachedThreshold={0.5}
-        onEndReached={() => loadMessages(true)}
-        ListEmptyComponent={renderEmpty()}
-      />
-    </Box>
-  );
+    return (
+      <View flex={1}>
+        <FlatList
+          data={tempMessages}
+          renderItem={({ item }: any) => (
+            <MessageCard
+              isOwner={item.senderId}
+              key={item._id}
+              isMe={item.senderId === currentUser._id}
+              startsSequence={item.startsSequence}
+              endsSequence={item.endsSequence}
+              showTimestamp={item.showTimestamp}
+              message={item}
+            />
+          )}
+          keyExtractor={(item: any, index) => item._id + "_" + index}
+        />
+      </View>
+    );
+  };
+
+  return <Box flex={1}>{renderMessages()}</Box>;
 };
 
-export default MessageList;
+const mapStates = (state: any) => {
+  const { conversationMap, sendMessage } = state.message;
+  const { activeConversation } = state.conversation;
+  const messages = conversationMap[activeConversation._id]
+    ? conversationMap[activeConversation._id].items || []
+    : [];
+  const totalMessages = conversationMap[activeConversation._id]
+    ? conversationMap[activeConversation._id].total || 0
+    : 0;
+  const fetching = conversationMap[activeConversation._id]
+    ? conversationMap[activeConversation._id].fetching || false
+    : false;
+  return {
+    sendMessage,
+    message: {
+      items: messages,
+      total: totalMessages,
+      fetching,
+    },
+    conversation: activeConversation,
+    currentUser: state.user.current,
+  };
+};
+
+export default connect(mapStates)(MessageList);

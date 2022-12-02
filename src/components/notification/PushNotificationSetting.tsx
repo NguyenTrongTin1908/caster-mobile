@@ -19,7 +19,7 @@ import { Table, Row, Cell, TableWrapper } from "react-native-table-component";
 import { performerService } from "services/perfomer.service";
 import { setCurrentUser } from "services/redux/user/actions";
 
-import styles from "../style";
+import styles from "./style";
 import HeaderMenu from "components/tab/HeaderMenu";
 import { Controller, useForm } from "react-hook-form";
 interface IProps {

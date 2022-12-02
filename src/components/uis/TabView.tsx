@@ -1,10 +1,10 @@
-import React from 'react';
-import { Box, Text, HStack } from 'native-base';
-import { Dimensions, StatusBar } from 'react-native';
-import { TabView, SceneMap } from 'react-native-tab-view';
-import { colors } from 'utils/theme';
-import { omit } from 'lodash';
-const initialLayout = { width: Dimensions.get('window').width };
+import React from "react";
+import { Box, Text, HStack } from "native-base";
+import { Dimensions, StatusBar } from "react-native";
+import { TabView, SceneMap } from "react-native-tab-view";
+import { colors } from "utils/theme";
+import { omit } from "lodash";
+const initialLayout = { width: Dimensions.get("window").width };
 
 interface IProps {
   scenes: Array<{
@@ -12,35 +12,40 @@ interface IProps {
     title: string;
     sence: React.ElementType<any>;
     params?: {
-      [key: string]: any
+      [key: string]: any;
     };
   }>;
+  swipeEnabled?: boolean;
 }
-const TabViewComponent = ({ scenes }: IProps): JSX.Element => {
-  const routes = scenes.map((s) => omit(s, ['sence']));
+const TabViewComponent = ({
+  scenes,
+  swipeEnabled = true,
+}: IProps): JSX.Element => {
+  const routes = scenes.map((s) => omit(s, ["sence"]));
   const senceMap = scenes.reduce((a, s) => ({ ...a, [s.key]: s.sence }), {});
-  const [index, setIndex] = React.useState(0);
+  const [index, setIndex] = React.useState(1);
 
   const renderTabBar = (props: any) => {
     return (
       <HStack alignSelf="center">
         {props.navigationState.routes.map((route, i) => {
-          const color = index === i ? colors.lightText : '#979797';
-          const borderColor = index === i ? colors.primary : 'transparent';
-
+          const color = index === i ? colors.lightText : "#979797";
+          const borderColor = index === i ? colors.primary : "transparent";
           return (
             <Box
               key={route.title}
               borderBottomWidth={2}
               borderColor={borderColor}
-              p={3}>
+              p={3}
+            >
               <Text
                 textAlign="center"
                 color={color}
                 fontSize={17}
                 bold
                 letterSpacing={-0.41}
-                onPress={() => setIndex(i)}>
+                onPress={() => setIndex(i)}
+              >
                 {route.title}
               </Text>
             </Box>
@@ -58,6 +63,7 @@ const TabViewComponent = ({ scenes }: IProps): JSX.Element => {
       onIndexChange={setIndex}
       initialLayout={initialLayout}
       style={{ marginTop: StatusBar.currentHeight }}
+      swipeEnabled={swipeEnabled}
     />
   );
 };

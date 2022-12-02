@@ -84,7 +84,7 @@ const NotificationCard = ({ notification }: IProps): React.ReactElement => {
                 notification &&
                 (notification.thumbnail
                   ? { uri: notification.thumbnail }
-                  : require("../../../assets/avatar-default.png"))
+                  : require("../../assets/avatar-default.png"))
               }
               alt={"avatar"}
               size={50}

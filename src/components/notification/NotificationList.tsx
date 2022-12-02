@@ -3,13 +3,10 @@ import { INotification } from "src/interfaces";
 import { useSelector, useDispatch } from "react-redux";
 import React, { useContext, useEffect, useState } from "react";
 import { createSelector } from "reselect";
-// import { capitalizeFirstLetter } from "@lib/string";
-import moment from "moment";
 import { fetchNotificaion } from "services/redux/notification/actions";
-import { useNavigation } from "@react-navigation/core";
-import { SocketContext } from "../../../socket";
-import { FlatList, SafeAreaView, View } from "react-native";
-import styles from "../style";
+import { SocketContext } from "../../socket";
+import { FlatList, View } from "react-native";
+import styles from "./style";
 import BadgeText from "components/uis/BadgeText";
 import NotificationCard from "./NotificationCard";
 
@@ -18,6 +15,7 @@ const SEND_NOTIFICATION = "send_notification";
 const NotificationList = () => {
   const socket = useContext(SocketContext);
   const [read, setRead] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const notifications = useSelector(
     createSelector(
@@ -59,34 +57,37 @@ const NotificationList = () => {
     fetchData();
   }, [read]);
 
-  useEffect(() => {
-    if (socket) {
-      socket.on(SEND_NOTIFICATION, onReceiveNotification);
-    }
-    return () => {
-      socket.off(SEND_NOTIFICATION, onReceiveNotification);
-    };
-  }, [socket]);
+  // useEffect(() => {
+  //   if (socket) {
+  //     socket.on(SEND_NOTIFICATION, onReceiveNotification);
+  //   }
+  //   return () => {
+  //     socket.off(SEND_NOTIFICATION, onReceiveNotification);
+  //   };
+  // }, [socket]);
 
-  // const renderEmpty = () => (
-  //   <View>
-  //     {!loading && !notifications.length && (
-  //       <BadgeText content={"There is no performer available!"} />
-  //     )}
-  //   </View>
-  // );
+  const renderEmpty = () => (
+    <View>
+      {!loading && !notifications.length && (
+        <BadgeText content={"You no have new notifications !"} />
+      )}
+    </View>
+  );
 
   return (
-    <FlatList
-      data={notifications}
-      renderItem={({ item }) => (
-        <NotificationCard key={item._id} notification={item} />
-      )}
-      keyExtractor={(item, index) => item._id + "_" + index}
-      style={styles.listModel}
-      onEndReachedThreshold={0.5}
-      onEndReached={() => fetchData()}
-    />
+    <>
+      <FlatList
+        data={notifications}
+        renderItem={({ item }) => (
+          <NotificationCard key={item._id} notification={item} />
+        )}
+        keyExtractor={(item, index) => item._id + "_" + index}
+        style={styles.listModel}
+        onEndReachedThreshold={0.5}
+        onEndReached={() => fetchData()}
+      />
+      {renderEmpty}
+    </>
   );
 };
 

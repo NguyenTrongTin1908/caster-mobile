@@ -1,4 +1,5 @@
-import Notification from "./component/Notification";
+import Notification from "components/notification/Notification";
+import Mail from "components/mailbox/Mail";
 import { Box, Heading } from "native-base";
 import React from "react";
 import { SafeAreaView, TouchableOpacity, View } from "react-native";
@@ -8,7 +9,6 @@ import { colors } from "utils/theme";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/core";
 import TabView from "components/uis/TabView";
-import Mail from "./component/Mail";
 
 const NotificationPage = (): React.ReactElement => {
   const navigation = useNavigation() as any;
@@ -39,6 +39,7 @@ const NotificationPage = (): React.ReactElement => {
         </View>
         <View style={{ flex: 1, marginTop: -15 }}>
           <TabView
+            swipeEnabled={false}
             scenes={[
               {
                 key: "Notification",

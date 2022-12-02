@@ -106,7 +106,6 @@ const PrivateChat = ({
           conversationId,
           streamId,
         });
-        console.log("Voooooo");
         localStreamRef.id = streamId;
         // setLocalStreamId(streamId);
       } else {

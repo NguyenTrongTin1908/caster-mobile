@@ -9,12 +9,10 @@ import { colors, Sizes } from "utils/theme";
 import Photo from "components/tab/profile/Photo";
 import Video from "components/tab/profile/Video";
 import styles from "./style";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { Menu } from "react-native-material-menu";
-import HeaderMenu from "components/tab/HeaderMenu";
 import ButtonFollow from "components/uis/ButtonFollow";
 import { IPerformer } from "src/interfaces";
 import BackButton from "components/uis/BackButton";
+import AntDesign from "react-native-vector-icons/AntDesign";
 interface Props {
   isLoggedIn: boolean;
   current: IPerformer;
@@ -74,6 +72,23 @@ const ModelProfile = ({
           style={styles.converPhoto}
           alt="cover"
         />
+        <View style={{ position: "absolute", top: 120, right: 30 }}>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate("ChatRoom", {
+                performer: performer,
+                toSource: "performer",
+                toId: performer?._id || "",
+              })
+            }
+          >
+            <AntDesign
+              name="message1"
+              size={30}
+              color={colors.lightText}
+            ></AntDesign>
+          </TouchableOpacity>
+        </View>
         <View style={styles.avContainer}>
           <View style={styles.avBlueRound}>
             <Image

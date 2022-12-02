@@ -29,6 +29,7 @@ export const colors = {
   rubyIcon: "#F83333",
   tabView: "rgb(255,255,0)",
   tabViewBackground: "rgb(100,77,0)",
+  messageText: "rgb(146,70,243)",
 
   //text
   lightText: "#fff",

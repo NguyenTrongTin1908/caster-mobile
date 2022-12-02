@@ -1,68 +1,83 @@
-import React from 'react';
-import { HStack, Text, Image, View, Center } from 'native-base';
-import { colors } from 'utils/theme';
-import { IMessage } from 'interfaces/conversation';
-import { IUser } from 'interfaces/user';
-import { connect } from 'react-redux';
+import React from "react";
+import { HStack, Text, Image, View, Center } from "native-base";
+import { colors } from "utils/theme";
+import { IMessage } from "interfaces/conversation";
+import { IUser } from "interfaces/user";
+import { connect } from "react-redux";
+import { IPerformer } from "src/interfaces";
 
 interface IProps {
-  message: IMessage;
+  message: any;
   isMe?: boolean;
-  currentUser?: IUser;
+  current?: IPerformer;
+  // isMine: boolean;
+  startsSequence: boolean;
+  endsSequence: boolean;
+  showTimestamp: boolean;
+  isOwner: boolean;
+
+  // canDelete?: boolean;
+  // onDelete?: Function;
+  // recipient: IPerformer;
 }
 
 let senderInfor: IMessage = {
-  conversationId: '',
-  senderId: '',
-  text: '',
-  type: '',
-  senderInfo: {} as IUser
+  _id: "",
+  conversationId: "",
+  senderId: "",
+  text: "",
+  type: "",
+  senderInfo: {} as IPerformer,
 };
 
-const MessageCard = ({ 
-  message, 
-  isMe = false,
-  currentUser
+const MessageCard = ({
+  message,
+  isMe = true,
+  current,
 }: IProps): React.ReactElement => {
-  if (!isMe && !senderInfor?.senderInfo?.username)
-    senderInfor = message;
-  const name = isMe ? currentUser?.name || currentUser?.username : message.senderInfo?.name || message.senderInfo?.username;
+  if (!isMe && !senderInfor?.senderInfo?.username) senderInfor = message;
+  const name = isMe
+    ? (current?.name && current.name !== " ") || current?.username
+    : (message.recipientInfo?.name && message.recipientInfo?.name !== " ") ||
+      message.recipientInfo?.username;
 
   if (isMe) {
     return (
-      <HStack
-        space={2}
-        my={2}
-        flexDirection={'column'}
-        alignItems="flex-end"
-      >
-        <View maxW={'60%'} backgroundColor="red">
-          <Text mx={2}>{name || 'User'}</Text>
+      <HStack space={2} my={2} flexDirection={"column"} alignItems="flex-end">
+        <View maxW={"60%"} backgroundColor="red">
+          <Text color={colors.lightText} mx={2}>
+            {name || "User"}
+          </Text>
           <Image
-            source={message.senderInfo?.avatar ||
-              (!isMe && senderInfor.senderInfo?.avatar)
+            source={
+              message?.recipientInfo?.avatar ||
+              (!isMe && message?.recipientInfo?.avatar)
                 ? {
-                    uri:
-                      message?.senderInfo?.avatar ||
-                      senderInfor.senderInfo?.avatar
+                    uri: current?.avatar || senderInfor.senderInfo?.avatar,
                   }
-                : require('assets/icon.png')}
-            alt={'avatar'}
+                : require("assets/avatar-default.png")
+            }
+            alt={"avatar"}
             size={30}
             borderRadius={15}
             resizeMode="cover"
-            position={'absolute'}
-            left={-30}
+            position={"absolute"}
+            left={-35}
           />
-          <Text
-            fontSize={17}
-            color={colors.darkText}
+          <View
             style={{
-              position: 'relative',
-              left: 8
-            }}>
-            {message.text}
-          </Text>
+              position: "relative",
+              left: 0,
+              borderRadius: 50,
+              backgroundColor: colors.messageText,
+              alignItems: "center",
+              paddingHorizontal: 10,
+            }}
+          >
+            <Text fontSize={17} color={colors.lightText}>
+              {message.text}
+            </Text>
+          </View>
         </View>
       </HStack>
     );
@@ -72,50 +87,62 @@ const MessageCard = ({
     <HStack
       space={2}
       my={2}
-      flexDirection={'column'}
+      flexDirection={"column"}
       alignItems="flex-start"
-      justifyContent={'flex-start'}>
-        {message.isSystem && <Center>
+      justifyContent={"flex-start"}
+    >
+      {message.isSystem && (
+        <Center>
           <Text fontSize="sm">{message.text}</Text>
-        </Center>}
+        </Center>
+      )}
 
-        {!message.isSystem && <>
-        <View style={{ flexDirection: 'row-reverse' }}>
-          <Text mx={2}>{name || 'User'}</Text>
-          <Image
-            source={
-              message.senderInfo?.avatar ||
-              (!isMe && senderInfor.senderInfo?.avatar)
-                ? {
-                    uri:
-                      message?.senderInfo?.avatar ||
-                      senderInfor.senderInfo?.avatar
-                  }
-                : require('assets/icon.png')
-            }
-            alt={'avatar'}
-            size={30}
-            borderRadius={15}
-            resizeMode="cover"
-          />
-        </View>
-        <Text
-          fontSize={17}
-          color={colors.darkText}
-          maxW={'60%'}
-          style={{
-            position: 'relative',
-            top: -10,
-            left: 37
-          }}>
-          {message.text}
-        </Text>
-      </>}
+      {!message.isSystem && (
+        <>
+          <View style={{ flexDirection: "row-reverse" }}>
+            <Text color={colors.lightText} mx={2}>
+              {name || "User"}
+            </Text>
+            <Image
+              source={
+                message?.recipientInfo?.avatar ||
+                (!isMe && message?.recipientInfo?.avatar)
+                  ? {
+                      uri:
+                        message?.recipientInfo?.avatar ||
+                        senderInfor.senderInfo?.avatar,
+                    }
+                  : require("assets/icon.png")
+              }
+              alt={"avatar"}
+              size={30}
+              borderRadius={15}
+              resizeMode="cover"
+            />
+          </View>
+          <View
+            style={{
+              position: "relative",
+              top: -10,
+              left: 37,
+              borderRadius: 50,
+              backgroundColor: colors.messageText,
+              alignItems: "center",
+
+              paddingHorizontal: 10,
+            }}
+          >
+            <Text textAlign={"center"} fontSize={17} color={colors.lightText}>
+              {message.text}
+            </Text>
+          </View>
+        </>
+      )}
     </HStack>
   );
 };
 
 const mapStateToProp = (state: any): any => ({
-  currentUser: state.user.current
+  ...state.user,
 });
 export default connect(mapStateToProp)(MessageCard);

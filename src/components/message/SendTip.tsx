@@ -33,8 +33,8 @@ interface Iprops {
   modal: boolean;
   conversationId: string;
   performerId: string;
-  favorGift: any;
-  saveFavorite: Function;
+  favorGift?: any;
+  saveFavorite?: Function;
 }
 
 export default function SendTip({
@@ -120,7 +120,7 @@ export default function SendTip({
           sessionId: "",
         });
         toast.show({ description: "Send gift success" });
-        saveFavorite(favoriteGift);
+        saveFavorite && saveFavorite(favoriteGift);
       } catch (e: any) {
         const error = await e;
         toast.show({ description: "Send gift success" });

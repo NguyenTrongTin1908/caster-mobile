@@ -15,8 +15,6 @@ interface IProps {
 const FavoriteGift = ({ performerId, conversationId, favorGift }: IProps) => {
   const [isConfirm, setConfirm] = useState(true);
   const toast = useToast();
-  console.log("Data : ", favorGift);
-
   const onChange = () => {
     setConfirm(!isConfirm);
   };

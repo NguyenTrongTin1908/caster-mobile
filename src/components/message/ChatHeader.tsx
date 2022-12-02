@@ -35,7 +35,7 @@ const ChatHeader = ({
       <TouchableOpacity
         onPress={() =>
           navigation.navigate("PerformerDetail", {
-            username: performer.username,
+            username: performer?.username,
           })
         }
       >
@@ -43,16 +43,16 @@ const ChatHeader = ({
           <Box position="relative">
             <Image
               source={
-                performer.avatar
-                  ? { uri: performer.avatar }
-                  : require("assets/icon.png")
+                performer?.avatar
+                  ? { uri: performer?.avatar }
+                  : require("../../assets/avatar-default.png")
               }
               alt={"avatar"}
               size={45}
               borderRadius={30}
               resizeMode="cover"
             />
-            {performer.isOnline && <OnlineDot right={0} top={2} />}
+            {performer?.isOnline ? <OnlineDot right={0} top={2} /> : null}
           </Box>
           <VStack alignSelf="center" space={1}>
             <Heading
@@ -61,14 +61,8 @@ const ChatHeader = ({
               fontWeight={500}
               color={colors.darkText}
             >
-              {isPrivate ? performer.username : `${performer.name || performer.username}’s chat`}
+              {performer?.name || performer?.username}
             </Heading>
-
-            <Text fontSize={14} color={colors.secondaryText}>
-              {performer.dateOfBirth && getBirthday(performer.dateOfBirth)}
-              {performer.dateOfBirth &&
-                `, ${formatZodiac(performer.dateOfBirth)}`}
-            </Text>
           </VStack>
         </HStack>
       </TouchableOpacity>
