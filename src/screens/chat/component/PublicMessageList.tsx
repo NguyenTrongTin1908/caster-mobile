@@ -1,6 +1,5 @@
 import React from "react";
 import { Box, FlatList, View } from "native-base";
-import BadgeText from "components/uis/BadgeText";
 import MessageCard from "components/message/MessageCard";
 import { IPerformer } from "src/interfaces";
 import { connect } from "react-redux";
@@ -93,6 +92,8 @@ const MessageList = ({
             />
           )}
           keyExtractor={(item: any, index) => item._id + "_" + index}
+          inverted
+          contentContainerStyle={{ flexDirection: "column-reverse" }}
         />
       </View>
     );

@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import { connect } from "react-redux";
-import { Box, Button } from "native-base";
+import { Box } from "native-base";
 import { useNavigation } from "@react-navigation/core";
 import { IPerformer } from "interfaces/performer";
 import ChatHeader from "components/message/ChatHeader";

@@ -5,6 +5,8 @@ import styles from "./style";
 import MailCard from "./MailCard";
 import socketHolder from "lib/socketHolder";
 import { SwipeListView } from "react-native-swipe-list-view";
+import LoadingSpinner from "components/uis/LoadingSpinner";
+
 import {
   searchConversations,
   getConversations,
@@ -59,6 +61,9 @@ const MailList = ({
   const [conversationPage, setConversationPage] = useState(0);
   const [keyword, setKeyword] = useState("");
   const [Loading, setLoading] = useState(true);
+  const [moreable, setMoreable] = useState(true);
+  const [refresh, setRefresh] = useState(false);
+  const [itemPerPage] = useState(25);
 
   const { mapping } = conversation;
   const [listData, setListData] = useState([] as any) as any;
@@ -69,6 +74,12 @@ const MailList = ({
       key: `${i}`,
       ...mapping[c],
     }));
+    if (!refresh && data.length < conversationPage * itemPerPage) {
+      setMoreable(false);
+    }
+    if (refresh && !moreable) {
+      setMoreable(true);
+    }
     setListData(data);
   }, [conversation?.list?.data?.length]);
 
@@ -77,15 +88,18 @@ const MailList = ({
     fetchData();
   }, []);
 
-  const fetchData = () => {
+  const fetchData = (more = false, refresh = false) => {
+    if (more && !moreable) return;
     setLoading(true);
-
+    const newPage = more ? conversationPage + 1 : conversationPage;
+    setConversationPage(refresh ? 0 : newPage);
     getConversationsHandler({
-      limit: 25,
-      offset: conversationPage * 25,
+      limit: itemPerPage,
+      offset: refresh ? 0 : newPage * itemPerPage,
       type: "private",
       keyword,
     });
+
     if (toSource && toId) {
       setTimeout(() => {
         setActiveConversationHandler({
@@ -150,6 +164,7 @@ const MailList = ({
 
   return (
     <>
+      {Loading && <LoadingSpinner />}
       {listData && listData.length > 0 && (
         <SwipeListView
           data={listData}
@@ -164,7 +179,7 @@ const MailList = ({
           keyExtractor={(item: any, index) => item.key + "_" + index}
           style={styles.listModel}
           onEndReachedThreshold={0.5}
-          onEndReached={() => fetchData()}
+          onEndReached={() => fetchData(true, false)}
           renderHiddenItem={renderHiddenItem}
           rightOpenValue={-80}
           previewRowKey={"0"}
