@@ -19,6 +19,7 @@ import { connect } from "react-redux";
 import { IPerformer } from "src/interfaces";
 import HeaderMenu from "components/tab/HeaderMenu";
 import CustomHeader from "components/uis/CustomHeader";
+import BackButton from "components/uis/BackButton";
 interface IProps {
   route: {
     params: {
@@ -144,6 +145,7 @@ const FeedDetail = ({ route, current }: IProps): React.ReactElement => {
           ]}
         />
       </CustomHeader>
+      <BackButton />
     </SafeAreaView>
   );
 };

@@ -183,16 +183,22 @@ userProfilePhotoBlurContentStyle: {
 userCoverStyle: {
   position: 'absolute',
   top: 10,
+  left:5,
+  padding : 2
 },
 profileScrollView :{
   flex: 1,
   backgroundColor: colors.darkText,
   marginVertical: 35
 },
+bottomSheetContain: {
+  backgroundColor: colors.transparent,
+  paddingTop: Sizes.fixPadding + 400,
+},
 bottomSheetContentStyle: {
   backgroundColor: colors.lightText,
-  paddingTop: Sizes.fixPadding + 5.0,
-  paddingBottom: Sizes.fixPadding,
+  bottom:0,
+  zIndex:10
 },
 
 dialogContainerStyle: {

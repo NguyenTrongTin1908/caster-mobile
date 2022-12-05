@@ -22,6 +22,8 @@ import { IPerformer } from "src/interfaces";
 import { SafeAreaView } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
+import BackButton from "components/uis/BackButton";
+
 
 interface IProps {
   error: any;
@@ -92,7 +94,7 @@ const PrivateChatWaitingRoom = ({
     <SafeAreaView style={{ flex: 1 }}>
       <Heading
         mb={4}
-        fontSize={30}
+        fontSize={28}
         textAlign="center"
         letterSpacing={-1}
         color={colors.lightText}
@@ -209,6 +211,8 @@ const PrivateChatWaitingRoom = ({
       </View>
 
       <HeaderMenu />
+      <BackButton />
+
     </SafeAreaView>
   );
 };

@@ -7,6 +7,7 @@ import Follower from "./component/Follower";
 import Following from "./component/Following";
 import TabView from "components/uis/TabView";
 import HeaderMenu from "components/tab/HeaderMenu";
+import BackButton from "components/uis/BackButton";
 
 const ListFollow = (): React.ReactElement => {
   const navigation = useNavigation() as any;
@@ -46,6 +47,8 @@ const ListFollow = (): React.ReactElement => {
         ]}
       />
       <HeaderMenu />
+      <BackButton />
+
     </Box>
   );
 };

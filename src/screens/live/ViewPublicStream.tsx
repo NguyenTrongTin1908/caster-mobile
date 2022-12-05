@@ -32,10 +32,12 @@ import ButtonFollow from "components/uis/ButtonFollow";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FavoriteGift from "components/gift/favorite";
 import SendTip from "components/message/SendTip";
+import BackButton from "components/uis/BackButton";
 const { width, height } = Dimensions.get("window");
 let deviceH = Dimensions.get("screen").height;
 const STATUS_BAR_HEIGHT = StatusBar.currentHeight || 24;
 let bottomNavBarH = deviceH - height + STATUS_BAR_HEIGHT;
+
 
 interface IProps {
   resetStreamMessage: Function;
@@ -358,6 +360,7 @@ const ViewPublicStream = ({
           <HeaderMenu />
         </>
       </KeyboardDismiss>
+      <BackButton />
     </SafeAreaView>
   );
 };

@@ -1,8 +1,11 @@
 import React from "react";
-import { Animated } from "react-native";
+import { Animated, TouchableOpacity, View } from "react-native";
 import styles from "./style";
+import { useNavigation } from "@react-navigation/core";
 
 import DrawerHamburger from "components/uis/DrawerHamburger";
+import { colors } from "utils/theme";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 const HeaderMenu = (): React.ReactElement => {
   return (

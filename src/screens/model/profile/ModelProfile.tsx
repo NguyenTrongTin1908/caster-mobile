@@ -13,6 +13,8 @@ import ButtonFollow from "components/uis/ButtonFollow";
 import { IPerformer } from "src/interfaces";
 import BackButton from "components/uis/BackButton";
 import AntDesign from "react-native-vector-icons/AntDesign";
+import HeaderMenu from "components/tab/HeaderMenu";
+
 interface Props {
   isLoggedIn: boolean;
   current: IPerformer;
@@ -146,6 +148,7 @@ const ModelProfile = ({
             ]}
           />
         </View>
+        <HeaderMenu />
         <BackButton />
       </View>
     </SafeAreaView>

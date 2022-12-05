@@ -16,7 +16,7 @@ import { colors } from "utils/theme";
 import TokenPackageCard from "./component/TokenPackageCard";
 import { tokenPackageService } from "services/token-package.service";
 import { paymentService } from "services/payment.service";
-
+import BackButton from "components/uis/BackButton";
 import ContentLoader from "react-native-easy-content-loader";
 import { ITokenPackage } from "interfaces/token-package";
 import { SafeAreaView, TouchableOpacity } from "react-native";
@@ -239,6 +239,7 @@ const TokenPackage = ({ user, system }: IProps): React.ReactElement => {
           </Modal.Content>
         </Modal>
       </Box>
+      <BackButton />
     </SafeAreaView>
   );
 };

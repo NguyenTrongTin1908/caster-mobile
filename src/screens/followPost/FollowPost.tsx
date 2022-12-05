@@ -24,6 +24,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { IPerformer } from "src/interfaces";
 import HeaderMenu from "components/tab/HeaderMenu";
 import CustomHeader from "components/uis/CustomHeader";
+import BackButton from "components/uis/BackButton";
 let deviceH = Dimensions.get("screen").height;
 let bottomNavBarH = deviceH - height;
 interface IProps {
@@ -193,6 +194,8 @@ const FollowPost = ({
           ]}
         />
       </CustomHeader>
+      <BackButton />
+
     </SafeAreaView>
   );
 };

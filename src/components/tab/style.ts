@@ -4,13 +4,12 @@ import { getStatusBarHeight } from 'react-native-status-bar-height';
 const styles = StyleSheet.create({
   bar: {
     top: 8 + getStatusBarHeight(true),
-    left: 0,
-    right: 0,
     position: 'absolute',
+    right:0,
     height: 50,
     width: 50,
-    // flexDirection: 'row',
-    // justifyContent: 'space-between',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     // backgroundColor: 'transparent',
     zIndex: 10000
   },

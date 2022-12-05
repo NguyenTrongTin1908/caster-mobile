@@ -10,7 +10,6 @@ import { IPerformer, ICountry } from 'src/interfaces';
 import { utilsService } from 'services/utils.service';
 import { performerService } from 'services/perfomer.service';
 import TabView from 'components/uis/TabView';
-
 import { updatePerformer, updateCurrentUserAvatar, updateCurrentUserCover } from 'services/redux/user/actions';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
@@ -26,7 +25,6 @@ import UpdateProfileForm from './component/UpdateProfileForm';
 import SettingFeeForm from './component/SettingFeeForm';
 import KeyboardDismiss from 'components/uis/KeyboardDismiss';
 import BackButton from 'components/uis/BackButton';
-
 interface IProps {
   current: IPerformer;
   updatePerformer: Function;
@@ -40,18 +38,17 @@ const EditProfile = ({
   updateCurrentUserAvatar: handleUpdateAvt,
   updateCurrentUserCover: handleUpdateCover
 }: IProps): React.ReactElement => {
+
   const toast = useToast();
   const [countries, setCountries] = useState([] as Array<ICountry>);
   const [bodyInfo, setBodyInfo] = useState([] as any);
   const [showBottomSheet, setShowButtonSheet] = useState(false);
   const [type, setType] = useState('');
   const [emailSending, setEmailSending] = useState(false);
-  const { heights = [], genders = [], ethnicities = [] } = bodyInfo;
   const defaultValues = {
     ...current,
     dateOfBirth: (current.dateOfBirth && moment(current.dateOfBirth)) || ''
   };
-
   const {
     control,
     handleSubmit,
@@ -62,6 +59,7 @@ const EditProfile = ({
   const onSubmit = async (data: any): Promise<void> => {
     submit(data);
   };
+
   const submit = async data => {
     if (typeof data.dateOfBirth === 'string') {
       const [day, month, year] = data.dateOfBirth.split('-');
@@ -73,7 +71,6 @@ const EditProfile = ({
         ...current,
         ...data
       });
-
       toast.show({
         title: 'Updated successfully!'
       });
@@ -100,16 +97,6 @@ const EditProfile = ({
     }
   };
 
-  //  const handleCountdown = async () => {
-  //     const { countTime } = this.state;
-  //     if (countTime === 0) {
-  //       clearInterval(this._intervalCountdown);
-  //       this.setState({ countTime: 60 });
-  //       return;
-  //     }
-  //     this.setState({ countTime: countTime - 1 });
-  //     this._intervalCountdown = setInterval(this.coundown.bind(this), 1000);
-  //   }
   const openGallery = async () => {
     ImagePicker.openPicker({
       width: 300,
@@ -143,6 +130,8 @@ const EditProfile = ({
         const url = `https://api.caster.com${dataUrl}`;
         handleUpdate(url, image.path, 'cover');
       }
+    }).catch(err => {
+      toast.show({description: err.message})
     });
   };
 
@@ -158,7 +147,10 @@ const EditProfile = ({
         }
       ])) as any;
       resp.data.type === 'avatar' ? handleUpdateAvt(resp.data.url) : handleUpdateCover(resp.data.url);
-    } catch (error) {}
+    } catch (e :any ) {
+      const error = e
+      toast.show({description: e.message})
+    }
   };
 
   useEffect(() => {
@@ -177,7 +169,6 @@ const EditProfile = ({
           base: '100%',
           lg: 'auto'
         }}
-        // keyboardVerticalOffset={120}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <KeyboardDismiss>
           <View style={styles.container}>
@@ -191,7 +182,7 @@ const EditProfile = ({
                 alt="cover"
               />
               <TouchableOpacity
-                activeOpacity={0.9}
+                activeOpacity={0.4}
                 onPress={() => {
                   setShowButtonSheet(true), setType('cover');
                 }}
@@ -199,7 +190,6 @@ const EditProfile = ({
                 <MaterialCommunityIcons name="camera-plus" size={27} color={colors.lightText} />
               </TouchableOpacity>
             </View>
-
             <View style={styles.avEdit}>
               <View style={styles.avBlueRound}>
                 <ImageBackground
@@ -248,11 +238,13 @@ const EditProfile = ({
                 ]}
               />
             </View>
+
             <BottomSheet isVisible={showBottomSheet} containerStyle={{ backgroundColor: 'rgba(0.5, 0.50, 0, 0.50)' }}>
               <TouchableOpacity
                 activeOpacity={0.9}
                 onPress={() => setShowButtonSheet(false)}
-                style={styles.bottomSheetContentStyle}>
+                style={styles.bottomSheetContain}>
+                  <View style={styles.bottomSheetContentStyle}>
                 <Text>Choose Option</Text>
                 <View
                   style={{
@@ -292,12 +284,13 @@ const EditProfile = ({
                     </Text>
                   </View>
                 </TouchableOpacity>
+              </View>
               </TouchableOpacity>
             </BottomSheet>
           </View>
         </KeyboardDismiss>
       </KeyboardAvoidingView>
-      {/* <HeaderMenu /> */}
+      <HeaderMenu />
       <BackButton />
     </SafeAreaView>
   );
@@ -312,4 +305,5 @@ const mapDispatch = {
   updateCurrentUserAvatar,
   updateCurrentUserCover
 };
+
 export default connect(mapStates, mapDispatch)(EditProfile);

@@ -5,7 +5,6 @@ import { connect } from "react-redux";
 import { useNavigation } from "@react-navigation/core";
 import { colors, Sizes, Fonts } from "utils/theme";
 import styles from "./style";
-import HeaderMenu from "components/tab/HeaderMenu";
 import { useToast } from "native-base";
 import { updateUser, updatePerformer } from "services/redux/user/actions";
 import { streamService } from "services/stream.service";
@@ -15,6 +14,10 @@ import { IPerformer } from "src/interfaces";
 import { SafeAreaView } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import ButtonFollow from "components/uis/ButtonFollow";
+import BackButton from "components/uis/BackButton";
+import HeaderMenu from "components/tab/HeaderMenu";
+
+
 
 const Option = Select;
 enum EVENT {
@@ -70,19 +73,29 @@ const PrivateUserWaitingRoom = ({
   const requestPrivateCall = async () => {
     if (!performer) return;
     const { _id: performerId } = performer as any;
-    if (isAvailable) {
-      streamService.requestPrivateChat(performerId).then((res) => {
-        const { conversation } = res.data;
-        joinPrivateConversation(conversation._id);
-        dispatchGetStreamConversationSuccess({
-          data: conversation,
-        });
-        return navigation.navigate("PrivateUserAcceptRoom", {
-          performer: performer,
-          privateRequest: res.data,
-        });
-      });
+    try {
+      if (isAvailable) {
+        streamService.requestPrivateChat(performerId).then((res) => {
+          const { conversation } = res.data;
+          joinPrivateConversation(conversation._id);
+          dispatchGetStreamConversationSuccess({
+            data: conversation,
+          });
+          return navigation.navigate("PrivateUserAcceptRoom", {
+            performer: performer,
+            privateRequest: res.data,
+          });
+        }).catch(async (e:any) => {
+          const error = await e;
+      toast.show({description: error.message})
+        });;
+      }
+
+    } catch (e:any) {
+
+
     }
+
   };
 
   // const setPrice = () => {
@@ -109,7 +122,7 @@ const PrivateUserWaitingRoom = ({
         color={colors.lightText}
         bold
       >
-        Private Waiting Room
+        Waiting Room
       </Heading>
 
       <View style={styles.container}>
@@ -199,6 +212,8 @@ const PrivateUserWaitingRoom = ({
         </View>
       </View>
       <HeaderMenu />
+      <BackButton />
+
     </SafeAreaView>
   );
 };

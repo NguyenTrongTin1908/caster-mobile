@@ -11,6 +11,8 @@ import Video from "components/tab/bookmarks/Video";
 import styles from "./style";
 import HeaderMenu from "components/tab/HeaderMenu";
 import { IPerformer } from "src/interfaces";
+import BackButton from "components/uis/BackButton";
+
 interface Props {
   isLoggedIn: boolean;
   current: IPerformer;
@@ -67,6 +69,8 @@ const Bookmarks = ({
         </View>
         <HeaderMenu />
       </View>
+      <BackButton />
+
     </SafeAreaView>
   );
 };

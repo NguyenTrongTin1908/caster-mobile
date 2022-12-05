@@ -31,8 +31,8 @@ const styles = StyleSheet.create({
   },
 
   iconSettings: {
-    top: 15 + getStatusBarHeight(true),
-    right: 0,
+    top: 90 + getStatusBarHeight(true),
+    right: 20,
     height: 56,
     position: 'absolute',
     flexDirection: 'row',

@@ -182,7 +182,7 @@ const Profile = ({
           />
         </View>
       </View>
-      {/* <HeaderMenu /> */}
+      <HeaderMenu />
       <BackButton />
     </SafeAreaView>
   );

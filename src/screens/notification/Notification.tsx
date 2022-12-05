@@ -9,6 +9,8 @@ import { colors } from "utils/theme";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/core";
 import TabView from "components/uis/TabView";
+import BackButton from "components/uis/BackButton";
+
 
 const NotificationPage = (): React.ReactElement => {
   const navigation = useNavigation() as any;
@@ -55,6 +57,7 @@ const NotificationPage = (): React.ReactElement => {
           />
         </View>
       </Box>
+      <BackButton />
     </SafeAreaView>
   );
 };

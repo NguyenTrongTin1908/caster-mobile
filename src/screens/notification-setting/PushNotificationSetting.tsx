@@ -18,6 +18,7 @@ import { IPerformer } from "src/interfaces";
 import { Table, Row, Cell, TableWrapper } from "react-native-table-component";
 import { performerService } from "services/perfomer.service";
 import { setCurrentUser } from "services/redux/user/actions";
+import BackButton from "components/uis/BackButton";
 
 import styles from "./style";
 import HeaderMenu from "components/tab/HeaderMenu";
@@ -460,6 +461,8 @@ const PushNotificationSetting = ({
         </Box>
       </View>
       <View></View>
+      <BackButton />
+
     </SafeAreaView>
   );
 };

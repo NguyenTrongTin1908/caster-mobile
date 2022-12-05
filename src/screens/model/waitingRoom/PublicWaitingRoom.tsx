@@ -9,6 +9,8 @@ import styles from "./style";
 import HeaderMenu from "components/tab/HeaderMenu";
 import { IPerformer } from "src/interfaces";
 import { SafeAreaView, View } from "react-native";
+import BackButton from "components/uis/BackButton";
+
 
 interface IProps {
   error: any;
@@ -81,6 +83,8 @@ const GoLivePage = ({ error, currentUser }: IProps) => {
         <Text style={styles.subText}>January 4th</Text>
       </View>
       <HeaderMenu />
+      <BackButton />
+
     </SafeAreaView>
   );
 };

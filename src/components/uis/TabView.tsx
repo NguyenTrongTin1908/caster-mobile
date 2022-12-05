@@ -23,7 +23,7 @@ const TabViewComponent = ({
 }: IProps): JSX.Element => {
   const routes = scenes.map((s) => omit(s, ["sence"]));
   const senceMap = scenes.reduce((a, s) => ({ ...a, [s.key]: s.sence }), {});
-  const [index, setIndex] = React.useState(1);
+  const [index, setIndex] = React.useState(0);
 
   const renderTabBar = (props: any) => {
     return (

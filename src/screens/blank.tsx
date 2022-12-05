@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Box, Heading } from 'native-base';
-
+import BackButton from "components/uis/BackButton";
+import HeaderMenu from "components/tab/HeaderMenu";
 import { colors } from 'utils/theme';
 
 
@@ -17,7 +18,8 @@ const Blank = (): React.ReactElement => {
         bold>
         We're Coming Very Soon
       </Heading>
-
+      <HeaderMenu />
+      <BackButton />
 
     </Box>
   );

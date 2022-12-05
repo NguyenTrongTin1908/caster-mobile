@@ -35,19 +35,25 @@ import { mediaService } from "services/media.service";
 import { IPerformer } from "interfaces/performer";
 import { useNavigation } from "@react-navigation/core";
 import { IFeed } from "interfaces/feed";
+import BackButton from "components/uis/BackButton";
 import styles from "./styles";
 const isVideoOnLoadEvent = (
   event: OnLoadData | NativeSyntheticEvent<ImageLoadEventData>
 ): event is OnLoadData => "duration" in event && "naturalSize" in event;
-type Props = NativeStackScreenProps<RootStackParamList, "Upload">;
+// type Props = NativeStackScreenProps<RootStackParamList, "Upload">;
 interface IProps {
   current: IPerformer;
   feed?: IFeed;
+  route: {
+    params: {
+      path: string;
+      type: any;
+    };
+  };
 }
 const Upload = (
-  { route }: Props,
-  { current, feed }: IProps
-): React.ReactElement => {
+  { current, feed ,route}: IProps
+) => {
   const { path, type } = route.params;
   const navigation = useNavigation() as any;
   const [saveToGallery, setsaveToGallery] = useState(false);
@@ -174,6 +180,10 @@ const Upload = (
     }
   };
 
+  const Capitalize=function(str){
+    return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
   return (
     <KeyboardDismiss>
       <SafeAreaView style={{ flex: 1 }}>
@@ -182,7 +192,7 @@ const Upload = (
             <Text color={colors.lightText} fontSize={20}>
               Post
             </Text>
-            <MaterialIcons
+            {/* <MaterialIcons
               name="arrow-back"
               color={colors.lightText}
               size={24}
@@ -191,7 +201,7 @@ const Upload = (
                 left: 10.0,
               }}
               onPress={() => navigation.pop()}
-            />
+            /> */}
           </View>
           <View style={styles.postInfoWrapStyle}>
             <Image
@@ -395,9 +405,11 @@ const Upload = (
             style={styles.postVideoButtonStyle}
             onPress={handleSubmit(onSubmit)}
           >
-            <Text color={colors.lightText}>Post Video</Text>
+            <Text color={colors.lightText}>Post {Capitalize(type)}</Text>
           </TouchableOpacity>
         </View>
+      <BackButton />
+
       </SafeAreaView>
     </KeyboardDismiss>
   );
@@ -405,4 +417,4 @@ const Upload = (
 const mapStateToProp = (state: any): any => ({
   ...state.user,
 });
-export default connect(mapStateToProp)(Upload);
+export default connect(mapStateToProp)(Upload)

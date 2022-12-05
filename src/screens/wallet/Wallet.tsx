@@ -64,6 +64,7 @@ const Wallet = ({ user }: IProps): React.ReactElement => {
         </View>
       </Box>
       <HeaderMenu />
+      <BackButton />
     </SafeAreaView>
   );
 };

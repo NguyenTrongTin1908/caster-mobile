@@ -5,6 +5,8 @@ import { connect } from "react-redux";
 import { IPerformer, IUser } from "src/interfaces";
 import { values, filter, sortBy } from "lodash";
 import React, { useEffect, useState } from "react";
+import BackButton from "components/uis/BackButton";
+
 
 import { Alert, View, Heading, Box } from "native-base";
 import { SafeAreaView } from "react-native";
@@ -114,6 +116,8 @@ const ModelOrderPage = ({ user }: IProps) => {
           />
         </View>
       </Box>
+      <BackButton />
+
     </SafeAreaView>
   );
 };

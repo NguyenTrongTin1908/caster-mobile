@@ -15,6 +15,8 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import ButtonFollow from "components/uis/ButtonFollow";
 import { streamService } from "services/stream.service";
 import { cancelPrivateRequest } from "services/redux/streaming/actions";
+import BackButton from "components/uis/BackButton";
+
 
 const Option = Select;
 enum EVENT {
@@ -123,7 +125,7 @@ const PrivateUserAcceptRoom = ({
         color={colors.lightText}
         bold
       >
-        Private Waiting Room
+        Accept Room
       </Heading>
 
       <View style={styles.container}>
@@ -192,6 +194,8 @@ const PrivateUserAcceptRoom = ({
         </TouchableOpacity>
       </View>
       <HeaderMenu />
+      <BackButton />
+
     </SafeAreaView>
   );
 };

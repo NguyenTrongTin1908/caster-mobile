@@ -41,13 +41,21 @@ const ListComments = React.memo(
     const [requesting, setRequesting] = useState(true);
     const { onOpen, isOpen, onClose } = useDisclose();
     const [totalComment, setTotalComment] = useState(feed.totalComment);
-    const comments = commentMapping.hasOwnProperty(feed._id)
-      ? commentMapping[feed._id].items
-      : [];
+    const [comments, setComments] = useState([] as any);
+
 
     useEffect(() => {
-      comments.length !== 0 && setTotalComment(comments.length);
-    }, [comments]);
+      const data = commentMapping?.hasOwnProperty(feed._id)
+      ? commentMapping[feed._id]?.items
+      : [];
+      setComments(data);
+      if (data.length !== 0) {
+      setTotalComment(data.length);
+      }
+      setRequesting(false);
+
+
+    }, [commentMapping[feed._id]?.items?.length]);
     const handleOpenComment = async () => {
       setcommentPage(0);
       handleShowComment();
@@ -57,13 +65,12 @@ const ListComments = React.memo(
     const handleShowComment = async () => {
       try {
         setRequesting(true);
-        await getComments({
+        getComments({
           objectId: feed._id,
           objectType: "feed",
           limit: itemPerPage,
           offset: 0,
         });
-        setRequesting(false);
       } catch (error) {}
     };
     const handleGetmore = async () => {
@@ -99,13 +106,13 @@ const ListComments = React.memo(
         </View>
       );
     };
-    const renderEmpty = () => (
-      <View>
-        {!requesting && !comments.length && (
-          <Text style={{ fontSize: 16, fontWeight: "bold" }}>No comments</Text>
-        )}
-      </View>
-    );
+    // const renderEmpty = () => (
+    //   <View>
+    //     {!requesting && !comments?.lenght && (
+    //       <BadgeText content={"No comments !"} />
+    //     )}
+    //   </View>
+    // );
     return (
       <View>
         <TouchableOpacity onPress={() => handleOpenComment()}>
@@ -117,8 +124,7 @@ const ListComments = React.memo(
         </TouchableOpacity>
         <Actionsheet isOpen={isOpen} onClose={onClose} padding={0}>
           <Actionsheet.Content height={400}>
-            {renderEmpty()}
-            <FlatList
+         {!requesting && <FlatList
               keyExtractor={(item) => item._id}
               data={comments}
               renderItem={renderItem}
@@ -126,8 +132,9 @@ const ListComments = React.memo(
               style={{ width: "100%" }}
               onEndReachedThreshold={0.1}
               onEndReached={() => handleGetmore()}
+              // ListEmptyComponent={renderEmpty()}
               inverted
-            />
+            /> }
             {commentMapping[feed._id] && commentMapping[feed._id].requesting}
             <HStack space={2} w="100%">
               <View w="15%">
