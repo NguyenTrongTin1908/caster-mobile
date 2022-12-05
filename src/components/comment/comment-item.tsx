@@ -32,8 +32,8 @@ const CommentItem = React.memo(
     item,
     canReply,
     currentUser,
-    createComment,
-    getComments,
+    createComment: createReply,
+    getComments: getReplys,
     commentMapping,
     onDelete,
   }: IProps): React.ReactElement => {
@@ -46,21 +46,21 @@ const CommentItem = React.memo(
     const replys = commentMapping.hasOwnProperty(item._id)
       ? commentMapping[item._id].items
       : [];
-    const handleCreateComment = async (values) => {
-      createComment(values);
-      onOpenComment();
+    const handleCreateReply = async (values) => {
+      createReply(values);
+      !isOpenReply ? onOpenReply() : onOpenReply(false);
     };
-    const onOpenComment = async () => {
-      getComments({
+    const onOpenReply = async (canOpen = true) => {
+      getReplys({
         objectId: item._id,
         objectType: "comment",
         limit: 0,
         offset: 0,
       });
-      setOpenReply(!isOpenReply);
+      canOpen && setOpenReply(!isOpenReply);
     };
 
-    const likeComment = async (comment) => {
+    const handleLike = async (comment) => {
       try {
         if (!isLiked) {
           await reactionService.create({
@@ -81,7 +81,7 @@ const CommentItem = React.memo(
         }
       } catch (e) {}
     };
-    const handleDeleteComment = async () => {
+    const handleDelete = async () => {
       Alert.alert(
         "Delete Item",
         "Are you sure you want to delete this item ?",
@@ -152,7 +152,7 @@ const CommentItem = React.memo(
                       )}
                       {canReply && (
                         <TouchableOpacity
-                          onPress={() => onOpenComment()}
+                          onPress={() => onOpenReply()}
                           style={styles.optionCommentItem}
                         >
                           <Text color={"blue.300"}>
@@ -162,7 +162,7 @@ const CommentItem = React.memo(
                       )}
                       {item?.creator?._id === currentUser._id && (
                         <TouchableOpacity
-                          onPress={handleDeleteComment}
+                          onPress={() => handleDelete()}
                           style={[
                             styles.optionCommentItem,
                             { flexDirection: "row" },
@@ -206,7 +206,7 @@ const CommentItem = React.memo(
                         objectId={item._id}
                         objectType="comment"
                         isReply={true}
-                        handleOnSubmit={handleCreateComment}
+                        handleOnSubmit={handleCreateReply}
                       ></CommentForm>
                     </View>
                   </HStack>
@@ -229,7 +229,7 @@ const CommentItem = React.memo(
                 flexDirection="column"
                 flex={1}
               >
-                <TouchableOpacity onPress={() => likeComment(item)}>
+                <TouchableOpacity onPress={() => handleLike(item)}>
                   <Ionicons
                     name={isLiked ? "heart" : "heart-outline"}
                     size={22}

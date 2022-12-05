@@ -43,18 +43,15 @@ const ListComments = React.memo(
     const [totalComment, setTotalComment] = useState(feed.totalComment);
     const [comments, setComments] = useState([] as any);
 
-
     useEffect(() => {
       const data = commentMapping?.hasOwnProperty(feed._id)
-      ? commentMapping[feed._id]?.items
-      : [];
+        ? commentMapping[feed._id]?.items
+        : [];
       setComments(data);
       if (data.length !== 0) {
-      setTotalComment(data.length);
+        setTotalComment(data.length);
       }
       setRequesting(false);
-
-
     }, [commentMapping[feed._id]?.items?.length]);
     const handleOpenComment = async () => {
       setcommentPage(0);
@@ -124,7 +121,7 @@ const ListComments = React.memo(
         </TouchableOpacity>
         <Actionsheet isOpen={isOpen} onClose={onClose} padding={0}>
           <Actionsheet.Content height={400}>
-         {!requesting && <FlatList
+            <FlatList
               keyExtractor={(item) => item._id}
               data={comments}
               renderItem={renderItem}
@@ -134,7 +131,7 @@ const ListComments = React.memo(
               onEndReached={() => handleGetmore()}
               // ListEmptyComponent={renderEmpty()}
               inverted
-            /> }
+            />
             {commentMapping[feed._id] && commentMapping[feed._id].requesting}
             <HStack space={2} w="100%">
               <View w="15%">

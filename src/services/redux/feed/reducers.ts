@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
-import { merge } from 'lodash';
-import { createReducers } from 'lib/redux';
+import { merge } from "lodash";
+import { createReducers } from "lib/redux";
 // import { onFollow } from 'redux/performer/actions';
 import {
   getFeeds,
@@ -22,37 +22,40 @@ import {
   getRecommendFeeds,
   getRecommendFeedsSuccess,
   getRecommendFeedsFail,
+  moreRecommendFeeds,
+  moreRecommendFeedsSuccess,
+  moreRecommendFeedsFail,
   moreTrendingFeeds,
   moreTrendingFeedsSuccess,
-  moreTrendingFeedsFail
-} from './actions';
+  moreTrendingFeedsFail,
+} from "./actions";
 
 const initialState = {
   feeds: {
     requesting: false,
     error: null,
     data: null,
-    success: false
+    success: false,
   },
 
   followingFeeds: {
     requesting: false,
     error: null,
     data: null,
-    success: false
+    success: false,
   },
   trendingFeeds: {
     requesting: false,
     error: null,
     data: null,
-    success: false
+    success: false,
   },
   recommendFeeds: {
     requesting: false,
     error: null,
     data: null,
-    success: false
-  }
+    success: false,
+  },
 };
 
 const feedReducers = [
@@ -63,10 +66,10 @@ const feedReducers = [
         ...prevState,
         feeds: {
           ...initialState.feeds,
-          requesting: true
-        }
+          requesting: true,
+        },
       };
-    }
+    },
   },
   {
     on: getFeedsSuccess,
@@ -78,10 +81,10 @@ const feedReducers = [
           requesting: false,
           items: data.payload.data,
           total: data.payload.total,
-          success: true
-        }
+          success: true,
+        },
       };
-    }
+    },
   },
   {
     on: getFeedsFail,
@@ -91,10 +94,10 @@ const feedReducers = [
         feeds: {
           ...prevState.feeds,
           requesting: false,
-          error: data.payload
-        }
+          error: data.payload,
+        },
       };
-    }
+    },
   },
   {
     on: moreFeeds,
@@ -105,10 +108,10 @@ const feedReducers = [
           ...prevState.feeds,
           requesting: true,
           error: null,
-          success: false
-        }
+          success: false,
+        },
       };
-    }
+    },
   },
   {
     on: moreFeedsSuccess,
@@ -120,10 +123,10 @@ const feedReducers = [
           requesting: false,
           total: data.payload.total,
           items: [...prevState.feeds.items, ...data.payload.data],
-          success: true
-        }
+          success: true,
+        },
       };
-    }
+    },
   },
   {
     on: moreFeedsFail,
@@ -134,10 +137,10 @@ const feedReducers = [
           ...prevState.feeds,
           requesting: false,
           error: data.payload,
-          success: false
-        }
+          success: false,
+        },
       };
-    }
+    },
   },
   {
     on: getFollowingFeeds,
@@ -146,10 +149,10 @@ const feedReducers = [
         ...prevState,
         followingFeeds: {
           ...initialState.followingFeeds,
-          requesting: true
-        }
+          requesting: true,
+        },
       };
-    }
+    },
   },
   {
     on: getFollowingFeedsSuccess,
@@ -161,10 +164,10 @@ const feedReducers = [
           requesting: false,
           items: data.payload.data,
           total: data.payload.total,
-          success: true
-        }
+          success: true,
+        },
       };
-    }
+    },
   },
   {
     on: getFollowingFeedsFail,
@@ -174,10 +177,10 @@ const feedReducers = [
         followingFeeds: {
           ...prevState.followingFeeds,
           requesting: false,
-          error: data.payload
-        }
+          error: data.payload,
+        },
       };
-    }
+    },
   },
   {
     on: moreFollowingFeeds,
@@ -188,10 +191,10 @@ const feedReducers = [
           ...prevState.followingFeeds,
           requesting: true,
           error: null,
-          success: false
-        }
+          success: false,
+        },
       };
-    }
+    },
   },
   {
     on: moreFollowingFeedsSuccess,
@@ -203,10 +206,10 @@ const feedReducers = [
           requesting: false,
           total: data.payload.total,
           items: [...prevState.followingFeeds.items, ...data.payload.data],
-          success: true
-        }
+          success: true,
+        },
       };
-    }
+    },
   },
   {
     on: moreFollowingFeedsFail,
@@ -217,10 +220,53 @@ const feedReducers = [
           ...prevState.followingFeeds,
           requesting: false,
           error: data.payload,
-          success: false
-        }
+          success: false,
+        },
       };
-    }
+    },
+  },
+  {
+    on: moreRecommendFeeds,
+    reducer(prevState: any) {
+      return {
+        ...prevState,
+        recommendFeeds: {
+          ...prevState.recommendFeeds,
+          requesting: true,
+          error: null,
+          success: false,
+        },
+      };
+    },
+  },
+  {
+    on: moreRecommendFeedsSuccess,
+    reducer(prevState: any, data: any) {
+      return {
+        ...prevState,
+        recommendFeeds: {
+          ...prevState.recommendFeeds,
+          requesting: false,
+          total: data.payload.total,
+          items: [...prevState.recommendFeeds.items, ...data.payload.data],
+          success: true,
+        },
+      };
+    },
+  },
+  {
+    on: moreRecommendFeedsFail,
+    reducer(prevState: any, data: any) {
+      return {
+        ...prevState,
+        recommendFeeds: {
+          ...prevState.recommendFeeds,
+          requesting: false,
+          error: data.payload,
+          success: false,
+        },
+      };
+    },
   },
   {
     on: getTrendingFeeds,
@@ -229,10 +275,10 @@ const feedReducers = [
         ...prevState,
         trendingFeeds: {
           ...initialState.trendingFeeds,
-          requesting: true
-        }
+          requesting: true,
+        },
       };
-    }
+    },
   },
   {
     on: getTrendingFeedsSuccess,
@@ -244,10 +290,10 @@ const feedReducers = [
           requesting: false,
           items: data.payload.data,
           total: data.payload.total,
-          success: true
-        }
+          success: true,
+        },
       };
-    }
+    },
   },
   {
     on: getTrendingFeedsFail,
@@ -257,10 +303,10 @@ const feedReducers = [
         trendingFeeds: {
           ...prevState.trendingFeeds,
           requesting: false,
-          error: data.payload
-        }
+          error: data.payload,
+        },
       };
-    }
+    },
   },
   {
     on: getRecommendFeeds,
@@ -269,10 +315,10 @@ const feedReducers = [
         ...prevState,
         recommendFeeds: {
           ...initialState.recommendFeeds,
-          requesting: true
-        }
+          requesting: true,
+        },
       };
-    }
+    },
   },
   {
     on: getRecommendFeedsSuccess,
@@ -284,10 +330,10 @@ const feedReducers = [
           requesting: false,
           items: data.payload.data,
           total: data.payload.total,
-          success: true
-        }
+          success: true,
+        },
       };
-    }
+    },
   },
   {
     on: getRecommendFeedsFail,
@@ -297,10 +343,10 @@ const feedReducers = [
         recommendFeeds: {
           ...prevState.recommendFeeds,
           requesting: false,
-          error: data.payload
-        }
+          error: data.payload,
+        },
       };
-    }
+    },
   },
   {
     on: moreTrendingFeeds,
@@ -311,10 +357,10 @@ const feedReducers = [
           ...prevState.trendingFeeds,
           requesting: true,
           error: null,
-          success: false
-        }
+          success: false,
+        },
       };
-    }
+    },
   },
   {
     on: moreTrendingFeedsSuccess,
@@ -326,10 +372,10 @@ const feedReducers = [
           requesting: false,
           total: data.payload.total,
           items: [...prevState.trendingFeeds.items, ...data.payload.data],
-          success: true
-        }
+          success: true,
+        },
       };
-    }
+    },
   },
   {
     on: moreTrendingFeedsFail,
@@ -340,10 +386,10 @@ const feedReducers = [
           ...prevState.trendingFeeds,
           requesting: false,
           error: data.payload,
-          success: false
-        }
+          success: false,
+        },
       };
-    }
+    },
   },
 
   {
@@ -352,18 +398,18 @@ const feedReducers = [
       const { feed } = data.payload;
       const { items } = prevState.feeds || [];
       items.splice(
-        items.findIndex(f => f._id === feed._id),
+        items.findIndex((f) => f._id === feed._id),
         1
       );
       return {
         ...prevState,
         feeds: {
           total: prevState.total - 1,
-          items
-        }
+          items,
+        },
       };
-    }
-  }
+    },
+  },
 ];
 
-export default merge({}, createReducers('feed', [feedReducers], initialState));
+export default merge({}, createReducers("feed", [feedReducers], initialState));
