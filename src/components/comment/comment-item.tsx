@@ -16,6 +16,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import styles from "./style";
 const { width } = Dimensions.get("window");
+import ReplyForm from "./reply-form";
 
 interface IProps {
   item: IComment;
@@ -201,13 +202,13 @@ const CommentItem = React.memo(
                       />
                     </View>
                     <View width={"85%"}>
-                      <CommentForm
+                      <ReplyForm
                         creator={currentUser}
                         objectId={item._id}
                         objectType="comment"
                         isReply={true}
                         handleOnSubmit={handleCreateReply}
-                      ></CommentForm>
+                      ></ReplyForm>
                     </View>
                   </HStack>
                 )}

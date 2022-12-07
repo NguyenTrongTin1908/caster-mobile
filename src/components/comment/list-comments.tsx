@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import CommentForm from "./comment-form";
 import { colors, Sizes } from "utils/theme";
+import { Keyboard, KeyboardEvent } from "react-native";
 
 import {
   getComments,
@@ -36,7 +37,7 @@ const ListComments = React.memo(
     createComment,
     commentMapping,
   }: IProps): React.ReactElement => {
-    const [itemPerPage, setitemPerPage] = useState(5);
+    const [itemPerPage, setitemPerPage] = useState(8);
     const [commentPage, setcommentPage] = useState(0);
     const [requesting, setRequesting] = useState(true);
     const { onOpen, isOpen, onClose } = useDisclose();
@@ -49,10 +50,34 @@ const ListComments = React.memo(
         : [];
       setComments(data);
       if (data.length !== 0) {
-        setTotalComment(data.length);
       }
       setRequesting(false);
     }, [commentMapping[feed._id]?.items?.length]);
+    const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+    function onKeyboardDidShow(e: KeyboardEvent) {
+      // Remove type here if not using TypeScript
+      setKeyboardHeight(e.endCoordinates.height - 170);
+    }
+
+    function onKeyboardDidHide() {
+      setKeyboardHeight(0);
+    }
+
+    useEffect(() => {
+      const showSubscription = Keyboard.addListener(
+        "keyboardDidShow",
+        onKeyboardDidShow
+      );
+      const hideSubscription = Keyboard.addListener(
+        "keyboardDidHide",
+        onKeyboardDidHide
+      );
+      return () => {
+        showSubscription.remove();
+        hideSubscription.remove();
+      };
+    }, []);
     const handleOpenComment = async () => {
       setcommentPage(0);
       handleShowComment();
@@ -71,6 +96,7 @@ const ListComments = React.memo(
       } catch (error) {}
     };
     const handleGetmore = async () => {
+      console.log("get more");
       setcommentPage(commentPage + 1);
       moreComment({
         objectId: feed._id,
@@ -93,14 +119,14 @@ const ListComments = React.memo(
     };
     const renderItem = ({ item }) => {
       return (
-        <View>
+        <>
           <CommentItem
             canReply={canReply}
             key={item._id}
             item={item}
             onDelete={handleDeleteComment}
           />
-        </View>
+        </>
       );
     };
     // const renderEmpty = () => (
@@ -120,48 +146,39 @@ const ListComments = React.memo(
           />
         </TouchableOpacity>
         <Actionsheet isOpen={isOpen} onClose={onClose} padding={0}>
-          <Actionsheet.Content height={400}>
-            <FlatList
-              keyExtractor={(item) => item._id}
-              data={comments}
-              renderItem={renderItem}
-              showsVerticalScrollIndicator={false}
-              style={{ width: "100%" }}
-              onEndReachedThreshold={0.1}
-              onEndReached={() => handleGetmore()}
-              // ListEmptyComponent={renderEmpty()}
-              inverted
-            />
-            {commentMapping[feed._id] && commentMapping[feed._id].requesting}
-            <HStack space={2} w="100%">
-              <View w="15%">
-                <Image
-                  source={
-                    user?.avatar
-                      ? { uri: user?.avatar }
-                      : require("../../assets/avatar-default.png")
-                  }
-                  style={{
-                    width: 40,
-                    height: 40,
-                    marginLeft: 5,
-                    borderRadius: 35.0,
-                    borderColor: "blue",
-                    borderWidth: 1.0,
-                    alignItems: "center",
-                  }}
-                  alt="avatar"
-                />
-              </View>
-              <View width={"85%"}>
-                <CommentForm
-                  creator={user}
-                  objectId={feed._id}
-                  objectType="feed"
-                  handleOnSubmit={handleCreateComment}
-                ></CommentForm>
-              </View>
-            </HStack>
+          <Actionsheet.Content height={570}>
+            <View
+              style={{
+                width: "100%",
+                marginBottom: 230 + (keyboardHeight - 100),
+              }}
+            >
+              <FlatList
+                keyExtractor={(item) => item._id}
+                data={comments}
+                renderItem={renderItem}
+                showsVerticalScrollIndicator={false}
+                style={{ width: "100%" }}
+                onEndReachedThreshold={0.5}
+                onEndReached={() => handleGetmore()}
+                // ListEmptyComponent={renderEmpty()}
+                inverted
+                contentContainerStyle={{
+                  paddingTop: 100 + keyboardHeight,
+                  flexDirection: "column",
+                }}
+              />
+            </View>
+
+            {/* {commentMapping[feed._id] && commentMapping[feed._id].requesting} */}
+            <CommentForm
+              creator={user}
+              objectId={feed._id}
+              objectType="feed"
+              isReply={false}
+              handleOnSubmit={handleCreateComment}
+              height={keyboardHeight}
+            ></CommentForm>
           </Actionsheet.Content>
         </Actionsheet>
         <Text

@@ -88,6 +88,18 @@ const styles = StyleSheet.create({
     borderColor: colors.secondary,
     borderWidth: 2,
   },
+  commentForm: {
+    position: "absolute",
+    bottom: 0,
+  },
+  commentList: {
+    width: "100%",
+    marginBottom: 100,
+  },
+  replyList: {
+    width: "100%",
+    marginBottom: 40,
+  },
 });
 
 export default styles;
