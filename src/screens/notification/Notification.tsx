@@ -11,7 +11,6 @@ import { useNavigation } from "@react-navigation/core";
 import TabView from "components/uis/TabView";
 import BackButton from "components/uis/BackButton";
 
-
 const NotificationPage = (): React.ReactElement => {
   const navigation = useNavigation() as any;
   return (
@@ -39,7 +38,7 @@ const NotificationPage = (): React.ReactElement => {
             ></Ionicons>
           </TouchableOpacity>
         </View>
-        <View style={{ flex: 1, marginTop: -15 }}>
+        <View style={{ flex: 1, marginTop: 0 }}>
           <TabView
             swipeEnabled={false}
             scenes={[

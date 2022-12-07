@@ -32,7 +32,7 @@ const PushNotificationSetting = ({
   setCurrentUser,
 }: IProps): React.ReactElement => {
   const { control, handleSubmit } = useForm();
-  const [list, setList] = useState(current.notificationSetting);
+  const [list, setList] = useState(current?.notificationSetting || ({} as any));
   const tableHeadGeneral = ["General", "Active"];
   const tableHeadTime = ["Time Sensative", "Active"];
   const tableHeadHost = ["Host", "Active"];
@@ -40,9 +40,9 @@ const PushNotificationSetting = ({
   const dataTable = ["name", "key"];
   const [submitting, setSubmitting] = useState(false);
   const [receive, setReceive] = useState(
-    current.notificationSetting.receiveOnDesktop
+    current?.notificationSetting?.receiveOnDesktop
   );
-  const [active, setActive] = useState(current.notificationSetting.active);
+  const [active, setActive] = useState(current?.notificationSetting?.active);
   const navigation = useNavigation() as any;
   const [generalData, setGeneralData] = useState([]) as any;
   const [timeData, setTimeData] = useState([]) as any;
@@ -81,6 +81,7 @@ const PushNotificationSetting = ({
       await performerService.updateNotificationSetting(current._id, {
         ...list,
         ...data,
+        performerId: current._id,
       });
       setCurrentUser({ ...current, notificationSetting: { ...list, ...data } });
 
@@ -462,7 +463,6 @@ const PushNotificationSetting = ({
       </View>
       <View></View>
       <BackButton />
-
     </SafeAreaView>
   );
 };
