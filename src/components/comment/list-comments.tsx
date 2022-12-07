@@ -37,7 +37,7 @@ const ListComments = React.memo(
     createComment,
     commentMapping,
   }: IProps): React.ReactElement => {
-    const [itemPerPage, setitemPerPage] = useState(8);
+    const [itemPerPage, setitemPerPage] = useState(12);
     const [commentPage, setcommentPage] = useState(0);
     const [requesting, setRequesting] = useState(true);
     const { onOpen, isOpen, onClose } = useDisclose();
