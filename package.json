@@ -73,7 +73,7 @@
     "react-native-vision-camera": "2.13.0",
     "react-native-web": "~0.15.0",
     "react-native-webrtc": "1.100.1",
-    "react-native-webview": "11.0.0",
+    "react-native-webview": "^11.26.0",
     "react-navigation-stack": "^2.10.2",
     "react-number-format": "^4.7.3",
     "react-redux": "^7.2.4",

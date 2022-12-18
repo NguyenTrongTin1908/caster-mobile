@@ -1,6 +1,4 @@
-import {
-  cloneDeep
-} from 'lodash';
+import { cloneDeep } from "lodash";
 // import * as pathToRegexp from 'path-to-regexp';
 
 /**
@@ -13,9 +11,9 @@ import {
  */
 export function arrayToTree(
   array,
-  id = 'id',
-  parentId = 'pid',
-  children = 'children'
+  id = "id",
+  parentId = "pid",
+  children = "children"
 ) {
   const result = [] as any;
   const hash = {};
@@ -55,7 +53,7 @@ export function arrayToTree(
  * @param   {string}    id        The alias of the unique ID of the object in the array.
  * @return  {array}    Return a key array.
  */
-export function queryAncestors(array, current, parentId, id = 'id') {
+export function queryAncestors(array, current, parentId, id = "id") {
   const result = [current];
   const hashMap = new Map();
   array.forEach((item) => hashMap.set(item[id], item));
@@ -72,19 +70,23 @@ export function queryAncestors(array, current, parentId, id = 'id') {
   return result;
 }
 
+export function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export function getResponseError(data: any) {
   if (!data) {
-    return '';
+    return "";
   }
 
   if (Array.isArray(data.message)) {
     const item = data.message[0];
     if (!item.constraints) {
-      return data.error || 'Bad request!';
+      return data.error || "Bad request!";
     }
     return Object.values(item.constraints)[0];
   }
 
   // TODO - parse for langauge or others
-  return typeof data.message === 'string' ? data.message : 'Bad request!';
+  return typeof data.message === "string" ? data.message : "Bad request!";
 }

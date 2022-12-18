@@ -212,6 +212,22 @@ export const MainDrawer = ({
       },
     },
     {
+      id: "help",
+      label: "Help",
+      icon: (
+        <FontAwesome
+          name={"question-circle-o"}
+          size={17}
+          color={colors.appBgColor}
+        />
+      ),
+      onPress: () => {
+        //todo - update navigation
+        navigationRef.current?.navigate("Help");
+        handleHide();
+      },
+    },
+    {
       id: "explore",
       label: "Explore",
       icon: <FontAwesome name={"search"} size={17} color={colors.appBgColor} />,
@@ -238,7 +254,7 @@ export const MainDrawer = ({
       label: "Manage Profile",
       icon: <FontAwesome name={"user"} size={17} color={colors.appBgColor} />,
       onPress: () => {
-        navigationRef.current?.navigate("Profile");
+        navigationRef.current?.navigate("EditProfile");
         handleHide();
       },
     },
@@ -317,6 +333,7 @@ export const MainDrawer = ({
         handleHide();
       },
     },
+
     {
       id: "logout",
       label: "Logout",

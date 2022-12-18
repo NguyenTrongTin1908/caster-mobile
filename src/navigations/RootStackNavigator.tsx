@@ -44,6 +44,8 @@ import PrivateUserAcceptRoom from "screens/user/private-accept-room/PrivateUserA
 import PrivateChat from "screens/privatechat/PrivateChat";
 import Blank from "screens/blank";
 import EditProfile from "screens/profile/EditProfile";
+import Help from "screens/help/Help";
+import Detail from "screens/help/Detail";
 
 export type RootStackParamList = {
   default: undefined;
@@ -63,6 +65,8 @@ export type RootStackParamList = {
   Hashtag: { query: string; currentTab: string };
   Trending: undefined;
   Wallet: undefined;
+  Help: undefined;
+  Detail: { slugCategory: string; slugTitle: string };
   TokenPackage: undefined;
   ModelOrderPage: undefined;
   ViewPublicStream: undefined;
@@ -250,6 +254,16 @@ function RootNavigator({ loggedIn }): React.ReactElement {
           options={{ headerShown: false, gestureEnabled: false }}
           name="Wallet"
           component={Wallet}
+        />
+        <Stack.Screen
+          options={{ headerShown: false, gestureEnabled: false }}
+          name="Help"
+          component={Help}
+        />
+        <Stack.Screen
+          options={{ headerShown: false, gestureEnabled: false }}
+          name="Detail"
+          component={Detail}
         />
         <Stack.Screen
           options={{ headerShown: false, gestureEnabled: false }}
