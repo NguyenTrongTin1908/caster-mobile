@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Heading,  View } from "native-base";
-import { SafeAreaView} from "react-native";
+import { Heading, View } from "native-base";
+import { SafeAreaView } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import { logout } from "services/redux/auth/actions";
 import TabView from "components/uis/TabView";
@@ -17,12 +17,8 @@ interface Props {
   isLoggedIn: boolean;
   current: IPerformer;
   handleLogout: Function;
-
 }
-const Bookmarks = ({
-  handleLogout,
-  current,
-}: Props): React.ReactElement => {
+const Bookmarks = ({ handleLogout, current }: Props): React.ReactElement => {
   const navigation = useNavigation() as any;
   const [showOptions, setshowOptions] = useState(false);
 
@@ -32,11 +28,10 @@ const Bookmarks = ({
     });
   }, []);
 
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
-      <HeaderMenu />
+        <HeaderMenu />
         <Heading
           mb={4}
           fontSize={30}
@@ -51,18 +46,16 @@ const Bookmarks = ({
           <TabView
             scenes={[
               {
-                key: "photoList",
-                title: "Photo",
-                sence: Photo,
-                params: { performerId: current._id },
-
-              },
-              {
                 key: "videoList",
-                title: "Video",
+                title: "Videos",
                 sence: Video,
                 params: { performerId: current._id },
-
+              },
+              {
+                key: "photoList",
+                title: "Photos",
+                sence: Photo,
+                params: { performerId: current._id },
               },
             ]}
           />
@@ -70,7 +63,6 @@ const Bookmarks = ({
         <HeaderMenu />
       </View>
       <BackButton />
-
     </SafeAreaView>
   );
 };

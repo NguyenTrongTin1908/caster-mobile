@@ -73,6 +73,7 @@ const FollowPost = ({
     const { total: totalFeeds } = feedState;
     try {
       if ((feedPage + 1) * itemPerPage >= totalFeeds) {
+        console.log("K load")
         resetloadFeeds();
       } else {
         setfeedPage(feedPage + 1);
@@ -111,6 +112,9 @@ const FollowPost = ({
       type: tab === "video" ? "video" : "photo",
     });
   };
+
+
+
   const handleTabChange = async (tab) => {
     setTab(tab);
     setfeedPage(0);
@@ -163,6 +167,8 @@ const FollowPost = ({
         windowSize={2}
         initialNumToRender={0}
         maxToRenderPerBatch={2}
+        onEndReached={loadmoreFeeds}
+
         removeClippedSubviews
         snapToInterval={
           Platform.OS === "ios"
@@ -188,9 +194,9 @@ const FollowPost = ({
           tabs={[
             {
               key: "video",
-              title: "Feed",
+              title: "Videos",
             },
-            { key: "photo", title: "Photo" },
+            { key: "photo", title: "Photos" },
           ]}
         />
       </CustomHeader>

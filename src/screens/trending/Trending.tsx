@@ -212,9 +212,9 @@ const Trending = ({ current }: IProps): React.ReactElement => {
               tabs={[
                 {
                   key: "video",
-                  title: "Video",
+                  title: "Videos",
                 },
-                { key: "photo", title: "Photo" },
+                { key: "photo", title: "Photos" },
               ]}
             />
           </CustomHeader>

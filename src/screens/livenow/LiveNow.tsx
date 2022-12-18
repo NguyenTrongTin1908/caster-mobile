@@ -47,6 +47,7 @@ const LiveNow = (): React.ReactElement => {
         ]}
       />
       <HeaderMenu />
+      <BackButton />
     </Box>
   );
 };

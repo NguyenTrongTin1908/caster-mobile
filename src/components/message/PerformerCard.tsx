@@ -35,8 +35,8 @@ const PerformerCard = ({
               source={
                 performer &&
                 (performer.avatar
-                  ? { uri: performer.avatar }
-                  : require("../../assets/bg.jpg"))
+                  ? { uri: performer?.avatar }
+                  : require("../../assets/avatar-default.png"))
               }
               alt={"avatar"}
               size={60}

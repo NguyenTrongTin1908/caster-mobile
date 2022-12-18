@@ -134,15 +134,15 @@ const ModelProfile = ({
           <TabView
             scenes={[
               {
-                key: "photoList",
-                title: "Photo",
-                sence: Photo,
+                key: "videoList",
+                title: "Videos",
+                sence: Video,
                 params: { performerId: performer._id },
               },
               {
-                key: "videoList",
-                title: "Video",
-                sence: Video,
+                key: "photoList",
+                title: "Photos",
+                sence: Photo,
                 params: { performerId: performer._id },
               },
             ]}

@@ -57,7 +57,6 @@ const Hashtag = ({
       type: tab === "video" ? "video" : "photo",
     });
     setfeeds(feeds.concat(data.data));
-    settrendingfeeds(feeds.concat(data.data));
   };
   const loadmoreFeeds = async () => {
     setfeedPage(feedPage + 1);
@@ -135,6 +134,7 @@ const Hashtag = ({
         windowSize={2}
         initialNumToRender={0}
         maxToRenderPerBatch={2}
+        onEndReached={loadmoreFeeds}
         removeClippedSubviews
         snapToInterval={
           Platform.OS === "ios"
@@ -160,9 +160,9 @@ const Hashtag = ({
           tabs={[
             {
               key: "video",
-              title: "Video",
+              title: "Videos",
             },
-            { key: "photo", title: "Photo" },
+            { key: "photo", title: "Photos" },
           ]}
         />
       </CustomHeader>
