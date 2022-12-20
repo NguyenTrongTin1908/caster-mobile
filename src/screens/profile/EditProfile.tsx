@@ -177,7 +177,7 @@ const EditProfile = ({
             </Heading>
             <View style={styles.converPhoto}>
               <Image
-                source={current?.cover ? { uri: current?.cover } : require('../../assets/bg.jpg')}
+                source={current?.cover ? { uri: current?.cover } : require('../../assets/banner-image.jpg')}
                 height={'100%'}
                 alt="cover"
               />

@@ -69,7 +69,7 @@ const ModelProfile = ({
           source={
             performer?.cover
               ? { uri: performer?.cover }
-              : require("../../../assets/bg.jpg")
+              : require("../../../assets/banner-image.jpg")
           }
           style={styles.converPhoto}
           alt="cover"

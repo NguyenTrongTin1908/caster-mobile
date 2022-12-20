@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import { useWindowDimensions } from "react-native";
 import WebView from "react-native-webview";
-import { Box, Heading, View, Text, ScrollView } from "native-base";
+import { Box, Heading, View, Text, ScrollView, Modal } from "native-base";
 import { useNavigation } from "@react-navigation/core";
 import { IPerformer } from "interfaces/performer";
 import BackButton from "components/uis/BackButton";
@@ -18,8 +18,10 @@ import { postCategoryService } from "../../services/post-category.service";
 import { feedService, postService } from "../../services";
 import styles from "./style";
 import { delay } from "../../lib";
-import VideoCard from "../../components/feed/component/video-card";
+import VideoHelpCard from "../../components/feed/component/video-help-card";
 import ButtonFollow from "../../components/uis/ButtonFollow";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import LoadingSpinner from "components/uis/LoadingSpinner";
 
 interface IProps {
   user: IPerformer;
@@ -35,6 +37,8 @@ const Detail = ({ user, route }: IProps): React.ReactElement => {
   const videoRef = useRef() as any;
   const { categoryId, slugTitle } = route.params;
   const mediaRefs = useRef([]) as any;
+  const [modalVisible, setModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     getCategorybyId();
@@ -53,8 +57,8 @@ const Detail = ({ user, route }: IProps): React.ReactElement => {
   }, [inView, post]);
 
   const pauseVideo = async () => {
-    if (videoRef.current.play) {
-      videoRef.current.pause();
+    if (videoRef.current?.play) {
+      videoRef.current?.pause();
     }
   };
 
@@ -73,8 +77,10 @@ const Detail = ({ user, route }: IProps): React.ReactElement => {
   };
   const getPost = async (page = 1) => {
     try {
+      setLoading(true);
       const resp = await postService.details(slugTitle);
       setPost(resp);
+      setLoading(false);
     } catch (e) {}
   };
 
@@ -87,13 +93,20 @@ const Detail = ({ user, route }: IProps): React.ReactElement => {
           textAlign="center"
           color={colors.lightText}
           bold
-        >
-          {post?.title}
-        </Heading>
+        ></Heading>
         {post && (
           <View style={styles.detailContainer}>
-            <View style={styles.videoDetail}>
-              <View style={styles.videoContainer}>
+            <ScrollView style={styles.htmlDetail}>
+              <WebView
+                originWhitelist={["*"]}
+                source={{
+                  uri: `https://caster.com/mobile-help/${category}/${post.slug}`,
+                }}
+                style={{ height: 1000 }}
+              />
+            </ScrollView>
+            {post?.feed && (
+              <View style={styles.videoPicture}>
                 <View style={styles.topDetail}>
                   <TouchableOpacity
                     activeOpacity={0.9}
@@ -106,16 +119,16 @@ const Detail = ({ user, route }: IProps): React.ReactElement => {
                   >
                     <Image
                       style={styles.profilePicture}
-                      source={{
-                        uri:
-                          post?.feed[0]?.performer.avatar ||
-                          Image.resolveAssetSource(
-                            require("../../assets/avatar-default.png")
-                          ).uri,
-                      }}
+                      source={
+                        post?.feed
+                          ? {
+                              uri: post?.feed[0]?.performer.avatar,
+                            }
+                          : require("../../assets/avatar-default.png")
+                      }
                     />
-                    <Text color={"white"}>
-                      {post?.feed[0]?.performer.username ||
+                    <Text color={colors.secondary}>
+                      {post?.feed[0]?.performer.name ||
                         post?.feed[0]?.performer.username}
                     </Text>
                   </TouchableOpacity>
@@ -129,38 +142,77 @@ const Detail = ({ user, route }: IProps): React.ReactElement => {
                   />
                 </View>
 
-                {post?.feed[0] && (
-                  <TouchableWithoutFeedback
-                    onPress={() =>
-                      !mediaRefs?.current[post?.feed[0]?._id].playing
-                        ? mediaRefs.current[post?.feed[0]?._id].play()
-                        : mediaRefs.current[post?.feed[0]?._id].pause()
-                    }
+                <TouchableOpacity
+                  style={styles.videoHelpDetail}
+                  onPress={() => setModalVisible(true)}
+                >
+                  <View
+                    style={{
+                      position: "absolute",
+                      bottom: 40,
+                      zIndex: 10,
+                      right: 80,
+                    }}
                   >
-                    <VideoCard
-                      controls={true}
-                      key={post?.feed[0]?._id}
-                      feed={post?.feed[0]}
-                      ref={(FeedRef) =>
-                        (mediaRefs.current[post?.feed[0]?._id] = FeedRef)
-                      }
-                    ></VideoCard>
-                  </TouchableWithoutFeedback>
-                )}
+                    <AntDesign
+                      name="caretright"
+                      color={colors.lightText}
+                      size={30}
+                    />
+                  </View>
+                  <Image
+                    source={
+                      post?.feed[0]
+                        ? {
+                            uri:
+                              post?.feed[0]?.thumbnail?.url ||
+                              (post?.feed[0]?.files?.length > 0 &&
+                                post?.feed[0]?.files[0].thumbnails &&
+                                post?.feed[0]?.files[0].thumbnails.length > 0 &&
+                                post?.feed[0]?.files[0].thumbnails[0]),
+                          }
+                        : require("../../assets/leaf.jpg")
+                    }
+                    style={{ width: "100%", height: "100%" }}
+                  />
+                </TouchableOpacity>
               </View>
-            </View>
-
-            <ScrollView style={styles.htmlDetail}>
-              <WebView
-                originWhitelist={["*"]}
-                source={{
-                  uri: `https://caster.com/mobile-help/${category}/${post.slug}`,
-                }}
-                style={{ width: 200, height: 1000 }}
-              />
-            </ScrollView>
+            )}
+            {post?.feed && (
+              <Modal
+                isOpen={modalVisible}
+                onClose={() => setModalVisible(false)}
+                avoidKeyboard
+                justifyContent="center"
+                size="full"
+              >
+                <Modal.Content>
+                  <Modal.CloseButton />
+                  <Modal.Header>{post?.title}</Modal.Header>
+                  <Modal.Body>
+                    <TouchableWithoutFeedback
+                      onPress={() =>
+                        !mediaRefs?.current[post?.feed[0]?._id].playing
+                          ? mediaRefs.current[post?.feed[0]?._id].play()
+                          : mediaRefs.current[post?.feed[0]?._id].pause()
+                      }
+                    >
+                      <VideoHelpCard
+                        key={post?.feed[0]?._id}
+                        feed={post?.feed[0]}
+                        ref={(FeedRef) =>
+                          (mediaRefs.current[post?.feed[0]?._id] = FeedRef)
+                        }
+                      ></VideoHelpCard>
+                    </TouchableWithoutFeedback>
+                  </Modal.Body>
+                  <Modal.Footer></Modal.Footer>
+                </Modal.Content>
+              </Modal>
+            )}
           </View>
         )}
+        {loading && <LoadingSpinner />}
       </Box>
       <HeaderMenu />
       <BackButton />

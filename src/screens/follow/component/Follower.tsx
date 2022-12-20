@@ -38,24 +38,26 @@ const Follower = (props: IProps): React.ReactElement => {
 
   const loadPerformers = async (more = false, q = "", refresh = false) => {
     if ((more && !moreable) || isChecked) return;
-    setPerformerLoading(true);
-    const newPage = more ? page + 1 : page;
-    setPage(refresh ? 0 : newPage);
-    const { data } = await followService.searchFollower({
-      offset: refresh ? 0 : newPage * 6,
-      limit: 6,
-      targetId: props.route.params.performerId
-        ? props.route.params.performerId
-        : props.current._id,
-    });
-    if (!refresh && data.length < 6) {
-      setMoreable(false);
-    }
-    if (refresh && !moreable) {
-      setMoreable(true);
-    }
-    setPerformers(refresh ? data.data : performers.concat(data.data));
-    setPerformerLoading(false);
+    try {
+      setPerformerLoading(true);
+      const newPage = more ? page + 1 : page;
+      setPage(refresh ? 0 : newPage);
+      const { data } = await followService.searchFollower({
+        offset: refresh ? 0 : newPage * 6,
+        limit: 6,
+        targetId: props.route.params.performerId
+          ? props.route.params.performerId
+          : props.current._id,
+      });
+      if (!refresh && data.length < 6) {
+        setMoreable(false);
+      }
+      if (refresh && !moreable) {
+        setMoreable(true);
+      }
+      setPerformers(refresh ? data.data : performers.concat(data.data));
+      setPerformerLoading(false);
+    } catch (error) {}
   };
 
   const handleFilterByFollower = async (

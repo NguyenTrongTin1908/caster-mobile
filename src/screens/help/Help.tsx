@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView, TouchableOpacity } from "react-native";
-import { Box, Heading, View, Text, FlatList, Modal } from "native-base";
+import { Box, Heading, Text, FlatList, Modal, View } from "native-base";
 import { useNavigation } from "@react-navigation/core";
 import { IPerformer } from "interfaces/performer";
 import BackButton from "components/uis/BackButton";
@@ -10,20 +10,25 @@ import { connect } from "react-redux";
 import { postCategoryService } from "../../services/post-category.service";
 import { postService } from "../../services";
 import styles from "./style";
+import BadgeText from "components/uis/BadgeText";
 
 interface IProps {
   user: IPerformer;
 }
 const Help = ({ user }: IProps): React.ReactElement => {
+  let fstCategory;
   const navigation = useNavigation() as any;
   const [pagination, setPagination] = useState({} as any);
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
-  const [firstCategory, setFirstCategory] = useState({} as any);
+  const [firstCategory, setFirstCategory] = useState(null as any);
   const [firstTopic, setFirstTopic] = useState({} as any);
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState(12);
+  const [moreable, setMoreable] = useState(true);
+  const [page, setPage] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
-  const [category, setCategory] = useState(null as any);
+  const [selectCategory, setSelectCategory] = useState(null as any);
+  const [selectTopic, setSelectTopic] = useState(null as any);
   const [topics, setTopics] = useState([] as any);
   const [filter, setFilter] = useState({
     sortBy: "ordering",
@@ -33,17 +38,29 @@ const Help = ({ user }: IProps): React.ReactElement => {
   useEffect(() => {
     getCategory();
   }, []);
-
-  let fstCategory;
+  useEffect(() => {
+    handleModalTopic("post");
+  }, [selectCategory]);
+  useEffect(() => {
+    if (selectTopic && selectCategory) {
+      setSelectTopic(null);
+      setSelectCategory(null);
+      setModalVisible(false);
+      navigation.navigate("Detail", {
+        categoryId: selectTopic?.categoryIds[0],
+        slugTitle: selectTopic?.slug,
+      });
+    }
+  }, [selectTopic]);
 
   const renderItem = ({ item }) => {
     return (
       <>
         <TouchableOpacity
           style={styles.listCategory}
-          onPress={() =>
-            handleModalTopic("post", item.slug, item.title, item._id)
-          }
+          onPress={() => {
+            setSelectCategory(item);
+          }}
         >
           <Text style={styles.textCategory}>{item.title}</Text>
         </TouchableOpacity>
@@ -56,12 +73,9 @@ const Help = ({ user }: IProps): React.ReactElement => {
       <>
         <TouchableOpacity
           style={styles.listCategory}
-          onPress={() =>
-            navigation.navigate("Detail", {
-              categoryId: item.categoryIds[0],
-              slugTitle: item.slug,
-            })
-          }
+          onPress={() => {
+            setSelectTopic(item);
+          }}
         >
           <Text style={styles.textCategory}>{item.title}</Text>
         </TouchableOpacity>
@@ -69,38 +83,12 @@ const Help = ({ user }: IProps): React.ReactElement => {
     );
   };
 
-  const handleModalTopic = async (
-    type: string,
-    slug: string,
-    title: string,
-    categoryIds: string
-  ) => {
-    let firstTopic;
-
-    try {
-      setLoading(true);
-      const resp = await postService.search({
-        slug,
-        categoryIds,
-        ...filter,
-        limit,
-      });
-      if (resp.data.data && resp.data.data.length > 0) {
-        firstTopic = resp.data.data.shift();
-      }
-      setLoading(false);
-      setCategory(title);
-      setTopics(resp.data.data);
-      setFirstTopic(firstTopic);
-      setModalVisible(true);
-    } catch (e) {}
-  };
-  const getCategory = async (page = 1) => {
+  const getCategory = async () => {
     try {
       const resp = await postCategoryService.search({
         ...filter,
         limit,
-        offset: page - 1,
+        offset: page,
       });
 
       if (resp.data.data && resp.data.data.length > 0) {
@@ -117,6 +105,90 @@ const Help = ({ user }: IProps): React.ReactElement => {
     } catch (error) {}
   };
 
+  const loadMore = async (more = false, refresh = false) => {
+    if (more && !moreable) return;
+
+    try {
+      setLoading(true);
+      const newPage = more ? page + 1 : page;
+      setPage(refresh ? 0 : newPage);
+      const resp = await postCategoryService.search({
+        ...filter,
+        limit,
+        offset: refresh ? 0 : newPage * limit,
+      });
+      if (!refresh && resp.data.data.length < limit) {
+        setMoreable(false);
+      }
+      if (refresh && !moreable) {
+        setMoreable(true);
+      }
+      setLoading(false);
+      setCategories(
+        refresh ? resp.data.data : categories.concat(resp.data.data)
+      );
+    } catch (error) {}
+  };
+
+  const handleModalTopic = async (type: string) => {
+    let firstTopic;
+    if (!selectCategory) return;
+    const { slug, _id, title } = selectCategory;
+    try {
+      setLoading(true);
+      const resp = await postService.search({
+        slug,
+        categoryIds: _id,
+        ...filter,
+        limit,
+      });
+      if (resp.data.data && resp.data.data.length > 0) {
+        firstTopic = resp.data.data.shift();
+      }
+
+      setLoading(false);
+      setTopics(resp.data.data);
+      setFirstTopic(firstTopic);
+      setModalVisible(true);
+    } catch (e) {}
+  };
+
+  // const loadMoreTopic = async (more = false, q = "", refresh = false) => {
+  //   if (more && !moreable) return;
+  //   try {
+  //     setLoading(true);
+  //     const newPage = more ? page + 1 : page;
+  //     setPage(refresh ? 0 : newPage);
+  //     const resp = await postCategoryService.search({
+  //       ...filter,
+  //       limit,
+  //       offset: refresh ? 0 : newPage * limit,
+  //     });
+  //     const resp = await postService.search({
+  //       slug,
+  //       categoryIds,
+  //       ...filter,
+  //       limit,
+  //     });
+  //     if (!refresh && resp.data.length < limit) {
+  //       setMoreable(false);
+  //     }
+  //     if (refresh && !moreable) {
+  //       setMoreable(true);
+  //     }
+  //     setLoading(false);
+  //     setCategories(refresh ? resp.data : categories.concat(resp.data));
+  //   } catch (error) {}
+  // };
+
+  const renderEmpty = () => (
+    <View>
+      {!loading && !topics.length && (
+        <BadgeText content={"There is no topic available!"} />
+      )}
+    </View>
+  );
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Box flex={1} mx="auto" w="100%">
@@ -129,19 +201,14 @@ const Help = ({ user }: IProps): React.ReactElement => {
         >
           Help
         </Heading>
-        <TouchableOpacity
-          style={styles.firstCategory}
-          onPress={() =>
-            handleModalTopic(
-              "post",
-              firstCategory.slug,
-              firstCategory.title,
-              firstCategory._id
-            )
-          }
-        >
-          <Text style={styles.textCategory}>{firstCategory.title}</Text>
-        </TouchableOpacity>
+        {firstCategory && (
+          <TouchableOpacity
+            style={styles.firstCategory}
+            onPress={() => setSelectCategory(firstCategory)}
+          >
+            <Text style={styles.textCategory}>{firstCategory.title}</Text>
+          </TouchableOpacity>
+        )}
         <FlatList
           keyExtractor={(item) => item._id}
           data={categories}
@@ -150,12 +217,7 @@ const Help = ({ user }: IProps): React.ReactElement => {
           style={{ width: "100%" }}
           numColumns={2}
           onEndReachedThreshold={0.5}
-          // onEndReached={() => handleGetmore()}
-          // ListEmptyComponent={renderEmpty()}
-          // inverted
-          // contentContainerStyle={{
-          //   flexDirection: "column",
-          // }}
+          onEndReached={() => loadMore(true, false)}
         />
         <Modal
           isOpen={modalVisible}
@@ -166,20 +228,16 @@ const Help = ({ user }: IProps): React.ReactElement => {
         >
           <Modal.Content>
             <Modal.CloseButton />
-            <Modal.Header>{category}</Modal.Header>
+            <Modal.Header>{selectCategory?.title}</Modal.Header>
             <Modal.Body>
-              <TouchableOpacity
-                style={styles.listCategory}
-                onPress={() =>
-                  navigation.navigate("Detail", {
-                    categoryId: firstTopic.categoryIds[0],
-                    slugTitle: firstTopic.slug,
-                  })
-                }
-              >
-                <Text style={styles.textCategory}>{firstTopic.title}</Text>
-              </TouchableOpacity>
-
+              {firstTopic && (
+                <TouchableOpacity
+                  style={styles.listCategory}
+                  onPress={() => setSelectTopic(firstTopic)}
+                >
+                  <Text style={styles.textCategory}>{firstTopic.title}</Text>
+                </TouchableOpacity>
+              )}
               <FlatList
                 keyExtractor={(item) => item._id}
                 data={topics}
@@ -188,12 +246,9 @@ const Help = ({ user }: IProps): React.ReactElement => {
                 style={{ width: "100%" }}
                 numColumns={2}
                 onEndReachedThreshold={0.5}
-                // onEndReached={() => handleGetmore()}
-                // ListEmptyComponent={renderEmpty()}
-                // inverted
-                // contentContainerStyle={{
-                //   flexDirection: "column",
-                // }}
+                refreshing={loading}
+                ListEmptyComponent={renderEmpty}
+                // onEndReached={() => loadMore(true, false)}
               />
             </Modal.Body>
             <Modal.Footer></Modal.Footer>
@@ -205,6 +260,7 @@ const Help = ({ user }: IProps): React.ReactElement => {
     </SafeAreaView>
   );
 };
+
 const mapStateToProp = (state: any) => ({
   user: state.user.current,
 });

@@ -32,12 +32,13 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     justifyContent: "center",
     marginTop: 50,
+    marginBottom: 1,
   },
 
   listCategory: {
-    flex: 1,
+    flex: 1 / 2,
     height: 100,
-    margin: 8,
+    margin: 10,
     backgroundColor: colors.primary,
     borderRadius: 4,
     justifyContent: "center",
@@ -50,7 +51,6 @@ const styles = StyleSheet.create({
 
   detailContainer: {
     flex: 1,
-    flexDirection: "row",
     width: "100%",
     backgroundColor: colors.lightText,
   },
@@ -71,10 +71,6 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: colors.lightText,
   },
-  topDetail: {
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-  },
 
   profilePicture: {
     width: 50,
@@ -82,6 +78,23 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     borderWidth: 2,
     borderColor: "#fff",
+  },
+
+  topDetail: {
+    flex: 1,
+    marginTop: 5,
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+  },
+  videoPicture: {
+    width: "100%",
+    height: 150,
+    flexDirection: "row",
+  },
+  videoHelpDetail: {
+    flex: 1,
+    height: 100,
+    width: "100%",
   },
 });
 
