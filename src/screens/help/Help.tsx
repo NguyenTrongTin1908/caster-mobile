@@ -11,6 +11,7 @@ import { postCategoryService } from "../../services/post-category.service";
 import { postService } from "../../services";
 import styles from "./style";
 import BadgeText from "components/uis/BadgeText";
+import LoadingSpinner from "components/uis/LoadingSpinner";
 
 interface IProps {
   user: IPerformer;
@@ -23,9 +24,11 @@ const Help = ({ user }: IProps): React.ReactElement => {
   const [categories, setCategories] = useState([]);
   const [firstCategory, setFirstCategory] = useState(null as any);
   const [firstTopic, setFirstTopic] = useState({} as any);
-  const [limit, setLimit] = useState(12);
+  const [limit, setLimit] = useState(6);
   const [moreable, setMoreable] = useState(true);
   const [page, setPage] = useState(0);
+  const [topicPage, setTopicPage] = useState(0);
+
   const [modalVisible, setModalVisible] = useState(false);
   const [selectCategory, setSelectCategory] = useState(null as any);
   const [selectTopic, setSelectTopic] = useState(null as any);
@@ -39,7 +42,7 @@ const Help = ({ user }: IProps): React.ReactElement => {
     getCategory();
   }, []);
   useEffect(() => {
-    handleModalTopic("post");
+    handleModalTopic();
   }, [selectCategory]);
   useEffect(() => {
     if (selectTopic && selectCategory) {
@@ -130,17 +133,19 @@ const Help = ({ user }: IProps): React.ReactElement => {
     } catch (error) {}
   };
 
-  const handleModalTopic = async (type: string) => {
+  const handleModalTopic = async () => {
     let firstTopic;
     if (!selectCategory) return;
     const { slug, _id, title } = selectCategory;
     try {
       setLoading(true);
+      setMoreable(true);
       const resp = await postService.search({
         slug,
         categoryIds: _id,
         ...filter,
         limit,
+        offset: page,
       });
       if (resp.data.data && resp.data.data.length > 0) {
         firstTopic = resp.data.data.shift();
@@ -153,37 +158,35 @@ const Help = ({ user }: IProps): React.ReactElement => {
     } catch (e) {}
   };
 
-  // const loadMoreTopic = async (more = false, q = "", refresh = false) => {
-  //   if (more && !moreable) return;
-  //   try {
-  //     setLoading(true);
-  //     const newPage = more ? page + 1 : page;
-  //     setPage(refresh ? 0 : newPage);
-  //     const resp = await postCategoryService.search({
-  //       ...filter,
-  //       limit,
-  //       offset: refresh ? 0 : newPage * limit,
-  //     });
-  //     const resp = await postService.search({
-  //       slug,
-  //       categoryIds,
-  //       ...filter,
-  //       limit,
-  //     });
-  //     if (!refresh && resp.data.length < limit) {
-  //       setMoreable(false);
-  //     }
-  //     if (refresh && !moreable) {
-  //       setMoreable(true);
-  //     }
-  //     setLoading(false);
-  //     setCategories(refresh ? resp.data : categories.concat(resp.data));
-  //   } catch (error) {}
-  // };
+  const loadMoreTopic = async (more = false, refresh = false) => {
+    if (more && !moreable) return;
+    const { slug, _id, title } = selectCategory;
 
-  const renderEmpty = () => (
+    try {
+      setLoading(true);
+      const newPage = more ? topicPage + 1 : topicPage;
+      setTopicPage(refresh ? 0 : newPage);
+      const resp = await postService.search({
+        slug,
+        categoryIds: _id,
+        ...filter,
+        limit,
+        offset: refresh ? 0 : newPage * limit,
+      });
+      if (!refresh && resp.data.data.length < limit) {
+        setMoreable(false);
+      }
+      if (refresh && !moreable) {
+        setMoreable(true);
+      }
+      setLoading(false);
+      setTopics(refresh ? resp.data.data : topics.concat(resp.data.data));
+    } catch (error) {}
+  };
+
+  const renderEmpty = (firstItem) => (
     <View>
-      {!loading && !topics.length && (
+      {!loading && !topics.length && !firstItem && (
         <BadgeText content={"There is no topic available!"} />
       )}
     </View>
@@ -221,7 +224,7 @@ const Help = ({ user }: IProps): React.ReactElement => {
         />
         <Modal
           isOpen={modalVisible}
-          onClose={() => setModalVisible(false)}
+          onClose={() => {setTopicPage(0); setModalVisible(false)}}
           avoidKeyboard
           justifyContent="center"
           size="full"
@@ -247,9 +250,11 @@ const Help = ({ user }: IProps): React.ReactElement => {
                 numColumns={2}
                 onEndReachedThreshold={0.5}
                 refreshing={loading}
-                ListEmptyComponent={renderEmpty}
-                // onEndReached={() => loadMore(true, false)}
+                ListEmptyComponent={renderEmpty(firstTopic)}
+                onEndReached={() => loadMoreTopic(true, false)}
               />
+        {loading && <LoadingSpinner />}
+
             </Modal.Body>
             <Modal.Footer></Modal.Footer>
           </Modal.Content>

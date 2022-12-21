@@ -27,6 +27,8 @@ import Button from "../uis/Button";
 import { giftService, tokenTransctionService } from "services/index";
 import { SearchBar } from "react-native-elements/dist/searchbar/SearchBar";
 import styles from "../comment/style";
+import { connect } from 'react-redux';
+import { updateBalance } from 'services/redux/user/actions';
 
 interface Iprops {
   setModal: Function;
@@ -35,16 +37,18 @@ interface Iprops {
   performerId: string;
   favorGift?: any;
   saveFavorite?: Function;
+  updateBalance: Function;
 }
 
-export default function SendTip({
+const SendTip=({
   setModal,
   modal,
   conversationId,
   performerId,
   favorGift,
   saveFavorite,
-}: Iprops) {
+  updateBalance
+}: Iprops) => {
   const { width, height } = Dimensions.get("window");
   const [favoriteGift, setFavoriteGift] = useState({});
   const [list, setList] = useState([] as any);
@@ -118,6 +122,10 @@ export default function SendTip({
           conversationId,
           streamType: "",
           sessionId: "",
+        });
+        updateBalance({
+          token: favorGift.tokens * -1,
+          type: 'ruby-balance'
         });
         toast.show({ description: "Send gift success" });
         saveFavorite && saveFavorite(favoriteGift);
@@ -263,3 +271,9 @@ export default function SendTip({
     </>
   );
 }
+const mapDispatchs = {
+
+  updateBalance
+};
+
+export default connect(null, mapDispatchs)(SendTip)

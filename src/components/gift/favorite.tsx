@@ -6,13 +6,19 @@ import React, { useState } from "react";
 import { Alert, TouchableOpacity, View } from "react-native";
 import { padding } from "src/utils/theme";
 import { tokenTransctionService } from "../../services";
+import { connect } from 'react-redux';
+import { updateBalance } from 'services/redux/user/actions';
+
+
 
 interface IProps {
   performerId: string;
   conversationId: string;
   favorGift: any;
+  updateBalance: Function;
+
 }
-const FavoriteGift = ({ performerId, conversationId, favorGift }: IProps) => {
+const FavoriteGift = ({ performerId, conversationId, favorGift ,updateBalance}: IProps) => {
   const [isConfirm, setConfirm] = useState(true);
   const toast = useToast();
   const onChange = () => {
@@ -27,6 +33,10 @@ const FavoriteGift = ({ performerId, conversationId, favorGift }: IProps) => {
           conversationId,
           streamType: "",
           sessionId: "",
+        });
+        updateBalance({
+          token: favorGift.tokens * -1,
+          type: 'ruby-balance'
         });
         toast.show({ description: "Send gift success" });
       } catch (e: any) {
@@ -64,5 +74,8 @@ const FavoriteGift = ({ performerId, conversationId, favorGift }: IProps) => {
     </View>
   );
 };
+const mapDispatchs = {
 
-export default FavoriteGift;
+  updateBalance
+};
+export default connect(null, mapDispatchs)(FavoriteGift);
