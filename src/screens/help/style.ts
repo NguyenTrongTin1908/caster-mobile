@@ -45,7 +45,10 @@ const styles = StyleSheet.create({
   },
 
   textCategory: {
-    ...Fonts.whiteColor16Bold,
+    // ...Fonts.whiteColor16Bold,
+    color: "#ffffff",
+    fontSize: 16,
+    fontWeight: "bold",
     alignSelf: "center",
   },
 
