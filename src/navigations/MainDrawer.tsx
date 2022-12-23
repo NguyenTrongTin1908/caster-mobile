@@ -211,22 +211,7 @@ export const MainDrawer = ({
         handleHide();
       },
     },
-    {
-      id: "help",
-      label: "Help",
-      icon: (
-        <FontAwesome
-          name={"question-circle-o"}
-          size={17}
-          color={colors.appBgColor}
-        />
-      ),
-      onPress: () => {
-        //todo - update navigation
-        navigationRef.current?.navigate("Help");
-        handleHide();
-      },
-    },
+
     {
       id: "explore",
       label: "Explore",
@@ -330,6 +315,22 @@ export const MainDrawer = ({
         <FontAwesome name={"cc-paypal"} size={17} color={colors.appBgColor} />
       ),
       onPress: () => {
+        handleHide();
+      },
+    },
+    {
+      id: "help",
+      label: "Help",
+      icon: (
+        <FontAwesome
+          name={"question-circle-o"}
+          size={17}
+          color={colors.appBgColor}
+        />
+      ),
+      onPress: () => {
+        //todo - update navigation
+        navigationRef.current?.navigate("Help");
         handleHide();
       },
     },
