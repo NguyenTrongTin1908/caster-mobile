@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { colors, Fonts, Sizes } from "utils/theme";
+import { colors,  Sizes } from "utils/theme";
 import { Dimensions } from "react-native";
 import { background } from "native-base/lib/typescript/theme/styled-system";
 import { getStatusBarHeight } from "react-native-status-bar-height";
@@ -45,7 +45,6 @@ const styles = StyleSheet.create({
   },
 
   textCategory: {
-    // ...Fonts.whiteColor16Bold,
     color: "#ffffff",
     fontSize: 16,
     fontWeight: "bold",

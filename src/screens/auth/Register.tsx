@@ -25,8 +25,14 @@ import Button from 'components/uis/Button';
 import ErrorMessage from 'components/uis/ErrorMessage';
 import { useNavigation } from '@react-navigation/core';
 import { colors, Fonts, padding, Sizes } from 'utils/theme';
+import { connect } from 'react-redux';
 
-const Register = (): React.ReactElement => {
+interface Props {
+
+  fcmToken:any
+}
+
+const Register = ({ fcmToken }: Props): React.ReactElement => {
   const navigation = useNavigation() as any;
   useEffect(() => {
     navigation.setOptions({
@@ -36,6 +42,8 @@ const Register = (): React.ReactElement => {
       headerRight: () => null
     });
   }, [useContext]);
+  console.log("Dataoopp : ", fcmToken)
+
 
   const {
     control,
@@ -280,4 +288,8 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Register;
+const mapStateToProp = (state: any): any => ({
+  ...state.auth
+});
+
+export default connect(mapStateToProp)(Register);

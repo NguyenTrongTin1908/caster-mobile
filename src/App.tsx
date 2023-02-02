@@ -7,6 +7,8 @@ import { Socket } from './socket';
 import Welcome from 'components/welcome/welcome';
 import { StatusBar } from 'native-base';
 import MainDrawer from './navigations/MainDrawer';
+import PushController  from "./PushController";
+
 
 function App(): React.ReactElement {
   const [appIsReady, setAppIsReady] = useState(false);
@@ -19,6 +21,7 @@ function App(): React.ReactElement {
       // bootstrap
       await initApp();
       await new Promise(resolve => setTimeout(resolve, 2000));
+
     } catch (e) {
       // TODO - show alert and other info here
       console.log('err', e);
@@ -29,6 +32,7 @@ function App(): React.ReactElement {
   };
 
   useEffect(() => {
+
     prepare();
   }, []);
 
@@ -45,6 +49,7 @@ function ProviderWrapper(): React.ReactElement {
     <RootProvider>
       <Socket>
         <>
+        <PushController />
           <MainDrawer />
           <App />
         </>

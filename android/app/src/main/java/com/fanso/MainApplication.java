@@ -16,6 +16,9 @@ import com.swmansion.reanimated.ReanimatedJSIModulePackage; // <- add this
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.brentvatne.react.ReactVideoPackage;
 import com.mrousavy.camera.CameraPackage;
+// import io.invertase.firebase.app.ReactNativeFirebaseAppPackage;
+// import io.invertase.firebase.messaging.ReactNativeFirebaseMessagingPackage;
+
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -33,7 +36,9 @@ public class MainApplication extends Application implements ReactApplication {
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
           packages.add(new ReactVideoPackage());
-          // packages.add(new CameraPackage());
+          // packages.add(new ReactNativePushNotificationPackage());
+          // packages.add (new ReactNativeFirebaseAppPackage());
+          // packages.add(new ReactNativeFirebaseMessagingPackage());
           return packages;
         }
 
@@ -42,7 +47,7 @@ public class MainApplication extends Application implements ReactApplication {
           return "index";
         }
 
-        @Override 
+        @Override
         protected JSIModulePackage getJSIModulePackage() {
           return new ReanimatedJSIModulePackage(); // <- add
         }
