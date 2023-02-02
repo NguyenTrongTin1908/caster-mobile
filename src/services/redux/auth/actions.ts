@@ -13,3 +13,5 @@ export const authAccessToken = createAction('AUTH_ACCESS_TOKEN');
 export const { loginSocial } = createAsyncAction('loginSocial', 'LOGIN_SOCIAL');
 
 export const logoutSuccess = createAction('LOGOUT_SUCCESS');
+export const setFCMToken = createAction(' SET_FCM_TOKEN');
+

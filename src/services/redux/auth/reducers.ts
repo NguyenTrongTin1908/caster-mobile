@@ -1,13 +1,14 @@
 import { IReduxAction } from 'src/interfaces';
 import { createReducers } from 'lib/redux';
 import { defaultStore } from 'utils/store';
-import { login, loginFail, loginSuccess, logout, logoutSuccess, resetLogin, setLogin } from './actions';
+import { login, loginFail, loginSuccess, logout, logoutSuccess, resetLogin, setLogin,setFCMToken } from './actions';
 import { merge } from 'lodash';
 
 const initialState = {
   loggedIn: false,
   authLogin: defaultStore,
-  authRegister: defaultStore
+  authRegister: defaultStore,
+  fcmToken : ""
 };
 
 const authReducers = [
@@ -53,25 +54,38 @@ const authReducers = [
   },
   {
     on: logoutSuccess,
-    reducer() {
+    reducer(state:any) {
       return {
-        ...initialState
+        ...initialState,
+        fcmToken:{ ...state.fcmToken
+        }
+
       };
     }
   },
   {
     on: setLogin,
-    reducer: (state: any, data: IReduxAction) => ({
+    reducer: (state: any, data: IReduxAction<any>) => ({
       ...state,
       loggedIn: data.payload
     })
   },
   {
     on: resetLogin,
-    reducer: (state: any, data: IReduxAction) => ({
+    reducer: (state: any, data: IReduxAction<any>) => ({
       ...state,
       loggedIn: false,
       authLogin: { ...defaultStore }
+    })
+  },
+
+  {
+    on: setFCMToken,
+    reducer: (state: any, data: any) => (
+
+      {
+      ...state,
+      fcmToken: data.payload
     })
   }
 ];

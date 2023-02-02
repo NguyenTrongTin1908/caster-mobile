@@ -58,6 +58,10 @@ export class AuthService extends APIRequest {
     return this.post('/auth/email-verification', data);
   }
 
+  public async updateFcm(data: any) {
+    return this.post('/auth/email-verification', data);
+  }
+
 
 }
 

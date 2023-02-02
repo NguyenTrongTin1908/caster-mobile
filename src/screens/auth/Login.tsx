@@ -33,14 +33,16 @@ interface Props {
     requesting: boolean;
     success: boolean;
   };
+  fcmToken:any
   loginSocial: Function;
 }
 
-const Login = ({ handleLogin, handleResetLogin, authLogin, loginSocial }: Props): React.ReactElement => {
+const Login = ({ handleLogin, handleResetLogin, authLogin, loginSocial,fcmToken }: Props): React.ReactElement => {
   const navigation = useNavigation() as any;
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
   }, [useContext]);
+  console.log("Dataaaaa : ", fcmToken)
 
   const {
     control,
@@ -51,7 +53,8 @@ const Login = ({ handleLogin, handleResetLogin, authLogin, loginSocial }: Props)
   const onSubmit = async ({ username, password }: any): Promise<void> => {
     handleLogin({
       username,
-      password
+      password,
+      fcmToken:fcmToken.token
     });
   };
 
