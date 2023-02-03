@@ -25,6 +25,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import socketHolder from "lib/socketHolder";
 import { updateBalance } from "services/redux/user/actions";
+import { notificationService } from "../services/notification.service";
 
 import {
   addPrivateRequest,
@@ -36,12 +37,14 @@ import { SocketContext } from "../socket";
 interface DrawerProps {
   user: IPerformer;
   loggedIn: boolean;
+  loggedOut: boolean;
   showDrawer: boolean;
   hasTouchedDrawer: boolean;
   handleLogout: Function;
   addPrivateRequest: Function;
   updateBalance: Function;
   cancelPrivateRequest: Function;
+  fcmToken: any;
 }
 export const MainDrawer = ({
   loggedIn = false,
@@ -52,9 +55,21 @@ export const MainDrawer = ({
   addPrivateRequest,
   updateBalance,
   cancelPrivateRequest: handleCancelPrivateRequest,
+  loggedOut,
+  fcmToken,
 }: DrawerProps): JSX.Element => {
   const viewRef = useRef(null) as any;
   const { status: socketContextStatus } = useContext(SocketContext) as any;
+
+  useEffect(() => {
+    if (loggedOut) {
+      fcmToken && notificationService.removeToken(fcmToken);
+      handleHide();
+      navigationRef.current?.navigate("IntroNav", {
+        screen: "IntroNav/Login",
+      });
+    }
+  }, [loggedOut]);
   const handleShow = () => {
     if (!showDrawer) viewRef.current.fadeOutLeft(800);
     else {
@@ -343,10 +358,6 @@ export const MainDrawer = ({
       ),
       onPress: () => {
         handleLogout();
-        handleHide();
-        navigationRef.current?.navigate("IntroNav", {
-          screen: "IntroNav/Login",
-        });
       },
     },
   ];
@@ -518,6 +529,8 @@ const styles = StyleSheet.create({
 const mapStateToProp = (state: any) => ({
   user: state.user.current,
   loggedIn: state.auth.loggedIn,
+  loggedOut: state.auth.loggedOut,
+  fcmToken: state.auth.fcmToken,
   showDrawer: state.appNav.showDrawer,
   hasTouchedDrawer: state.appNav.hasTouchedDrawer,
 });

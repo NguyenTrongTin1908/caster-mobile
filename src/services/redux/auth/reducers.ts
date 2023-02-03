@@ -1,14 +1,24 @@
-import { IReduxAction } from 'src/interfaces';
-import { createReducers } from 'lib/redux';
-import { defaultStore } from 'utils/store';
-import { login, loginFail, loginSuccess, logout, logoutSuccess, resetLogin, setLogin,setFCMToken } from './actions';
-import { merge } from 'lodash';
+import { IReduxAction } from "src/interfaces";
+import { createReducers } from "lib/redux";
+import { defaultStore } from "utils/store";
+import {
+  login,
+  loginFail,
+  loginSuccess,
+  logout,
+  logoutSuccess,
+  resetLogin,
+  setLogin,
+  setFCMToken,
+} from "./actions";
+import { merge } from "lodash";
 
 const initialState = {
   loggedIn: false,
+  loggedOut: false,
   authLogin: defaultStore,
   authRegister: defaultStore,
-  fcmToken : ""
+  fcmToken: "",
 };
 
 const authReducers = [
@@ -19,10 +29,10 @@ const authReducers = [
         ...state,
         authLogin: {
           ...state.authLogin,
-          requesting: true
-        }
+          requesting: true,
+        },
       };
-    }
+    },
   },
   {
     on: loginSuccess,
@@ -33,10 +43,10 @@ const authReducers = [
         authLogin: {
           requesting: false,
           error: null,
-          success: true
-        }
+          success: true,
+        },
       };
-    }
+    },
   },
   {
     on: loginFail,
@@ -47,47 +57,44 @@ const authReducers = [
         authLogin: {
           requesting: false,
           error: data.payload,
-          success: false
-        }
+          success: false,
+        },
       };
-    }
+    },
   },
   {
     on: logoutSuccess,
-    reducer(state:any) {
+    reducer(state: any) {
       return {
         ...initialState,
-        fcmToken:{ ...state.fcmToken
-        }
-
+        loggedOut: true,
+        fcmToken: { ...state.fcmToken },
       };
-    }
+    },
   },
   {
     on: setLogin,
     reducer: (state: any, data: IReduxAction<any>) => ({
       ...state,
-      loggedIn: data.payload
-    })
+      loggedIn: data.payload,
+    }),
   },
   {
     on: resetLogin,
     reducer: (state: any, data: IReduxAction<any>) => ({
       ...state,
       loggedIn: false,
-      authLogin: { ...defaultStore }
-    })
+      authLogin: { ...defaultStore },
+    }),
   },
 
   {
     on: setFCMToken,
-    reducer: (state: any, data: any) => (
-
-      {
+    reducer: (state: any, data: any) => ({
       ...state,
-      fcmToken: data.payload
-    })
-  }
+      fcmToken: data.payload,
+    }),
+  },
 ];
 
-export default merge({}, createReducers('auth', [authReducers], initialState));
+export default merge({}, createReducers("auth", [authReducers], initialState));

@@ -6,6 +6,7 @@ import { createSelector } from "reselect";
 // import { capitalizeFirstLetter } from "@lib/string";
 import moment from "moment";
 import { notificationService } from "services/notification.service";
+import { useNavigation } from "@react-navigation/core";
 import {
   fetchNotificaion,
   setReadItem,
@@ -13,6 +14,7 @@ import {
 import { TouchableOpacity, View } from "react-native";
 import styles from "./style";
 import { colors } from "utils/theme";
+import { performerService } from "../../services/perfomer.service";
 
 interface IProps {
   notification: any;
@@ -22,6 +24,7 @@ const SEND_NOTIFICATION = "send_notification";
 
 const NotificationCard = ({ notification }: IProps): React.ReactElement => {
   const [read, setRead] = useState(false);
+  const navigation = useNavigation() as any;
 
   const notifications = useSelector(
     createSelector(
@@ -50,8 +53,25 @@ const NotificationCard = ({ notification }: IProps): React.ReactElement => {
     fetchData();
   }, [read]);
 
-  const redirect = (notification) => {
+  const redirect = async (notification) => {
+    const performer = await performerService.findOne(notification.createdBy);
+    console.log("nti: ", notification);
     switch (notification.type) {
+      case "live":
+        return navigation.navigate("ViewPublicStream", {
+          performer: performer.data,
+        });
+      case "follow":
+        return navigation.navigate("ModelProfile", {
+          performer: performer.data,
+        });
+      case "comment":
+        return;
+      case "feed":
+        return navigation.navigate("FeedDetail", {
+          performerId: notification.createdBy,
+          type: "video",
+        });
       default:
         return null;
     }

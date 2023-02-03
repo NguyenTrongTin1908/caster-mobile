@@ -36,6 +36,7 @@ let bottomNavBarH = deviceH - height;
 interface IProps {
   current: IPerformer;
   isLoggedIn: boolean;
+  fcmToken: any;
   handleGetFeeds: Function;
   handleGetMore: Function;
   handleGetRecommendFeeds: Function;
@@ -49,6 +50,7 @@ interface IProps {
   };
 }
 const Home = ({
+  fcmToken,
   feedState,
   handleGetMore,
   current,
@@ -269,6 +271,7 @@ const Home = ({
 const mapStateToProp = (state: any): any => ({
   ...state.user,
   isLoggedIn: state.auth.loggedIn,
+  fcmToken: state.auth.fcmToken,
   feedState: { ...state.feed?.feeds },
   feedRecommendState: { ...state.feed.recommendFeeds },
 });

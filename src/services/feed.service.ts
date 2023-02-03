@@ -1,44 +1,30 @@
-import { APIRequest } from './api-request';
+import { APIRequest } from "./api-request";
 
 export class FeedService extends APIRequest {
   search(query?: { [key: string]: any }) {
-    return this.get(
-      this.buildUrl('/feeds/performers', query)
-    );
+    return this.get(this.buildUrl("/feeds/performers", query));
   }
 
   userSearch(query?: { [key: string]: any }) {
-    return this.get(
-      this.buildUrl('/feeds/users', query)
-    );
+    return this.get(this.buildUrl("/feeds/users", query));
   }
 
   followingSearch(query?: { [key: string]: any }) {
-    return this.get(
-      this.buildUrl('/feeds/users/search/following', query)
-    );
+    return this.get(this.buildUrl("/feeds/users/search/following", query));
   }
 
   trendingSearch(query?: { [key: string]: any }) {
-    return this.get(
-      this.buildUrl('/feeds/users/search/trending', query)
-    );
+    return this.get(this.buildUrl("/feeds/users/search/trending", query));
   }
   userRecommendSearch(query?: { [key: string]: any }) {
-    return this.get(
-      this.buildUrl('/feeds/users/search/recommended', query)
-    );
+    return this.get(this.buildUrl("/feeds/users/search/recommended", query));
   }
 
   userHomeFeeds(query?: { [key: string]: any }) {
-    if (query?.q === '') {
-      return this.get(
-        this.buildUrl('/feeds/users/home-feeds', query)
-      );
+    if (query?.q === "") {
+      return this.get(this.buildUrl("/feeds/users/home-feeds", query));
     }
-    return this.get(
-      this.buildUrl('/feeds/users', query)
-    );
+    return this.get(this.buildUrl("/feeds/users", query));
   }
 
   delete(id: string) {
@@ -62,7 +48,7 @@ export class FeedService extends APIRequest {
   }
 
   create(data) {
-    return this.post('/feeds/performers', data);
+    return this.post("/feeds/performers", data);
   }
 
   // uploadPhoto(file: File, payload: any, onProgress?: Function) {
@@ -113,24 +99,8 @@ export class FeedService extends APIRequest {
   //   );
   // }
 
-  // uploadTeaser(file: File, payload: any, onProgress?: Function) {
-  //   return this.upload(
-  //     '/feeds/performers/teaser/upload',
-  //     [
-  //       {
-  //         fieldname: 'file',
-  //         file
-  //       }
-  //     ],
-  //     {
-  //       onProgress,
-  //       customData: payload
-  //     }
-  //   );
-  // }
-
   addPoll(payload) {
-    return this.post('/feeds/performers/polls', payload);
+    return this.post("/feeds/performers/polls", payload);
   }
 
   votePoll(pollId: string) {
@@ -138,10 +108,10 @@ export class FeedService extends APIRequest {
   }
 
   getBookmark(payload) {
-    return this.get(this.buildUrl('/reactions/feeds/bookmark', payload));
+    return this.get(this.buildUrl("/reactions/feeds/bookmark", payload));
   }
 
-  addView(id:string) {
+  addView(id: string) {
     return this.post(`/feeds/users/${id}/view`);
   }
 }

@@ -1,35 +1,43 @@
-import React, { Component, useState, useEffect } from "react";
-import PushNotification, { Importance, PushNotificationPermissions } from "react-native-push-notification";
-import messaging from "@react-native-firebase/messaging";
-import { Text, View } from "react-native";
+import React, { useEffect } from "react";
+import PushNotification, { Importance } from "react-native-push-notification";
 import { connect } from "react-redux";
-import { setFCMToken } from "./services/redux/auth/actions"
-import {  getAndroidId,getDeviceId } from 'react-native-device-info';
-
+import { setFCMToken } from "./services/redux/auth/actions";
+import { navigationRef } from "./navigations/RootStackNavigator";
+import { performerService } from "services/perfomer.service";
 
 interface IProps {
-  setFCMToken : Function
+  setFCMToken: Function;
 }
-const PushController =({setFCMToken}:IProps): React.ReactElement => {
-
+const PushController = ({ setFCMToken }: IProps): React.ReactElement => {
   useEffect(() => {
     PushNotification.configure({
       onRegister: async function (token) {
         setFCMToken(token);
-        if(token.os === "android")
-     {
-        const data = await getAndroidId()
-      console.log("OS :" , data )
-     }
-     else {
-      console.log("OS : ",getDeviceId())
-
-     }
-        console.log("TOKEN:", token);
       },
-      onNotification: function (notification) {
-        console.log("NOTIFICATION:", notification);
+      onNotification: async (notification) => {
+        const performer = await performerService.findOne(
+          notification.data.createdBy
+        );
 
+        switch (notification.data.type) {
+          case "live":
+            return navigationRef.current?.navigate("ViewPublicStream", {
+              performer: performer.data,
+            });
+          case "follow":
+            return navigationRef.current?.navigate("ModelProfile", {
+              performer: performer.data,
+            });
+          case "comment":
+            return;
+          case "feed":
+            return navigationRef.current?.navigate("FeedDetail", {
+              performerId: notification.data.createdBy,
+              type: "video",
+            });
+          default:
+            return null;
+        }
       },
       // Android only
       senderID: "920781714888",
@@ -42,9 +50,7 @@ const PushController =({setFCMToken}:IProps): React.ReactElement => {
       popInitialNotification: true,
       requestPermissions: true,
     });
-    createDefaultChannels()
-
-
+    createDefaultChannels();
   }, []);
 
   const createDefaultChannels = () => {
@@ -57,7 +63,8 @@ const PushController =({setFCMToken}:IProps): React.ReactElement => {
         importance: Importance.HIGH, // (optional) default: Importance.HIGH. Int value of the Android notification importance
         vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
       },
-      (created) => console.log(`createChannel 'default-channel-id' returned '${created}'`), // (optional) callback returns whether the channel was created, false means it already existed.
+      (created) =>
+        console.log(`createChannel 'default-channel-id' returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
     );
     PushNotification.createChannel(
       {
@@ -68,20 +75,15 @@ const PushController =({setFCMToken}:IProps): React.ReactElement => {
         importance: Importance.HIGH, // (optional) default: Importance.HIGH. Int value of the Android notification importance
         vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
       },
-      (created) => console.log(`createChannel 'sound-channel-id' returned '${created}'`), // (optional) callback returns whether the channel was created, false means it already existed.
+      (created) =>
+        console.log(`createChannel 'sound-channel-id' returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
     );
-  }
+  };
 
-
-
-
-  return (
-    <></>
-  );
+  return <></>;
 };
 const mapDispatch = {
-  setFCMToken
+  setFCMToken,
+};
 
-}
-
-export default connect(null,mapDispatch)(PushController);
+export default connect(null, mapDispatch)(PushController);
