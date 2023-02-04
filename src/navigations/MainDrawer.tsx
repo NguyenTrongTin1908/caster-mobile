@@ -63,7 +63,6 @@ export const MainDrawer = ({
 
   useEffect(() => {
     if (loggedOut) {
-      fcmToken && notificationService.removeToken(fcmToken);
       handleHide();
       navigationRef.current?.navigate("IntroNav", {
         screen: "IntroNav/Login",
@@ -357,6 +356,7 @@ export const MainDrawer = ({
         <FontAwesome name={"sign-out"} size={17} color={colors.appBgColor} />
       ),
       onPress: () => {
+        fcmToken && notificationService.removeToken(fcmToken);
         handleLogout();
       },
     },
