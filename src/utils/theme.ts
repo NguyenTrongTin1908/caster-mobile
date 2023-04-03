@@ -6,7 +6,7 @@ export enum ThemeType {
   DARK = "DARK",
 }
 
-const COLOR_PRIMARY = "#A742AA";
+const COLOR_PRIMARY = "#c0349a";
 const COLOR_SECONDARY = "#FF6534";
 const COLOR_TERTIARY = "#000";
 const COLOR_DANGER = "#f43f5e";

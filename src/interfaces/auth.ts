@@ -4,14 +4,13 @@ export interface IUserLogin {
 }
 
 export interface IUserRegister {
-  username: string;
   email: string;
   password: string;
-  // type: string;
+  gender: string;
 }
 
 export interface IForgotPassword {
-  type: 'user' | 'model' | 'studio';
+  type: "user" | "model" | "studio";
   email: string;
 }
 export interface IUpdatePasswordFormData {
