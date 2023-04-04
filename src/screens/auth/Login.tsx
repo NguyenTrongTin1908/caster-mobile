@@ -145,7 +145,7 @@ const Login = ({
               <Box px={padding.p5} py={20}>
                 <HStack space={2} alignSelf="center" mb={5}>
                   <Image
-                    source={{ uri: system.data.logoUrl }}
+                    source={{ uri: system?.data?.logoUrl }}
                     alt="logo"
                     size={55}
                     width="100%"

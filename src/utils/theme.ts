@@ -22,6 +22,7 @@ export const colors = {
   tertiary: COLOR_TERTIARY,
   active: COLOR_PRIMARY,
   danger: COLOR_DANGER,
+  warning: "#ffcc00",
   hashtag: "rgb(82,198,246)",
   lightGray: "#F1F1F2",
   darkGray: "#B1A492",

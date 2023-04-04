@@ -52,8 +52,9 @@ const authSagas = [
   {
     on: logout,
     *worker() {
-      const isSignedInByGoogle = yield GoogleSignin.isSignedIn();
-      if (isSignedInByGoogle) yield GoogleSignin.signOut();
+      // const isSignedInByGoogle = yield GoogleSignin.isSignedIn();
+      // if (isSignedInByGoogle) yield GoogleSignin.signOut();
+      console.log("logout");
       APIRequest.accessToken = "";
       yield authService.removeAccessToken();
       yield put(logoutSuccess());

@@ -1,9 +1,9 @@
-import { APIRequest } from './api-request';
-import { IApiResponse } from 'src/interfaces';
+import { APIRequest } from "./api-request";
+import { IApiResponse } from "src/interfaces";
 
 export class PerformerService extends APIRequest {
   search(query?: { [key: string]: any }) {
-    return this.get(this.buildUrl('/performers/user/search', query)).then(
+    return this.get(this.buildUrl("/performers/user/search", query)).then(
       (resp) => resp.data
     );
   }
@@ -17,7 +17,7 @@ export class PerformerService extends APIRequest {
   }
 
   totalOnline() {
-    return this.get('/performers/total-online');
+    return this.get("/performers/total-online");
   }
 
   getAvatarUploadUrl() {
@@ -41,7 +41,7 @@ export class PerformerService extends APIRequest {
   }
 
   getTopPerformer(query?: { [key: string]: any }) {
-    return this.get(this.buildUrl('/performers/top', query));
+    return this.get(this.buildUrl("/performers/top", query));
   }
 
   updateBanking(id: string, payload) {
@@ -53,7 +53,7 @@ export class PerformerService extends APIRequest {
   }
 
   getBookmarked(payload) {
-    return this.get(this.buildUrl('/reactions/performers/bookmark', payload));
+    return this.get(this.buildUrl("/reactions/performers/bookmark", payload));
   }
   updateNotificationSetting(id: string, payload: any) {
     return this.put(`/performers/${id}/notification-settings`, payload);
@@ -61,8 +61,6 @@ export class PerformerService extends APIRequest {
   findOne(id: string, headers?: { [key: string]: string }) {
     return this.get(`/performers/${id}`, headers);
   }
-
-
 }
 
 export const performerService = new PerformerService();

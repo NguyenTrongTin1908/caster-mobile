@@ -110,11 +110,9 @@ const styles = StyleSheet.create({
     width: 120,
     borderRadius: 200,
     position: 'absolute',
-    alignSelf: 'center',
-    marginTop: 110 + getStatusBarHeight(true),
+    top: 70 + getStatusBarHeight(true),
+    left: 0,
     zIndex: 9999,
-    alignItems: 'center',
-    justifyContent: 'center'
   },
 
   imageVerification: {
@@ -274,7 +272,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: Sizes.fixPadding * 2.0,
     marginHorizontal: Sizes.fixPadding + 5.0
+  },
+  bottomSheetContain: {
+    backgroundColor: colors.transparent,
+    paddingTop: Sizes.fixPadding + 400,
+  },
+
+  profileForm: {
+    marginTop: 40
   }
+
 });
 
 export default styles;

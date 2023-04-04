@@ -1,5 +1,5 @@
 export interface IPerformer {
-  map(arg0: (performer: any) => JSX.Element): import('react').ReactNode;
+  map(arg0: (performer: any) => JSX.Element): import("react").ReactNode;
   length: number;
   _id: string;
   performerId: string;
@@ -116,6 +116,8 @@ export interface IPerformer {
   stripeCardIds: string[];
   stripeCustomerId: string;
   password?: string;
+  relationship: string;
+  showYearProfile: boolean;
 }
 
 export interface IBanking {
@@ -131,6 +133,7 @@ export interface IBanking {
   state: string;
   country: string;
   performerId: string;
+
 }
 
 export interface IPerformerStats {
