@@ -8,14 +8,13 @@ export * from './message.service';
 export * from './order.service';
 export * from './post.service';
 export * from './stream.service';
-
 export * from './token-package.service';
 export * from './token-transaction.service';
-
 export * from './gift.service';
-
 export * from './report.service';
 export * from './follow.service';
 export * from './notification.service';
 export * from './token.service';
+export * from './perfomer.service';
+
 

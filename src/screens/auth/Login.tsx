@@ -45,6 +45,7 @@ interface Props {
   };
   fcmToken: any;
   loginSocial: Function;
+  system: any;
 }
 
 const Login = ({
@@ -53,6 +54,7 @@ const Login = ({
   authLogin,
   loginSocial,
   fcmToken,
+  system,
 }: Props): React.ReactElement => {
   const navigation = useNavigation() as any;
   useEffect(() => {
@@ -137,27 +139,28 @@ const Login = ({
             <LinearGradient
               start={{ x: 0, y: 1 }}
               end={{ x: 0, y: 0 }}
-              colors={["black", "rgba(0,0.10,0,0.77)", "rgba(0,0,0,0.1)"]}
+              colors={["white", "white", "white"]}
               style={{ flex: 1, paddingHorizontal: Sizes.fixPadding * 2.0 }}
             >
               <Box px={padding.p5} py={20}>
-                <HStack space={2} alignSelf="center" mb={20}>
-                  <Heading
-                    alignSelf="center"
-                    fontSize={30}
-                    color={colors.lightText}
-                    bold
-                    letterSpacing={-1}
-                  >
-                    Welcome Back
-                  </Heading>
+                <HStack space={2} alignSelf="center" mb={5}>
                   <Image
-                    source={require("assets/heart-purple.png")}
-                    alt="heart-purple"
-                    size="58px"
+                    source={{ uri: system?.data?.logoUrl }}
+                    alt="logo"
+                    size={55}
+                    width="100%"
                     resizeMode="contain"
                   />
                 </HStack>
+
+                {/* <Heading
+                  fontSize={"22"}
+                  alignSelf="center"
+                  color={colors.primary}
+                >
+                  Log In with
+                </Heading> */}
+
                 <FormControl>
                   <Controller
                     control={control}
@@ -173,7 +176,7 @@ const Login = ({
                         letterSpacing={0.2}
                         textAlign="left"
                         placeholder="Email / Username"
-                        placeholderTextColor={colors.lightText}
+                        placeholderTextColor={colors.darkGray}
                         style={{ ...styles.textFieldContentStyle }}
                       />
                     )}
@@ -184,7 +187,7 @@ const Login = ({
                   {errors.username && (
                     <ErrorMessage
                       message={
-                        errors.username?.message ||
+                        errors.username?.message?.toString() ||
                         "Email or username is required."
                       }
                     />
@@ -206,7 +209,7 @@ const Login = ({
                         textAlign="left"
                         type="password"
                         placeholder="Password"
-                        placeholderTextColor={colors.lightText}
+                        placeholderTextColor={colors.darkGray}
                         style={{ ...styles.textFieldContentStyle }}
                       />
                     )}
@@ -223,12 +226,12 @@ const Login = ({
                   {errors.password && (
                     <ErrorMessage
                       message={
-                        errors.password?.message || "Password is required."
+                        errors.password?.message?.toString() ||
+                        "Password is required."
                       }
                     />
                   )}
                 </FormControl>
-
                 <VStack space={3}>
                   <Flex alignSelf="center" width={"100%"}>
                     <TouchableOpacity
@@ -252,7 +255,7 @@ const Login = ({
                             color: colors.lightText,
                           }}
                         >
-                          Continue
+                          Log In
                         </Text>
                       </LinearGradient>
                     </TouchableOpacity>
@@ -323,7 +326,7 @@ const styles = StyleSheet.create({
     borderRadius: Sizes.fixPadding * 2.5,
     // marginBottom: Sizes.fixPadding,
     fontWeight: "bold",
-    color: colors.lightText,
+    color: colors.darkGray,
   },
   loginButtonStyle: {
     borderRadius: Sizes.fixPadding * 2.5,
@@ -339,6 +342,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProp = (state: any): any => ({
   ...state.auth,
+  system: { ...state.system },
 });
 
 const mapDispatch = {

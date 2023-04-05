@@ -5,7 +5,10 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "jsx": "react-native",
-    "lib": ["es2017", "es2018"],
+    "lib": [
+      "es2017",
+      "es2018"
+    ],
     "module": "es2015",
     "moduleResolution": "node",
     "resolveJsonModule": true,
@@ -17,22 +20,54 @@
     "target": "es2017",
     "baseUrl": "./",
     "paths": {
-      "src/*": ["./src/*"],
-      "components/*": ["./src/components/*"],
-      "interfaces/*": ["./src/interfaces/*"],
-      "lib/*": ["./src/lib/*"],
-      "navigations/*": ["./src/navigations/*"],
-      "providers/*": ["./src/providers/*"],
-      "screens/*": ["./src/screens/*"],
-      "typings/*": ["./src/typings/*"],
-      "utils/*": ["./src/utils/*"],
-      "assets/*": ["./src/assets/*"],
-      "services/*": ["./src/services/*"]
+      "src/*": [
+        "./src/*"
+      ],
+      "components/*": [
+        "./src/components/*"
+      ],
+      "interfaces/*": [
+        "./src/interfaces/*"
+      ],
+      "lib/*": [
+        "./src/lib/*"
+      ],
+      "navigations/*": [
+        "./src/navigations/*"
+      ],
+      "providers/*": [
+        "./src/providers/*"
+      ],
+      "screens/*": [
+        "./src/screens/*"
+      ],
+      "typings/*": [
+        "./src/typings/*"
+      ],
+      "utils/*": [
+        "./src/utils/*"
+      ],
+      "assets/*": [
+        "./src/assets/*"
+      ],
+      "services/*": [
+        "./src/services/*"
+      ]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["node_modules", "**/*.test.tsx", "**/*.spec.ts"],
-  "types": ["typePatches"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "../../Downloads/cstrmobileapp/rn-TikStar/EditProfile.tsx"
+, "src/components/component/notification/NotificationCardtsx"  ],
+  "exclude": [
+    "node_modules",
+    "**/*.test.tsx",
+    "**/*.spec.ts"
+  ],
+  "types": [
+    "typePatches"
+  ],
   "jest": {
     "globals": {
       "ts-jest": {
@@ -40,6 +75,8 @@
       }
     }
   },
-  "files": ["environment.d.ts"]
+  "files": [
+    "environment.d.ts"
+  ]
   // "extends": "expo/tsconfig.base"
 }
