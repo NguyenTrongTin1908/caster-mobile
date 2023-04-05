@@ -19,6 +19,7 @@ import { IPerformer } from "src/interfaces";
 import HeaderMenu from "components/tab/HeaderMenu";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import CustomHeader from "components/uis/CustomHeader";
+import GestureRecognizer from "react-native-swipe-gestures";
 
 let deviceH = Dimensions.get("screen").height;
 let bottomNavBarH = deviceH - height;
@@ -68,6 +69,14 @@ const Hashtag = ({
       type: tab === "video" ? "video" : "photo",
     });
     setfeeds(feeds.concat(data.data));
+  };
+
+  const onSwipeLeft = (gestureState) => {
+    handleTabChange("photo");
+  };
+
+  const onSwipeRight = (gestureState) => {
+    handleTabChange("video");
   };
   const onViewableItemsChange = useRef(({ changed }) => {
     changed.forEach((element) => {
@@ -123,49 +132,57 @@ const Hashtag = ({
   }, [tab]);
   return (
     <SafeAreaView style={styles.container}>
-      <FlatList
-        data={feeds}
-        renderItem={renderItem}
-        pagingEnabled={true}
-        keyExtractor={(item) => item._id}
-        decelerationRate={"fast"}
-        showsVerticalScrollIndicator={false}
-        onViewableItemsChanged={onViewableItemsChange.current}
-        windowSize={2}
-        initialNumToRender={0}
-        maxToRenderPerBatch={2}
-        onEndReached={loadmoreFeeds}
-        removeClippedSubviews
-        snapToInterval={
-          Platform.OS === "ios"
-            ? deviceH - (insets.bottom + insets.top)
-            : deviceH - bottomNavBarH
-        }
-        viewabilityConfig={{
-          itemVisiblePercentThreshold: 100,
+      <GestureRecognizer
+        onSwipeLeft={(state) => onSwipeLeft(state)}
+        onSwipeRight={(state) => onSwipeRight(state)}
+        style={{
+          flex: 1,
         }}
-        snapToAlignment={"start"}
-      />
-      <HeaderMenu />
-      <CustomHeader
-        header={{
-          title: "Hashtag",
-          align: "center",
-        }}
-        headerStyle={{ color: "white", fontSize: 15 }}
       >
-        <FeedTab
-          onTabChange={handleTabChange}
-          tab={tab}
-          tabs={[
-            {
-              key: "video",
-              title: "Videos",
-            },
-            { key: "photo", title: "Photos" },
-          ]}
+        <FlatList
+          data={feeds}
+          renderItem={renderItem}
+          pagingEnabled={true}
+          keyExtractor={(item) => item._id}
+          decelerationRate={"fast"}
+          showsVerticalScrollIndicator={false}
+          onViewableItemsChanged={onViewableItemsChange.current}
+          windowSize={2}
+          initialNumToRender={0}
+          maxToRenderPerBatch={2}
+          onEndReached={loadmoreFeeds}
+          removeClippedSubviews
+          snapToInterval={
+            Platform.OS === "ios"
+              ? deviceH - (insets.bottom + insets.top)
+              : deviceH - bottomNavBarH
+          }
+          viewabilityConfig={{
+            itemVisiblePercentThreshold: 100,
+          }}
+          snapToAlignment={"start"}
         />
-      </CustomHeader>
+        <HeaderMenu />
+        <CustomHeader
+          header={{
+            title: "Hashtag",
+            align: "center",
+          }}
+          headerStyle={{ color: "white", fontSize: 15 }}
+        >
+          <FeedTab
+            onTabChange={handleTabChange}
+            tab={tab}
+            tabs={[
+              {
+                key: "video",
+                title: "Videos",
+              },
+              { key: "photo", title: "Photos" },
+            ]}
+          />
+        </CustomHeader>
+      </GestureRecognizer>
     </SafeAreaView>
   );
 };

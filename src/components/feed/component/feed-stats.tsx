@@ -81,22 +81,7 @@ const FeedStats = ({
   return (
     <View style={styles.uiContainer}>
       <View style={styles.rightContainer}>
-        <View
-          style={{
-            marginBottom: Sizes.fixPadding + 5.0,
-            alignItems: "center",
-          }}
-        >
-          <ButtonFollow
-            isHideOnClick
-            targetId={item?.performer?._id}
-            sourceId={currentUser._id}
-            isFollow={item?.performer.isFollowed}
-            getPerformerList={() => {}}
-          />
-        </View>
-
-        <View
+        {/* <View
           style={{
             marginRight: Sizes.fixPadding - 5.0,
             marginBottom: Sizes.fixPadding + 10.0,
@@ -123,10 +108,19 @@ const FeedStats = ({
               }}
             />
           </TouchableOpacity>
-          <View style={styles.profilePictureAddButtonWrapStyle}>
-            <MaterialIcons name="add" color={colors.lightText} size={18} />
-          </View>
-        </View>
+
+          <Text
+            style={{
+              marginTop: Sizes.fixPadding,
+              color: colors.lightText,
+              textAlign: "center",
+            }}
+          >
+            {item.performer.stats.totalFollower}
+            {"\n"}
+            Followers
+          </Text>
+        </View> */}
         {/* <View
           style={{
             marginRight: Sizes.fixPadding,
@@ -194,9 +188,6 @@ const FeedStats = ({
       </View>
       <View style={styles.bottomContainer}>
         <View>
-          <Text style={{ color: colors.lightText, fontWeight: "bold" }}>
-            @{item?.performer.username}
-          </Text>
           <MentionHashtagTextView
             key={item?._id}
             mentionHashtagPress={mentionHashtagClick}
@@ -205,14 +196,65 @@ const FeedStats = ({
           >
             {item?.text}
           </MentionHashtagTextView>
-          <View style={styles.songRow}>
+          <View style={{ flexDirection: "row" }}>
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() =>
+                navigation.navigate("ModelProfile", {
+                  screen: "ModelProfile",
+                  performer: item?.performer,
+                })
+              }
+            >
+              <Image
+                style={styles.profilePicture}
+                source={{
+                  uri:
+                    item?.performer.avatar ||
+                    Image.resolveAssetSource(
+                      require("../../../assets/avatar-default.png")
+                    ).uri,
+                }}
+              />
+            </TouchableOpacity>
+            <Text
+              style={{
+                color: colors.lightText,
+                fontWeight: "bold",
+                justifyContent: "center",
+                textAlign: "center",
+                maxWidth: 100,
+              }}
+            >
+              @{item?.performer.username}
+              {"\n"}
+              {item.performer.stats.totalFollower}
+              {"\n"}
+              Fans
+            </Text>
+            <View
+              style={{
+                justifyContent: "center",
+              }}
+            >
+              <ButtonFollow
+                isHideOnClick
+                targetId={item?.performer?._id}
+                sourceId={currentUser._id}
+                isFollow={item?.performer.isFollowed}
+                getPerformerList={() => {}}
+              />
+            </View>
+          </View>
+
+          {/* <View style={styles.songRow}>
             <MaterialIcons name="music-note" size={15} color="white" />
             <Text style={{ color: colors.lightText }}>
               {item.title || "No name"}
             </Text>
-          </View>
+          </View> */}
         </View>
-        <View style={styles.postSongImageWrapStyle}>
+        {/* <View style={styles.postSongImageWrapStyle}>
           <Animated.Image
             style={{
               width: 27.0,
@@ -227,7 +269,7 @@ const FeedStats = ({
                   .uri,
             }}
           />
-        </View>
+        </View> */}
       </View>
     </View>
   );

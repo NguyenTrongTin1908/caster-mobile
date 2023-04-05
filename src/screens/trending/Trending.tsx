@@ -25,6 +25,8 @@ import HeaderMenu from "components/tab/HeaderMenu";
 import { connect } from "react-redux";
 import { IPerformer } from "src/interfaces";
 import CustomHeader from "components/uis/CustomHeader";
+import GestureRecognizer from "react-native-swipe-gestures";
+
 let deviceH = Dimensions.get("screen").height;
 let bottomNavBarH = deviceH - height;
 interface IProps {
@@ -93,6 +95,14 @@ const Trending = ({ current }: IProps): React.ReactElement => {
     });
     setFeeds(feeds.concat(data.data));
     setFeedPage(1);
+  };
+
+  const onSwipeLeft = (gestureState) => {
+    handleTabChange("photo");
+  };
+
+  const onSwipeRight = (gestureState) => {
+    handleTabChange("video");
   };
 
   const onViewableItemsChange = useRef(({ changed }) => {
@@ -175,49 +185,57 @@ const Trending = ({ current }: IProps): React.ReactElement => {
     <BottomTabBarHeightContext.Consumer>
       {(tabBarHeight: any) => (
         <SafeAreaView style={styles.container}>
-          <FlatList
-            data={feeds}
-            renderItem={renderItem}
-            pagingEnabled={true}
-            keyExtractor={(item) => item._id}
-            decelerationRate={"fast"}
-            showsVerticalScrollIndicator={false}
-            onViewableItemsChanged={onViewableItemsChange.current}
-            windowSize={4}
-            onEndReached={loadMoreFeeds}
-            initialNumToRender={0}
-            maxToRenderPerBatch={2}
-            removeClippedSubviews
-            snapToInterval={
-              Platform.OS === "ios"
-                ? deviceH - (tabBarHeight + getStatusBarHeight(true))
-                : deviceH - (bottomNavBarH + tabBarHeight)
-            }
-            viewabilityConfig={{
-              itemVisiblePercentThreshold: 100,
+          <GestureRecognizer
+            onSwipeLeft={(state) => onSwipeLeft(state)}
+            onSwipeRight={(state) => onSwipeRight(state)}
+            style={{
+              flex: 1,
             }}
-            snapToAlignment={"start"}
-          />
-          <HeaderMenu />
-          <CustomHeader
-            header={{
-              title: "Trending",
-              align: "center",
-            }}
-            headerStyle={{ color: "white", fontSize: 15 }}
           >
-            <FeedTab
-              onTabChange={handleTabChange}
-              tab={tab}
-              tabs={[
-                {
-                  key: "video",
-                  title: "Videos",
-                },
-                { key: "photo", title: "Photos" },
-              ]}
+            <FlatList
+              data={feeds}
+              renderItem={renderItem}
+              pagingEnabled={true}
+              keyExtractor={(item) => item._id}
+              decelerationRate={"fast"}
+              showsVerticalScrollIndicator={false}
+              onViewableItemsChanged={onViewableItemsChange.current}
+              windowSize={4}
+              onEndReached={loadMoreFeeds}
+              initialNumToRender={0}
+              maxToRenderPerBatch={2}
+              removeClippedSubviews
+              snapToInterval={
+                Platform.OS === "ios"
+                  ? deviceH - (tabBarHeight + getStatusBarHeight(true))
+                  : deviceH - (bottomNavBarH + tabBarHeight)
+              }
+              viewabilityConfig={{
+                itemVisiblePercentThreshold: 100,
+              }}
+              snapToAlignment={"start"}
             />
-          </CustomHeader>
+            <HeaderMenu />
+            <CustomHeader
+              header={{
+                title: "Trending",
+                align: "center",
+              }}
+              headerStyle={{ color: "white", fontSize: 15 }}
+            >
+              <FeedTab
+                onTabChange={handleTabChange}
+                tab={tab}
+                tabs={[
+                  {
+                    key: "video",
+                    title: "Videos",
+                  },
+                  { key: "photo", title: "Photos" },
+                ]}
+              />
+            </CustomHeader>
+          </GestureRecognizer>
         </SafeAreaView>
       )}
     </BottomTabBarHeightContext.Consumer>

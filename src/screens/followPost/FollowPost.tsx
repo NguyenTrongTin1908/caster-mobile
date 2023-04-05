@@ -25,6 +25,7 @@ import { IPerformer } from "src/interfaces";
 import HeaderMenu from "components/tab/HeaderMenu";
 import CustomHeader from "components/uis/CustomHeader";
 import BackButton from "components/uis/BackButton";
+import GestureRecognizer from "react-native-swipe-gestures";
 let deviceH = Dimensions.get("screen").height;
 let bottomNavBarH = deviceH - height;
 interface IProps {
@@ -73,7 +74,6 @@ const FollowPost = ({
     const { total: totalFeeds } = feedState;
     try {
       if ((feedPage + 1) * itemPerPage >= totalFeeds) {
-        console.log("K load")
         resetloadFeeds();
       } else {
         setfeedPage(feedPage + 1);
@@ -84,6 +84,7 @@ const FollowPost = ({
           offset: itemPerPage * (feedPage + 1),
           isHome: false,
           type: tab === "video" ? "video" : "photo",
+          sortBy: "mostViewInCurrentDay",
         });
       }
     } catch (e) {
@@ -98,6 +99,7 @@ const FollowPost = ({
       offset: 0,
       isHome: false,
       type: tab === "video" ? "video" : "photo",
+      sortBy: "mostViewInCurrentDay",
     });
     setfeedPage(1);
   };
@@ -110,10 +112,17 @@ const FollowPost = ({
       offset: itemPerPage * feedPage,
       isHome: false,
       type: tab === "video" ? "video" : "photo",
+      sortBy: "mostViewInCurrentDay",
     });
   };
 
+  const onSwipeLeft = (gestureState) => {
+    handleTabChange("photo");
+  };
 
+  const onSwipeRight = (gestureState) => {
+    handleTabChange("video");
+  };
 
   const handleTabChange = async (tab) => {
     setTab(tab);
@@ -156,52 +165,58 @@ const FollowPost = ({
   };
   return (
     <SafeAreaView style={styles.container}>
-      <FlatList
-        data={feedState.items}
-        renderItem={renderItem}
-        pagingEnabled={true}
-        keyExtractor={(item) => item._id}
-        decelerationRate={"fast"}
-        showsVerticalScrollIndicator={false}
-        onViewableItemsChanged={onViewableItemsChange.current}
-        windowSize={2}
-        initialNumToRender={0}
-        maxToRenderPerBatch={2}
-        onEndReached={loadmoreFeeds}
-
-        removeClippedSubviews
-        snapToInterval={
-          Platform.OS === "ios"
-            ? deviceH - (insets.bottom + insets.top)
-            : deviceH - bottomNavBarH
-        }
-        viewabilityConfig={{
-          itemVisiblePercentThreshold: 100,
+      <GestureRecognizer
+        onSwipeLeft={(state) => onSwipeLeft(state)}
+        onSwipeRight={(state) => onSwipeRight(state)}
+        style={{
+          flex: 1,
         }}
-        snapToAlignment={"start"}
-      />
-      <HeaderMenu />
-      <CustomHeader
-        header={{
-          title: "Following",
-          align: "center",
-        }}
-        headerStyle={{ color: "white", fontSize: 15 }}
       >
-        <FeedTab
-          onTabChange={handleTabChange}
-          tab={tab}
-          tabs={[
-            {
-              key: "video",
-              title: "Videos",
-            },
-            { key: "photo", title: "Photos" },
-          ]}
+        <FlatList
+          data={feedState.items}
+          renderItem={renderItem}
+          pagingEnabled={true}
+          keyExtractor={(item) => item._id}
+          decelerationRate={"fast"}
+          showsVerticalScrollIndicator={false}
+          onViewableItemsChanged={onViewableItemsChange.current}
+          windowSize={2}
+          initialNumToRender={0}
+          maxToRenderPerBatch={2}
+          onEndReached={loadmoreFeeds}
+          removeClippedSubviews
+          snapToInterval={
+            Platform.OS === "ios"
+              ? deviceH - (insets.bottom + insets.top)
+              : deviceH - bottomNavBarH
+          }
+          viewabilityConfig={{
+            itemVisiblePercentThreshold: 100,
+          }}
+          snapToAlignment={"start"}
         />
-      </CustomHeader>
-      <BackButton />
-
+        <HeaderMenu />
+        <CustomHeader
+          header={{
+            title: "Following",
+            align: "center",
+          }}
+          headerStyle={{ color: "white", fontSize: 15 }}
+        >
+          <FeedTab
+            onTabChange={handleTabChange}
+            tab={tab}
+            tabs={[
+              {
+                key: "video",
+                title: "Videos",
+              },
+              { key: "photo", title: "Photos" },
+            ]}
+          />
+        </CustomHeader>
+        <BackButton />
+      </GestureRecognizer>
     </SafeAreaView>
   );
 };

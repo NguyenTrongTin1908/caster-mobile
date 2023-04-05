@@ -20,6 +20,8 @@ import { IPerformer } from "src/interfaces";
 import HeaderMenu from "components/tab/HeaderMenu";
 import CustomHeader from "components/uis/CustomHeader";
 import BackButton from "components/uis/BackButton";
+import GestureRecognizer from "react-native-swipe-gestures";
+
 interface IProps {
   route: {
     params: {
@@ -57,6 +59,14 @@ const FeedDetail = ({ route, current }: IProps): React.ReactElement => {
             type: "photo",
           });
     setfeeds(data.data);
+  };
+
+  const onSwipeLeft = (gestureState) => {
+    handleTabChange("photo");
+  };
+
+  const onSwipeRight = (gestureState) => {
+    handleTabChange("video");
   };
 
   const onViewableItemsChange = useRef(({ changed }) => {
@@ -103,49 +113,57 @@ const FeedDetail = ({ route, current }: IProps): React.ReactElement => {
   }, [tab]);
   return (
     <SafeAreaView style={styles.container}>
-      <FlatList
-        data={feeds}
-        renderItem={renderItem}
-        pagingEnabled={true}
-        keyExtractor={(item) => item._id}
-        decelerationRate={"fast"}
-        showsVerticalScrollIndicator={false}
-        onViewableItemsChanged={onViewableItemsChange.current}
-        windowSize={2}
-        initialNumToRender={0}
-        maxToRenderPerBatch={2}
-        removeClippedSubviews
-        snapToInterval={
-          Platform.OS === "ios"
-            ? deviceH - (insets.bottom + insets.top)
-            : deviceH - bottomNavBarH
-        }
-        viewabilityConfig={{
-          itemVisiblePercentThreshold: 100,
+      <GestureRecognizer
+        onSwipeLeft={(state) => onSwipeLeft(state)}
+        onSwipeRight={(state) => onSwipeRight(state)}
+        style={{
+          flex: 1,
         }}
-        snapToAlignment={"start"}
-      />
-      <HeaderMenu />
-      <CustomHeader
-        header={{
-          title: "Related",
-          align: "center",
-        }}
-        headerStyle={{ color: "white", fontSize: 15 }}
       >
-        <FeedTab
-          onTabChange={handleTabChange}
-          tab={tab}
-          tabs={[
-            {
-              key: "video",
-              title: "Videos",
-            },
-            { key: "photo", title: "Photos" },
-          ]}
+        <FlatList
+          data={feeds}
+          renderItem={renderItem}
+          pagingEnabled={true}
+          keyExtractor={(item) => item._id}
+          decelerationRate={"fast"}
+          showsVerticalScrollIndicator={false}
+          onViewableItemsChanged={onViewableItemsChange.current}
+          windowSize={2}
+          initialNumToRender={0}
+          maxToRenderPerBatch={2}
+          removeClippedSubviews
+          snapToInterval={
+            Platform.OS === "ios"
+              ? deviceH - (insets.bottom + insets.top)
+              : deviceH - bottomNavBarH
+          }
+          viewabilityConfig={{
+            itemVisiblePercentThreshold: 100,
+          }}
+          snapToAlignment={"start"}
         />
-      </CustomHeader>
-      <BackButton />
+        <HeaderMenu />
+        <CustomHeader
+          header={{
+            title: "Related",
+            align: "center",
+          }}
+          headerStyle={{ color: "white", fontSize: 15 }}
+        >
+          <FeedTab
+            onTabChange={handleTabChange}
+            tab={tab}
+            tabs={[
+              {
+                key: "video",
+                title: "Videos",
+              },
+              { key: "photo", title: "Photos" },
+            ]}
+          />
+        </CustomHeader>
+        <BackButton />
+      </GestureRecognizer>
     </SafeAreaView>
   );
 };

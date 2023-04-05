@@ -35,7 +35,7 @@ export const config = {
     apiEndpoint: "https://api.caster.com",
     socketEndpint: "https://api.caster.com",
     googleClientId:
-      "402823973725-4to8t06d7eq6g0m9eer57tjettjfrqmg.apps.googleusercontent.com",
+      "402823973725-1ou1vhvrroqi5bhj433bqi511sgf3ugp.apps.googleusercontent.com",
   },
   ANT_MEDIA_URL: "https://streaming.afrivega.com/LiveApp",
   ANT_SIGNALING_URL: "wss://streaming.afrivega.com/LiveApp/websocket",

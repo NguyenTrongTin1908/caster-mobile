@@ -46,6 +46,7 @@ interface IProps {
   updateCurrentUserCover: Function;
   updating: boolean;
 }
+
 const UpdateProfileForm = ({
   current,
   updatePerformer: handleUpdatePerformer,
@@ -63,6 +64,7 @@ const UpdateProfileForm = ({
   const [emailSending, setEmailSending] = useState(false);
   const [countTime, setCountTime] = useState(60);
   const toast = useToast();
+  let Timer = null as any;
 
   const [bodyInfo, setBodyInfo] = useState([] as any);
   const { heights = [], genders = [], ethnicities = [] } = bodyInfo;
@@ -79,7 +81,6 @@ const UpdateProfileForm = ({
   const stateRef = useRef({}) as any;
   const countryRef = useRef({}) as any;
   const password = useRef({});
-  const _intervalCountdown= useRef({});
 
   const validateMessages = {
     required: "This field is required!",
@@ -94,7 +95,6 @@ const UpdateProfileForm = ({
   password.current = watch("password", "");
 
   const [submitting, setSubmitting] = useState(false);
-
   const navigation = useNavigation() as any;
   const onSubmit = async (data: any): Promise<void> => {
     submit(data);
@@ -111,7 +111,6 @@ const UpdateProfileForm = ({
     setCities(resp.data);
   };
   const submit = async (data) => {
-
     if (typeof data.dateOfBirth === "string") {
       const [day, month, year] = data.dateOfBirth.split("-");
       const datePick = new Date(+year, month - 1, +day);
@@ -129,20 +128,25 @@ const UpdateProfileForm = ({
     }
   };
 
-  const handleCountdown = async () => {
-    setCountTime(countTime - 1);
-    _intervalCountdown = setInterval(coundown, 1000);
-  }
+  const handleCountdown = () => {
+    console.log("AAA");
+    Timer = setTimeout(() => {
+      setCountTime(countTime - 1);
+    }, 1000);
 
- const coundown = () {
-    if (countTime === 0) {
-      setCountTime(60)
-      clearInterval(_intervalCountdown);
-      return null;
+    return () => {
+      clearTimeout(Timer);
+    };
+  };
+
+  useEffect(() => {
+    if (!countTime) {
+      setCountTime(60);
+      clearTimeout(Timer);
+    } else {
+      handleCountdown();
     }
-    setCountTime( countTime - 1)
-
-  }
+  }, [countTime]);
 
   const verifyEmail = async () => {
     try {
@@ -243,6 +247,7 @@ const UpdateProfileForm = ({
 
     loadData();
   }, []);
+
   return (
     <View style={styles.container}>
       <ScrollView style={styles.profileScrollView}>

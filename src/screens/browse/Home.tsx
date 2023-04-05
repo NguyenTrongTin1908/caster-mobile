@@ -1,3 +1,4 @@
+"use strict";
 import React, {
   useEffect,
   useContext,
@@ -31,6 +32,7 @@ import FeedTab from "components/tab/FeedTab";
 import HeaderMenu from "components/tab/HeaderMenu";
 import { IPerformer } from "src/interfaces";
 import CustomHeader from "components/uis/CustomHeader";
+import GestureRecognizer from "react-native-swipe-gestures";
 let deviceH = Dimensions.get("screen").height;
 let bottomNavBarH = deviceH - height;
 interface IProps {
@@ -67,6 +69,8 @@ const Home = ({
   const [keyword, setKeyword] = useState("");
   const [isLoadTrendingFeed, setLoadTrendingFeed] = useState(false);
   const [lastViewableItem, setLastViewableItem] = useState(null) as any;
+  const [myText, setMyText] = useState(null) as any;
+
   const mediaRefs = useRef([]) as any;
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
@@ -104,6 +108,14 @@ const Home = ({
   // useEffect(() => {
   //   feedState.success && !feedState.items.length && feedState.total !== undefined && loadmoreFeeds();
   // }, [feedState]);
+
+  const onSwipeLeft = (gestureState) => {
+    handleTabChange("photo");
+  };
+
+  const onSwipeRight = (gestureState) => {
+    handleTabChange("video");
+  };
 
   const onViewableItemsChange = useRef(({ changed }) => {
     changed.forEach((element) => {
@@ -218,50 +230,58 @@ const Home = ({
     <BottomTabBarHeightContext.Consumer>
       {(tabBarHeight: any) => (
         <SafeAreaView style={styles.container}>
-          <FlatList
-            data={feedState?.items}
-            renderItem={renderItem}
-            pagingEnabled={true}
-            keyExtractor={(item) => item._id}
-            decelerationRate={"fast"}
-            showsVerticalScrollIndicator={false}
-            onViewableItemsChanged={onViewableItemsChange.current}
-            windowSize={2}
-            onEndReachedThreshold={0.5}
-            onEndReached={loadmoreFeeds}
-            initialNumToRender={0}
-            maxToRenderPerBatch={2}
-            removeClippedSubviews
-            snapToInterval={
-              Platform.OS === "ios"
-                ? deviceH - (tabBarHeight + getStatusBarHeight(true))
-                : deviceH - (bottomNavBarH + tabBarHeight)
-            }
-            viewabilityConfig={{
-              itemVisiblePercentThreshold: 100,
+          <GestureRecognizer
+            onSwipeLeft={(state) => onSwipeLeft(state)}
+            onSwipeRight={(state) => onSwipeRight(state)}
+            style={{
+              flex: 1,
             }}
-            snapToAlignment={"start"}
-          />
-          <HeaderMenu />
-          <CustomHeader
-            header={{
-              title: "Home",
-              align: "center",
-            }}
-            headerStyle={{ color: "white", fontSize: 15 }}
           >
-            <FeedTab
-              onTabChange={handleTabChange}
-              tab={tab}
-              tabs={[
-                {
-                  key: "video",
-                  title: "Videos",
-                },
-                { key: "photo", title: "Photos" },
-              ]}
+            <FlatList
+              data={feedState?.items}
+              renderItem={renderItem}
+              pagingEnabled={true}
+              keyExtractor={(item) => item._id}
+              decelerationRate={"fast"}
+              showsVerticalScrollIndicator={false}
+              onViewableItemsChanged={onViewableItemsChange.current}
+              windowSize={2}
+              onEndReachedThreshold={0.5}
+              onEndReached={loadmoreFeeds}
+              initialNumToRender={0}
+              maxToRenderPerBatch={2}
+              removeClippedSubviews
+              snapToInterval={
+                Platform.OS === "ios"
+                  ? deviceH - (tabBarHeight + getStatusBarHeight(true))
+                  : deviceH - (bottomNavBarH + tabBarHeight)
+              }
+              viewabilityConfig={{
+                itemVisiblePercentThreshold: 100,
+              }}
+              snapToAlignment={"start"}
             />
-          </CustomHeader>
+            <HeaderMenu />
+            <CustomHeader
+              header={{
+                title: "Home",
+                align: "center",
+              }}
+              headerStyle={{ color: "white", fontSize: 15 }}
+            >
+              <FeedTab
+                onTabChange={handleTabChange}
+                tab={tab}
+                tabs={[
+                  {
+                    key: "video",
+                    title: "Videos",
+                  },
+                  { key: "photo", title: "Photos" },
+                ]}
+              />
+            </CustomHeader>
+          </GestureRecognizer>
         </SafeAreaView>
       )}
     </BottomTabBarHeightContext.Consumer>

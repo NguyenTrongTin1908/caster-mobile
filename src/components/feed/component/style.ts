@@ -6,25 +6,25 @@ const { width, height } = Dimensions.get("window");
 let deviceH = Dimensions.get("screen").height;
 const STATUS_BAR_HEIGHT = StatusBar.currentHeight || 24;
 let bottomNavBarH = deviceH - height + STATUS_BAR_HEIGHT;
+let topPositionMenu = 80 + STATUS_BAR_HEIGHT;
 const styles = StyleSheet.create({
   container: { flex: 1 },
   uiContainer: {
     position: "absolute",
-    bottom: 0,
+    top: topPositionMenu,
     left: 0.0,
     right: 0.0,
     height:
       Platform.OS === "ios"
-        ? deviceH - (90 + 47)
-        : deviceH - (bottomNavBarH + 60),
-    justifyContent: "flex-end",
+        ? deviceH - topPositionMenu - STATUS_BAR_HEIGHT
+        : deviceH - bottomNavBarH - topPositionMenu - STATUS_BAR_HEIGHT,
+    justifyContent: "space-between",
   },
   bottomContainer: {
     paddingHorizontal: 10,
+    paddingBottom: 5,
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "flex-end",
-    paddingBottom: Sizes.fixPadding * 3.5,
   },
   songRow: {
     flexDirection: "row",
@@ -33,8 +33,14 @@ const styles = StyleSheet.create({
   },
   rightContainer: {
     alignSelf: "flex-end",
-    height: 320,
+    height: 250,
     justifyContent: "space-between",
+    marginRight: 5,
+  },
+  leftContainer: {
+    alignSelf: "flex-start",
+    height: 250,
+    justifyContent: "space-around",
     marginRight: 5,
   },
   profilePicture: {
