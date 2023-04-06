@@ -81,61 +81,6 @@ const FeedStats = ({
   return (
     <View style={styles.uiContainer}>
       <View style={styles.rightContainer}>
-        {/* <View
-          style={{
-            marginRight: Sizes.fixPadding - 5.0,
-            marginBottom: Sizes.fixPadding + 10.0,
-            alignItems: "center",
-          }}
-        >
-          <TouchableOpacity
-            activeOpacity={0.9}
-            onPress={() =>
-              navigation.navigate("ModelProfile", {
-                screen: "ModelProfile",
-                performer: item?.performer,
-              })
-            }
-          >
-            <Image
-              style={styles.profilePicture}
-              source={{
-                uri:
-                  item?.performer.avatar ||
-                  Image.resolveAssetSource(
-                    require("../../../assets/avatar-default.png")
-                  ).uri,
-              }}
-            />
-          </TouchableOpacity>
-
-          <Text
-            style={{
-              marginTop: Sizes.fixPadding,
-              color: colors.lightText,
-              textAlign: "center",
-            }}
-          >
-            {item.performer.stats.totalFollower}
-            {"\n"}
-            Followers
-          </Text>
-        </View> */}
-        {/* <View
-          style={{
-            marginRight: Sizes.fixPadding,
-            marginVertical: Sizes.fixPadding + 2.0,
-            alignItems: "center",
-          }}
-        >
-          <Button
-            size={44}
-            backgroundColor="orange.400"
-            onPress={handleRedirect}
-          >
-            Live Now
-          </Button>
-        </View> */}
         <View
           style={{
             marginRight: Sizes.fixPadding,
@@ -159,23 +104,7 @@ const FeedStats = ({
             }}
           ></Text>
         </View>
-        <View
-          style={{
-            marginRight: Sizes.fixPadding,
-            marginTop: Sizes.fixPadding + 2.0,
-            alignItems: "center",
-          }}
-        >
-          <MaterialIcons name="visibility" color={colors.light} size={28} />
-          <Text
-            style={{
-              marginTop: Sizes.fixPadding - 7.0,
-              color: colors.lightText,
-            }}
-          >
-            {item.stats.views}
-          </Text>
-        </View>
+
         <View
           style={{
             marginRight: Sizes.fixPadding,
@@ -246,30 +175,24 @@ const FeedStats = ({
               />
             </View>
           </View>
-
-          {/* <View style={styles.songRow}>
-            <MaterialIcons name="music-note" size={15} color="white" />
-            <Text style={{ color: colors.lightText }}>
-              {item.title || "No name"}
-            </Text>
-          </View> */}
         </View>
-        {/* <View style={styles.postSongImageWrapStyle}>
-          <Animated.Image
+        <View
+          style={{
+            marginRight: Sizes.fixPadding,
+            marginTop: Sizes.fixPadding + 2.0,
+            alignItems: "center",
+          }}
+        >
+          <MaterialIcons name="visibility" color={colors.light} size={28} />
+          <Text
             style={{
-              width: 27.0,
-              height: 27.0,
-              borderRadius: 13.5,
-              transform: [{ rotate: spin }],
+              marginTop: Sizes.fixPadding - 7.0,
+              color: colors.lightText,
             }}
-            source={{
-              uri:
-                item.performer.avatar ||
-                Image.resolveAssetSource(require("../../../assets/user.png"))
-                  .uri,
-            }}
-          />
-        </View> */}
+          >
+            {item.stats.views}
+          </Text>
+        </View>
       </View>
     </View>
   );

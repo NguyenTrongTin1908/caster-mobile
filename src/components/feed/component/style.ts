@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
   rightContainer: {
     alignSelf: "flex-end",
     height: 250,
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     marginRight: 5,
   },
   leftContainer: {

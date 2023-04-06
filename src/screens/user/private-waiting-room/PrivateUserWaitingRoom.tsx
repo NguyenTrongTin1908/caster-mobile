@@ -17,8 +17,6 @@ import ButtonFollow from "components/uis/ButtonFollow";
 import BackButton from "components/uis/BackButton";
 import HeaderMenu from "components/tab/HeaderMenu";
 
-
-
 const Option = Select;
 enum EVENT {
   JOINED_THE_ROOM = "JOINED_THE_ROOM",
@@ -75,27 +73,25 @@ const PrivateUserWaitingRoom = ({
     const { _id: performerId } = performer as any;
     try {
       if (isAvailable) {
-        streamService.requestPrivateChat(performerId).then((res) => {
-          const { conversation } = res.data;
-          joinPrivateConversation(conversation._id);
-          dispatchGetStreamConversationSuccess({
-            data: conversation,
+        streamService
+          .requestPrivateChat(performerId)
+          .then((res) => {
+            const { conversation } = res.data;
+            joinPrivateConversation(conversation._id);
+            dispatchGetStreamConversationSuccess({
+              data: conversation,
+            });
+            return navigation.navigate("PrivateUserAcceptRoom", {
+              performer: performer,
+              privateRequest: res.data,
+            });
+          })
+          .catch(async (e: any) => {
+            const error = await e;
+            toast.show({ description: error.message });
           });
-          return navigation.navigate("PrivateUserAcceptRoom", {
-            performer: performer,
-            privateRequest: res.data,
-          });
-        }).catch(async (e:any) => {
-          const error = await e;
-      toast.show({description: error.message})
-        });;
       }
-
-    } catch (e:any) {
-
-
-    }
-
+    } catch (e: any) {}
   };
 
   // const setPrice = () => {
@@ -160,7 +156,7 @@ const PrivateUserWaitingRoom = ({
           </View>
         </View>
         <Text style={styles.textName}>
-          {performer && performer?.name != " "
+          {performer && performer?.name
             ? `${performer?.name}`
             : `${performer?.username}`}
         </Text>
@@ -213,7 +209,6 @@ const PrivateUserWaitingRoom = ({
       </View>
       <HeaderMenu />
       <BackButton />
-
     </SafeAreaView>
   );
 };

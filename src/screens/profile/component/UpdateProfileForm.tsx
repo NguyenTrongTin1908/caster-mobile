@@ -140,6 +140,7 @@ const UpdateProfileForm = ({
   };
 
   useEffect(() => {
+    if (countTime === 60) return;
     if (!countTime) {
       setCountTime(60);
       clearTimeout(Timer);
@@ -155,7 +156,7 @@ const UpdateProfileForm = ({
         sourceType: "performer",
         source: current,
       });
-      handleCountdown();
+      // handleCountdown();
       resp.data && resp.data.message && Alert.alert(resp.data.message);
     } catch (e) {
       const error = await e;
@@ -574,23 +575,24 @@ const UpdateProfileForm = ({
                   fontSize={17}
                   selectedValue={value}
                   color={colors.lightText}
-                  accessibilityLabel="States"
-                  placeholder="States"
+                  accessibilityLabel="Relationship Availability"
+                  placeholder="Relationship Availability"
                   onValueChange={(val: string) => {
                     onChange(val);
-                    handleGetCities(countryCode, val);
                   }}
                 >
                   <Select.Item label={"Active"} value={"active"} />
                   <Select.Item label={"InActive"} value={"inactive"} />
                 </Select>
               )}
-              name="state"
-              rules={{ required: "State is required." }}
+              name="relationship"
+              rules={{ required: "Relationship is required." }}
             />
-            {errors.state && (
+            {errors.relationship && (
               <ErrorMessage
-                message={errors.state?.message || "State is required."}
+                message={
+                  errors.relationship?.message || "Relationship is required."
+                }
               />
             )}
           </FormControl>
@@ -844,7 +846,7 @@ const UpdateProfileForm = ({
                   value === password.current || "The passwords do not match",
               }}
             />
-            {errors && <ErrorMessage message={"Comfirm is required."} />}
+            {/* {errors && <ErrorMessage message={"Comfirm is required."} />} */}
           </FormControl>
           <Divider borderColor={colors.divider} />
           <Box alignSelf="center" my={5}>
