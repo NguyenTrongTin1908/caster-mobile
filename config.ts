@@ -37,6 +37,6 @@ export const config = {
     googleClientId:
       "402823973725-1ou1vhvrroqi5bhj433bqi511sgf3ugp.apps.googleusercontent.com",
   },
-  ANT_MEDIA_URL: "https://streaming.afrivega.com/LiveApp",
-  ANT_SIGNALING_URL: "wss://streaming.afrivega.com/LiveApp/websocket",
+  ANT_MEDIA_URL: "https://streaming.model.movie/LiveApp",
+  ANT_SIGNALING_URL: "wss://streaming.model.movie/LiveApp/websocket",
 };

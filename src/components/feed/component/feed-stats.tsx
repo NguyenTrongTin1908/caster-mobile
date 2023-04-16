@@ -83,8 +83,6 @@ const FeedStats = ({
       <View style={styles.rightContainer}>
         <View
           style={{
-            marginRight: Sizes.fixPadding,
-            marginTop: Sizes.fixPadding + 2.0,
             alignItems: "center",
           }}
         >
@@ -99,16 +97,13 @@ const FeedStats = ({
           </TouchableOpacity>
           <Text
             style={{
-              marginTop: Sizes.fixPadding - 7.0,
+              marginTop: Sizes.fixPadding * 2,
               color: colors.lightText,
             }}
           ></Text>
         </View>
-
         <View
           style={{
-            marginRight: Sizes.fixPadding,
-            marginVertical: Sizes.fixPadding + 2.0,
             alignItems: "center",
           }}
         >
