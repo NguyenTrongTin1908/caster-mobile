@@ -39,6 +39,14 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     height: 320,
   },
+
+  leftContainer: {
+    position: "absolute",
+    top: 100,
+    height: 250,
+    justifyContent: "space-around",
+    marginRight: 5,
+  },
   profilePicture: {
     width: 50,
     height: 50,
