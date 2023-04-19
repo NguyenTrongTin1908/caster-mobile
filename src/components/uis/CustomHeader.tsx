@@ -1,7 +1,7 @@
 import { Text, View } from 'native-base';
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import { getStatusBarHeight } from 'react-native-status-bar-height';
+// import { getStatusBarHeight } from 'react-native-status-bar-height';
 
 interface Props {
   children?: React.ReactElement;
@@ -23,8 +23,7 @@ export default function CustomHeader({
   }
 }: Props): React.ReactElement {
   return (
-    <View
-      style={{ position: 'absolute', top: 10 + getStatusBarHeight(true), left: 0.0, right: 0.0, ...containerStyle }}>
+    <View style={{ position: 'absolute', top: 10, left: 0.0, right: 0.0, ...containerStyle }}>
       {header.title && (
         <Text textAlign={header.align || 'center'} style={{ ...headerStyle }}>
           {header.title}
