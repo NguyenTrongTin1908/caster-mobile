@@ -13,7 +13,6 @@ import {
   View,
   SafeAreaView,
   Platform,
-  NativeModules,
 } from "react-native";
 const { height } = Dimensions.get("window");
 import styles from "./style";
