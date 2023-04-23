@@ -63,6 +63,7 @@ const UpdateProfileForm = ({
   const [type, setType] = useState("");
   const [emailSending, setEmailSending] = useState(false);
   const [countTime, setCountTime] = useState(60);
+  const [checkPassword, setCheckPassword] = useState() as any;
   const toast = useToast();
   let Timer = null as any;
 
@@ -71,8 +72,10 @@ const UpdateProfileForm = ({
   const defaultValues = {
     ...current,
     dateOfBirth: (current.dateOfBirth && moment(current.dateOfBirth)) || "",
+    confirm: "",
   };
   const {
+    register,
     control,
     handleSubmit,
     formState: { errors },
@@ -80,7 +83,6 @@ const UpdateProfileForm = ({
   } = useForm({ defaultValues });
   const stateRef = useRef({}) as any;
   const countryRef = useRef({}) as any;
-  const password = useRef({});
 
   const validateMessages = {
     required: "This field is required!",
@@ -92,7 +94,6 @@ const UpdateProfileForm = ({
       range: "Must be between ${min} and ${max}",
     },
   };
-  password.current = watch("password", "");
 
   const [submitting, setSubmitting] = useState(false);
   const navigation = useNavigation() as any;
@@ -121,7 +122,7 @@ const UpdateProfileForm = ({
         ...current,
         ...data,
       });
-      Alert.alert("Posted successfully!");
+      Alert.alert("Changes saved !");
       navigation.navigate("Profile");
     } catch {
       Alert.alert("Something went wrong, please try again later");
@@ -129,7 +130,6 @@ const UpdateProfileForm = ({
   };
 
   const handleCountdown = () => {
-    console.log("AAA");
     Timer = setTimeout(() => {
       setCountTime(countTime - 1);
     }, 1000);
@@ -787,7 +787,10 @@ const UpdateProfileForm = ({
                   p={4}
                   variant="unstyled"
                   borderColor={colors.inpBorderColor}
-                  onChangeText={(val) => onChange(val)}
+                  onChangeText={(val) => {
+                    onChange(val);
+                    setCheckPassword(val);
+                  }}
                   value={value}
                   autoCapitalize="none"
                   color={colors.lightText}
@@ -816,8 +819,6 @@ const UpdateProfileForm = ({
           <Divider borderColor={colors.divider} />
           <FormControl>
             <Controller
-              dependencies={["password"]}
-              hasFeedback
               control={control}
               render={({ field: { onChange, value } }) => (
                 <Input
@@ -843,10 +844,14 @@ const UpdateProfileForm = ({
               name="confirm"
               rules={{
                 validate: (value) =>
-                  value === password.current || "The passwords do not match",
+                  value === checkPassword || "The passwords do not match",
               }}
             />
-            {/* {errors && <ErrorMessage message={"Comfirm is required."} />} */}
+            {errors.confirm && (
+              <ErrorMessage
+                message={errors.confirm?.message || "Comfirm is required."}
+              />
+            )}
           </FormControl>
           <Divider borderColor={colors.divider} />
           <Box alignSelf="center" my={5}>

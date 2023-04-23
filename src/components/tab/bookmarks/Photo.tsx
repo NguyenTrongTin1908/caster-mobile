@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { View, Image, TouchableOpacity } from 'react-native';
-import { IFeed } from 'interfaces/Feed';
-import BadgeText from 'components/uis/BadgeText';
-import LoadingSpinner from 'components/uis/LoadingSpinner';
-import {  FlatList, ScrollView, } from 'native-base';
-import { feedService } from 'services/feed.service';
+import React, { useEffect, useState } from "react";
+import { View, Image, TouchableOpacity } from "react-native";
+import { IFeed } from "interfaces/feed";
+import BadgeText from "components/uis/BadgeText";
+import LoadingSpinner from "components/uis/LoadingSpinner";
+import { FlatList, ScrollView } from "native-base";
+import { feedService } from "services/feed.service";
 import { Sizes } from "utils/theme";
-import styles from './style';
+import styles from "./style";
 // import { ScrollView } from 'react-native-gesture-handler';
-import { useNavigation } from '@react-navigation/core'
+import { useNavigation } from "@react-navigation/core";
 interface IProps {
   route: {
     key: string;
@@ -40,58 +40,72 @@ const Photo = ({ route }: IProps) => {
     if (refresh && !moreable) {
       setMoreable(true);
     }
-    let photoData = data.data.filter(item => item?.objectInfo?.type !== "video")
+    let photoData = data.data.filter(
+      (item) => item?.objectInfo?.type !== "video"
+    );
 
     setfeedLoading(false);
-
 
     setfeeds(refresh ? photoData : feeds.concat(photoData));
   };
   const handleRedirect = (Id) => {
-    navigation.navigate('FeedDetail', {
+    navigation.navigate("FeedDetail", {
       performerId: Id,
-      type: 'photo'
+      type: "photo",
     });
-  }
+  };
   const renderItem = ({ item, index }: { item: IFeed; index: number }) => {
     return (
-      <TouchableOpacity onPress={()=> handleRedirect(item?.objectInfo.fromSourceId)}>
-            {item?.objectInfo?.type === "photo" ? (
-            <View key={item._id}>
-              <Image
-                key={item._id}
-                style={styles.postImageStyle}
-                source={item.objectInfo?.files[0] ?{ uri: item.objectInfo?.files[0].url } : require("../../../assets/bg.jpg")}
-              />
-            </View>):(
-              null
-            ) }
-          </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => handleRedirect(item?.objectInfo.fromSourceId)}
+      >
+        {item?.objectInfo?.type === "photo" ? (
+          <View key={item._id}>
+            <Image
+              key={item._id}
+              style={styles.postImageStyle}
+              source={
+                item.objectInfo?.files[0]
+                  ? { uri: item.objectInfo?.files[0].url }
+                  : require("../../../assets/bg.jpg")
+              }
+            />
+          </View>
+        ) : null}
+      </TouchableOpacity>
     );
   };
 
   const renderEmpty = () => (
     <View>
       {!feedLoading && !feeds.length && (
-        <BadgeText content={'There is no feed available!'} />
+        <BadgeText content={"There is no feed available!"} />
       )}
     </View>
   );
-  if (feedLoading) return <LoadingSpinner />
   return (
-    <ScrollView >
-      <View style={{ marginHorizontal: Sizes.fixPadding - 15.0, flexDirection: 'row', flexWrap: 'wrap', marginVertical: 5 }}>
-      <FlatList
+    <ScrollView>
+      <View
+        style={{
+          marginHorizontal: Sizes.fixPadding - 15.0,
+          flexDirection: "row",
+          flexWrap: "wrap",
+          marginVertical: 5,
+        }}
+      >
+        <FlatList
           data={feeds}
           renderItem={renderItem}
           numColumns={3}
           keyExtractor={(item, index) => item._id + "_" + index}
           onEndReachedThreshold={0.1}
           onEndReached={() => loadBookmarkPosts(true, false)}
+          onRefresh={() => loadBookmarkPosts(false, true)}
           ListEmptyComponent={renderEmpty()}
+          refreshing={feedLoading}
         />
-        {feedLoading && <LoadingSpinner />}
       </View>
+      {feedLoading && <LoadingSpinner />}
     </ScrollView>
   );
 };
