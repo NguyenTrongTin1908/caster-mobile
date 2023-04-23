@@ -34,6 +34,7 @@ import {
 } from "services/redux/streaming/actions";
 
 import { SocketContext } from "../socket";
+import { shortenLargeNumber } from "../lib/number";
 interface DrawerProps {
   user: IPerformer;
   loggedIn: boolean;
@@ -144,12 +145,13 @@ export const MainDrawer = ({
           flexDirection={"row"}
           justifyContent="space-between"
           marginTop={5}
+          overflow={"scroll"}
         >
           <TouchableOpacity>
             <View flexDirection={"row"}>
               <FontAwesome name="heart" size={20} color={colors.primary} />
               <Text color={colors.lightText} marginX={2}>
-                {(user?.rubyBalance || 0).toFixed(2)}
+                {shortenLargeNumber((user?.rubyBalance || 0).toFixed(2))}
               </Text>
               <TouchableOpacity
                 onPress={() => {
@@ -173,7 +175,7 @@ export const MainDrawer = ({
                 color={colors.diamondIcon}
               />
               <Text color={colors.lightText} marginX={2}>
-                {(user?.balance || 0).toFixed(2)}
+                {shortenLargeNumber((user?.balance || 0).toFixed(2))}
               </Text>
             </View>
           </TouchableOpacity>

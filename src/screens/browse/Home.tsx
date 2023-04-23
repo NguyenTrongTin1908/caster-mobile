@@ -33,6 +33,7 @@ import HeaderMenu from "components/tab/HeaderMenu";
 import { IPerformer } from "src/interfaces";
 import CustomHeader from "components/uis/CustomHeader";
 import GestureRecognizer from "react-native-swipe-gestures";
+
 let deviceH = Dimensions.get("screen").height;
 let bottomNavBarH = deviceH - height;
 interface IProps {
@@ -80,6 +81,12 @@ const Home = ({
     getFeeds();
   }, [tab]);
 
+  useEffect(() => {
+    if (!feedState?.items?.length && feedState.success) {
+      loadmoreFeeds();
+    }
+  }, [feedState]);
+
   const checkBeforeLeaving = (lastViewableItem) => {
     if (lastViewableItem) {
       const cell = mediaRefs.current[lastViewableItem.key];
@@ -104,10 +111,6 @@ const Home = ({
   useEffect(() => {
     feedState.total !== undefined && loadmoreFeeds();
   }, [isLoadTrendingFeed]);
-
-  // useEffect(() => {
-  //   feedState.success && !feedState.items.length && feedState.total !== undefined && loadmoreFeeds();
-  // }, [feedState]);
 
   const onSwipeLeft = (gestureState) => {
     handleTabChange("photo");
@@ -177,11 +180,6 @@ const Home = ({
   const loadmoreTrendingFeeds = async () => {
     const { items: recommendFeeds } = feedRecommendState;
     const { total: totalFeeds } = feedState;
-    if (feedPage * itemPerPage >= totalFeeds) {
-      setLoadTrendingFeed(true);
-      setfeedPage(0);
-      return;
-    }
     try {
       await handleGetMore({
         limit: itemPerPage,

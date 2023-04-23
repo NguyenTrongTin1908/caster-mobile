@@ -1,8 +1,10 @@
 import {
   Alert,
   ImageBackground,
+  Pressable,
   StyleSheet,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import {
   Flex,
@@ -16,12 +18,13 @@ import {
   Text,
   VStack,
   Image,
+  Icon,
 } from "native-base";
 import { Controller, useForm } from "react-hook-form";
 import { connect } from "react-redux";
 import { login, loginSocial, resetLogin } from "services/redux/auth/actions";
 import KeyboardDismiss from "components/uis/KeyboardDismiss";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { colors, padding, Sizes } from "utils/theme";
 import ErrorMessage from "components/uis/ErrorMessage";
 import { useNavigation } from "@react-navigation/core";
@@ -34,6 +37,8 @@ import FontAwesome from "react-native-vector-icons/FontAwesome5Pro";
 import { config } from "config";
 import { authService } from "services/auth.service";
 import { notificationService } from "services/notification.service";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 interface Props {
   handleLogin: Function;
@@ -57,6 +62,8 @@ const Login = ({
   system,
 }: Props): React.ReactElement => {
   const navigation = useNavigation() as any;
+  const [isPasswordSecure, setIsPasswordSecure] = useState(true);
+  const { requesting } = authLogin;
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
   }, [useContext]);
@@ -181,7 +188,13 @@ const Login = ({
                       />
                     )}
                     name="username"
-                    rules={{ required: "Email or username is required." }}
+                    rules={{
+                      required: "Email or username is required.",
+                      minLength: {
+                        value: 3,
+                        message: "Email or username is minimum 3 characters.",
+                      },
+                    }}
                     defaultValue=""
                   />
                   {errors.username && (
@@ -198,6 +211,29 @@ const Login = ({
                     control={control}
                     render={({ field: { onChange, value } }) => (
                       <Input
+                        secureTextEntry={isPasswordSecure}
+                        InputRightElement={
+                          <Pressable
+                            onPress={() =>
+                              setIsPasswordSecure(!isPasswordSecure)
+                            }
+                          >
+                            <Icon
+                              as={
+                                <MaterialIcons
+                                  name={
+                                    isPasswordSecure
+                                      ? "visibility-off"
+                                      : "visibility"
+                                  }
+                                />
+                              }
+                              size={5}
+                              mr="2"
+                              color="muted.400"
+                            />
+                          </Pressable>
+                        }
                         p={4}
                         borderColor={colors.inpBorderColor}
                         borderRadius={30}
@@ -220,6 +256,12 @@ const Login = ({
                         value: 6,
                         message: "Password is minimum 6 characters.",
                       },
+                      pattern: {
+                        value:
+                          /^(?=.{6,})(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z])(?=.*[^\w\d]).*$/g,
+                        message:
+                          " Password must have at least 1 number, 1 uppercase letter, 1 lowercase letter & 1 special character",
+                      },
                     }}
                     defaultValue=""
                   />
@@ -234,8 +276,9 @@ const Login = ({
                 </FormControl>
                 <VStack space={3}>
                   <Flex alignSelf="center" width={"100%"}>
+                    {requesting && <ActivityIndicator color={"black"} />}
                     <TouchableOpacity
-                      activeOpacity={0.9}
+                      activeOpacity={0.6}
                       disabled={authLogin.requesting}
                       onPress={handleSubmit(onSubmit)}
                     >
@@ -247,7 +290,10 @@ const Login = ({
                           "rgba(244, 67, 54, 0.6)",
                           "rgba(244, 67, 54, 0.3)",
                         ]}
-                        style={styles.loginButtonStyle}
+                        style={{
+                          ...styles.loginButtonStyle,
+                          opacity: authLogin.requesting ? 0.6 : 1,
+                        }}
                       >
                         <Text
                           style={{
@@ -260,7 +306,7 @@ const Login = ({
                       </LinearGradient>
                     </TouchableOpacity>
                     <TouchableOpacity
-                      activeOpacity={0.9}
+                      activeOpacity={0.6}
                       disabled={authLogin.requesting}
                       onPress={signInWithGoogle}
                     >

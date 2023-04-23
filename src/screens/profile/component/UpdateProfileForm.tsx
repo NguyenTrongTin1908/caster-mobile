@@ -581,8 +581,8 @@ const UpdateProfileForm = ({
                     onChange(val);
                   }}
                 >
-                  <Select.Item label={"Active"} value={"active"} />
-                  <Select.Item label={"InActive"} value={"inactive"} />
+                  <Select.Item label={"Available"} value={"active"} />
+                  <Select.Item label={"Not Available"} value={"inactive"} />
                 </Select>
               )}
               name="relationship"
@@ -667,7 +667,7 @@ const UpdateProfileForm = ({
                     >
                       {heights.map((item) => (
                         <Select.Item
-                          label={item.value}
+                          label={item.text}
                           value={item.value}
                         ></Select.Item>
                       ))}

@@ -1,6 +1,7 @@
 import {
   Alert,
   ImageBackground,
+  Pressable,
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
@@ -20,6 +21,7 @@ import {
   Stack,
   Checkbox,
   View,
+  Icon,
 } from "native-base";
 import { Controller, useForm } from "react-hook-form";
 import LinearGradient from "react-native-linear-gradient";
@@ -38,6 +40,7 @@ import {
   statusCodes,
 } from "@react-native-google-signin/google-signin";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 interface Props {
   fcmToken: any;
@@ -73,6 +76,8 @@ const Register = ({
   } = useForm();
   const [submitting, setSubmitting] = useState(false);
   const [isAccept, setIsAccept] = useState(false);
+  const [isPasswordSecure, setIsPasswordSecure] = useState(true);
+
   const toast = useToast();
 
   const signInWithGoogle = async () => {
@@ -97,7 +102,20 @@ const Register = ({
     }
   };
 
-  const onSubmit = async ({ password, email, gender }: any): Promise<void> => {
+  const onSubmit = async ({
+    password,
+    email,
+    gender,
+    isAccept,
+  }: any): Promise<void> => {
+    if (!isAccept) {
+      toast.show({
+        title: "Sign up failed",
+        description:
+          "Please confirm that I am at least 18 years old and agree to the Caster Terms of Service",
+      });
+      return;
+    }
     setSubmitting(true);
     await authService
       .userRegister({
@@ -161,7 +179,6 @@ const Register = ({
                         source={{ uri: system.data.favicon }}
                         alt="logo"
                         size={22}
-                        color={colors.primary}
                       />
                       <Text
                         style={{
@@ -238,7 +255,13 @@ const Register = ({
                       />
                     )}
                     name="email"
-                    rules={{ required: "Email is required." }}
+                    rules={{
+                      required: "Email is required.",
+                      pattern: {
+                        value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g,
+                        message: "Invalid email !",
+                      },
+                    }}
                     defaultValue=""
                   />
                   {errors.email && (
@@ -250,12 +273,34 @@ const Register = ({
                     />
                   )}
                 </FormControl>
-
                 <FormControl marginTop={2}>
                   <Controller
                     control={control}
                     render={({ field: { onChange, value } }) => (
                       <Input
+                        secureTextEntry={isPasswordSecure}
+                        InputRightElement={
+                          <Pressable
+                            onPress={() =>
+                              setIsPasswordSecure(!isPasswordSecure)
+                            }
+                          >
+                            <Icon
+                              as={
+                                <MaterialIcons
+                                  name={
+                                    isPasswordSecure
+                                      ? "visibility-off"
+                                      : "visibility"
+                                  }
+                                />
+                              }
+                              size={5}
+                              mr="2"
+                              color="muted.400"
+                            />
+                          </Pressable>
+                        }
                         p={4}
                         borderColor={colors.inpBorderColor}
                         borderRadius={30}
@@ -277,6 +322,12 @@ const Register = ({
                       minLength: {
                         value: 6,
                         message: "Password is minimum 6 characters.",
+                      },
+                      pattern: {
+                        value:
+                          /^(?=.{6,})(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z])(?=.*[^\w\d]).*$/g,
+                        message:
+                          " Password must have at least 1 number, 1 uppercase letter, 1 lowercase letter & 1 special character",
                       },
                     }}
                     defaultValue=""
@@ -324,31 +375,33 @@ const Register = ({
                     }}
                     defaultValue="male"
                   />
-                  {errors.password && (
-                    <ErrorMessage
-                      message={
-                        errors.password?.message?.toString() ||
-                        "Password is required."
-                      }
-                    />
-                  )}
                 </FormControl>
                 <Flex alignSelf="center" width={"100%"}>
-                  <Checkbox
-                    value="invalid"
-                    isChecked={isAccept}
-                    onChange={() => setIsAccept(!isAccept)}
-                  >
-                    <Text>
-                      I confirm that I am at least 18 years old and agree to the{" "}
-                      <Link href="https://caster.com/page/terms-of-use">
-                        Caster Terms of Service
-                      </Link>
-                    </Text>
-                  </Checkbox>
+                  <FormControl marginTop={2}>
+                    <Controller
+                      control={control}
+                      render={({ field: { onChange, value } }) => (
+                        <Checkbox
+                          value="invalid"
+                          isChecked={isAccept}
+                          onChange={(val) => onChange(val)}
+                        >
+                          <Text>
+                            I confirm that I am at least 18 years old and agree
+                            to the{" "}
+                            <Link href="https://caster.com/page/terms-of-use">
+                              Caster Terms of Service
+                            </Link>
+                          </Text>
+                        </Checkbox>
+                      )}
+                      name="isAccept"
+                    />
+                  </FormControl>
+
                   <TouchableOpacity
-                    activeOpacity={0.9}
-                    disabled={authLogin.requesting || !isAccept}
+                    activeOpacity={0.6}
+                    disabled={authLogin.requesting}
                     onPress={handleSubmit(onSubmit)}
                   >
                     <LinearGradient
@@ -359,7 +412,10 @@ const Register = ({
                         "rgba(244, 67, 54, 0.6)",
                         "rgba(244, 67, 54, 0.3)",
                       ]}
-                      style={styles.loginButtonStyle}
+                      style={{
+                        ...styles.loginButtonStyle,
+                        opacity: authLogin.requesting ? 0.6 : 1,
+                      }}
                     >
                       <Text
                         style={{ fontWeight: "bold", color: colors.lightText }}
