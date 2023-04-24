@@ -16,6 +16,7 @@ import LiveNow from "screens/livenow/LiveNow";
 import { colors } from "utils/theme";
 import { Platform } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 
 const Tab = createBottomTabNavigator();
 
@@ -65,7 +66,7 @@ export const MainTabNav = (): JSX.Element => (
       name="MainTab/PostVideo"
       component={CaptureMediaScreen}
       options={{
-        tabBarLabel: "Post Video",
+        tabBarLabel: "New Post",
         tabBarShowLabel: true,
         tabBarIcon: ({ color, size }) => (
           <Ionicons name="add-circle" size={size} color={color} />
@@ -79,7 +80,7 @@ export const MainTabNav = (): JSX.Element => (
         tabBarLabel: "Trending",
         tabBarShowLabel: true,
         tabBarIcon: ({ color, size }) => (
-          <Feather name="trending-up" size={size} color={color} />
+          <Feather name="eye" size={size} color={color} />
         ),
       }}
     />
@@ -91,11 +92,7 @@ export const MainTabNav = (): JSX.Element => (
         tabBarLabel: "Top",
         tabBarShowLabel: true,
         tabBarIcon: ({ color, size }) => (
-          <MaterialCommunityIcons
-            name="crown-outline"
-            size={size + 8}
-            color={color}
-          />
+          <FontAwesome5 name="medal" size={size} color={color} />
         ),
       }}
     />

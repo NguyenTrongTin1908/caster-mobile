@@ -2,19 +2,24 @@ import React, { useContext, useEffect, useState } from "react";
 import { Box, Heading } from "native-base";
 import { useNavigation } from "@react-navigation/core";
 import { colors } from "utils/theme";
-import SearchInput from "components/uis/SearchInput";
 import Follower from "./component/Follower";
 import Following from "./component/Following";
 import TabView from "components/uis/TabView";
 import HeaderMenu from "components/tab/HeaderMenu";
 import BackButton from "components/uis/BackButton";
 
-const ListFollow = (): React.ReactElement => {
+interface IProps {
+  route: any;
+}
+
+const ListFollow = ({ route }: IProps): React.ReactElement => {
   const navigation = useNavigation() as any;
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
   }, [useContext]);
   const [q, setQ] = useState("");
+  const { tab } = route.params;
+
   const onSearch = (text: string): void => {
     setQ(text);
   };
@@ -31,24 +36,24 @@ const ListFollow = (): React.ReactElement => {
       </Heading>
 
       <TabView
+        defaultIndex={tab === "Following" ? 0 : 1}
         scenes={[
           {
             key: "followingList",
-            title: "Follower",
-            sence: Follower,
+            title: "Following",
+            sence: Following,
             params: { q },
           },
           {
             key: "followerList",
-            title: "Following",
-            sence: Following,
+            title: "Fans",
+            sence: Follower,
             params: { q },
           },
         ]}
       />
       <HeaderMenu />
       <BackButton />
-
     </Box>
   );
 };

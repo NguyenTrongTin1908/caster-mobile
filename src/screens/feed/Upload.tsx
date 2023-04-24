@@ -51,9 +51,7 @@ interface IProps {
     };
   };
 }
-const Upload = (
-  { current, feed ,route}: IProps
-) => {
+const Upload = ({ current, feed, route }: IProps) => {
   const { path, type } = route.params;
   const navigation = useNavigation() as any;
   const [saveToGallery, setsaveToGallery] = useState(false);
@@ -80,6 +78,10 @@ const Upload = (
       type,
       fileIds,
     };
+    if (!current.verifiedEmail) {
+      Alert.alert("Please verify email to post feed");
+      return false;
+    }
     try {
       saveToGallery && onSavePressed();
       !feed
@@ -180,9 +182,9 @@ const Upload = (
     }
   };
 
-  const Capitalize=function(str){
+  const Capitalize = function (str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
-    }
+  };
 
   return (
     <KeyboardDismiss>
@@ -408,8 +410,7 @@ const Upload = (
             <Text color={colors.lightText}>Post {Capitalize(type)}</Text>
           </TouchableOpacity>
         </View>
-      <BackButton />
-
+        <BackButton />
       </SafeAreaView>
     </KeyboardDismiss>
   );
@@ -417,4 +418,4 @@ const Upload = (
 const mapStateToProp = (state: any): any => ({
   ...state.user,
 });
-export default connect(mapStateToProp)(Upload)
+export default connect(mapStateToProp)(Upload);

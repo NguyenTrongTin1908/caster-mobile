@@ -19,6 +19,8 @@ import { reactionService } from "services/reaction.service";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { IPerformer } from "src/interfaces";
 import ButtonFollow from "components/uis/ButtonFollow";
+import { shortenLargeNumber } from "../../../lib/number";
+
 interface IProps {
   item: IFeed;
   currentTab: string;
@@ -109,6 +111,22 @@ const FeedStats = ({
         >
           <ListComments user={currentUser} canReply={true} feed={item} />
         </View>
+        <View
+          style={{
+            marginTop: Sizes.fixPadding + 2.0,
+            alignItems: "center",
+          }}
+        >
+          <MaterialIcons name="visibility" color={colors.light} size={28} />
+          <Text
+            style={{
+              marginTop: Sizes.fixPadding - 7.0,
+              color: colors.lightText,
+            }}
+          >
+            {shortenLargeNumber(item.stats.views)}
+          </Text>
+        </View>
       </View>
       <View style={styles.bottomContainer}>
         <View>
@@ -170,23 +188,6 @@ const FeedStats = ({
               />
             </View>
           </View>
-        </View>
-        <View
-          style={{
-            marginRight: Sizes.fixPadding,
-            marginTop: Sizes.fixPadding + 2.0,
-            alignItems: "center",
-          }}
-        >
-          <MaterialIcons name="visibility" color={colors.light} size={28} />
-          <Text
-            style={{
-              marginTop: Sizes.fixPadding - 7.0,
-              color: colors.lightText,
-            }}
-          >
-            {item.stats.views}
-          </Text>
         </View>
       </View>
     </View>

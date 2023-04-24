@@ -15,15 +15,17 @@ interface IProps {
       [key: string]: any;
     };
   }>;
+  defaultIndex?: number;
   swipeEnabled?: boolean;
 }
 const TabViewComponent = ({
   scenes,
   swipeEnabled = true,
+  defaultIndex = 0,
 }: IProps): JSX.Element => {
   const routes = scenes.map((s) => omit(s, ["sence"]));
   const senceMap = scenes.reduce((a, s) => ({ ...a, [s.key]: s.sence }), {});
-  const [index, setIndex] = React.useState(0);
+  const [index, setIndex] = React.useState(defaultIndex);
 
   const renderTabBar = (props: any) => {
     return (

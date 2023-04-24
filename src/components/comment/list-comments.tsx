@@ -5,7 +5,7 @@ import { FlatList, Text, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import AntDesign from "react-native-vector-icons/AntDesign";
-
+import { shortenLargeNumber } from "../../lib/number";
 import CommentForm from "./comment-form";
 import { colors, Sizes } from "utils/theme";
 import { Keyboard, KeyboardEvent } from "react-native";
@@ -148,16 +148,14 @@ const ListComments = React.memo(
           />
         </TouchableOpacity>
         <Actionsheet isOpen={isOpen} onClose={onClose} size="full" padding={0}>
-          <Actionsheet.Content height={380} >
-          <TouchableOpacity onPress={() => onClose()} style={{
-              alignSelf :"flex-end",
-            }}>
-          <AntDesign
-            name="close"
-            color={colors.darkText}
-            size={26}
-
-          />
+          <Actionsheet.Content height={380}>
+            <TouchableOpacity
+              onPress={() => onClose()}
+              style={{
+                alignSelf: "flex-end",
+              }}
+            >
+              <AntDesign name="close" color={colors.darkText} size={26} />
             </TouchableOpacity>
             <View
               style={{
@@ -198,7 +196,7 @@ const ListComments = React.memo(
             textAlign: "center",
           }}
         >
-          {totalComment}
+          {shortenLargeNumber(totalComment)}
         </Text>
       </View>
     );

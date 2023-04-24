@@ -46,6 +46,7 @@ interface DrawerProps {
   updateBalance: Function;
   cancelPrivateRequest: Function;
   fcmToken: any;
+  system: any;
 }
 export const MainDrawer = ({
   loggedIn = false,
@@ -58,6 +59,7 @@ export const MainDrawer = ({
   cancelPrivateRequest: handleCancelPrivateRequest,
   loggedOut,
   fcmToken,
+  system,
 }: DrawerProps): JSX.Element => {
   const viewRef = useRef(null) as any;
   const { status: socketContextStatus } = useContext(SocketContext) as any;
@@ -95,8 +97,26 @@ export const MainDrawer = ({
       );
     }
     return (
-      <Box safeAreaTop bgColor={colors.dark} px={4} py={4}>
-        <HStack space={3}>
+      <Box safeAreaTop py={4}>
+        <TouchableOpacity
+          onPress={() => {
+            navigationRef.current?.navigate("MainTab/Home");
+            handleHide();
+          }}
+        >
+          <HStack alignSelf="center" mb={5}>
+            <Image
+              source={{ uri: system?.data?.logoUrl }}
+              alt="logo"
+              size={55}
+              width="100%"
+              resizeMode="contain"
+            />
+          </HStack>
+        </TouchableOpacity>
+
+        <Divider />
+        <HStack px={4} space={3}>
           <TouchableOpacity
             onPress={() => {
               navigationRef.current?.navigate("Profile");
@@ -122,63 +142,95 @@ export const MainDrawer = ({
                 handleHide();
               }}
             >
-              <Text fontSize="lg" bold color={colors.light}>
+              <Text fontSize="lg" bold color={colors.primary}>
                 {user?.name ? `${user.name}` : `${user?.username}`}
               </Text>
             </TouchableOpacity>
-            <Text fontSize="xs" color={colors.light} textTransform="capitalize">
-              {user?.country}
+            <Text fontSize="xs" color={colors.darkGray}>
+              @{user?.username}
             </Text>
           </VStack>
-          <Box mt={3} ml="auto">
-            <TouchableOpacity
-              onPress={() => {
-                navigationRef.current?.navigate("EditProfile");
-                handleHide();
-              }}
-            >
-              <Feather name="edit" size={17} color={colors.light} />
-            </TouchableOpacity>
-          </Box>
         </HStack>
         <View
           flexDirection={"row"}
           justifyContent="space-between"
           marginTop={5}
-          overflow={"scroll"}
+          px={4}
         >
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              navigationRef.current?.navigate("Wallet");
+              handleHide();
+            }}
+          >
             <View flexDirection={"row"}>
               <FontAwesome name="heart" size={20} color={colors.primary} />
-              <Text color={colors.lightText} marginX={2}>
+              <Text color={colors.darkText} marginX={2}>
                 {shortenLargeNumber((user?.rubyBalance || 0).toFixed(2))}
               </Text>
-              <TouchableOpacity
-                onPress={() => {
-                  navigationRef.current?.navigate("TokenPackage");
-                  handleHide();
-                }}
-              >
-                <FontAwesome
-                  color={colors.btnSecondaryColor}
-                  size={20}
-                  name="plus-circle"
-                ></FontAwesome>
-              </TouchableOpacity>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              navigationRef.current?.navigate("Wallet");
+              handleHide();
+            }}
+          >
             <View flexDirection={"row"}>
               <FontAwesome
                 name="diamond"
                 size={20}
                 color={colors.diamondIcon}
               />
-              <Text color={colors.lightText} marginX={2}>
+              <Text color={colors.darkText} marginX={2}>
                 {shortenLargeNumber((user?.balance || 0).toFixed(2))}
               </Text>
             </View>
           </TouchableOpacity>
+        </View>
+        <Divider />
+        <View
+          flexDirection={"row"}
+          justifyContent="center"
+          marginTop={5}
+          px={4}
+        >
+          <View
+            width={"50%"}
+            borderRightColor={"black"}
+            borderRightWidth={"1"}
+            alignItems={"center"}
+          >
+            <TouchableOpacity
+              onPress={() => {
+                navigationRef.current?.navigate("ListFollow", {
+                  tab: "Following",
+                });
+                handleHide();
+              }}
+            >
+              <Text color={colors.darkText}>Following</Text>
+              <Text alignSelf={"center"} color={colors.darkText}>
+                {user?.stats.totalFollowing}
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <View width={"50%"} alignItems={"center"}>
+            <TouchableOpacity
+              onPress={() => {
+                navigationRef.current?.navigate("ListFollow", {
+                  tab: "Fans",
+                });
+                handleHide();
+              }}
+            >
+              <Text color={colors.darkText}>Fans</Text>
+              <Text alignSelf={"center"} color={colors.darkText}>
+                {user?.stats.totalFollower}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </Box>
     );
@@ -535,6 +587,7 @@ const mapStateToProp = (state: any) => ({
   fcmToken: state.auth.fcmToken,
   showDrawer: state.appNav.showDrawer,
   hasTouchedDrawer: state.appNav.hasTouchedDrawer,
+  system: { ...state.system },
 });
 const mapDispatch = {
   updateBalance,
