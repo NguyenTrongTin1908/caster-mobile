@@ -14,6 +14,7 @@ import streamMessage from "services/redux/stream-chat/reducers";
 import streaming from "services/redux/streaming/reducers";
 import message from "services/redux/message/reducers";
 import conversation from "services/redux/stream-chat/reducers";
+import performer from "services/redux/performer/reducers"
 
 const reducers = merge(
   streaming,
@@ -27,7 +28,8 @@ const reducers = merge(
   notification,
   streamMessage,
   message,
-  conversation
+  conversation,
+  performer
 );
 
 export default combineReducers(reducers);

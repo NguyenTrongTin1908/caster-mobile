@@ -63,7 +63,7 @@ const UpdateProfileForm = ({
   const [type, setType] = useState("");
   const [emailSending, setEmailSending] = useState(false);
   const [countTime, setCountTime] = useState(60);
-  const [checkPassword, setCheckPassword] = useState() as any;
+  const [confirmPassword, setConfirmPassword] = useState("") as any;
   const toast = useToast();
   let Timer = null as any;
 
@@ -519,7 +519,7 @@ const UpdateProfileForm = ({
                       accessibilityLabel="States"
                       placeholder="States"
                       onValueChange={(val: string) => {
-                        onChange(val);
+                        onChange(val)
                         handleGetCities(countryCode, val);
                       }}
                     >
@@ -529,7 +529,6 @@ const UpdateProfileForm = ({
                     </Select>
                   )}
                   name="state"
-                  rules={{ required: "State is required." }}
                 />
                 {errors.state && (
                   <ErrorMessage
@@ -558,9 +557,8 @@ const UpdateProfileForm = ({
                     </Select>
                   )}
                   name="city"
-                  rules={{ required: "City is required." }}
                 />
-                {errors.state && <ErrorMessage message={"City is required."} />}
+                {errors.city && <ErrorMessage message={errors.city?.message || "City is required."} />}
               </FormControl>
             </View>
           </HStack>
@@ -789,7 +787,7 @@ const UpdateProfileForm = ({
                   borderColor={colors.inpBorderColor}
                   onChangeText={(val) => {
                     onChange(val);
-                    setCheckPassword(val);
+                    setConfirmPassword(val);
                   }}
                   value={value}
                   autoCapitalize="none"
@@ -844,7 +842,7 @@ const UpdateProfileForm = ({
               name="confirm"
               rules={{
                 validate: (value) =>
-                  value === checkPassword || "The passwords do not match",
+                  value === confirmPassword || "The passwords do not match",
               }}
             />
             {errors.confirm && (

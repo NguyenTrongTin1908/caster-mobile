@@ -122,7 +122,7 @@ const FeedStats = ({
           </MentionHashtagTextView>
           <View style={{ flexDirection: "row" }}>
             <TouchableOpacity
-              activeOpacity={0.9}
+              activeOpacity={0.8}
               onPress={() =>
                 navigation.navigate("ModelProfile", {
                   screen: "ModelProfile",

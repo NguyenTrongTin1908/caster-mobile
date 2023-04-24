@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Box, Text, View, Button } from "native-base";
-import { colors } from "utils/theme";
+import { Box,  View, Button } from "native-base";
 import { followService } from "services/follow.service";
+import { onFollow } from 'services/redux/performer/actions';
 import { connect } from "react-redux";
-import { TouchableOpacity } from "react-native";
-import styles from "./style";
+
+
 interface IProps {
   isFollow: boolean;
   targetId: string;
   sourceId: string;
   getPerformerList: Function;
   isHideOnClick: boolean;
+  onFollow: Function;
 }
 
 const ButtonFollow = ({
@@ -18,7 +19,7 @@ const ButtonFollow = ({
   targetId,
   sourceId,
   getPerformerList,
-
+  onFollow: dispatchOnFollow,
   isHideOnClick,
 }: IProps): React.ReactElement => {
   const [status, setStatus] = useState(false);
@@ -33,18 +34,25 @@ const ButtonFollow = ({
   const handleFollow = async () => {
     try {
       if (status) {
-        await setLoanding(true);
+       setLoanding(true);
         await followService.delete(targetId);
         setStatus(false);
+        dispatchOnFollow
+        && dispatchOnFollow({
+          action: 'delete',
+          performerId: targetId
+        });
       } else {
         setLoanding(true);
         await followService.create({
           targetId,
           sourceId,
         });
-
         setStatus(true);
-
+        dispatchOnFollow && dispatchOnFollow({
+          action: 'create',
+          performerId: targetId
+        });
         getPerformerList();
       }
     } catch (e) {
@@ -71,4 +79,9 @@ const ButtonFollow = ({
   );
 };
 
-export default ButtonFollow;
+const mapDispatch = {
+  onFollow
+};
+
+
+export default connect(null,mapDispatch)(ButtonFollow);

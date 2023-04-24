@@ -9,6 +9,7 @@ import {
 import styles from "./style";
 import { IFeed } from "interfaces/feed";
 import { feedService } from "services/feed.service";
+import { performerService } from "services/perfomer.service";
 const { height } = Dimensions.get("window");
 import FeedCard from "components/feed/feed-card";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -37,10 +38,17 @@ const FeedDetail = ({ route, current }: IProps): React.ReactElement => {
   const [feedPage, setfeedPage] = useState(0);
   const [feeds, setfeeds] = useState([] as Array<IFeed>);
   const [page, setPage] = useState(0);
+  const [perfomer, setPerformer] = useState({} as IPerformer);
   const mediaRefs = useRef([]) as any;
   const insets = useSafeAreaInsets();
 
-  const loadfeeds = async (more = false, q = "", refresh = false) => {
+  const loadPerformer = async () => {
+    const { performerId } = route.params;
+    const { data } = await performerService.findOne(performerId);
+    setPerformer(data);
+  };
+
+  const loadFeeds = async (more = false, q = "", refresh = false) => {
     const newPage = more ? page + 1 : page;
     setPage(refresh ? 0 : newPage);
     const query = {
@@ -109,7 +117,8 @@ const FeedDetail = ({ route, current }: IProps): React.ReactElement => {
     );
   };
   useEffect(() => {
-    loadfeeds();
+    loadFeeds();
+    loadPerformer();
   }, [tab]);
   return (
     <SafeAreaView style={styles.container}>
@@ -145,8 +154,10 @@ const FeedDetail = ({ route, current }: IProps): React.ReactElement => {
         <HeaderMenu />
         <CustomHeader
           header={{
-            title: "Related",
+            title: "",
             align: "center",
+            showAvatar: true,
+            avatar: perfomer?.avatar,
           }}
           headerStyle={{ color: "white", fontSize: 15 }}
         >

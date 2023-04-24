@@ -23,7 +23,7 @@ interface IProps {
   isOwner: boolean;
   canDelete?: boolean;
   onDelete?: Function;
-  recipient: IPerformer;
+  recipient?: IPerformer;
 }
 
 export default function Message(props: IProps) {

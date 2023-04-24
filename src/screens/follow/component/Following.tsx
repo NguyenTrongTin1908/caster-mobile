@@ -5,7 +5,7 @@ import PerformerCard from "components/message/PerformerCard";
 import { followService } from "services/follow.service";
 import BadgeText from "components/uis/BadgeText";
 import LoadingSpinner from "components/uis/LoadingSpinner";
-import { IFeed } from "interfaces/Feed";
+import { IFeed } from "interfaces/feed";
 import { connect } from "react-redux";
 import styles from "./style";
 interface IProps {
@@ -67,7 +67,10 @@ const Following = (props: IProps): React.ReactElement => {
         keyExtractor={(item, index) => item._id + "_" + index}
         onEndReachedThreshold={0.5}
         onEndReached={() => loadPerformers(true, qString, false)}
+        onRefresh={() => loadPerformers(false, qString, true)}
         ListEmptyComponent={renderEmpty()}
+        refreshing={performerLoading}
+
       />
       {performerLoading && <LoadingSpinner />}
     </Box>

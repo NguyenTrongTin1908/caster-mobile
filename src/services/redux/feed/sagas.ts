@@ -28,7 +28,7 @@ import {
   moreRecommendFeedsFail,
 } from "./actions";
 
-const performerSagas = [
+const feedSagas = [
   {
     on: getFeeds,
     *worker(data: IReduxAction<any>) {
@@ -147,4 +147,4 @@ const performerSagas = [
   // },
 ];
 
-export default flatten([createSagas(performerSagas)]);
+export default flatten([createSagas(feedSagas)]);

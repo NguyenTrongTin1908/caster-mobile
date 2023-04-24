@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigation } from "@react-navigation/core";
 import { View, Heading, Text, Image } from "native-base";
 import { connect } from "react-redux";
 import { IPerformer, IUser } from "../../interfaces";
@@ -33,11 +34,12 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import FavoriteGift from "components/gift/favorite";
 import SendTip from "components/message/SendTip";
 import BackButton from "components/uis/BackButton";
+import { getStatusBarHeight } from "react-native-status-bar-height";
+import styles from "./style";
 const { width, height } = Dimensions.get("window");
 let deviceH = Dimensions.get("screen").height;
 const STATUS_BAR_HEIGHT = StatusBar.currentHeight || 24;
 let bottomNavBarH = deviceH - height + STATUS_BAR_HEIGHT;
-
 
 interface IProps {
   resetStreamMessage: Function;
@@ -79,6 +81,7 @@ const ViewPublicStream = ({
   const [favoriteGift, setFavoriteGift] = useState({} as any);
   const [loading, setLoading] = useState(false);
   const [modal, setModal] = useState(false);
+  const navigation = useNavigation() as any;
 
   useEffect(() => {
     interval = setInterval(updatePerformerInfo, 60 * 1000);
@@ -234,8 +237,8 @@ const ViewPublicStream = ({
     subscriberRef2 = dataFunc;
   };
 
+
   return (
-    //
     <SafeAreaView style={{ flex: 1 }} onTouchStart={dismissKeyboard}>
       <KeyboardDismiss>
         <>
@@ -253,34 +256,50 @@ const ViewPublicStream = ({
           <View
             style={{
               position: "absolute",
-              top:
-                Platform.OS === "ios"
-                  ? deviceH / 2 - (90 + 47) - 40
-                  : deviceH / 2 - (bottomNavBarH + 60) - 40,
+              top: 50 + getStatusBarHeight(true),
               alignItems: "center",
-              alignSelf: "flex-end",
+              alignSelf: "flex-start",
+              flexDirection: "row",
               zIndex: 1000,
+              marginStart: 2,
             }}
           >
-            <ButtonFollow
-              isHideOnClick
-              targetId={performer?._id}
-              sourceId={currentUser._id}
-              isFollow={performer.isFollowed}
-              getPerformerList={() => {}}
-            />
-            <Image
-              source={
-                performer?.avatar
-                  ? { uri: performer?.avatar }
-                  : require("../../assets/avatar-default.png")
-              }
-              alt={"avatar"}
-              size={45}
-              borderRadius={80}
-            />
+            <View>
+              <Text style={styles.textName}>{performer.name}</Text>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() =>
+                  navigation.navigate("ModelProfile", {
+                    screen: "ModelProfile",
+                    performer: performer,
+                  })
+                }
+              >
+                <Image
+                  source={
+                    performer?.avatar
+                      ? { uri: performer?.avatar }
+                      : require("../../assets/avatar-default.png")
+                  }
+                  alt={"avatar"}
+                  size={45}
+                  borderRadius={80}
+                />
+              </TouchableOpacity>
+              <Text style={styles.textName}>
+                {performer.stats.totalFollowing} Fans
+              </Text>
+            </View>
+            <View style={{ marginLeft: 5 }}>
+              <ButtonFollow
+                isHideOnClick
+                targetId={performer?._id}
+                sourceId={currentUser._id}
+                isFollow={performer.isFollowed}
+                getPerformerList={() => {}}
+              />
+            </View>
           </View>
-
           <View
             style={{
               position: "absolute",

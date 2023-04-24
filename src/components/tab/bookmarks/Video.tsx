@@ -9,6 +9,8 @@ import styles from "./style";
 import { ScrollView } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/core";
 import { FlatList, Text } from "native-base";
+import { useIsFocused } from '@react-navigation/native';
+
 interface IProps {
   route: {
     key: string;
@@ -22,9 +24,11 @@ const Video = ({ route }: IProps) => {
   const [page, setPage] = useState(0);
   const navigation = useNavigation() as any;
   const [moreable, setMoreable] = useState(true);
+  const isFocused = useIsFocused();
+
   useEffect(() => {
-    loadBookmarkPosts();
-  }, []);
+    loadBookmarkPosts(false, true)
+  }, [isFocused]);
   const loadBookmarkPosts = async (more = false, refresh = false) => {
     if (more && !moreable) return;
     try {

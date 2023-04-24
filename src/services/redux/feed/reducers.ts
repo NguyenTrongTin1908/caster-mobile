@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { merge } from "lodash";
 import { createReducers } from "lib/redux";
-// import { onFollow } from 'redux/performer/actions';
+import { onFollow } from 'services/redux/performer/actions';
 import {
   getFeeds,
   getFeedsSuccess,
@@ -409,6 +409,42 @@ const feedReducers = [
         },
       };
     },
+  },
+  {
+    on: onFollow,
+    reducer(prevState: any, data: any) {
+      const { action, performerId } = data.payload;
+      const { items } = prevState.feeds || [];
+      return {
+        ...prevState,
+        feeds: {
+          total: prevState.total - 1,
+          items:
+            items && items.length > 0
+              ? items.map((item) => {
+                if (item.fromSourceId === performerId) {
+                  // eslint-disable-next-line no-return-assign
+                  return {
+                    ...item,
+                    performer: {
+                      ...item.performer,
+                      isFollowed: action === 'create',
+                      stats: {
+                        ...item.performer.stats,
+                        totalFollower:
+                            action === 'create'
+                              ? (item.performer.stats.totalFollower += 1)
+                              : (item.performer.stats.totalFollower -= 1)
+                      }
+                    }
+                  };
+                }
+                return item;
+              })
+              : []
+        }
+      };
+    }
   },
 ];
 

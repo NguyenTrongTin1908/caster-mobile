@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, {useContext, useEffect, useState } from 'react';
+import { useIsFocused } from '@react-navigation/native';
 import { View, Text } from 'react-native';
 import { Box, Button, FlatList } from 'native-base';
 import PerformerCard from 'components/message/PerformerCard';
@@ -21,6 +22,7 @@ interface IProps {
 
 const PublicLive = (props: IProps): React.ReactElement => {
   const { q: qString } = props.route.params;
+  const isFocused = useIsFocused();
   const [performers, setPerformers] = useState([] as Array<IPerformer>);
   const [performerLoading, setPerformerLoading] = useState(true);
   const [page, setPage] = useState(0);
@@ -51,9 +53,15 @@ const PublicLive = (props: IProps): React.ReactElement => {
 
   useEffect(() => {
     if (qString) {
-      loadPerformers(true, qString, true);
+      loadPerformers(false, qString, true);
     } else loadPerformers();
   }, [qString]);
+
+  useEffect(() => {
+    if (qString) {
+      loadPerformers(false, qString, true);
+    } else loadPerformers();
+  },[isFocused]);
 
   return (
     <Box flex={1} mx="auto" w="100%">
@@ -69,7 +77,7 @@ const PublicLive = (props: IProps): React.ReactElement => {
         onEndReachedThreshold={0.5}
         onEndReached={() => loadPerformers(true, qString, false)}
         ListEmptyComponent={renderEmpty()}
-        onRefresh={() => loadPerformers()}
+        onRefresh={() => loadPerformers(false, qString, true)}
         refreshing={performerLoading}
       />
       {performerLoading && <LoadingSpinner />}

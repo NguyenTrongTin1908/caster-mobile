@@ -73,6 +73,7 @@ const MessageList = ({
   const [showEmoji, setShowEmoji] = useState(false);
   const [modal, setModal] = useState(false);
   const inputText = useRef("");
+  const flatListRef = React.useRef() as any;
 
   useEffect(() => {
     if (messagesRef) messagesRef = createRef();
@@ -101,7 +102,6 @@ const MessageList = ({
       socket && socket.off(`message_created_conversation_${conversation._id}`);
       socket && socket.off(`message_deleted_conversation_${conversation._id}`);
     };
-    getfavoriteGift();
   }, []);
 
   const onMessage = (message, type) => {
@@ -171,12 +171,16 @@ const MessageList = ({
       }
       // Proceed to the next message.
       i += 1;
+      // flatListRef.current.scrollToEnd({ animated: true })
     }
 
     return (
-      <View flex={1} maxH={180} minH={180}>
+      <View flex={1} maxH={100} minH={100}>
         <FlatList
           data={tempMessages}
+          ref={flatListRef}
+          onContentSizeChange={() => flatListRef.current.scrollToEnd()}
+          onLayout={() => flatListRef.current.scrollToEnd()}
           renderItem={({ item }: any) => (
             <Message
               onDelete={onDelete.bind(this, item._id)}
@@ -190,9 +194,9 @@ const MessageList = ({
               data={item}
             />
           )}
+          inverted
           keyExtractor={(item: any, index) => item._id + "_" + index}
           onEndReachedThreshold={0.5}
-          // onEndReached={() => fetchData()}
         />
       </View>
     );
@@ -233,8 +237,6 @@ const MessageList = ({
   const favoriteHandle = (gift) => {
     try {
       if (gift && gift.length > 0) {
-        setFavoriteGift(gift);
-        console.log("Favorite : ", gift);
         giftService.addfavoriteGift({ giftId: gift._id });
       }
     } catch (error) {

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text } from "react-native";
 import { Box, FlatList, Button } from "native-base";
 import PerformerCard from "components/message/PerformerCard";
+import { useIsFocused } from '@react-navigation/native';
 import { performerService } from "services/perfomer.service";
 import { IPerformer } from "interfaces/performer";
 import BadgeText from "components/uis/BadgeText";
@@ -21,6 +22,8 @@ const PrivateLive = (props: IProps): React.ReactElement => {
   const { q: qString } = props.route.params;
   const [performers, setPerformers] = useState([] as Array<IPerformer>);
   const [performerLoading, setPerformerLoading] = useState(true);
+  const isFocused = useIsFocused();
+
   // const [refreshing, setRefreshing] = useState(false);
   const [page, setPage] = useState(0);
   const [moreable, setMoreable] = useState(true);
@@ -58,6 +61,12 @@ const PrivateLive = (props: IProps): React.ReactElement => {
     loadPerformers(false, qString, true);
   }, [qString]);
 
+  useEffect(() => {
+    if (qString) {
+      loadPerformers(false, qString, true);
+    } else loadPerformers();
+  },[isFocused]);
+
   return (
     <Box flex={1} mx="auto" w="100%">
       <FlatList
@@ -75,7 +84,7 @@ const PrivateLive = (props: IProps): React.ReactElement => {
         onEndReachedThreshold={0.5}
         onEndReached={() => loadPerformers(true, qString, false)}
         ListEmptyComponent={renderEmpty()}
-        onRefresh={() => loadPerformers()}
+        onRefresh={() => loadPerformers(false, qString, true)}
         refreshing={performerLoading}
       />
       {performerLoading && <LoadingSpinner />}

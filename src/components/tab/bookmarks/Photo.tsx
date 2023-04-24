@@ -7,7 +7,7 @@ import { FlatList, ScrollView } from "native-base";
 import { feedService } from "services/feed.service";
 import { Sizes } from "utils/theme";
 import styles from "./style";
-// import { ScrollView } from 'react-native-gesture-handler';
+import { useIsFocused } from '@react-navigation/native';
 import { useNavigation } from "@react-navigation/core";
 interface IProps {
   route: {
@@ -21,10 +21,11 @@ const Photo = ({ route }: IProps) => {
   const [feedLoading, setfeedLoading] = useState(true);
   const [moreable, setMoreable] = useState(true);
   const [page, setPage] = useState(0);
+  const isFocused = useIsFocused();
   const navigation = useNavigation() as any;
   useEffect(() => {
-    loadBookmarkPosts();
-  }, []);
+    loadBookmarkPosts(false, true)
+  }, [isFocused]);
   const loadBookmarkPosts = async (more = false, refresh = false) => {
     if (more && !moreable) return;
     setfeedLoading(true);
@@ -43,9 +44,7 @@ const Photo = ({ route }: IProps) => {
     let photoData = data.data.filter(
       (item) => item?.objectInfo?.type !== "video"
     );
-
     setfeedLoading(false);
-
     setfeeds(refresh ? photoData : feeds.concat(photoData));
   };
   const handleRedirect = (Id) => {

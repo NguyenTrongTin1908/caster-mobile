@@ -17,7 +17,6 @@ interface IProps {
     params: { performerId: string };
   };
   current: IUser;
-  // OnFilterByFollower : Function
 }
 
 const Follower = (props: IProps): React.ReactElement => {
@@ -128,7 +127,9 @@ const Follower = (props: IProps): React.ReactElement => {
           keyExtractor={(item, index) => item._id + "_" + index}
           onEndReachedThreshold={0.5}
           onEndReached={() => loadPerformers(true, qString, false)}
+          onRefresh={() => loadPerformers(false, qString, true)}
           ListEmptyComponent={renderEmpty()}
+          refreshing={performerLoading}
         />
       </View>
 
