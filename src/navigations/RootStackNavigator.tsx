@@ -21,7 +21,7 @@ import FeedDetail from "screens/detail/feedDetail";
 import MediaPreview from "screens/media/MediaPreview";
 import Upload from "screens/feed/Upload";
 import Home from "screens/browse/Home";
-import Model from "screens/model/Model";
+import Top from "screens/top/Top";
 import Hashtag from "screens/hashtag/Hashtag";
 import ListFollow from "screens/follow/listFollow";
 import Trending from "screens/trending/Trending";
@@ -54,7 +54,7 @@ export type RootStackParamList = {
   Call: undefined;
   Calling: undefined;
   LiveNow: undefined;
-  Model: undefined;
+  Top: undefined;
   Profile: undefined;
   ModelProfile: undefined;
   EditProfile: undefined;
@@ -303,7 +303,7 @@ function RootNavigator({ loggedIn }): React.ReactElement {
         <Stack.Screen
           options={{ headerShown: false, gestureEnabled: false }}
           name="Model"
-          component={Model}
+          component={Top}
         />
 
         {/* <Stack.Screen

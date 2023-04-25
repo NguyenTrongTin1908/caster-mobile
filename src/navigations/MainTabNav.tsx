@@ -2,20 +2,14 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Feather from "react-native-vector-icons/Feather";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import EvilIcons from "react-native-vector-icons/EvilIcons";
 import React from "react";
 import Home from "screens/browse/Home";
-// import Meet from 'screens/meet/Meet';
 import Trending from "screens/trending/Trending";
-import Profile from "screens/profile/Profile";
-import Blank from "screens/blank";
 import CaptureMediaScreen from "screens/media/CaptureMedia";
-import Model from "screens/model/Model";
+import Top from "screens/top/Top";
 import LiveNow from "screens/livenow/LiveNow";
-
 import { colors } from "utils/theme";
 import { Platform } from "react-native";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 
 const Tab = createBottomTabNavigator();
@@ -77,7 +71,7 @@ export const MainTabNav = (): JSX.Element => (
       name="MainTab/Trending"
       component={Trending}
       options={{
-        tabBarLabel: "Trending",
+        tabBarLabel: "Discover",
         tabBarShowLabel: true,
         tabBarIcon: ({ color, size }) => (
           <Feather name="eye" size={size} color={color} />
@@ -87,7 +81,7 @@ export const MainTabNav = (): JSX.Element => (
 
     <Tab.Screen
       name="MainTab/Top"
-      component={Model}
+      component={Top}
       options={{
         tabBarLabel: "Top",
         tabBarShowLabel: true,

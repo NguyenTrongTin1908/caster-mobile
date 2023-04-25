@@ -12,6 +12,7 @@ import {
   View,
   Image,
   Divider,
+  ScrollView,
 } from "native-base";
 import { showDrawer as showDrawerHandler } from "services/redux/app-nav/actions";
 import Feather from "react-native-vector-icons/Feather";
@@ -524,7 +525,10 @@ export const MainDrawer = ({
       ]}
       ref={viewRef}
     >
-      <Flex flex={5} style={styles.drawerContainer}>
+      <ScrollView
+        contentContainerStyle={{ width: "100%" }}
+        style={styles.drawerContainer}
+      >
         <View>{renderProfile()}</View>
         <Divider />
         <FlatList
@@ -534,7 +538,7 @@ export const MainDrawer = ({
           px={18}
           py={14}
         />
-      </Flex>
+      </ScrollView>
       <Flex
         flex={2}
         style={[
@@ -565,6 +569,7 @@ const styles = StyleSheet.create({
   },
   drawerContainer: {
     backgroundColor: "#fff",
+    width: "55%",
   },
   shadowContainer: {
     flex: 2,

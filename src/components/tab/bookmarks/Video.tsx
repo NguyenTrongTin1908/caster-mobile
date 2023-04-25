@@ -95,15 +95,6 @@ const Video = ({ route }: IProps) => {
   };
 
   return (
-    <ScrollView>
-      <View
-        style={{
-          marginHorizontal: Sizes.fixPadding - 15.0,
-          flexDirection: "column",
-          flexWrap: "wrap",
-          marginVertical: 5,
-        }}
-      >
         <FlatList
           data={feeds}
           renderItem={renderItem}
@@ -115,9 +106,7 @@ const Video = ({ route }: IProps) => {
           ListEmptyComponent={renderEmpty()}
           refreshing={feedLoading}
         />
-      </View>
-      {feedLoading && <LoadingSpinner />}
-    </ScrollView>
+
   );
 };
 export default Video;

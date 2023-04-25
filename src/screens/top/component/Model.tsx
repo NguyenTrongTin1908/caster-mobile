@@ -13,13 +13,12 @@ import { useNavigation } from "@react-navigation/core";
 import PerformerCard from "components/message/PerformerCard";
 import { performerService } from "services/perfomer.service";
 import { IPerformer } from "interfaces/performer";
-import LoadingSpinner from "components/uis/LoadingSpinner";
 import BackButton from "components/uis/BackButton";
 import { colors } from "utils/theme";
-import styles from "./style";
+import styles from "../style";
 import { IBody, ICountry } from "interfaces/utils";
 import { utilsService } from "services/utils.service";
-import AdvancedFilter from "./profile/component/AdvancedFilter";
+import AdvancedFilter from "../../model/profile/component/AdvancedFilter";
 import HeaderMenu from "components/tab/HeaderMenu";
 import BadgeText from "components/uis/BadgeText";
 
@@ -111,15 +110,6 @@ const Model = ({}: IProps): React.ReactElement => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Box flex={1} mx="auto" w="100%">
-        <Heading
-          mb={4}
-          fontSize={36}
-          textAlign="center"
-          color={colors.lightText}
-          bold
-        >
-          Top Caster
-        </Heading>
         <View>
           <HStack>
             <Radio.Group

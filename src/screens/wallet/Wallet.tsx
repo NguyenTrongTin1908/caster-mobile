@@ -1,22 +1,15 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { SafeAreaView, TouchableOpacity } from 'react-native';
-import { Box, Button, FlatList, Heading, HStack, Radio, Spacer, Text, View } from 'native-base';
+import { Box, Button,  Heading,  Text, View } from 'native-base';
 import { useNavigation } from '@react-navigation/core';
-import PerformerCard from 'components/message/PerformerCard';
-import { performerService } from 'services/perfomer.service';
 import { IPerformer } from 'interfaces/performer';
-import LoadingSpinner from 'components/uis/LoadingSpinner';
 import BackButton from 'components/uis/BackButton';
 import { colors } from 'utils/theme';
 import styles from './style';
 import { IBody, ICountry } from 'interfaces/utils';
-import { utilsService } from 'services/utils.service';
 import HeaderMenu from 'components/tab/HeaderMenu';
-import BadgeText from 'components/uis/BadgeText';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
-import { background } from 'native-base/lib/typescript/theme/styled-system';
 
 interface IProps {
   countries: ICountry[];

@@ -83,15 +83,6 @@ const Photo = ({ route }: IProps) => {
     </View>
   );
   return (
-    <ScrollView>
-      <View
-        style={{
-          marginHorizontal: Sizes.fixPadding - 15.0,
-          flexDirection: "row",
-          flexWrap: "wrap",
-          marginVertical: 5,
-        }}
-      >
         <FlatList
           data={feeds}
           renderItem={renderItem}
@@ -103,9 +94,6 @@ const Photo = ({ route }: IProps) => {
           ListEmptyComponent={renderEmpty()}
           refreshing={feedLoading}
         />
-      </View>
-      {feedLoading && <LoadingSpinner />}
-    </ScrollView>
   );
 };
 export default Photo;
