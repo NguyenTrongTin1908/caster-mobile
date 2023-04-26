@@ -117,23 +117,6 @@ const OrderTableList = ({
       );
     }
 
-    // const totalPriceIndex = dataTable.findIndex(
-    //   (item) => item === "totalPrice"
-    // );
-    // if (totalPriceIndex === index) {
-    //   if (data <= 2) {
-    //     return (
-    //       <Text
-    //         style={{
-    //           color: "red",
-    //         }}
-    //       >
-    //         {data}
-    //       </Text>
-    //     );
-    //   }
-    // }
-
     return data;
   };
 

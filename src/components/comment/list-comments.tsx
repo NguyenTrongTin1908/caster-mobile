@@ -98,7 +98,6 @@ const ListComments = React.memo(
       } catch (error) {}
     };
     const handleGetmore = async () => {
-      console.log("get more");
       setcommentPage(commentPage + 1);
       moreComment({
         objectId: feed._id,
@@ -172,7 +171,6 @@ const ListComments = React.memo(
                 onEndReachedThreshold={0.5}
                 onEndReached={() => handleGetmore()}
                 // ListEmptyComponent={renderEmpty()}
-                // inverted
                 contentContainerStyle={{
                   paddingTop: 100 + keyboardHeight,
                   flexDirection: "column",

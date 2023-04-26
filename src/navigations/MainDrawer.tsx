@@ -206,6 +206,7 @@ export const MainDrawer = ({
               onPress={() => {
                 navigationRef.current?.navigate("ListFollow", {
                   tab: "Following",
+                  performerId: user._id,
                 });
                 handleHide();
               }}
@@ -222,6 +223,7 @@ export const MainDrawer = ({
               onPress={() => {
                 navigationRef.current?.navigate("ListFollow", {
                   tab: "Fans",
+                  performerId: user._id,
                 });
                 handleHide();
               }}
@@ -525,20 +527,16 @@ export const MainDrawer = ({
       ]}
       ref={viewRef}
     >
-      <ScrollView
-        contentContainerStyle={{ width: "100%" }}
-        style={styles.drawerContainer}
-      >
-        <View>{renderProfile()}</View>
-        <Divider />
+      <View style={styles.drawerContainer}>
         <FlatList
           data={loggedIn ? menuLoggedInItems : menuGuest}
+          ListHeaderComponent={renderProfile}
           renderItem={renderMenuItem}
           keyExtractor={(item) => item.id}
           px={18}
           py={14}
         />
-      </ScrollView>
+      </View>
       <Flex
         flex={2}
         style={[
@@ -569,7 +567,7 @@ const styles = StyleSheet.create({
   },
   drawerContainer: {
     backgroundColor: "#fff",
-    width: "55%",
+    width: "70%",
   },
   shadowContainer: {
     flex: 2,

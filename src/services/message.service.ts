@@ -79,6 +79,22 @@ export class MessageService extends APIRequest {
   sendToken(conversationId: string | number, data: Record<string, any>) {
     return this.post(`/member/send-tip-token/${conversationId}`, data);
   }
+
+  muteUser(conversationId, data) {
+    return this.post(`/messages/mute-user/${conversationId}`, data);
+  }
+
+  checkMuteUser(performerId) {
+    return this.get(this.buildUrl(`/messages/check-mute-chat/${performerId}`));
+  }
+
+  unMuteUser(id) {
+    return this.del(`/messages/mute-user/${id}`);
+  }
+
+  loadMuteUsers(query?: Record<string, any>) {
+    return this.get(this.buildUrl("/messages/mute-users", query));
+  }
 }
 
 export const messageService = new MessageService();

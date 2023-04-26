@@ -1,41 +1,41 @@
 import React, { useEffect, useState } from "react";
-import { View } from "react-native";
-import { Box, Checkbox, FlatList, Text } from "native-base";
+import { Image, View } from "native-base";
+import { Box, Checkbox, FlatList, HStack, Text } from "native-base";
 import PerformerCard from "components/message/PerformerCard";
 import { followService } from "services/follow.service";
 import BadgeText from "components/uis/BadgeText";
 import LoadingSpinner from "components/uis/LoadingSpinner";
 import { connect } from "react-redux";
 import styles from "./style";
-import { IUser } from "src/interfaces";
+import { IFeed, IPerformer, IUser } from "src/interfaces";
 import { colors, Fonts, Sizes } from "utils/theme";
+import ButtonFollow from "components/uis/ButtonFollow";
+import { TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/core";
 
 interface IProps {
   route: {
     key: string;
     title: string;
-    params: { performerId: string };
+    params: { performer: IPerformer };
   };
   current: IUser;
 }
 
-const Follower = (props: IProps): React.ReactElement => {
-  const { performerId: qString } = props.route.params;
+const Follower = ({ current, route }: IProps): React.ReactElement => {
+  const { performer } = route.params;
   const [performers, setPerformers] = useState([] as Array<any>);
   const [performerLoading, setPerformerLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [moreable, setMoreable] = useState(true);
   const [isChecked, setIsChecked] = useState(false);
-
-  useEffect(() => {
-    loadPerformers();
-  }, []);
+  const navigation = useNavigation() as any;
 
   useEffect(() => {
     handleFilterByFollower();
   }, [isChecked]);
 
-  const loadPerformers = async (more = false, q = "", refresh = false) => {
+  const loadFollower = async (more = false, q = "", refresh = false) => {
     if ((more && !moreable) || isChecked) return;
     try {
       setPerformerLoading(true);
@@ -44,9 +44,7 @@ const Follower = (props: IProps): React.ReactElement => {
       const { data } = await followService.searchFollower({
         offset: refresh ? 0 : newPage * 6,
         limit: 6,
-        targetId: props.route.params.performerId
-          ? props.route.params.performerId
-          : props.current._id,
+        targetId: performer._id,
       });
       if (!refresh && data.length < 6) {
         setMoreable(false);
@@ -56,7 +54,9 @@ const Follower = (props: IProps): React.ReactElement => {
       }
       setPerformers(refresh ? data.data : performers.concat(data.data));
       setPerformerLoading(false);
-    } catch (error) {}
+    } catch (error) {
+      setPerformerLoading(true);
+    }
   };
 
   const handleFilterByFollower = async (
@@ -65,31 +65,33 @@ const Follower = (props: IProps): React.ReactElement => {
     refresh = false
   ) => {
     if (more && !moreable) return;
-    setPerformerLoading(true);
-    const newPage = 0;
-    setPage(refresh ? 0 : newPage);
-    const { data } = await followService.searchFollower({
-      offset: refresh ? 0 : newPage * 6,
-      limit: 6,
-      targetId: props.route.params.performerId
-        ? props.route.params.performerId
-        : props.current._id,
-    });
+    try {
+      setPerformerLoading(true);
+      const newPage = 0;
+      setPage(refresh ? 0 : newPage);
+      const { data } = await followService.searchFollower({
+        offset: refresh ? 0 : newPage * 6,
+        limit: 6,
+        targetId: performer._id,
+      });
 
-    if (!refresh && data.length < 6) {
-      setMoreable(false);
-    }
-    if (refresh && !moreable) {
-      setMoreable(true);
-    }
-    if (isChecked) {
-      const listFollowFilter = performers.filter(
-        (el) => el.sourceInfo.isFollowed === false
-      );
-      setPerformers(listFollowFilter);
-      setPerformerLoading(false);
-    } else {
-      setPerformers(data.data);
+      if (!refresh && data.length < 6) {
+        setMoreable(false);
+      }
+      if (refresh && !moreable) {
+        setMoreable(true);
+      }
+      if (isChecked) {
+        const listFollowFilter = performers.filter(
+          (el) => el.sourceInfo.isFollowed === false
+        );
+        setPerformers(listFollowFilter);
+        setPerformerLoading(false);
+      } else {
+        setPerformers(data.data);
+        setPerformerLoading(false);
+      }
+    } catch (error) {
       setPerformerLoading(false);
     }
   };
@@ -100,9 +102,71 @@ const Follower = (props: IProps): React.ReactElement => {
       )}
     </View>
   );
+  const handleRedirect = (perfomer) => {
+    navigation.navigate("ModelProfile", {
+      screen: "ModelProfile",
+      performer: perfomer,
+    });
+  };
+
+  const renderItem = ({ item, index }: { item: any; index: number }) => {
+    return (
+      <TouchableOpacity onPress={() => handleRedirect(item.sourceInfo)}>
+        <View key={item.sourceInfo._id}>
+          <Image
+            key={item._id}
+            style={styles.postImageStyle}
+            alt="avatar"
+            source={
+              item.sourceInfo.avatar
+                ? { uri: item.sourceInfo.avatar }
+                : require("../../../assets/avatar-default.png")
+            }
+          />
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  useEffect(() => {
+    loadFollower();
+  }, []);
 
   return (
     <Box flex={1} mx="auto" w="100%">
+      <HStack my={2} height={150}>
+        <View w="50%" flexDirection={"row"}>
+          <View style={styles.leftContainer}>
+            <Image
+              source={
+                performer?.avatar
+                  ? { uri: performer?.avatar }
+                  : require("../../../assets/avatar-default.png")
+              }
+              alt={"avatar"}
+              size={100}
+              borderRadius={80}
+              resizeMode="cover"
+            />
+            <Text style={styles.text}>
+              {performer.name || performer.username || "N/A"}
+            </Text>
+          </View>
+          <View style={styles.leftContainer}>
+            <ButtonFollow
+              isHideOnClick
+              targetId={performer._id}
+              sourceId={current._id}
+              isFollow={performer.isFollowed}
+              getPerformerList={() => {}}
+            />
+          </View>
+        </View>
+        <View w="50%" style={styles.rightContainer}>
+          <Text style={styles.text}>Fans</Text>
+          <Text style={styles.text}>{performer.stats.totalFollower}</Text>
+        </View>
+      </HStack>
       <View style={styles.checkBoxFollow}>
         <Checkbox
           isInvalid
@@ -114,25 +178,17 @@ const Follower = (props: IProps): React.ReactElement => {
           </Text>
         </Checkbox>
       </View>
-
-      <View style={{ marginVertical: Sizes.fixPadding * 5 }}>
-        <FlatList
-          data={performers}
-          renderItem={({ item }) =>
-            item.sourceInfo?._id &&
-            item.sourceInfo._id !== props.current._id ? (
-              <PerformerCard performer={item.sourceInfo} />
-            ) : null
-          }
-          keyExtractor={(item, index) => item._id + "_" + index}
-          onEndReachedThreshold={0.5}
-          onEndReached={() => loadPerformers(true, qString, false)}
-          onRefresh={() => loadPerformers(false, qString, true)}
-          ListEmptyComponent={renderEmpty()}
-          refreshing={performerLoading}
-        />
-      </View>
-
+      <FlatList
+        data={performers}
+        numColumns={3}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => item._id + "_" + index}
+        onEndReachedThreshold={0.5}
+        onEndReached={() => loadFollower(true, performer._id, false)}
+        onRefresh={() => loadFollower(false, performer._id, true)}
+        ListEmptyComponent={renderEmpty()}
+        refreshing={performerLoading}
+      />
       {performerLoading && <LoadingSpinner />}
     </Box>
   );

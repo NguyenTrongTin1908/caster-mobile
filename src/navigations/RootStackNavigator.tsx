@@ -61,7 +61,7 @@ export type RootStackParamList = {
   FollowPost: undefined;
   PushNotificationSetting: undefined;
   NotificationPage: undefined;
-  ListFollow: { performer: IPerformer };
+  ListFollow: { tab: string; performerId: IPerformer };
   Hashtag: { query: string; currentTab: string };
   Trending: undefined;
   Wallet: undefined;

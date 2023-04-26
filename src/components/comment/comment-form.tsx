@@ -5,6 +5,7 @@ import { FormControl, HStack, Image, View } from "native-base";
 import KeyboardDismiss from "components/uis/KeyboardDismiss";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import {
+  Animated,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
@@ -150,22 +151,24 @@ const CommentForm = React.memo(
                   </View>
 
                   <View width="10%" style={styles.sendComment}>
-                    <TouchableOpacity onPress={handleSubmit(onSubmit)}>
+                  <TouchableOpacity activeOpacity={0.5}>
+                  <Animated.View onTouchStart={handleSubmit(onSubmit)}>
                       {isReply ? (
                         <Ionicons
                           name="arrow-up-circle"
-                          size={22}
+                          size={23}
                           color={"crimson"}
                           style={styles.sendComment}
                         />
                       ) : (
                         <Ionicons
                           name="send-sharp"
-                          size={22}
+                          size={23}
                           color={"crimson"}
                           style={styles.sendComment}
                         />
                       )}
+                    </Animated.View>
                     </TouchableOpacity>
                   </View>
                 </HStack>

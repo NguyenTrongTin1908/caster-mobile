@@ -71,7 +71,13 @@ const CommentItem = React.memo(
           });
           setLiked(!isLiked);
           setTotalLike(totalLike + 1);
-        } else {
+        }
+      } catch (e) {}
+    };
+
+    const handledisLike = async (comment) => {
+      try {
+        if (isLiked) {
           await reactionService.delete({
             objectId: comment._id,
             action: "like",
@@ -231,15 +237,19 @@ const CommentItem = React.memo(
                 flex={1}
               >
                 <TouchableOpacity onPress={() => handleLike(item)}>
-                  <Ionicons
-                    name={isLiked ? "heart" : "heart-outline"}
-                    size={22}
-                    color={isLiked ? colors.secondary : colors.gray}
-                  />
+                  <AntDesign name={"like2"} size={20} color={colors.gray} />
                 </TouchableOpacity>
-                <Text fontSize="12" textAlign="center">
-                  {totalLike}
-                </Text>
+                {totalLike ? (
+                  <Text fontSize="12" textAlign="center">
+                    {totalLike}
+                  </Text>
+                ) : (
+                  <Ionicons name={"heart"} size={20} color={colors.gray} />
+                )}
+
+                <TouchableOpacity onPress={() => handledisLike(item)}>
+                  <AntDesign name={"dislike2"} size={20} color={colors.gray} />
+                </TouchableOpacity>
               </VStack>
             </HStack>
           </View>

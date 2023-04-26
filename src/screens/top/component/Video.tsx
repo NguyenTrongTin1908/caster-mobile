@@ -1,17 +1,9 @@
-import React, { useEffect, useState, useContext } from "react";
-import {
-  View,
-  SafeAreaView,
-  Alert,
-  Image,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
-import { Box, FlatList, HStack, Radio, Spacer, Text } from "native-base";
-import { useNavigation ,useIsFocused} from "@react-navigation/core";
-import LoadingSpinner from "components/uis/LoadingSpinner";
+import React, { useEffect, useState } from "react";
+import { View, SafeAreaView, Alert, TouchableOpacity } from "react-native";
+import { Image, Box, FlatList, HStack, Radio, Spacer, Text } from "native-base";
+import { useNavigation, useIsFocused } from "@react-navigation/core";
 import BackButton from "components/uis/BackButton";
-import { Sizes, colors } from "utils/theme";
+import { colors } from "utils/theme";
 import styles from "../style";
 import { IBody, ICountry } from "interfaces/utils";
 import BadgeText from "components/uis/BadgeText";
@@ -42,12 +34,9 @@ const Video = ({}: IProps): React.ReactElement => {
     loadFeeds();
   }, [isFocussed]);
 
-
   useEffect(() => {
-    if(radioValue)
-    {
+    if (radioValue) {
       loadFeeds();
-
     }
   }, [radioValue]);
 
@@ -150,17 +139,17 @@ const Video = ({}: IProps): React.ReactElement => {
             </Radio.Group>
           </HStack>
         </View>
-            <FlatList
-              data={feeds}
-              renderItem={renderItem}
-              numColumns={3}
-              keyExtractor={(item, index) => item._id + "_" + index}
-              onEndReachedThreshold={0.1}
-              onEndReached={() => loadFeeds(true, false)}
-              onRefresh={() => loadFeeds(false, true)}
-              ListEmptyComponent={renderEmpty()}
-              refreshing={feedLoading}
-            />
+        <FlatList
+          data={feeds}
+          renderItem={renderItem}
+          numColumns={3}
+          keyExtractor={(item, index) => item._id + "_" + index}
+          onEndReachedThreshold={0.1}
+          onEndReached={() => loadFeeds(true, false)}
+          onRefresh={() => loadFeeds(false, true)}
+          ListEmptyComponent={renderEmpty()}
+          refreshing={feedLoading}
+        />
       </Box>
     </SafeAreaView>
   );

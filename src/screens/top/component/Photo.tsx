@@ -1,24 +1,9 @@
-import React, { useEffect, useState, useContext } from "react";
-import {
-  View,
-  SafeAreaView,
-  Image,
-  TouchableOpacity,
-  Alert,
-} from "react-native";
-import {
-  Box,
-  FlatList,
-  HStack,
-  Radio,
-  ScrollView,
-  Spacer,
-  Text,
-} from "native-base";
-import { useNavigation ,useIsFocused} from "@react-navigation/core";
-import LoadingSpinner from "components/uis/LoadingSpinner";
+import React, { useEffect, useState } from "react";
+import { View, SafeAreaView, TouchableOpacity, Alert } from "react-native";
+import { Image, Box, FlatList, HStack, Radio, Spacer, Text } from "native-base";
+import { useNavigation, useIsFocused } from "@react-navigation/core";
 import BackButton from "components/uis/BackButton";
-import { Sizes, colors } from "utils/theme";
+import { colors } from "utils/theme";
 import styles from "../style";
 import { IBody, ICountry } from "interfaces/utils";
 import BadgeText from "components/uis/BadgeText";
@@ -50,10 +35,8 @@ const Photo = ({}: IProps): React.ReactElement => {
   }, [isFocussed]);
 
   useEffect(() => {
-    if(radioValue)
-    {
+    if (radioValue) {
       loadFeeds();
-
     }
   }, [radioValue]);
 
@@ -83,7 +66,6 @@ const Photo = ({}: IProps): React.ReactElement => {
     }
   };
 
-
   const handleSubmitRadio = async (val: any) => {
     setFeeds([]);
     setPage(0);
@@ -112,6 +94,7 @@ const Photo = ({}: IProps): React.ReactElement => {
             <Image
               key={item._id}
               style={styles.postImageStyle}
+              alt={"photo-thumbnail"}
               source={
                 item.files[0]
                   ? { uri: item.files[0].url }
@@ -157,17 +140,17 @@ const Photo = ({}: IProps): React.ReactElement => {
             </Radio.Group>
           </HStack>
         </View>
-            <FlatList
-              data={feeds}
-              renderItem={renderItem}
-              numColumns={3}
-              keyExtractor={(item, index) => item._id + "_" + index}
-              onEndReachedThreshold={0.1}
-              onEndReached={() => loadFeeds(true, false)}
-              onRefresh={() => loadFeeds(false, true)}
-              ListEmptyComponent={renderEmpty()}
-              refreshing={feedLoading}
-            />
+        <FlatList
+          data={feeds}
+          renderItem={renderItem}
+          numColumns={3}
+          keyExtractor={(item, index) => item._id + "_" + index}
+          onEndReachedThreshold={0.1}
+          onEndReached={() => loadFeeds(true, false)}
+          onRefresh={() => loadFeeds(false, true)}
+          ListEmptyComponent={renderEmpty()}
+          refreshing={feedLoading}
+        />
       </Box>
     </SafeAreaView>
   );
