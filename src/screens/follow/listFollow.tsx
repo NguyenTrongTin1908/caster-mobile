@@ -39,7 +39,7 @@ const ListFollow = ({ route }: IProps): React.ReactElement => {
     setQ(text);
   };
   return (
-    <Box safeAreaX={4} safeAreaTop={8} flex={1}>
+    <Box safeAreaTop={8} flex={1}>
       {performer && (
         <TabView
           defaultIndex={tab === "Following" ? 0 : 1}

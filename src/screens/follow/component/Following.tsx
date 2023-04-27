@@ -46,6 +46,7 @@ const Following = ({ current, route }: IProps): React.ReactElement => {
       if (refresh && !moreable) {
         setMoreable(true);
       }
+      removeObjectById(data.data, current._id)
       setPerformers(refresh ? data.data : performers.concat(data.data));
       setPerformerLoading(false);
     } catch (error) {
@@ -60,6 +61,14 @@ const Following = ({ current, route }: IProps): React.ReactElement => {
       )}
     </View>
   );
+
+  const removeObjectById = (arr, id)=> {
+    const objWithIdIndex = arr.findIndex((obj) => obj.targetInfo._id === id);
+    if (objWithIdIndex > -1) {
+      arr.splice(objWithIdIndex, 1);
+    }
+    return arr;
+  }
 
   const handleRedirect = (perfomer) => {
     navigation.navigate("ModelProfile", {

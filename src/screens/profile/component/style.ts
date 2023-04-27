@@ -282,15 +282,10 @@ const styles = StyleSheet.create({
     marginTop: 40,
   },
 
-  btn: {
-    width: 70,
-    height: 30,
-    borderRadius: 2,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  btnText: { textAlign: "center", color: colors.secondary },
+  deleteText: { textAlign: "center", color: "red" },
+
+  btn: { width: 58, height: 18, backgroundColor: "#78B7BB", borderRadius: 2 },
+  textRow: { textAlign: "center" },
   head: { height: 40, backgroundColor: "#808B97" },
   row: { flexDirection: "row", backgroundColor: colors.lightText },
   textNoti: { textAlign: "center" },
