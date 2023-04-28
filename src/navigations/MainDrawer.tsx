@@ -165,7 +165,12 @@ export const MainDrawer = ({
             }}
           >
             <View flexDirection={"row"}>
-              <FontAwesome name="heart" size={20} color={colors.primary} />
+              <Image
+                source={require("assets/gem.png")}
+                alt={"avatar"}
+                size={22}
+                resizeMode="contain"
+              />
               <Text color={colors.darkText} marginX={2}>
                 {shortenLargeNumber((user?.rubyBalance || 0).toFixed(2))}
               </Text>
@@ -178,10 +183,11 @@ export const MainDrawer = ({
             }}
           >
             <View flexDirection={"row"}>
-              <FontAwesome
-                name="diamond"
-                size={20}
-                color={colors.diamondIcon}
+              <Image
+                source={require("assets/diamond.png")}
+                alt={"avatar"}
+                size={22}
+                resizeMode="contain"
               />
               <Text color={colors.darkText} marginX={2}>
                 {shortenLargeNumber((user?.balance || 0).toFixed(2))}
@@ -282,20 +288,9 @@ export const MainDrawer = ({
         handleHide();
       },
     },
-
-    {
-      id: "explore",
-      label: "Explore",
-      icon: <FontAwesome name={"search"} size={17} color={colors.appBgColor} />,
-      onPress: () => {
-        //todo - update navigation
-        // navigationRef.current?.navigate('');
-        handleHide();
-      },
-    },
     {
       id: "folowPost",
-      label: "Follow Post",
+      label: "Following",
       icon: (
         <MaterialIcons name={"group"} size={17} color={colors.appBgColor} />
       ),
@@ -315,43 +310,12 @@ export const MainDrawer = ({
       },
     },
     {
-      id: "myWallet",
-      label: "My Wallet",
-      icon: (
-        <FontAwesome name={"credit-card"} size={17} color={colors.appBgColor} />
-      ),
-      onPress: () => {
-        //todo - update navigation
-        navigationRef.current?.navigate("Wallet");
-        handleHide();
-      },
-    },
-    {
       id: "bookmarks",
       label: "Bookmarks",
       icon: <Feather name={"bookmark"} size={17} color={colors.appBgColor} />,
       onPress: () => {
         //todo - update navigation
         navigationRef.current?.navigate("Bookmarks");
-        handleHide();
-      },
-    },
-    {
-      id: "notificationPage",
-      label: "Notifications And Mail",
-      icon: <Entypo name={"bell"} size={17} color={colors.appBgColor} />,
-      onPress: () => {
-        //todo - update navigation
-        navigationRef.current?.navigate("NotificationPage");
-        handleHide();
-      },
-    },
-    {
-      id: "followerList",
-      label: "Follower List",
-      icon: <FontAwesome name={"user"} size={17} color={colors.appBgColor} />,
-      onPress: () => {
-        navigationRef.current?.navigate("ListFollow");
         handleHide();
       },
     },
@@ -367,28 +331,29 @@ export const MainDrawer = ({
       ),
       onPress: () => {
         navigationRef.current?.navigate("ModelOrderPage");
-
         handleHide();
       },
     },
     {
-      id: "earningHistory",
-      label: "Earnings History",
-      icon: <FontAwesome name={"money"} size={17} color={colors.appBgColor} />,
+      id: "notificationPage",
+      label: "Notifications And Mail",
+      icon: <Entypo name={"bell"} size={17} color={colors.appBgColor} />,
       onPress: () => {
+        //todo - update navigation
+        navigationRef.current?.navigate("NotificationPage");
         handleHide();
       },
     },
-    {
-      id: "payoutRequests",
-      label: "Payout requests",
-      icon: (
-        <FontAwesome name={"cc-paypal"} size={17} color={colors.appBgColor} />
-      ),
-      onPress: () => {
-        handleHide();
-      },
-    },
+    // {
+    //   id: "payoutRequests",
+    //   label: "Payout requests",
+    //   icon: (
+    //     <FontAwesome name={"cc-paypal"} size={17} color={colors.appBgColor} />
+    //   ),
+    //   onPress: () => {
+    //     handleHide();
+    //   },
+    // },
     {
       id: "help",
       label: "Help",

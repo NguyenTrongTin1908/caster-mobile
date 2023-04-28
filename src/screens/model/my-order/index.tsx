@@ -2,12 +2,9 @@ import { orderService } from "services/order.service";
 import OrderSearchFilter from "components/order/search-filter";
 import OrderTableList from "components/order/table-list";
 import { connect } from "react-redux";
-import { IPerformer, IUser } from "src/interfaces";
-import { values, filter, sortBy } from "lodash";
+import { IPerformer } from "src/interfaces";
 import React, { useEffect, useState } from "react";
 import BackButton from "components/uis/BackButton";
-
-
 import { Alert, View, Heading, Box } from "native-base";
 import { SafeAreaView } from "react-native";
 import HeaderMenu from "components/tab/HeaderMenu";
@@ -61,26 +58,8 @@ const ModelOrderPage = ({ user }: IProps) => {
       });
 
       setSearching(false);
-      const Data = [
-        {
-          orderNumber: "1",
-          productInfo: "abc",
-          totalPrice: 2,
-          deliveryStatus: "ss",
-          createdAt: Date.now(),
-          _id: "1",
-        },
-        {
-          orderNumber: "2",
-          productInfo: "fff",
-          totalPrice: 52,
-          deliveryStatus: "ss",
-          createdAt: Date.now(),
-          _id: "2",
-        },
-      ];
 
-      await setList(Data);
+      await setList(resp.data.data);
       setPagination({ ...pagination, total: resp.data.total, pageSize: limit });
     } catch (e) {
       Alert("An error occurred, please try again!");
@@ -117,7 +96,6 @@ const ModelOrderPage = ({ user }: IProps) => {
         </View>
       </Box>
       <BackButton />
-
     </SafeAreaView>
   );
 };

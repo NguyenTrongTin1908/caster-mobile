@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigation } from "@react-navigation/core";
+import { useNavigation, useNavigationState } from "@react-navigation/core";
 import { colors, Sizes } from "utils/theme";
 import MentionHashtagTextView from "react-native-mention-hashtag-text";
 import {
@@ -17,6 +17,7 @@ import ListComments from "components/comment/list-comments";
 import { connect } from "react-redux";
 import { reactionService } from "services/reaction.service";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { IPerformer } from "src/interfaces";
 import ButtonFollow from "components/uis/ButtonFollow";
 import { shortenLargeNumber } from "../../../lib/number";
@@ -34,6 +35,9 @@ const FeedStats = ({
   const [requesting, setRequesting] = useState(false);
   const [isBookMarked, setBookmark] = useState(item.isBookMarked);
   const navigation = useNavigation() as any;
+  const screenName = useNavigationState(
+    (state) => state.routes[state.index].name
+  );
   const spinValue = new Animated.Value(0);
   const handleRedirect = () => {
     navigation.navigate("LiveNow");
@@ -83,9 +87,48 @@ const FeedStats = ({
   return (
     <View style={styles.uiContainer}>
       <View style={styles.rightContainer}>
+        {screenName !== "FeedDetail" && (
+          <View style={styles.iconLeftBar}>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("FeedDetail", {
+                  performerId: item.performer._id,
+                  type: "video",
+                })
+              }
+            >
+              <FontAwesome
+                name={"video-camera"}
+                size={28}
+                color={colors.lightText}
+              />
+            </TouchableOpacity>
+            <Text style={styles.textIcon}>
+              {item.performer.stats.totalVideos}
+            </Text>
+          </View>
+        )}
+        {screenName !== "FeedDetail" && (
+          <View style={styles.iconLeftBar}>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("FeedDetail", {
+                  performerId: item.performer._id,
+                  type: "photo",
+                })
+              }
+            >
+              <FontAwesome name={"camera"} size={28} color={colors.lightText} />
+            </TouchableOpacity>
+            <Text style={styles.textIcon}>
+              {item.performer.stats.totalPhotos}
+            </Text>
+          </View>
+        )}
         <View
           style={{
             alignItems: "center",
+            marginTop: Sizes.fixPadding * 5,
           }}
         >
           <TouchableOpacity onPress={handleLike}>
@@ -97,12 +140,7 @@ const FeedStats = ({
               onPress={handleLike}
             />
           </TouchableOpacity>
-          <Text
-            style={{
-              marginTop: Sizes.fixPadding * 2,
-              color: colors.lightText,
-            }}
-          ></Text>
+          <Text style={styles.textIcon}></Text>
         </View>
         <View
           style={{
@@ -111,19 +149,9 @@ const FeedStats = ({
         >
           <ListComments user={currentUser} canReply={true} feed={item} />
         </View>
-        <View
-          style={{
-            marginTop: Sizes.fixPadding + 2.0,
-            alignItems: "center",
-          }}
-        >
+        <View style={styles.iconLeftBar}>
           <MaterialIcons name="visibility" color={colors.light} size={28} />
-          <Text
-            style={{
-              marginTop: Sizes.fixPadding - 7.0,
-              color: colors.lightText,
-            }}
-          >
+          <Text style={styles.textIcon}>
             {shortenLargeNumber(item.stats.views)}
           </Text>
         </View>

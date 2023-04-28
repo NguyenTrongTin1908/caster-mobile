@@ -6,8 +6,6 @@ import FeedStats from "./component/feed-stats";
 import LeftStats from "./component/left-starts";
 import VideoCard from "./component/video-card";
 import ImageCard from "./component/image-card";
-import MenuTab from "components/tab/MenuTab";
-import { connect } from "react-redux";
 import { IPerformer } from "src/interfaces";
 import { MenuPopup } from "components/menu/MenuPopup";
 interface IProps {

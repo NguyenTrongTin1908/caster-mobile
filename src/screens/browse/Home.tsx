@@ -70,7 +70,6 @@ const Home = ({
   const [keyword, setKeyword] = useState("");
   const [isLoadTrendingFeed, setLoadTrendingFeed] = useState(false);
   const [lastViewableItem, setLastViewableItem] = useState(null) as any;
-  const [myText, setMyText] = useState(null) as any;
 
   const mediaRefs = useRef([]) as any;
   useEffect(() => {

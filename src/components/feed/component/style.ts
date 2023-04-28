@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
   },
   rightContainer: {
     position: "absolute",
-    top: 100,
+    top: 60,
     right: Sizes.fixPadding,
     justifyContent: "flex-start",
     height: 320,
@@ -148,6 +148,15 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     width: "100%",
     backgroundColor: "black",
+  },
+  iconLeftBar: {
+    textAlign: "center",
+    marginTop: Sizes.fixPadding + 2.0,
+    alignItems: "center",
+  },
+  textIcon: {
+    marginTop: Sizes.fixPadding - 7.0,
+    color: colors.lightText,
   },
 });
 

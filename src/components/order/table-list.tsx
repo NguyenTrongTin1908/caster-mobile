@@ -1,27 +1,12 @@
 /* eslint-disable react/destructuring-assignment */
-import {
-  Button,
-  Image,
-  ScrollView,
-  Tag,
-  Text,
-  Tooltip,
-  View,
-} from "native-base";
-import { IOrder, IPerformer, IUser } from "src/interfaces";
+import { ScrollView, Text, View } from "native-base";
+import { IOrder, IPerformer } from "src/interfaces";
 import { formatDate } from "lib/date";
-// import Link from "next/link";
-import {
-  Table,
-  Row,
-  Cell,
-  TableWrapper,
-  Rows,
-} from "react-native-table-component";
+import { Table, Row, Cell, TableWrapper } from "react-native-table-component";
 import React, { useEffect, useState } from "react";
 import { colors } from "utils/theme";
 import styles from "./style";
-import { Alert, TouchableOpacity } from "react-native";
+import { TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 
@@ -34,14 +19,7 @@ interface IProps {
   user: IPerformer;
 }
 
-const OrderTableList = ({
-  dataSource = [],
-  pagination,
-  rowKey,
-  loading,
-  onChange,
-  user,
-}: IProps): React.ReactElement => {
+const OrderTableList = ({ dataSource = [] }: IProps): React.ReactElement => {
   const dataTable = [
     "orderNumber",
     "createdAt",
@@ -52,10 +30,6 @@ const OrderTableList = ({
   const tableHead = ["ID", "Date", "Rubies", "Item", "Action"];
   const [orderData, setOrderData] = useState([]) as any;
   const navigation = useNavigation() as any;
-
-  const _alertIndex = (id) => {
-    Alert.alert(`TODO go to ${id} details`);
-  };
 
   const rederId = (data, index) => {
     const orderNumberIndex = dataTable.findIndex(
