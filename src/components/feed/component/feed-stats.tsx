@@ -21,6 +21,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { IPerformer } from "src/interfaces";
 import ButtonFollow from "components/uis/ButtonFollow";
 import { shortenLargeNumber } from "../../../lib/number";
+import { useRoute } from "@react-navigation/native";
 
 interface IProps {
   item: IFeed;
@@ -35,9 +36,8 @@ const FeedStats = ({
   const [requesting, setRequesting] = useState(false);
   const [isBookMarked, setBookmark] = useState(item.isBookMarked);
   const navigation = useNavigation() as any;
-  const screenName = useNavigationState(
-    (state) => state.routes[state.index].name
-  );
+  const route = useRoute();
+
   const spinValue = new Animated.Value(0);
   const handleRedirect = () => {
     navigation.navigate("LiveNow");
@@ -87,7 +87,7 @@ const FeedStats = ({
   return (
     <View style={styles.uiContainer}>
       <View style={styles.rightContainer}>
-        {screenName !== "FeedDetail" && (
+        {route.name !== "FeedDetail" && (
           <View style={styles.iconLeftBar}>
             <TouchableOpacity
               onPress={() =>
@@ -108,7 +108,7 @@ const FeedStats = ({
             </Text>
           </View>
         )}
-        {screenName !== "FeedDetail" && (
+        {route.name !== "FeedDetail" && (
           <View style={styles.iconLeftBar}>
             <TouchableOpacity
               onPress={() =>
