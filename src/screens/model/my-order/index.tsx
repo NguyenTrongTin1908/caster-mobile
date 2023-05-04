@@ -16,49 +16,43 @@ interface IProps {
 
 const ModelOrderPage = ({ user }: IProps) => {
   const [searching, setSearching] = useState(false);
-  const [pagination, setPagination] = useState({}) as any;
+  const [pagination, setPagination] = useState({
+    total: 0,
+    current: 0,
+    pageSize: 10,
+  }) as any;
   const [list, setList] = useState([]) as any;
-  const [limit, setLimit] = useState(10) as any;
+  const [limit] = useState(10) as any;
   const [filter, setFilter] = useState({}) as any;
-  const [sortBy, setSortBy] = useState("createAt") as any;
-  const [sort, setSort] = useState("desc") as any;
+  const [sortBy] = useState("createAt") as any;
+  const [sort] = useState("desc") as any;
 
   useEffect(() => {
-    search();
-  }, []);
-  useEffect(() => {
-    search();
+    search(pagination);
   }, [filter]);
 
-  const handleTableChange = async (paginationState, filters, sorter) => {
-    const pager = { ...paginationState };
-    pager.current = pagination.current;
-
-    setPagination(pager);
-    setSortBy(
-      sorter.field || "createdAt",
-      sorter.order ? (sorter.order === "descend" ? "desc" : "asc") : "desc"
-    );
-    search(pager.current);
+  const handleTableChange = async (paginationState) => {
+    setPagination({ ...pagination, current: paginationState.current });
+    search({ ...pagination, current: paginationState.current });
   };
 
   const handleFilter = async (values) => {
     await setFilter({ ...filter, ...values });
   };
 
-  const search = async (page = 1) => {
+  const search = async (pagination: any) => {
     try {
+      const { pageSize, current } = pagination;
+
       setSearching(true);
       const resp = await orderService.performerSearch({
         ...filter,
-        limit,
-        offset: (page - 1) * limit,
+        limit: pageSize,
+        offset: current * pageSize,
         sort,
         sortBy,
       });
-
       setSearching(false);
-
       await setList(resp.data.data);
       setPagination({ ...pagination, total: resp.data.total, pageSize: limit });
     } catch (e) {
@@ -90,7 +84,6 @@ const ModelOrderPage = ({ user }: IProps) => {
             dataSource={list}
             rowKey="_id"
             loading={searching}
-            pagination={pagination}
             onChange={handleTableChange.bind(this)}
           />
         </View>

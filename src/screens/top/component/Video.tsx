@@ -92,6 +92,7 @@ const Video = ({}: IProps): React.ReactElement => {
         {item?.type === "video" ? (
           <View key={item._id}>
             <Image
+              alt={"thumbnail-video"}
               key={item._id}
               style={styles.postImageStyle}
               source={

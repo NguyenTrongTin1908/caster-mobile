@@ -9,6 +9,7 @@ import HeaderMenu from "components/tab/HeaderMenu";
 import TabView from "components/uis/TabView";
 import Photo from "./component/Photo";
 import Video from "./component/Video";
+import Model from "./component/Model";
 
 interface IProps {
   countries: ICountry[];
@@ -28,24 +29,25 @@ const Top = ({}: IProps): React.ReactElement => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <Box  flex={1} mx="auto" w="100%">
-        <Heading
-          fontSize={36}
-          textAlign="center"
-          color={colors.lightText}
-          bold
-        >
+      <Box flex={1} mx="auto" w="100%">
+        <Heading fontSize={36} textAlign="center" color={colors.lightText} bold>
           Top Caster
         </Heading>
         <TabView
+          swipeEnabled={false}
           scenes={[
+            {
+              key: "topModel",
+              title: "Model",
+              sence: Model,
+            },
             {
               key: "topPhoto",
               title: "Photo",
               sence: Photo,
             },
             {
-              key: "topVieo",
+              key: "topVideo",
               title: "Video",
               sence: Video,
             },

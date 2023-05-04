@@ -115,7 +115,6 @@ export const MainDrawer = ({
             />
           </HStack>
         </TouchableOpacity>
-
         <Divider />
         <HStack px={4} space={3}>
           <TouchableOpacity

@@ -68,5 +68,40 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginHorizontal: Sizes.fixPadding - 8.0,
   },
+
+  carouselItem: {
+    aspectRatio: 3 / 4,
+  },
+
+  carouselImage: {
+    flex: 1,
+    width: undefined,
+    height: undefined,
+    resizeMode: "cover",
+  },
+
+  range: {
+    width: 50,
+    alignSelf: "center",
+    height: 30,
+    borderColor: colors.lightText,
+    borderWidth: 1,
+    alignItems: "center",
+    marginVertical: 10,
+  },
+
+  btnLoadMore: {
+    marginTop: 20,
+    alignSelf: "center",
+  },
+
+  btnFollow: {
+    marginTop: 5,
+    alignItems: "center",
+  },
+
+  rangeNumber: {
+    alignItems: "center",
+  },
 });
 export default styles;

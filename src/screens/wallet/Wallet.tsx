@@ -20,10 +20,9 @@ import { connect } from "react-redux";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { shortenLargeNumber } from "lib/number";
 import { earningService } from "services/earning.service";
-import { Table, Row, Cell, TableWrapper } from "react-native-table-component";
-import { formatDate } from "lib/date";
 import OrderSearchFilter from "components/order/search-filter";
 import LoadingSpinner from "components/uis/LoadingSpinner";
+import { DataTable, Card } from "react-native-paper";
 
 interface IProps {
   countries: ICountry[];
@@ -37,16 +36,14 @@ const Wallet = ({ user }: IProps): React.ReactElement => {
   const [earning, setEarning] = useState([]);
   const [pagination, setPagination] = useState({
     total: 0,
-    current: 1,
+    current: 0,
     pageSize: 10,
   });
-  const [sortBy, setSortBy] = useState("createdAt");
-  const [sort, setSort] = useState("desc");
-  const [dataSource, setDataSource] = useState([]) as any;
-  const tableHead = ["Date", "From", "Type", "Amount"];
-  const dataTable = ["createdAt", "userInfo", "type", "grossPrice"];
+  const [sortBy] = useState("createdAt");
+  const [sort] = useState("desc");
   const navigation = useNavigation() as any;
   const [filter, setFilter] = useState({}) as any;
+  const sortedItems = earning.slice();
 
   const getPerformerStats = async () => {
     try {
@@ -61,14 +58,14 @@ const Wallet = ({ user }: IProps): React.ReactElement => {
     }
   };
 
-  const getData = async () => {
+  const getData = async (pagination: any) => {
     try {
-      const { current, pageSize } = pagination;
+      const { pageSize, current } = pagination;
       setLoading(true);
       const earning = await earningService.performerSearch({
         ...filter,
         limit: pageSize,
-        offset: (current - 1) * pageSize,
+        offset: current * pageSize,
         sort,
         sortBy,
       });
@@ -80,61 +77,18 @@ const Wallet = ({ user }: IProps): React.ReactElement => {
     }
   };
 
-  const rederId = (data, index) => {
-    const nameIndex = dataTable.findIndex((item) => item === "userInfo");
-    if (nameIndex === index) {
-      return (
-        <View>
-          <Text style={styles.textRow}>{data.name || "N/A"}</Text>
-        </View>
-      );
-    }
-    const dateIndex = dataTable.findIndex((item) => item === "createdAt");
-    if (dateIndex === index) {
-      return (
-        <View>
-          <Text style={styles.textRow}>{formatDate(data)}</Text>
-        </View>
-      );
-    }
-    const typeIndex = dataTable.findIndex((item) => item === "type");
-    if (typeIndex === index) {
-      return (
-        <View>
-          <Text style={styles.textRow}>{data}</Text>
-        </View>
-      );
-    }
-    const grossIndex = dataTable.findIndex((item) => item === "grossPrice");
-    if (grossIndex === index) {
-      return (
-        <View>
-          <Text style={styles.textRow}>{data}</Text>
-        </View>
-      );
-    }
-  };
-
-  useEffect(() => {
-    const array = [] as any;
-    if (earning && earning.length > 0) {
-      for (const item of earning) {
-        const arrayData = dataTable.map((key: any) => {
-          return item[key];
-        });
-        array.push(arrayData);
-      }
-    }
-    setDataSource(array);
-  }, [earning]);
-
   const handleFilter = async (values) => {
     await setFilter({ ...filter, ...values });
   };
 
+  const handleTabsChange = async (paginationState) => {
+    setPagination({ ...pagination, current: paginationState.current });
+    getData({ ...pagination, current: paginationState.current });
+  };
+
   useEffect(() => {
     getPerformerStats();
-    getData();
+    getData(pagination);
   }, [filter]);
 
   return (
@@ -233,20 +187,48 @@ const Wallet = ({ user }: IProps): React.ReactElement => {
         <View marginY={5}>
           <OrderSearchFilter onSubmit={handleFilter} />
         </View>
-        <Table borderStyle={{ borderWidth: 2, borderColor: "#c8e1ff" }}>
-          <Row
-            data={tableHead}
-            style={styles.head}
-            textStyle={[styles.textNoti]}
-          />
-          {dataSource.map((rowData, index) => (
-            <TableWrapper key={index} style={styles.row}>
-              {rowData.map((cellData, cellIndex) => (
-                <Cell key={cellIndex} data={rederId(cellData, cellIndex)} />
+        <Card>
+          <DataTable>
+            <DataTable.Header>
+              <DataTable.Title>Date</DataTable.Title>
+              <DataTable.Title>From</DataTable.Title>
+              <DataTable.Title>Type</DataTable.Title>
+              <DataTable.Title>Amount</DataTable.Title>
+            </DataTable.Header>
+
+            {sortedItems
+              .slice(
+                pagination.current * pagination.pageSize + 1,
+                Math.min(
+                  (pagination.current + 1) * pagination.pageSize,
+                  pagination.total
+                )
+              )
+              .map((item: any) => (
+                <DataTable.Row key={item._id}>
+                  <DataTable.Cell>{item.createdAt}</DataTable.Cell>
+                  <DataTable.Cell>{item.userInfo.name}</DataTable.Cell>
+                  <DataTable.Cell>{item.type}</DataTable.Cell>
+                  <DataTable.Cell>{item.grossPrice}</DataTable.Cell>
+                </DataTable.Row>
               ))}
-            </TableWrapper>
-          ))}
-        </Table>
+            <DataTable.Pagination
+              page={pagination.current}
+              numberOfPages={Math.ceil(pagination.total / pagination.pageSize)}
+              onPageChange={handleTabsChange}
+              label={`${
+                pagination.current * pagination.pageSize + 1
+              }-${Math.min(
+                (pagination.current + 1) * pagination.pageSize,
+                pagination.total
+              )} of ${pagination.total}`}
+              numberOfItemsPerPageList={[pagination.pageSize]}
+              numberOfItemsPerPage={pagination.pageSize}
+              showFastPaginationControls
+              selectPageDropdownLabel={"Rows per page"}
+            />
+          </DataTable>
+        </Card>
         {loading && <LoadingSpinner />}
       </ScrollView>
       <HeaderMenu />

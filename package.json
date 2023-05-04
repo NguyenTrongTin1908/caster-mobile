@@ -14,6 +14,7 @@
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.17.11",
     "@react-native-community/cameraroll": "^4.1.2",
+    "@react-native-community/datetimepicker": "6.7.5",
     "@react-native-community/masked-view": "^0.1.10",
     "@react-native-community/push-notification-ios": "^1.10.1",
     "@react-native-firebase/app": "^16.5.0",
@@ -56,6 +57,7 @@
     "react-native-material-menu": "^2.0.0",
     "react-native-mention-hashtag-text": "^1.0.3",
     "react-native-pager-view": "^5.4.6",
+    "react-native-paper": "^5.7.0",
     "react-native-peerjs": "^1.0.4",
     "react-native-permissions": "^3.2.0",
     "react-native-push-notification": "^8.1.1",

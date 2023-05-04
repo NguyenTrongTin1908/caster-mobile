@@ -102,8 +102,9 @@ const Following = ({ current, route }: IProps): React.ReactElement => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Box flex={1} mx="auto" w="100%">
-        <HStack height={150}>
-          <View w="50%" style={styles.leftContainer}>
+      <HStack my={2} height={150}>
+        <View w="50%" flexDirection={"row"}>
+          <View style={styles.leftContainer}>
             <Image
               source={
                 performer?.avatar
@@ -118,6 +119,8 @@ const Following = ({ current, route }: IProps): React.ReactElement => {
             <Text style={styles.text}>
               {performer.name || performer.username || "N/A"}
             </Text>
+          </View>
+          <View style={styles.leftContainer}>
             <ButtonFollow
               isHideOnClick
               targetId={performer._id}
@@ -126,11 +129,12 @@ const Following = ({ current, route }: IProps): React.ReactElement => {
               getPerformerList={() => {}}
             />
           </View>
-          <View w="50%" style={styles.rightContainer}>
-            <Text style={styles.text}>Following</Text>
-            <Text style={styles.text}>{performer.stats.totalFollowing}</Text>
-          </View>
-        </HStack>
+        </View>
+        <View w="50%" style={styles.rightContainer}>
+          <Text style={styles.text}>Following</Text>
+          <Text style={styles.text}>{performer.stats.totalFollowing}</Text>
+        </View>
+      </HStack>
         <FlatList
           data={performers}
           numColumns={3}

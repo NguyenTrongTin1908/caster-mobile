@@ -57,8 +57,6 @@ const PushNotificationSetting = ({
     followingGoLive,
     followingPrivateChat,
     moderator,
-    // sposorship,
-
     privateChatRequest,
     casterAdminMessage,
     upgradedComplete,
@@ -71,8 +69,6 @@ const PushNotificationSetting = ({
       followingGoLive,
       followingPrivateChat,
       moderator,
-
-      // sposorship,
       privateChatRequest,
       casterAdminMessage,
       upgradedComplete,
