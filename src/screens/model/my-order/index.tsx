@@ -2,7 +2,7 @@ import { orderService } from "services/order.service";
 import OrderSearchFilter from "components/order/search-filter";
 import OrderTableList from "components/order/table-list";
 import { connect } from "react-redux";
-import { IPerformer } from "src/interfaces";
+import { IPerformer } from "interfaces/performer";
 import React, { useEffect, useState } from "react";
 import BackButton from "components/uis/BackButton";
 import { Alert, View, Heading, Box } from "native-base";
