@@ -171,7 +171,12 @@ const UpdateProfileForm = ({
       width: 300,
       height: 300,
       cropping: true,
+      compressImageMaxHeight: 300,
+      compressImageMaxWidth: 400,
+      compressImageQuality: 0.5,
+      mediaType: "photo",
     }).then(async (image) => {
+      setShowButtonSheet(false);
       if (type === "avatar") {
         const dataUrl = await performerService.getAvatarUploadUrl();
         const url = `https://api.caster.com${dataUrl}`;
@@ -191,6 +196,7 @@ const UpdateProfileForm = ({
       cropping: true,
     })
       .then(async (image) => {
+        setShowButtonSheet(false);
         if (type === "avatar") {
           const dataUrl = await performerService.getAvatarUploadUrl();
           const url = `https://api.caster.com${dataUrl}`;
@@ -519,7 +525,7 @@ const UpdateProfileForm = ({
                       accessibilityLabel="States"
                       placeholder="States"
                       onValueChange={(val: string) => {
-                        onChange(val)
+                        onChange(val);
                         handleGetCities(countryCode, val);
                       }}
                     >
@@ -558,7 +564,11 @@ const UpdateProfileForm = ({
                   )}
                   name="city"
                 />
-                {errors.city && <ErrorMessage message={errors.city?.message || "City is required."} />}
+                {errors.city && (
+                  <ErrorMessage
+                    message={errors.city?.message || "City is required."}
+                  />
+                )}
               </FormControl>
             </View>
           </HStack>

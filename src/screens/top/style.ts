@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     borderColor: colors.lightText,
     borderWidth: 1,
     alignItems: "center",
-    marginVertical: 10,
+    marginVertical: 15,
   },
 
   btnLoadMore: {

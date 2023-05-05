@@ -50,6 +50,7 @@ const AdvancedFilter = ({
   const [value, setValue] = useState("mostFollowed");
   const [country, setCountry] = useState("");
   const [gender, setGender] = useState("");
+
   const [ethnicity, setEthnicity] = useState("");
   const [age, setAge] = useState("");
   const [verifySelect, setVerifySelect] = useState("");
@@ -218,6 +219,56 @@ const AdvancedFilter = ({
                       value={item.value}
                     ></Select.Item>
                   ))}
+                </Select>
+
+                <FormControl.Label>
+                  <Text bold fontSize={15}>
+                    All Seeking Relationship
+                  </Text>
+                </FormControl.Label>
+                <Select
+                  fontSize={17}
+                  selectedValue={relationSelect}
+                  color={colors.darkText}
+                  accessibilityLabel="All Seeking Relationship"
+                  placeholder="All Seeking Relationship"
+                  onValueChange={(val) => {
+                    setRelationSelect(val), handleSubmit("relationship", val);
+                  }}
+                >
+                  <Select.Item label="All Seeking Relationship" value="" />
+                  <Select.Item
+                    key="active"
+                    value="active"
+                    label={"Yes"}
+                  ></Select.Item>
+                  <Select.Item
+                    key="inactive"
+                    value="inactive"
+                    label={"No"}
+                  ></Select.Item>
+                </Select>
+                <FormControl.Label>
+                  <Text bold fontSize={15}>
+                    All users
+                  </Text>
+                </FormControl.Label>
+                <Select
+                  fontSize={17}
+                  selectedValue={verifySelect}
+                  color={colors.darkText}
+                  accessibilityLabel="All users"
+                  placeholder="All users"
+                  onValueChange={(val) => {
+                    setVerifySelect(val), handleSubmit("verifiedAccount", val);
+                  }}
+                >
+                  <Select.Item label="All users" value="" />
+                  <Select.Item
+                    key="verified"
+                    value="verified"
+                    label={"Verified only"}
+                  ></Select.Item>
                 </Select>
               </VStack>
             </TouchableOpacity>
