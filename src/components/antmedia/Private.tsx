@@ -24,6 +24,7 @@ export const Private = ({
   //   backgroundColor: "#cbb967",
   // },
   onChange,
+  isMuteAudio = false,
 }) => {
   const [started, setStarted] = useState(false);
   const [isFrontCamera, setIsFrontCamera] = useState(true);
@@ -52,6 +53,7 @@ export const Private = ({
       peerConnection.current.onsignalingstatechange = () =>
         // console.log(peerConnection.current?.signalingState);
 
+        peerConnection.current &&
         (peerConnection.current.onicecandidateerror = console.log);
       peerConnection.current.onicecandidate = (event: any) => {
         const candidate = event.candidate;
@@ -66,7 +68,7 @@ export const Private = ({
         }
       };
 
-      const offer = await peerConnection.current.createOffer();
+      const offer = (await peerConnection.current.createOffer()) as any;
       await peerConnection.current.setLocalDescription(offer);
     } catch (e) {
       console.log(e);
@@ -146,11 +148,21 @@ export const Private = ({
     );
   };
 
+  const handleMicStatus = async () => {
+    const localStreams = peerConnection.current?.getLocalStreams() || [];
+    for (const stream of localStreams) {
+      stream.getAudioTracks().forEach((each) => {
+        each.enabled = audiMuted;
+      });
+    }
+    setAudioMuted((m) => !m);
+  };
+
   useEffect(() => {
     const getStream = async () => {
       let sourceId;
       const sourceInfos = await mediaDevices.enumerateDevices();
-      for (const info of sourceInfos) {
+      for (const info of sourceInfos as any) {
         if (
           info.kind == "videoinput" && info.facing == isFrontCamera
             ? "user"
@@ -188,6 +200,10 @@ export const Private = ({
       signalingChannel.current.close();
     };
   }, []);
+
+  useEffect(() => {
+    handleMicStatus();
+  }, [isMuteAudio]);
 
   if (!!localStream)
     return (

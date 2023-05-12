@@ -136,31 +136,32 @@ const Login = ({
 
   return (
     <KeyboardDismiss>
-      <VStack flex={1} w="100%" mx="auto" justifyContent="space-between">
-        <KeyboardAvoidingView>
-          <ImageBackground
-            style={{ width: "100%", height: "100%" }}
-            source={require("assets/bg.jpg")}
-            resizeMode="cover"
-          >
-            <LinearGradient
-              start={{ x: 0, y: 1 }}
-              end={{ x: 0, y: 0 }}
-              colors={["white", "white", "white"]}
-              style={{ flex: 1, paddingHorizontal: Sizes.fixPadding * 2.0 }}
+      {system ? (
+        <VStack flex={1} w="100%" mx="auto" justifyContent="space-between">
+          <KeyboardAvoidingView>
+            <ImageBackground
+              style={{ width: "100%", height: "100%" }}
+              source={require("assets/bg.jpg")}
+              resizeMode="cover"
             >
-              <Box px={padding.p5} py={20}>
-                <HStack space={2} alignSelf="center" mb={5}>
-                  <Image
-                    source={{ uri: system?.data?.logoUrl }}
-                    alt="logo"
-                    size={55}
-                    width="100%"
-                    resizeMode="contain"
-                  />
-                </HStack>
+              <LinearGradient
+                start={{ x: 0, y: 1 }}
+                end={{ x: 0, y: 0 }}
+                colors={["white", "white", "white"]}
+                style={{ flex: 1, paddingHorizontal: Sizes.fixPadding * 2.0 }}
+              >
+                <Box px={padding.p5} py={20}>
+                  <HStack space={2} alignSelf="center" mb={5}>
+                    <Image
+                      source={{ uri: system?.data?.logoUrl }}
+                      alt="logo"
+                      size={55}
+                      width="100%"
+                      resizeMode="contain"
+                    />
+                  </HStack>
 
-                {/* <Heading
+                  {/* <Heading
                   fontSize={"22"}
                   alignSelf="center"
                   color={colors.primary}
@@ -168,196 +169,203 @@ const Login = ({
                   Log In with
                 </Heading> */}
 
-                <FormControl>
-                  <Controller
-                    control={control}
-                    render={({ field: { onChange, value } }) => (
-                      <Input
-                        p={4}
-                        borderColor={colors.inpBorderColor}
-                        borderRadius={30}
-                        onChangeText={(val) => onChange(val)}
-                        value={value}
-                        autoCapitalize="none"
-                        fontSize={15}
-                        letterSpacing={0.2}
-                        textAlign="left"
-                        placeholder="Email / Username"
-                        placeholderTextColor={colors.darkGray}
-                        style={{ ...styles.textFieldContentStyle }}
-                      />
-                    )}
-                    name="username"
-                    rules={{
-                      required: "Email or username is required.",
-                      minLength: {
-                        value: 3,
-                        message: "Email or username is minimum 3 characters.",
-                      },
-                    }}
-                    defaultValue=""
-                  />
-                  {errors.username && (
-                    <ErrorMessage
-                      message={
-                        errors.username?.message?.toString() ||
-                        "Email or username is required."
-                      }
+                  <FormControl>
+                    <Controller
+                      control={control}
+                      render={({ field: { onChange, value } }) => (
+                        <Input
+                          p={4}
+                          borderColor={colors.inpBorderColor}
+                          borderRadius={30}
+                          onChangeText={(val) => onChange(val)}
+                          value={value}
+                          autoCapitalize="none"
+                          fontSize={15}
+                          letterSpacing={0.2}
+                          textAlign="left"
+                          placeholder="Email / Username"
+                          placeholderTextColor={colors.darkGray}
+                          style={{ ...styles.textFieldContentStyle }}
+                        />
+                      )}
+                      name="username"
+                      rules={{
+                        required: "Email or username is required.",
+                        minLength: {
+                          value: 3,
+                          message: "Email or username is minimum 3 characters.",
+                        },
+                      }}
+                      defaultValue=""
                     />
-                  )}
-                </FormControl>
-                <FormControl marginTop={2}>
-                  <Controller
-                    control={control}
-                    render={({ field: { onChange, value } }) => (
-                      <Input
-                        secureTextEntry={isPasswordSecure}
-                        InputRightElement={
-                          <Pressable
-                            onPress={() =>
-                              setIsPasswordSecure(!isPasswordSecure)
-                            }
-                          >
-                            <Icon
-                              as={
-                                <MaterialIcons
-                                  name={
-                                    isPasswordSecure
-                                      ? "visibility-off"
-                                      : "visibility"
-                                  }
-                                />
-                              }
-                              size={5}
-                              mr="2"
-                              color="muted.400"
-                            />
-                          </Pressable>
+                    {errors.username && (
+                      <ErrorMessage
+                        message={
+                          errors.username?.message?.toString() ||
+                          "Email or username is required."
                         }
-                        p={4}
-                        borderColor={colors.inpBorderColor}
-                        borderRadius={30}
-                        onChangeText={(val) => onChange(val)}
-                        value={value}
-                        autoCapitalize="none"
-                        fontSize={15}
-                        letterSpacing={3}
-                        textAlign="left"
-                        type="password"
-                        placeholder="Password"
-                        placeholderTextColor={colors.darkGray}
-                        style={{ ...styles.textFieldContentStyle }}
                       />
                     )}
-                    name="password"
-                    rules={{
-                      required: "Password is required.",
-                      minLength: {
-                        value: 6,
-                        message: "Password is minimum 6 characters.",
-                      },
-                      pattern: {
-                        value:
-                          /^(?=.{6,})(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z])(?=.*[^\w\d]).*$/g,
-                        message:
-                          " Password must have at least 1 number, 1 uppercase letter, 1 lowercase letter & 1 special character",
-                      },
-                    }}
-                    defaultValue=""
-                  />
-                  {errors.password && (
-                    <ErrorMessage
-                      message={
-                        errors.password?.message?.toString() ||
-                        "Password is required."
-                      }
+                  </FormControl>
+                  <FormControl marginTop={2}>
+                    <Controller
+                      control={control}
+                      render={({ field: { onChange, value } }) => (
+                        <Input
+                          secureTextEntry={isPasswordSecure}
+                          InputRightElement={
+                            <Pressable
+                              onPress={() =>
+                                setIsPasswordSecure(!isPasswordSecure)
+                              }
+                            >
+                              <Icon
+                                as={
+                                  <MaterialIcons
+                                    name={
+                                      isPasswordSecure
+                                        ? "visibility-off"
+                                        : "visibility"
+                                    }
+                                  />
+                                }
+                                size={5}
+                                mr="2"
+                                color="muted.400"
+                              />
+                            </Pressable>
+                          }
+                          p={4}
+                          borderColor={colors.inpBorderColor}
+                          borderRadius={30}
+                          onChangeText={(val) => onChange(val)}
+                          value={value}
+                          autoCapitalize="none"
+                          fontSize={15}
+                          letterSpacing={3}
+                          textAlign="left"
+                          type="password"
+                          placeholder="Password"
+                          placeholderTextColor={colors.darkGray}
+                          style={{ ...styles.textFieldContentStyle }}
+                        />
+                      )}
+                      name="password"
+                      rules={{
+                        required: "Password is required.",
+                        minLength: {
+                          value: 6,
+                          message: "Password is minimum 6 characters.",
+                        },
+                        pattern: {
+                          value:
+                            /^(?=.{6,})(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z])(?=.*[^\w\d]).*$/g,
+                          message:
+                            " Password must have at least 1 number, 1 uppercase letter, 1 lowercase letter & 1 special character",
+                        },
+                      }}
+                      defaultValue=""
                     />
-                  )}
-                </FormControl>
-                <VStack space={3}>
-                  <Flex alignSelf="center" width={"100%"}>
-                    {requesting && <ActivityIndicator color={"black"} />}
-                    <TouchableOpacity
-                      activeOpacity={0.6}
-                      disabled={authLogin.requesting}
-                      onPress={handleSubmit(onSubmit)}
-                    >
-                      <LinearGradient
-                        start={{ x: 1, y: 0 }}
-                        end={{ x: 0, y: 0 }}
-                        colors={[
-                          "rgba(244, 67, 54, 0.9)",
-                          "rgba(244, 67, 54, 0.6)",
-                          "rgba(244, 67, 54, 0.3)",
-                        ]}
-                        style={{
-                          ...styles.loginButtonStyle,
-                          opacity: authLogin.requesting ? 0.6 : 1,
-                        }}
+                    {errors.password && (
+                      <ErrorMessage
+                        message={
+                          errors.password?.message?.toString() ||
+                          "Password is required."
+                        }
+                      />
+                    )}
+                  </FormControl>
+                  <VStack space={3}>
+                    <Flex alignSelf="center" width={"100%"}>
+                      {requesting && <ActivityIndicator color={"black"} />}
+                      <TouchableOpacity
+                        activeOpacity={0.6}
+                        disabled={authLogin.requesting}
+                        onPress={handleSubmit(onSubmit)}
                       >
-                        <Text
+                        <LinearGradient
+                          start={{ x: 1, y: 0 }}
+                          end={{ x: 0, y: 0 }}
+                          colors={[
+                            "rgba(244, 67, 54, 0.9)",
+                            "rgba(244, 67, 54, 0.6)",
+                            "rgba(244, 67, 54, 0.3)",
+                          ]}
                           style={{
-                            fontWeight: "bold",
-                            color: colors.lightText,
+                            ...styles.loginButtonStyle,
+                            opacity: authLogin.requesting ? 0.6 : 1,
                           }}
                         >
-                          Log In
-                        </Text>
-                      </LinearGradient>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      activeOpacity={0.6}
-                      disabled={authLogin.requesting}
-                      onPress={signInWithGoogle}
-                    >
-                      <LinearGradient
-                        start={{ x: 1, y: 0 }}
-                        end={{ x: 0, y: 0 }}
-                        colors={[
-                          "rgba(244, 67, 54, 0.9)",
-                          "rgba(244, 67, 54, 0.6)",
-                          "rgba(244, 67, 54, 0.3)",
-                        ]}
-                        style={styles.loginButtonStyle}
+                          <Text
+                            style={{
+                              fontWeight: "bold",
+                              color: colors.lightText,
+                            }}
+                          >
+                            Log In
+                          </Text>
+                        </LinearGradient>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        activeOpacity={0.6}
+                        disabled={authLogin.requesting}
+                        onPress={signInWithGoogle}
                       >
-                        <Text
-                          style={{
-                            fontWeight: "bold",
-                            color: colors.lightText,
-                          }}
+                        <LinearGradient
+                          start={{ x: 1, y: 0 }}
+                          end={{ x: 0, y: 0 }}
+                          colors={[
+                            "rgba(244, 67, 54, 0.9)",
+                            "rgba(244, 67, 54, 0.6)",
+                            "rgba(244, 67, 54, 0.3)",
+                          ]}
+                          style={styles.loginButtonStyle}
                         >
-                          <FontAwesome name="google" size={20} /> Login with
-                          Google
-                        </Text>
-                      </LinearGradient>
-                    </TouchableOpacity>
-                  </Flex>
-                  <Link
-                    alignSelf="center"
-                    onPress={(): void =>
-                      navigation.navigate("IntroNav/ForgotPassword")
-                    }
-                  >
-                    <Text fontWeight={300} fontSize={14} color={colors.primary}>
-                      Forgot Password?
-                    </Text>
-                  </Link>
-                  <Link
-                    alignSelf="center"
-                    onPress={(): void =>
-                      navigation.navigate("IntroNav/Register")
-                    }
-                  >
-                    <Text fontSize={12} color={colors.primary}>
-                      CREATE AN ACCOUNT
-                    </Text>
-                  </Link>
-                </VStack>
-              </Box>
-            </LinearGradient>
-          </ImageBackground>
-        </KeyboardAvoidingView>
-      </VStack>
+                          <Text
+                            style={{
+                              fontWeight: "bold",
+                              color: colors.lightText,
+                            }}
+                          >
+                            <FontAwesome name="google" size={20} /> Login with
+                            Google
+                          </Text>
+                        </LinearGradient>
+                      </TouchableOpacity>
+                    </Flex>
+                    <Link
+                      alignSelf="center"
+                      onPress={(): void =>
+                        navigation.navigate("IntroNav/ForgotPassword")
+                      }
+                    >
+                      <Text
+                        fontWeight={300}
+                        fontSize={14}
+                        color={colors.primary}
+                      >
+                        Forgot Password?
+                      </Text>
+                    </Link>
+                    <Link
+                      alignSelf="center"
+                      onPress={(): void =>
+                        navigation.navigate("IntroNav/Register")
+                      }
+                    >
+                      <Text fontSize={12} color={colors.primary}>
+                        CREATE AN ACCOUNT
+                      </Text>
+                    </Link>
+                  </VStack>
+                </Box>
+              </LinearGradient>
+            </ImageBackground>
+          </KeyboardAvoidingView>
+        </VStack>
+      ) : (
+        <ActivityIndicator color={"#fff"} />
+      )}
     </KeyboardDismiss>
   );
 };

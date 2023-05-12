@@ -1,17 +1,11 @@
 import React, { useEffect, useState } from "react";
-import {
-  Dimensions,
-  PermissionsAndroid,
-  Platform,
-  SafeAreaView,
-  StatusBar,
-} from "react-native";
+import { PermissionsAndroid, SafeAreaView } from "react-native";
 import {
   PERMISSIONS,
   requestMultiple,
   RESULTS,
 } from "react-native-permissions";
-import { Text, View, Heading, useToast } from "native-base";
+import { Text, View, Heading, useToast, Button, Image } from "native-base";
 import { tokenService } from "services/token.service";
 import socketHolder from "lib/socketHolder";
 import { Private } from "components/antmedia/Private";
@@ -24,19 +18,17 @@ import PublisherIOS from "components/antmedia/PublisherIOS";
 import { connect } from "react-redux";
 import { HLSViewer } from "components/antmedia/HLSViewer";
 import HeaderMenu from "components/tab/HeaderMenu";
-import { colors, Sizes } from "utils/theme";
+import { colors } from "utils/theme";
 import ChatBox from "components/streamChat/chat-box";
-import ButtonFollow from "components/uis/ButtonFollow";
 import FavoriteGift from "components/gift/favorite";
 import SendTip from "components/message/SendTip";
 import { giftService } from "../../services";
 import AntDesign from "react-native-vector-icons/AntDesign";
-const { width, height } = Dimensions.get("window");
-let deviceH = Dimensions.get("screen").height;
-const STATUS_BAR_HEIGHT = StatusBar.currentHeight || 24;
-let bottomNavBarH = deviceH - height + STATUS_BAR_HEIGHT;
 import styles from "./styles";
 import { WEBRTC_ADAPTOR_INFORMATIONS } from "components/antmedia/constants";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { shortenLargeNumber } from "lib/number";
+
 enum EVENT {
   JOINED_THE_ROOM = "JOINED_THE_ROOM",
   JOIN_ROOM = "JOIN_ROOM",
@@ -44,6 +36,7 @@ enum EVENT {
   STREAM_INFORMATION_CHANGED = "private-stream/streamInformationChanged",
   MODEL_JOIN_ROOM = "MODEL_JOIN_ROOM",
   SEND_PAID_TOKEN = "SEND_PAID_TOKEN",
+  RECEIVED_PAID_TOKEN_EVENT = "RECEIVED_PAID_TOKEN_EVENT",
 }
 interface IProps {
   localStreamId: any;
@@ -69,6 +62,7 @@ const Call = ({ route, settings, currentUser, activeConversation }: IProps) => {
   const [favoriteGift, setFavoriteGift] = useState({} as any);
   const [modal, setModal] = useState(false);
   const toast = useToast();
+  const [isMuteAudio, setMuteAudio] = useState(false);
 
   useEffect(() => {
     askPermissions();
@@ -135,7 +129,6 @@ const Call = ({ route, settings, currentUser, activeConversation }: IProps) => {
 
   const handleSocketLeave = () => {
     // TODO - handle me
-    console.log("Leave---");
     const socket = socketHolder.getSocket() as any;
     socket.off(EVENT.JOINED_THE_ROOM);
     socket.off("private-stream/streamJoined");
@@ -184,6 +177,7 @@ const Call = ({ route, settings, currentUser, activeConversation }: IProps) => {
       // hangUp();
     }
   };
+
   const callback = (info: WEBRTC_ADAPTOR_INFORMATIONS) => {
     if (activeConversation && activeConversation.data) {
       // const socket = this.context;
@@ -213,7 +207,13 @@ const Call = ({ route, settings, currentUser, activeConversation }: IProps) => {
   const renderLocalVideo = () => {
     if (!localStreamRefId) return null;
     if (isAndroid()) {
-      return <Private streamId={localStreamRefId} onChange={callback} />;
+      return (
+        <Private
+          isMuteAudio={isMuteAudio}
+          streamId={localStreamRefId}
+          onChange={callback}
+        />
+      );
     }
 
     return <PublisherIOS streamId={localStreamRefId} onChange={callback} />;
@@ -222,7 +222,6 @@ const Call = ({ route, settings, currentUser, activeConversation }: IProps) => {
   const getfavoriteGift = async () => {
     setLoading(false);
     const respGift = await (await giftService.favoriteGift()).data;
-    console.log("Get favorite gift : ", respGift.data[0]);
     setFavoriteGift(respGift.data[0]);
     setLoading(true);
   };
@@ -231,7 +230,6 @@ const Call = ({ route, settings, currentUser, activeConversation }: IProps) => {
     try {
       if (gift && gift.length > 0) {
         setFavoriteGift(gift[0]);
-
         await giftService.addfavoriteGift({ giftId: gift[0]._id });
       }
     } catch (error) {
@@ -280,41 +278,21 @@ const Call = ({ route, settings, currentUser, activeConversation }: IProps) => {
       >
         Private Chat
       </Heading>
-      <View
-        style={{
-          position: "absolute",
-          top:
-            Platform.OS === "ios"
-              ? deviceH / 2 - (90 + 47)
-              : deviceH / 2 - (bottomNavBarH + 60),
-          right: Sizes.fixPadding - 5,
-          alignSelf: "flex-end",
-          zIndex: 1000,
-        }}
-      >
+      <View style={styles.rightBarStream}>
         <FavoriteGift
           performerId={privateRequest?.conversation?.performerId}
           conversationId={activeConversation?.data?._id}
           favorGift={favoriteGift}
         />
-      </View>
-      <View
-        style={{
-          position: "absolute",
-          top:
-            Platform.OS === "ios"
-              ? deviceH / 2 - (90 + 47) + 80
-              : deviceH / 2 - (bottomNavBarH + 60) + 80,
-          right: Sizes.fixPadding - 5,
-          alignSelf: "flex-end",
-          zIndex: 1000,
-        }}
-      >
         <TouchableOpacity onPress={() => setModal(true)}>
-          <AntDesign name="gift" color={colors.light} size={28} />
+          <AntDesign
+            style={styles.iconStream}
+            name="gift"
+            color={colors.light}
+            size={28}
+          />
         </TouchableOpacity>
       </View>
-
       <View flex={1} flexDirection={"column"} position={"relative"}>
         {renderLocalVideo()}
         {renderPerformerVideo()}

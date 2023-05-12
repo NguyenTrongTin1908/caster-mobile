@@ -27,6 +27,18 @@ const styles = StyleSheet.create({
     paddingBottom: Sizes.fixPadding * 3.0,
   },
 
+  rightBarStream: {
+    position: "absolute",
+    marginTop: Sizes.fixPadding + 100.0,
+    alignItems: "center",
+    alignSelf: "flex-end",
+    zIndex: 1000,
+  },
+
+  iconStream: {
+    marginTop: Sizes.fixPadding + 100.0,
+  },
+
   songRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -104,7 +116,14 @@ const styles = StyleSheet.create({
   },
 
   textName: {
+    marginTop: Sizes.fixPadding - 7.0,
     color: colors.lightText,
+  },
+
+  btnEndStream: {
+    color: colors.darkText,
+    backgroundColor: colors.secondary,
+    marginTop: Sizes.fixPadding + 180.0,
   },
 });
 

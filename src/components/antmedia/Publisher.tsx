@@ -13,22 +13,10 @@ import {
 import { config } from "config";
 import { PublicStreamView } from "./styles";
 
-export const Publisher = ({
-  streamId = "",
-  // styles = {
-  //   width: 193,
-  //   height: 136,
-  //   position: "absolute",
-  //   bottom: 60,
-  //   right: 12,
-  //   zIndex: 2,
-  //   backgroundColor: "#cbb967",
-  // },
-  onChange,
-}) => {
+export const Publisher = ({ streamId = "", onChange, isMuteAudio }) => {
   const [started, setStarted] = useState(false);
   const [isFrontCamera, setIsFrontCamera] = useState(true);
-  const [audiMuted, setAudioMuted] = useState(false);
+  const [audiMuted, setAudioMuted] = useState(true);
   const [videoMuted, setVideoMuted] = useState(false);
 
   const [localStream, setLocalStream] = useState<MediaStream>();
@@ -50,12 +38,9 @@ export const Publisher = ({
           },
         ],
       });
-      // console.log('peerConnection.current', peerConnection.current);
       peerConnection.current?.addStream(localStreamRef.current);
 
       peerConnection.current.onsignalingstatechange = () =>
-        // console.log(peerConnection.current?.signalingState);
-
         (peerConnection.current.onicecandidateerror = console.log);
       peerConnection.current.onicecandidate = (event) => {
         const candidate = event.candidate;
@@ -96,11 +81,9 @@ export const Publisher = ({
         onChange(WEBRTC_ADAPTOR_INFORMATIONS.PUBLISH_STARTED);
       },
       stop: () => {
-        console.log("stop called");
         onChange(WEBRTC_ADAPTOR_INFORMATIONS.PUBLISH_FINISHED);
       },
       takeCandidate: (data) => {
-        // console.log("onIceCandidate remote");
         peerConnection.current?.addIceCandidate({
           candidate: data?.candidate || "",
           sdpMLineIndex: Number(data?.label) || 0,
@@ -108,7 +91,6 @@ export const Publisher = ({
         });
       },
       takeConfiguration: (data) => {
-        // console.log("got answer")
         const answer = data?.sdp || "";
         peerConnection.current?.setRemoteDescription({
           sdp: answer,
@@ -125,6 +107,16 @@ export const Publisher = ({
       signalingChannel.current?.open();
       return;
     }
+  };
+
+  const handleMicStatus = async () => {
+    const localStreams = peerConnection.current?.getLocalStreams() || [];
+    for (const stream of localStreams) {
+      stream.getAudioTracks().forEach((each) => {
+        each.enabled = audiMuted;
+      });
+    }
+    setAudioMuted((m) => !m);
   };
 
   const renderButtons = () => {
@@ -146,47 +138,50 @@ export const Publisher = ({
             signalingChannel.current.close();
           }}
         />
-        {/* <Button
-        title={audiMuted ? "UMA" : "MA"}
-        color="red"
-        onPress={() => {
-          const localStreams = peerConnection.current?.getLocalStreams() || [];
-          for (const stream of localStreams) {
-            stream.getAudioTracks().forEach((each) => {
-              each.enabled = audiMuted;
-            });
-          }
-          setAudioMuted((m) => !m);
-        }}
-      />
-      <Button
-        title={videoMuted ? "UMV" : "MV"}
-        color="red"
-        onPress={() => {
-          const localStreams = peerConnection.current?.getLocalStreams() || [];
-          for (const stream of localStreams) {
-            stream.getVideoTracks().forEach((each) => {
-              each.enabled = videoMuted;
-            });
-          }
-          setVideoMuted((m) => !m);
-        }}
-      />
-      <Button
-        title="SC"
-        color="red"
-        onPress={() => {
-          const localStreams = peerConnection.current?.getLocalStreams() || [];
-          for (const stream of localStreams) {
-            stream.getVideoTracks().forEach((each) => {
-              // @ts-ignore
-              // easiest way is to switch camera this way
-              each._switchCamera();
-            });
-          }
-          setIsFrontCamera((c) => !c);
-        }}
-      /> */}
+        <Button
+          title={audiMuted ? "UMA" : "MA"}
+          color="red"
+          onPress={() => {
+            const localStreams =
+              peerConnection.current?.getLocalStreams() || [];
+            for (const stream of localStreams) {
+              stream.getAudioTracks().forEach((each) => {
+                each.enabled = audiMuted;
+              });
+            }
+            setAudioMuted((m) => !m);
+          }}
+        />
+        <Button
+          title={videoMuted ? "UMV" : "MV"}
+          color="red"
+          onPress={() => {
+            const localStreams =
+              peerConnection.current?.getLocalStreams() || [];
+            for (const stream of localStreams) {
+              stream.getVideoTracks().forEach((each) => {
+                each.enabled = videoMuted;
+              });
+            }
+            setVideoMuted((m) => !m);
+          }}
+        />
+        <Button
+          title="SC"
+          color="red"
+          onPress={() => {
+            const localStreams =
+              peerConnection.current?.getLocalStreams() || [];
+            for (const stream of localStreams) {
+              stream.getVideoTracks().forEach((each) => {
+                // @ts-ignore
+                // easiest way is to switch camera this way
+                each._switchCamera();
+              });
+            }
+            setIsFrontCamera((c) => !c);
+          }}
+        />
       </View>
     );
   };
@@ -221,9 +216,6 @@ export const Publisher = ({
       if (media) {
         localStreamRef.current = media as MediaStream;
         setLocalStream(media as MediaStream);
-
-        // start to call
-        // console.log('start to call...');
         start();
       }
     };
@@ -237,15 +229,19 @@ export const Publisher = ({
     };
   }, []);
 
+  useEffect(() => {
+    handleMicStatus();
+  }, [isMuteAudio]);
+
   if (!!localStream)
     return (
-      // <SafeAreaView style={{ flex: 1 }}>
-      <PublicStreamView
-        zOrder={1}
-        streamURL={localStream?.toURL()}
-        objectFit="contain"
-      />
-      // </SafeAreaView>
+      <SafeAreaView style={{ flex: 1 }}>
+        <PublicStreamView
+          zOrder={1}
+          streamURL={localStream?.toURL()}
+          objectFit="cover"
+        />
+      </SafeAreaView>
     );
 
   return null;

@@ -5,8 +5,15 @@ import {
   requestMultiple,
   RESULTS,
 } from "react-native-permissions";
-import { Text, View, Heading, HStack, useToast } from "native-base";
-import Button from "components/uis/Button";
+import {
+  Image,
+  Text,
+  View,
+  Heading,
+  HStack,
+  useToast,
+  Button,
+} from "native-base";
 import { tokenService } from "services/token.service";
 import socketHolder from "lib/socketHolder";
 import { Private } from "components/antmedia/Private";
@@ -28,6 +35,8 @@ import {
   resetStreamMessage,
 } from "services/redux/stream-chat/actions";
 import ChatBox from "components/streamChat/chat-box";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { shortenLargeNumber } from "lib/number";
 
 enum EVENT {
   JOINED_THE_ROOM = "JOINED_THE_ROOM",
@@ -36,6 +45,7 @@ enum EVENT {
   STREAM_INFORMATION_CHANGED = "private-stream/streamInformationChanged",
   MODEL_JOIN_ROOM = "MODEL_JOIN_ROOM",
   SEND_PAID_TOKEN = "SEND_PAID_TOKEN",
+  RECEIVED_PAID_TOKEN_EVENT = "RECEIVED_PAID_TOKEN_EVENT",
 }
 interface IProps {
   localStreamId: string;
@@ -67,16 +77,12 @@ const PrivateChat = ({
   let subscrbierRef: any;
   let subscriberRef2: any;
   const { selectedRequest } = route.params;
-  const [roomJoined, setRoomJoined] = useState(false);
-  const [modal, setModal] = useState(false);
-  const [callTime, setCallTime] = useState(0);
   const [receivedToken, setReceivedToken] = useState(0);
   const [total, setTotal] = useState(0);
   const [members, setMembers] = useState([]);
-  const [showEmoji, setShowEmoji] = useState(false);
   const [initialized, setInitialized] = useState(false);
-  const inputText = useRef("");
   const [permissionGranted, setPermissionGranted] = useState(false);
+  const [isMuteAudio, setMuteAudio] = useState(false);
   const [privateRequest, setPrivateRequest] = useState({} as any);
   const localStreamRef = useRef({ id: "" }).current;
   const remoteStreamRef = useRef({
@@ -87,8 +93,9 @@ const PrivateChat = ({
   useEffect(() => {
     askPermissions();
     handleSocketsJoin();
-    access(selectedRequest.conversationId);
     const socket = socketHolder.getSocket() as any;
+    access(selectedRequest.conversationId);
+    socket.on(EVENT.RECEIVED_PAID_TOKEN_EVENT, handleReceivedPaidToken);
     socket.on("public-room-changed", handler);
     return () => {
       privateRequestHolder = null;
@@ -96,6 +103,10 @@ const PrivateChat = ({
       handleSocketLeave();
     };
   }, []);
+
+  const handleReceivedPaidToken = ({ token }) => {
+    setReceivedToken(receivedToken + token);
+  };
 
   const handleSocketsJoin = async () => {
     const socket = socketHolder.getSocket() as any;
@@ -107,7 +118,6 @@ const PrivateChat = ({
           streamId,
         });
         localStreamRef.id = streamId;
-        // setLocalStreamId(streamId);
       } else {
         remoteStreamRef.id = streamId;
       }
@@ -186,7 +196,6 @@ const PrivateChat = ({
     await handleSocketLeave();
     remoteStreamRef.id = "";
     localStreamRef.id = "";
-
     toast.show({
       description: "Private call has ended",
     });
@@ -205,7 +214,6 @@ const PrivateChat = ({
         await socket.emit(EVENT.JOIN_ROOM, {
           conversationId: conversation._id,
         });
-
         socket.on(EVENT.STREAM_INFORMATION_CHANGED, ({ total, members }) => {
           setTotal(total);
           setMembers(members);
@@ -253,13 +261,13 @@ const PrivateChat = ({
     if (!localStreamRef.id) return null;
 
     if (isAndroid()) {
-      return <Private streamId={localStreamRef.id} />;
+      return <Private isMuteAudio={isMuteAudio} streamId={localStreamRef.id} />;
     }
 
     return <PublisherIOS streamId={localStreamRef.id} />;
   };
 
-  const renderPerformerVideo = () => {
+  const renderRemoveVideo = () => {
     const { optionForBroadcast } = settings;
     if (!remoteStreamRef.id) return null;
     return optionForBroadcast === WEBRTC
@@ -296,13 +304,44 @@ const PrivateChat = ({
       >
         Private Chat
       </Heading>
+      <View style={styles.rightBarStream}>
+        <View>
+          <Image
+            source={require("assets/diamond.png")}
+            alt={"avatar"}
+            size={22}
+            resizeMode="contain"
+          />
+          <Text color={colors.lightText}>
+            {shortenLargeNumber((receivedToken || 0).toFixed(2))}
+          </Text>
+        </View>
+        <TouchableOpacity onPress={() => setMuteAudio(!isMuteAudio)}>
+          {isMuteAudio ? (
+            <MaterialIcons
+              style={styles.iconStream}
+              name="mic-off"
+              color={"red"}
+              size={28}
+            />
+          ) : (
+            <MaterialIcons
+              style={styles.iconStream}
+              name="mic"
+              color={"red"}
+              size={28}
+            />
+          )}
+        </TouchableOpacity>
+        <Button style={styles.btnEndStream} onPress={hangUp}>
+          End Now
+        </Button>
+      </View>
+      {renderLocalVideo()}
       <View flex={1}>
-        {renderLocalVideo()}
-
-        {renderPerformerVideo()}
+        {renderRemoveVideo()}
         {<ChatBox canSendMessage canSendTip={false} />}
       </View>
-
       <View style={styles.footerGolive}>
         {!initialized ? (
           <TouchableOpacity
@@ -358,6 +397,23 @@ const styles = StyleSheet.create({
 
   bg1: { backgroundColor: "#1ED760" },
   bg2: { backgroundColor: "#FE294D" },
+
+  rightBarStream: {
+    position: "absolute",
+    marginTop: Sizes.fixPadding + 160.0,
+    alignItems: "center",
+    alignSelf: "flex-end",
+    zIndex: 1000,
+  },
+
+  iconStream: {
+    marginTop: Sizes.fixPadding + 80.0,
+  },
+  btnEndStream: {
+    color: colors.darkText,
+    backgroundColor: colors.secondary,
+    marginTop: Sizes.fixPadding + 150.0,
+  },
 });
 
 const mapStateToProps = (state) => ({

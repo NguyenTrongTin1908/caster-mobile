@@ -29,6 +29,18 @@ const styles = StyleSheet.create({
         : deviceH - (bottomNavBarH + 60),
     justifyContent: "flex-end",
   },
+
+  rightBarStream: {
+    position: "absolute",
+    marginTop: Sizes.fixPadding + 160.0,
+    alignItems: "center",
+    alignSelf: "flex-end",
+    zIndex: 1000,
+  },
+
+  iconStream: {
+    marginTop: Sizes.fixPadding + 40.0,
+  },
   button: {
     width: 60,
     height: 60,
@@ -59,6 +71,17 @@ const styles = StyleSheet.create({
 
   bg1: { backgroundColor: "#1ED760" },
   bg2: { backgroundColor: "#FE294D" },
+
+  textName: {
+    marginTop: Sizes.fixPadding - 7.0,
+    color: colors.lightText,
+  },
+
+  btnEndStream: {
+    color: colors.darkText,
+    backgroundColor: colors.secondary,
+    marginTop: Sizes.fixPadding + 150.0,
+  },
 });
 
 export default styles;

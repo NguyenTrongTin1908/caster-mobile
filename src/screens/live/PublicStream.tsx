@@ -3,7 +3,7 @@ import { Button, View, Heading, Text } from "native-base";
 import { connect } from "react-redux";
 import { IUser } from "src/interfaces";
 import { streamService } from "../../services";
-import { PermissionsAndroid } from "react-native";
+import { PermissionsAndroid, TouchableWithoutFeedback } from "react-native";
 import {
   PERMISSIONS,
   requestMultiple,
@@ -23,6 +23,8 @@ import PublisherIOS from "components/antmedia/PublisherIOS";
 import ChatBox from "components/streamChat/chat-box";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import BackButton from "components/uis/BackButton"; // import EmojiSelector from "react-native-emoji-selector";
+import styles from "./style";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 interface IProps {
   resetStreamMessage: Function;
@@ -49,6 +51,7 @@ const PublicStream = ({
   const [members, setMembers] = useState([]);
   const [permissionGranted, setPermissionGranted] = useState(false);
   const [localStreamId, setLocalStreamId] = useState(null as any);
+  const [isMuteAudio, setMuteAudio] = useState(false);
 
   useEffect(() => {
     askPermissions();
@@ -131,22 +134,17 @@ const PublicStream = ({
       const socket = socketHolder.getSocket() as any;
       if (info === WEBRTC_ADAPTOR_INFORMATIONS.INITIALIZED) {
         setInitialized(true);
-        console.log("INITIALIZED");
         // if (publisherRef.publish) publisherRef.publish(sessionId);
         // else publisherRef2.publish(sessionId);
       } else if (info === WEBRTC_ADAPTOR_INFORMATIONS.PUBLISH_STARTED) {
         const conversation = { ...activeConversation.data };
         socket.emit("public-stream/live", { conversationId: conversation._id });
-        console.log("public");
 
         setLoading(false);
       } else if (info === WEBRTC_ADAPTOR_INFORMATIONS.PUBLISH_FINISHED) {
-        console.log("finished");
-
         setLoading(false);
       } else if (info === WEBRTC_ADAPTOR_INFORMATIONS.CLOSED) {
         setLoading(false);
-        console.log("close");
         setInitialized(false);
       }
     }
@@ -206,13 +204,18 @@ const PublicStream = ({
     }
   };
   const handler = ({ total, members }) => {
-    console.log("Vo");
     setTotal(total);
     setMembers(members);
   };
 
   const renderLocalVideo = () => {
-    return <Publisher streamId={localStreamId} onChange={callback} />;
+    return (
+      <Publisher
+        isMuteAudio={isMuteAudio}
+        streamId={localStreamId}
+        onChange={callback}
+      />
+    );
     // if (isAndroid()) {
     //   return <Publisher streamId={localStreamId} onChange={callback} />;
     // }
@@ -235,24 +238,29 @@ const PublicStream = ({
 
       <BackButton />
       {sessionId && (
-        <View
-          style={{
-            position: "absolute",
-            marginTop: Sizes.fixPadding + 180.0,
-            alignItems: "center",
-            alignSelf: "flex-end",
-            zIndex: 1000,
-          }}
-        >
-          <MaterialIcons name="visibility" color={colors.light} size={28} />
-          <Text
-            style={{
-              marginTop: Sizes.fixPadding - 7.0,
-              color: colors.lightText,
-            }}
-          >
-            {total}
-          </Text>
+        <View style={styles.rightBarStream}>
+          <MaterialIcons name="visibility" color={"red"} size={28} />
+          <Text style={styles.textName}>{total}</Text>
+          <TouchableWithoutFeedback onPress={() => setMuteAudio(!isMuteAudio)}>
+            {isMuteAudio ? (
+              <MaterialIcons
+                style={styles.iconStream}
+                name="mic-off"
+                color={"red"}
+                size={28}
+              />
+            ) : (
+              <MaterialIcons
+                style={styles.iconStream}
+                name="mic"
+                color={"red"}
+                size={28}
+              />
+            )}
+          </TouchableWithoutFeedback>
+          <Button style={styles.btnEndStream} onPress={() => stop()}>
+            End Now
+          </Button>
         </View>
       )}
       <View flex={1} flexDirection={"column"} position={"relative"}>

@@ -138,7 +138,7 @@ export const HLSViewer = forwardRef(
           key={videoKey}
           ref={ref}
           source={{ uri: uri }}
-          resizeMode={"contain"}
+          resizeMode={"cover"}
           style={{
             position: "absolute",
             minHeight: 400,

@@ -15,12 +15,9 @@ export const RemoteView = styled(RTCView)`
 export const LocalView = styled(RTCView)`
   width: 100px;
   height: 100px;
-  position: absolute;
-  top: 0px;
-  right: 0px;
   z-index: 2;
   background: #000000;
-  /* align-self: flex-end; */
+  align-self: flex-end;
   /* margin-top: auto; */
 `;
 
