@@ -1,6 +1,6 @@
 import CommentItem from "./comment-item";
 import { IPerformer } from "interfaces/index";
-import { Actionsheet, View, useDisclose, HStack, Image } from "native-base";
+import { Actionsheet, View, useDisclose } from "native-base";
 import { FlatList, Text, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -17,7 +17,6 @@ import {
   createComment,
 } from "services/redux/comment/actions";
 import { connect } from "react-redux";
-import BadgeText from "../uis/BadgeText";
 interface IProps {
   user: IPerformer;
   canReply?: boolean;
@@ -45,6 +44,8 @@ const ListComments = React.memo(
     const { onOpen, isOpen, onClose } = useDisclose();
     const [totalComment, setTotalComment] = useState(feed.totalComment);
     const [comments, setComments] = useState([] as any);
+    const [isReply, setReply] = useState(false);
+    const [itemReply, setItemReply] = useState({} as any);
 
     useEffect(() => {
       const data = commentMapping?.hasOwnProperty(feed._id)
@@ -58,7 +59,6 @@ const ListComments = React.memo(
     const [keyboardHeight, setKeyboardHeight] = useState(0);
 
     function onKeyboardDidShow(e: KeyboardEvent) {
-      // Remove type here if not using TypeScript
       setKeyboardHeight(e.endCoordinates.height - 170);
     }
 
@@ -118,6 +118,11 @@ const ListComments = React.memo(
       deleteComment(item._id);
       setTotalComment(totalComment - 1);
     };
+
+    const handleReply = async (item = {}) => {
+      setItemReply(item);
+      setReply(!isReply);
+    };
     const renderItem = ({ item }) => {
       return (
         <>
@@ -126,6 +131,7 @@ const ListComments = React.memo(
             key={item._id}
             item={item}
             onDelete={handleDeleteComment}
+            handleReply={(item) => handleReply(item)}
           />
         </>
       );
@@ -170,7 +176,6 @@ const ListComments = React.memo(
                 style={{ width: "100%" }}
                 onEndReachedThreshold={0.5}
                 onEndReached={() => handleGetmore()}
-                // ListEmptyComponent={renderEmpty()}
                 contentContainerStyle={{
                   paddingTop: 100 + keyboardHeight,
                   flexDirection: "column",
@@ -178,12 +183,13 @@ const ListComments = React.memo(
               />
             </View>
             <CommentForm
+              itemReply={itemReply}
               creator={user}
-              objectId={feed._id}
-              objectType="feed"
-              isReply={false}
+              objectId={isReply ? itemReply?._id : feed._id}
+              objectType={isReply ? "comment" : "feed"}
+              isReply={isReply}
               handleOnSubmit={handleCreateComment}
-              height={keyboardHeight}
+              handleReply={(item) => handleReply(item)}
             ></CommentForm>
           </Actionsheet.Content>
         </Actionsheet>

@@ -26,6 +26,7 @@ interface IProps {
   createComment: Function;
   getComments: Function;
   onDelete: Function;
+  handleReply: Function;
   commentMapping: any;
 }
 const CommentItem = React.memo(
@@ -37,6 +38,7 @@ const CommentItem = React.memo(
     getComments: getReplys,
     commentMapping,
     onDelete,
+    handleReply,
   }: IProps): React.ReactElement => {
     const [isOpenReply, setOpenReply] = useState(false);
     const [isLiked, setLiked] = useState(item.isLiked);
@@ -47,10 +49,7 @@ const CommentItem = React.memo(
     const replys = commentMapping.hasOwnProperty(item._id)
       ? commentMapping[item._id].items
       : [];
-    const handleCreateReply = async (values) => {
-      createReply(values);
-      !isOpenReply ? onOpenReply() : onOpenReply(false);
-    };
+
     const onOpenReply = async (canOpen = true) => {
       getReplys({
         objectId: item._id,
@@ -151,7 +150,10 @@ const CommentItem = React.memo(
                     <HStack>
                       {canReply && (
                         <TouchableOpacity
-                          onPress={() => setReply(!isReply)}
+                          onPress={() => {
+                            setReply(!isReply);
+                            handleReply(item);
+                          }}
                           style={styles.optionCommentItem}
                         >
                           <Text color={colors.secondary}>Reply</Text>
@@ -186,38 +188,6 @@ const CommentItem = React.memo(
                     </HStack>
                   </VStack>
                 </Flex>
-                {canReply && isReply && (
-                  <HStack space={2} w="100%">
-                    <View w="15%">
-                      <Image
-                        source={
-                          currentUser?.avatar
-                            ? { uri: currentUser?.avatar }
-                            : require("../../assets/avatar-default.png")
-                        }
-                        style={{
-                          width: 40,
-                          height: 40,
-                          marginLeft: 5,
-                          borderRadius: 35.0,
-                          borderColor: "blue",
-                          borderWidth: 1.0,
-                          alignItems: "center",
-                        }}
-                        alt="avatar"
-                      />
-                    </View>
-                    <View width={"85%"}>
-                      <ReplyForm
-                        creator={currentUser}
-                        objectId={item._id}
-                        objectType="comment"
-                        isReply={true}
-                        handleOnSubmit={handleCreateReply}
-                      ></ReplyForm>
-                    </View>
-                  </HStack>
-                )}
                 {isOpenReply && (
                   <View>
                     <ListReplys

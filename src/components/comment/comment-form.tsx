@@ -6,8 +6,6 @@ import KeyboardDismiss from "components/uis/KeyboardDismiss";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import {
   Animated,
-  KeyboardAvoidingView,
-  Platform,
   SafeAreaView,
   TextInput,
   TouchableOpacity,
@@ -15,7 +13,6 @@ import {
 import styles from "./style";
 import { colors } from "utils/theme";
 import { ICreateComment } from "interfaces/comment";
-import EmojiSelector from "react-native-emoji-selector";
 import { Keyboard, KeyboardEvent } from "react-native";
 
 interface IProps {
@@ -23,9 +20,10 @@ interface IProps {
   creator: IPerformer;
   objectType?: string;
   requesting?: boolean;
-  isReply?: boolean;
+  isReply: boolean;
   handleOnSubmit: Function;
-  height?: any;
+  handleReply: Function;
+  itemReply: any;
 }
 const CommentForm = React.memo(
   ({
@@ -34,10 +32,11 @@ const CommentForm = React.memo(
     isReply,
     handleOnSubmit,
     creator,
-    height,
+    itemReply,
+    handleReply,
   }: IProps): React.ReactElement => {
-    const [text, setText] = useState("");
     const [keyboardHeight, setKeyboardHeight] = useState(0);
+    const inputRef = useRef() as any;
 
     function onKeyboardDidShow(e: KeyboardEvent) {
       setKeyboardHeight(e.endCoordinates.height + 35);
@@ -45,6 +44,7 @@ const CommentForm = React.memo(
 
     function onKeyboardDidHide() {
       setKeyboardHeight(0);
+      handleReply({});
     }
 
     useEffect(() => {
@@ -61,6 +61,13 @@ const CommentForm = React.memo(
         hideSubscription.remove();
       };
     }, []);
+
+    useEffect(() => {
+      if (isReply) {
+        inputRef.current.focus();
+      }
+    }, [isReply]);
+
     const {
       control,
       handleSubmit,
@@ -122,12 +129,13 @@ const CommentForm = React.memo(
                         control={control}
                         render={({ field: { onChange, value } }) => (
                           <TextInput
+                            ref={inputRef}
                             selectionColor={colors.gray}
                             value={value}
                             placeholder={
-                              !isReply
-                                ? "Add a comment here"
-                                : "Add a reply here"
+                              isReply
+                                ? "Replying to " + itemReply?.creator?.name
+                                : "Add a comment here"
                             }
                             placeholderTextColor={colors.gray}
                             secureTextEntry={true}
@@ -149,26 +157,25 @@ const CommentForm = React.memo(
                       />
                     </FormControl>
                   </View>
-
                   <View width="10%" style={styles.sendComment}>
-                  <TouchableOpacity activeOpacity={0.5}>
-                  <Animated.View onTouchStart={handleSubmit(onSubmit)}>
-                      {isReply ? (
-                        <Ionicons
-                          name="arrow-up-circle"
-                          size={23}
-                          color={"crimson"}
-                          style={styles.sendComment}
-                        />
-                      ) : (
-                        <Ionicons
-                          name="send-sharp"
-                          size={23}
-                          color={"crimson"}
-                          style={styles.sendComment}
-                        />
-                      )}
-                    </Animated.View>
+                    <TouchableOpacity activeOpacity={0.5}>
+                      <Animated.View onTouchStart={handleSubmit(onSubmit)}>
+                        {isReply ? (
+                          <Ionicons
+                            name="arrow-up-circle"
+                            size={23}
+                            color={"crimson"}
+                            style={styles.sendComment}
+                          />
+                        ) : (
+                          <Ionicons
+                            name="send-sharp"
+                            size={23}
+                            color={"crimson"}
+                            style={styles.sendComment}
+                          />
+                        )}
+                      </Animated.View>
                     </TouchableOpacity>
                   </View>
                 </HStack>
