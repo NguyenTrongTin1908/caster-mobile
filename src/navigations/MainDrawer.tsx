@@ -1,7 +1,7 @@
 import * as Animatable from "react-native-animatable";
 import React, { useRef, useEffect, useContext } from "react";
 import { connect } from "react-redux";
-import { Alert, StyleSheet, TouchableOpacity } from "react-native";
+import {Linking, Alert, StyleSheet, TouchableOpacity } from "react-native";
 import {
   Box,
   FlatList,
@@ -365,7 +365,7 @@ export const MainDrawer = ({
       ),
       onPress: () => {
         //todo - update navigation
-        navigationRef.current?.navigate("Help");
+        Linking.openURL("https://caster.com/help");
         handleHide();
       },
     },
