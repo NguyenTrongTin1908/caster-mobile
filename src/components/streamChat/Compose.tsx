@@ -1,21 +1,16 @@
-import { Input, HStack, FormControl, Box, ScrollView } from "native-base";
-import React, { PureComponent, useState } from "react";
+import { Input, HStack,  ScrollView } from "native-base";
+import React, {  useState } from "react";
 import {
-  TextInput,
   TouchableOpacity,
-  TouchableWithoutFeedback,
 } from "react-native";
-import { View, KeyboardAvoidingView } from "native-base";
+import { View } from "native-base";
 import { colors } from "utils/theme";
-import { onChange } from "react-native-reanimated";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { connect } from "react-redux";
 import { sendStreamMessage } from "services/redux/stream-chat/actions";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import EmojiSelector from "react-native-emoji-selector";
 import styles from "./style";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import KeyboardDismiss from "components/uis/KeyboardDismiss";
 
 // import { Input, message } from 'antd';
 // import {

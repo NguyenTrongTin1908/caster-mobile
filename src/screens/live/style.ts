@@ -8,6 +8,14 @@ const STATUS_BAR_HEIGHT = StatusBar.currentHeight || 24;
 let bottomNavBarH = deviceH - height + STATUS_BAR_HEIGHT;
 const styles = StyleSheet.create({
   container: { flex: 1 },
+  backgroundVideo: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    zIndex: 100,
+    width: "100%",
+    height: "100%",
+  },
   uiContainer: {
     position: "absolute",
     bottom: 0,
@@ -123,8 +131,10 @@ const styles = StyleSheet.create({
   btnEndStream: {
     color: colors.darkText,
     backgroundColor: colors.secondary,
-    marginTop: Sizes.fixPadding + 180.0,
+    marginTop: Sizes.fixPadding + 80.0,
   },
+
+
 });
 
 export default styles;

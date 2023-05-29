@@ -1,13 +1,6 @@
 import { StyleSheet } from 'react-native';
-import { colors, Fonts, Sizes } from 'utils/theme';
-import { Dimensions} from "react-native";
-import { background } from 'native-base/lib/typescript/theme/styled-system';
+import {  Sizes } from 'utils/theme';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
-import { color } from 'react-native-reanimated';
-
-const { width, height } = Dimensions.get('window');
-
-
 
 const styles = StyleSheet.create({
 

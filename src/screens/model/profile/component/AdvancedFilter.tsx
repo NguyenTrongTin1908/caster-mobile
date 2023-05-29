@@ -1,34 +1,17 @@
 import React, { useEffect, useState, useContext } from "react";
-import { View, SafeAreaView, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import {
-  Box,
   Modal,
-  Button,
-  FlatList,
-  Flex,
-  Heading,
-  HStack,
   IconButton,
-  Radio,
   Select,
-  Spacer,
   Text,
   VStack,
   FormControl,
 } from "native-base";
 import { useNavigation } from "@react-navigation/core";
-import PerformerCard from "components/message/PerformerCard";
-import { performerService } from "services/perfomer.service";
-import { IPerformer } from "interfaces/performer";
-import BadgeText from "components/uis/BadgeText";
-import LoadingSpinner from "components/uis/LoadingSpinner";
 import BackButton from "components/uis/BackButton";
 import { colors } from "utils/theme";
-import styles from "./style";
 import { IBody, ICountry } from "interfaces/utils";
-import { omit } from "lodash";
-import { onChange } from "react-native-reanimated";
-import { utilsService } from "services/utils.service";
 import AntDesign from "react-native-vector-icons/AntDesign";
 
 interface IProps {

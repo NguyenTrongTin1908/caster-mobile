@@ -1,8 +1,6 @@
 import { Platform, StyleSheet } from "react-native";
 import { colors, Fonts, Sizes } from "utils/theme";
 import { Dimensions, StatusBar } from "react-native";
-import { Center } from "native-base";
-import { color } from "react-native-reanimated";
 
 const { width, height } = Dimensions.get("window");
 let deviceH = Dimensions.get("screen").height;
