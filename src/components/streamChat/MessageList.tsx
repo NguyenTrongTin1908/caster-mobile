@@ -16,9 +16,11 @@ import EmojiSelector from "react-native-emoji-selector";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { sendStreamMessage } from "services/redux/stream-chat/actions";
 import ChatFooter from "../message/ChatFooter";
-import SendTip from "../message/SendTip";
 import Button from "components/uis/Button";
 import { giftService } from "services/gift.service";
+import { ObservableQueue } from "../../hooks/observable-queue";
+import { of, delay } from "rxjs";
+const queue = new ObservableQueue();
 
 interface IProps {
   loadMoreStreamMessages: Function;
@@ -59,10 +61,9 @@ const MessageList = ({
   message,
   conversation,
   user,
-  deleteMessage: remove,
-  deleteMessageSuccess,
+  deleteMessage,
+  deleteMessageSuccess: remove,
   sendStreamMessage,
-  loggedIn,
   canSendMessage,
   canSendTip,
 }: IProps) => {
@@ -104,12 +105,32 @@ const MessageList = ({
     };
   }, []);
 
+  function createObservable(data, playingTime) {
+    return of(data).pipe(delay(playingTime));
+  }
+
+  function addNew(data: any, playingTime: number) {
+    const original = createObservable(data, playingTime);
+    return queue.addItem(original);
+  }
+
+  async function render(result) {
+    if (result && result?.type === "created") create(result);
+  }
+
   const onMessage = (message, type) => {
     if (!message) {
       return;
     }
-    type === "created" && create(message);
-    type === "deleted" && remove(message);
+    if (type === "deleted") {
+      return remove(message);
+    }
+    if (type === "created") {
+      const { durationInChat } = (message?.meta && message?.meta?.gift) || 0;
+      durationInChat
+        ? addNew({ ...message, type }, durationInChat * 1000).subscribe(render)
+        : create(message);
+    }
   };
 
   const onDelete = (messageId) => {
@@ -246,7 +267,6 @@ const MessageList = ({
 
   const sendMessage = (message) => {
     const text = message.data.input;
-    console.log("Data", conversation.type);
     sendStreamMessage({
       conversationId: conversation._id,
       data: {

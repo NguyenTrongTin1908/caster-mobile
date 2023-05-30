@@ -24,18 +24,8 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import BackButton from "components/uis/BackButton"; // import EmojiSelector from "react-native-emoji-selector";
 import styles from "./style";
 import { ObservableQueue } from "../../hooks/observable-queue";
-import { of, delay } from "rxjs";
-
+import { of, delay, Subscription } from "rxjs";
 const queue = new ObservableQueue();
-const queue2 = new ObservableQueue();
-
-const Animation = [
-  {
-    url: "https://media.giphy.com/media/83pDOQOqFO9Yk/giphy.webp",
-    duration: 5,
-    durationInChat: 5,
-  },
-];
 
 interface IProps {
   resetStreamMessage: Function;
@@ -49,11 +39,7 @@ const PublicStream = ({
   resetStreamMessage,
   getStreamConversation,
   activeConversation,
-  currentUser,
-  system,
 }: IProps) => {
-  let publisherRef: any;
-  let publisherRef2: any;
   const [loading, setLoading] = useState(false);
   const [initialized, setInitialized] = useState(false);
   const [sessionId, setSessionid] = useState(null) as any;
@@ -62,21 +48,14 @@ const PublicStream = ({
   const [permissionGranted, setPermissionGranted] = useState(false);
   const [localStreamId, setLocalStreamId] = useState(null as any);
   const [isMuteAudio, setMuteAudio] = useState(false);
-  const [animations, setAnimations] = useState([]) as any;
-  let Timer = null as any;
-  const [timeShow, setTimeShow] = useState(null) as any;
-  const [selectAnimation, setSelectAnimation] = useState({}) as any;
   const [imgUrl, setImgUrl] = useState(null) as any;
-  const [currentDuration, setCurrentDuration] = useState(0) as any;
-  let currentDuration2 = 0;
-  let globalCounter = 0;
-  let globalCounter2 = 0;
-
+  const living = useRef() as any;
   useEffect(() => {
     askPermissions();
     const socket = socketHolder.getSocket() as any;
     setImgUrl(null);
     if (socket && activeConversation.data) {
+      living.current = true;
       const conversation = { ...activeConversation.data };
       socket.on(`message_created_conversation_${conversation._id}`, (data) => {
         onReceiveGift(data, "created");
@@ -90,55 +69,31 @@ const PublicStream = ({
           socket.off(`message_created_conversation_${conversation._id}`);
         socket &&
           socket.off(`message_deleted_conversation_${conversation._id}`);
+        leavePublicRoom();
       }
-      leavePublicRoom();
     };
   }, [activeConversation]);
 
-  function addNew(message: any) {
-    globalCounter += 1;
-    console.log(
-      "adding new message :",
-      `${message.meta.gift.name}.>>>>>>>`,
-      message.meta.gift.duration
-    );
+  function createObservable(data, playingTime) {
+    return of(data).pipe(delay(playingTime));
+  }
 
-    const original = createObservable(
-      {
-        globalCounter,
-        url: message.meta.gift.clip.url,
-        name: message.meta.gift.name,
-      },
-      message.meta.gift.duration * 1000
-    );
-
+  function addNew(data: any, playingTime: number) {
+    const original = createObservable(data, playingTime);
     return queue.addItem(original);
   }
 
-  function createObservable(result, duration) {
-    // console.log(
-    //   "currentDuration>>>>>",
-    //   duration,
-    //   currentDuration,
-    //   queue.getLength()
-    // );
-
-    if (queue.getLength() === 0) {
-      // setCurrentDuration(duration);
-      setImgUrl(result.url);
-      return of(null).pipe(delay(duration));
-    }
-    return of(result).pipe(delay(duration));
-  }
-
-  function render(result) {
-    console.log("result>>>>>", result);
-    result && setImgUrl(result.url);
+  async function render(result) {
+    result && living.current ? setImgUrl(result.url) : setImgUrl(null);
   }
 
   const onReceiveGift = async (message, type) => {
-    // setSelectAnimation({url :message.meta.gift.clip.url , duration: message.meta.gift.duration, durationInChat: message.meta.gift.duration})
-    addNew(message).subscribe(render);
+    const { duration, clip } = (message?.meta && message?.meta?.gift) || 0;
+    const data = {
+      url: clip && clip.url,
+    };
+    addNew(data, 0).subscribe(render);
+    addNew(null, (duration || 0) * 1000).subscribe(render);
   };
 
   const askAndroidPerissions = async () => {
@@ -191,13 +146,7 @@ const PublicStream = ({
     } else {
     }
   };
-  const handleMember = ({ total, members }) => {
-    setTotal(total);
-    setMembers(members);
-  };
-  const setStreamRef = (dataFunc) => {
-    publisherRef2 = dataFunc;
-  };
+
   const stop = () => {
     if (!initialized) {
       return;
@@ -229,10 +178,10 @@ const PublicStream = ({
     try {
       setLoading(true);
       const resp = await streamService.goLive();
-      const { conversation } = resp.data;
+      const { conversation, sessionId } = resp.data;
       const { streamId } = conversation;
-      const { sessionId } = resp.data;
       if (conversation && conversation._id) {
+        living.current = true;
         getStreamConversation({
           conversation,
         });
@@ -263,6 +212,9 @@ const PublicStream = ({
       setSessionid(null);
       setInitialized(false);
     }
+    living.current = false;
+    setImgUrl(null);
+    console.log("Leave session");
   };
   const start = async () => {
     setLoading(true);
@@ -290,8 +242,6 @@ const PublicStream = ({
       />
     );
   };
-
-  // console.log("tu : " ,animations, animations.length)
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -343,7 +293,6 @@ const PublicStream = ({
             style={styles.backgroundVideo}
           />
         )}
-        {/* {render} */}
         {sessionId && <ChatBox canSendMessage={false} />}
       </View>
       <View>
