@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigation } from "@react-navigation/core";
 import { View, Heading, Text, Image } from "native-base";
 import { connect } from "react-redux";
@@ -40,6 +40,9 @@ const { width, height } = Dimensions.get("window");
 let deviceH = Dimensions.get("screen").height;
 const STATUS_BAR_HEIGHT = StatusBar.currentHeight || 24;
 let bottomNavBarH = deviceH - height + STATUS_BAR_HEIGHT;
+import { ObservableQueue } from "../../hooks/observable-queue";
+import { of, delay, Subscription } from "rxjs";
+const queue = new ObservableQueue();
 
 interface IProps {
   resetStreamMessage: Function;
@@ -82,6 +85,8 @@ const ViewPublicStream = ({
   const [loading, setLoading] = useState(false);
   const [modal, setModal] = useState(false);
   const navigation = useNavigation() as any;
+  const [imgUrl, setImgUrl] = useState(null) as any;
+  const living = useRef() as any;
 
   useEffect(() => {
     interval = setInterval(updatePerformerInfo, 60 * 1000);
@@ -135,11 +140,14 @@ const ViewPublicStream = ({
       resetStreamMessage();
       setSessionid(null);
       setInitialized(false);
+      socket && socket.off(`message_created_conversation_${conversationId}`);
     }
     socket.off(STREAM_EVENT.JOIN_BROADCASTER);
     socket.off(STREAM_EVENT.MODEL_LEFT);
     socket.off(STREAM_EVENT.ROOM_INFORMATIOM_CHANGED);
     conversationHolder = null;
+    living.current = false;
+    setImgUrl(null);
   };
 
   const onChange = ({ total, members, conversationId }) => {
@@ -212,6 +220,13 @@ const ViewPublicStream = ({
             socket.emit("public-stream/join", {
               conversationId: conversation._id,
             });
+          living.current = true;
+          socket.on(
+            `message_created_conversation_${conversation._id}`,
+            (data) => {
+              onReceiveGift(data, "created");
+            }
+          );
         } else {
           throw new Promise((resolve) =>
             resolve("No available broadcast. Try again later")
@@ -225,6 +240,28 @@ const ViewPublicStream = ({
     }
   };
 
+  function createObservable(data, playingTime) {
+    return of(data).pipe(delay(playingTime));
+  }
+
+  function addNew(data: any, playingTime: number) {
+    const original = createObservable(data, playingTime);
+    return queue.addItem(original);
+  }
+
+  async function render(result) {
+    result && living.current ? setImgUrl(result.url) : setImgUrl(null);
+  }
+
+  const onReceiveGift = async (message, type) => {
+    const { duration, clip } = (message?.meta && message?.meta?.gift) || 0;
+    const data = {
+      url: clip && clip.url,
+    };
+    addNew(data, 0).subscribe(render);
+    addNew(null, (duration || 0) * 1000).subscribe(render);
+  };
+
   const modelLeftHandler = ({ performerId }) => {
     if (performerId !== performer._id) {
       return;
@@ -236,7 +273,6 @@ const ViewPublicStream = ({
   const setStreamRef = (dataFunc) => {
     subscriberRef2 = dataFunc;
   };
-
 
   return (
     <SafeAreaView style={{ flex: 1 }} onTouchStart={dismissKeyboard}>
@@ -363,6 +399,15 @@ const ViewPublicStream = ({
               ref={(viewRef) => setStreamRef(viewRef)}
               settings={settings}
             />
+            {imgUrl && (
+              <Image
+                alt={"avatar"}
+                source={{
+                  uri: imgUrl || "",
+                }}
+                style={styles.backgroundVideo}
+              />
+            )}
             <ChatBox canSendMessage />
             {loading && (
               <SendTip

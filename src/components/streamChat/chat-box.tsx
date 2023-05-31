@@ -29,7 +29,6 @@ const checkPermission = (performer, conversation) => {
   ) {
     return true;
   }
-
   return false;
 };
 
@@ -37,40 +36,30 @@ const ChatBox = ({
   resetAllStreamMessage,
   user,
   activeConversation,
-  totalParticipant,
-  members,
   loggedIn,
   canSendMessage,
   canSendTip,
 }: IProps) => {
-  const [removing, setRemoving] = React.useState(false);
   const [canReset, setCanReset] = React.useState(false);
 
   React.useEffect(() => {
     setCanReset(checkPermission(user, activeConversation));
   }, [user, activeConversation]);
 
-  const removeAllMessage = async () => {
-    if (!canReset) {
-      return;
-    }
-
-    try {
-      setRemoving(true);
-      // if (!window.confirm('Are you sure you want to remove chat history?')) {
-      //   return;
-      // }
-      await messageService.deleteAllMessageInConversation(
-        activeConversation.data._id
-      );
-      resetAllStreamMessage &&
-        resetAllStreamMessage({ conversationId: activeConversation.data._id });
-    } catch (e) {
-      const error = await Promise.resolve(e);
-    } finally {
-      setRemoving(false);
-    }
-  };
+  // const removeAllMessage = async () => {
+  //   if (!canReset) {
+  //     return;
+  //   }
+  //   try {
+  //     await messageService.deleteAllMessageInConversation(
+  //       activeConversation.data._id
+  //     );
+  //     resetAllStreamMessage &&
+  //       resetAllStreamMessage({ conversationId: activeConversation.data._id });
+  //   } catch (e) {
+  //     const error = await Promise.resolve(e);
+  //   }
+  // };
 
   return (
     <View style={styles.chatContainer}>

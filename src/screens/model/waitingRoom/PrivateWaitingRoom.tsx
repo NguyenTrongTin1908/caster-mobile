@@ -209,10 +209,8 @@ const PrivateChatWaitingRoom = ({
           </>
         )}
       </View>
-
       <HeaderMenu />
       <BackButton />
-
     </SafeAreaView>
   );
 };

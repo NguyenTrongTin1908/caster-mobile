@@ -44,7 +44,6 @@ const PublicStream = ({
   const [initialized, setInitialized] = useState(false);
   const [sessionId, setSessionid] = useState(null) as any;
   const [total, setTotal] = useState(0);
-  const [members, setMembers] = useState([]);
   const [permissionGranted, setPermissionGranted] = useState(false);
   const [localStreamId, setLocalStreamId] = useState(null as any);
   const [isMuteAudio, setMuteAudio] = useState(false);
@@ -67,8 +66,6 @@ const PublicStream = ({
         const conversation = { ...activeConversation.data };
         socket &&
           socket.off(`message_created_conversation_${conversation._id}`);
-        socket &&
-          socket.off(`message_deleted_conversation_${conversation._id}`);
         leavePublicRoom();
       }
     };
@@ -214,7 +211,6 @@ const PublicStream = ({
     }
     living.current = false;
     setImgUrl(null);
-    console.log("Leave session");
   };
   const start = async () => {
     setLoading(true);
@@ -230,7 +226,6 @@ const PublicStream = ({
   };
   const handler = ({ total, members }) => {
     setTotal(total);
-    setMembers(members);
   };
 
   const renderLocalVideo = () => {

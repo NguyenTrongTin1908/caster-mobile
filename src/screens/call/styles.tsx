@@ -1,12 +1,3 @@
-// import styled from 'styled-components/native';
-
-// export const Container = styled.View<{ 'is-playing': boolean }>`
-//   padding: ${(props) => (props['is-playing'] ? 0 : 20)}px;
-//   flex: 1;
-//   position: relative;
-//   height: 100%;
-//   background-color: #ffffff;
-// `;
 
 import { Platform, StyleSheet } from "react-native";
 import { colors, Fonts, Sizes } from "utils/theme";
@@ -18,6 +9,15 @@ const STATUS_BAR_HEIGHT = StatusBar.currentHeight || 24;
 let bottomNavBarH = deviceH - height + STATUS_BAR_HEIGHT;
 const styles = StyleSheet.create({
   container: { flex: 1 },
+  backgroundVideo: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    zIndex: 100,
+    width: "100%",
+    height: "100%",
+    padding: 5
+  },
   uiContainer: {
     position: "absolute",
     bottom: 0,

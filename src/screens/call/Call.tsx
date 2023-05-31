@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { PermissionsAndroid, SafeAreaView } from "react-native";
 import {
   PERMISSIONS,
@@ -28,6 +28,9 @@ import styles from "./styles";
 import { WEBRTC_ADAPTOR_INFORMATIONS } from "components/antmedia/constants";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { shortenLargeNumber } from "lib/number";
+import { ObservableQueue } from "../../hooks/observable-queue";
+import { of, delay, Subscription } from "rxjs";
+const queue = new ObservableQueue();
 
 enum EVENT {
   JOINED_THE_ROOM = "JOINED_THE_ROOM",
@@ -63,6 +66,8 @@ const Call = ({ route, settings, currentUser, activeConversation }: IProps) => {
   const [modal, setModal] = useState(false);
   const toast = useToast();
   const [isMuteAudio, setMuteAudio] = useState(false);
+  const [imgUrl, setImgUrl] = useState(null) as any;
+  const living = useRef() as any;
 
   useEffect(() => {
     askPermissions();
@@ -127,6 +132,28 @@ const Call = ({ route, settings, currentUser, activeConversation }: IProps) => {
     }
   };
 
+  function createObservable(data, playingTime) {
+    return of(data).pipe(delay(playingTime));
+  }
+
+  function addNew(data: any, playingTime: number) {
+    const original = createObservable(data, playingTime);
+    return queue.addItem(original);
+  }
+
+  async function render(result) {
+    result && living.current ? setImgUrl(result.url) : setImgUrl(null);
+  }
+
+  const onReceiveGift = async (message, type) => {
+    const { duration, clip } = (message?.meta && message?.meta?.gift) || 0;
+    const data = {
+      url: clip && clip.url,
+    };
+    addNew(data, 0).subscribe(render);
+    addNew(null, (duration || 0) * 1000).subscribe(render);
+  };
+
   const handleSocketLeave = () => {
     // TODO - handle me
     const socket = socketHolder.getSocket() as any;
@@ -189,6 +216,14 @@ const Call = ({ route, settings, currentUser, activeConversation }: IProps) => {
         // else publisherRef2.publish(sessionId);
       } else if (info === WEBRTC_ADAPTOR_INFORMATIONS.PUBLISH_STARTED) {
         const conversation = { ...activeConversation.data };
+        living.current = true;
+        socket.on(
+          `message_created_conversation_${conversation._id}`,
+          (data) => {
+            onReceiveGift(data, "created");
+          }
+        );
+
         console.log("public");
 
         setLoading(true);
@@ -245,12 +280,23 @@ const Call = ({ route, settings, currentUser, activeConversation }: IProps) => {
           <Viewer streamId={remoteStreamRefId} onJoined={chargeInterval} />
         )
       : !!remoteStreamRefId && (
+        <>
           <HLSViewer
             streamId={remoteStreamRefId}
             ref={(viewRef) => setStreamRef(viewRef)}
             settings={settings}
             onJoined={chargeInterval}
           />
+          {imgUrl && (
+            <Image
+              alt={"avatar"}
+              source={{
+                uri: imgUrl || "",
+              }}
+              style={styles.backgroundVideo}
+            />
+          )}
+          </>
         );
   };
 
@@ -296,6 +342,7 @@ const Call = ({ route, settings, currentUser, activeConversation }: IProps) => {
       <View flex={1} flexDirection={"column"} position={"relative"}>
         {renderLocalVideo()}
         {renderPerformerVideo()}
+
         <ChatBox canSendMessage />
         {loading && (
           <SendTip
