@@ -46,6 +46,7 @@ import Blank from "screens/blank";
 import EditProfile from "screens/profile/EditProfile";
 import Help from "screens/help/Help";
 import Detail from "screens/help/Detail";
+import Discover from "screens/Discover/Discover";
 
 export type RootStackParamList = {
   default: undefined;
@@ -92,6 +93,7 @@ export type RootStackParamList = {
   PrivateChatWaitingRoom: undefined;
   PrivateUserWaitingRoom: { performer: IPerformer };
   PrivateUserAcceptRoom: { performer: IPerformer };
+  Discover: undefined;
 };
 export type RootStackNavigationProps<
   T extends keyof RootStackParamList = "default"
@@ -305,13 +307,6 @@ function RootNavigator({ loggedIn }): React.ReactElement {
           name="Model"
           component={Top}
         />
-
-        {/* <Stack.Screen
-          options={{ headerShown: false, gestureEnabled: false }}
-          name="Profile"
-          component={Profile}
-        /> */}
-
         <Stack.Screen
           options={{ headerShown: false, gestureEnabled: false }}
           name="ModelProfile"
@@ -333,6 +328,11 @@ function RootNavigator({ loggedIn }): React.ReactElement {
           options={{ headerShown: false, gestureEnabled: false }}
           name="Trending"
           component={Trending}
+        />
+        <Stack.Screen
+          options={{ headerShown: false, gestureEnabled: false }}
+          name="Discover"
+          component={Discover}
         />
       </Stack.Navigator>
     </NavigationContainer>

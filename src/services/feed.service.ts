@@ -114,6 +114,10 @@ export class FeedService extends APIRequest {
   addView(id: string) {
     return this.post(`/feeds/users/${id}/view`);
   }
+
+  getTrendingHashtag(type, payload) {
+    return this.get(this.buildUrl(`/feed-hashtags/trending/${type}`, payload));
+  }
 }
 
 export const feedService = new FeedService();

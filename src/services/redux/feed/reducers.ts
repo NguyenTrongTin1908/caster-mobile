@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { merge } from "lodash";
 import { createReducers } from "lib/redux";
-import { onFollow } from 'services/redux/performer/actions';
+import { onFollow } from "services/redux/performer/actions";
 import {
   getFeeds,
   getFeedsSuccess,
@@ -28,6 +28,7 @@ import {
   moreTrendingFeeds,
   moreTrendingFeedsSuccess,
   moreTrendingFeedsFail,
+  resetFeeds,
 } from "./actions";
 
 const initialState = {
@@ -422,29 +423,47 @@ const feedReducers = [
           items:
             items && items.length > 0
               ? items.map((item) => {
-                if (item.fromSourceId === performerId) {
-                  // eslint-disable-next-line no-return-assign
-                  return {
-                    ...item,
-                    performer: {
-                      ...item.performer,
-                      isFollowed: action === 'create',
-                      stats: {
-                        ...item.performer.stats,
-                        totalFollower:
-                            action === 'create'
+                  if (item.fromSourceId === performerId) {
+                    // eslint-disable-next-line no-return-assign
+                    return {
+                      ...item,
+                      performer: {
+                        ...item.performer,
+                        isFollowed: action === "create",
+                        stats: {
+                          ...item.performer.stats,
+                          totalFollower:
+                            action === "create"
                               ? (item.performer.stats.totalFollower += 1)
-                              : (item.performer.stats.totalFollower -= 1)
-                      }
-                    }
-                  };
-                }
-                return item;
-              })
-              : []
-        }
+                              : (item.performer.stats.totalFollower -= 1),
+                        },
+                      },
+                    };
+                  }
+                  return item;
+                })
+              : [],
+        },
       };
-    }
+    },
+  },
+
+  {
+    on: resetFeeds,
+    reducer() {
+      return {
+        feeds: {
+          ...initialState.feeds,
+        },
+        trendingFeeds: {
+          ...initialState.feeds,
+        },
+
+        hashtagFeeds: {
+          ...initialState.feeds,
+        },
+      };
+    },
   },
 ];
 

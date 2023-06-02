@@ -8,6 +8,8 @@ import Trending from "screens/trending/Trending";
 import CaptureMediaScreen from "screens/media/CaptureMedia";
 import Top from "screens/top/Top";
 import LiveNow from "screens/livenow/LiveNow";
+import Discover from "screens/Discover/Discover";
+
 import { colors } from "utils/theme";
 import { Platform } from "react-native";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
@@ -68,8 +70,8 @@ export const MainTabNav = (): JSX.Element => (
       }}
     />
     <Tab.Screen
-      name="MainTab/Trending"
-      component={Trending}
+      name="MainTab/Discover"
+      component={Discover}
       options={{
         tabBarLabel: "Discover",
         tabBarShowLabel: true,

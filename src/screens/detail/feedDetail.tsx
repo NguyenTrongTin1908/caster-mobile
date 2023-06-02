@@ -97,23 +97,31 @@ const FeedDetail = ({ route, current }: IProps): React.ReactElement => {
 
   const renderItem = ({ item, index }: { item: IFeed; index: number }) => {
     return (
-      <View
-        style={[
-          {
-            height:
-              Platform.OS === "ios"
-                ? deviceH - (insets.bottom + insets.top)
-                : deviceH - bottomNavBarH,
-          },
-        ]}
+      <GestureRecognizer
+        onSwipeLeft={(state) => onSwipeLeft(state)}
+        onSwipeRight={(state) => onSwipeRight(state)}
+        style={{
+          flex: 1,
+        }}
       >
-        <FeedCard
-          feed={item}
-          mediaRefs={mediaRefs}
-          currentTab={tab}
-          current={current}
-        />
-      </View>
+        <View
+          style={[
+            {
+              height:
+                Platform.OS === "ios"
+                  ? deviceH - (insets.bottom + insets.top)
+                  : deviceH - bottomNavBarH,
+            },
+          ]}
+        >
+          <FeedCard
+            feed={item}
+            mediaRefs={mediaRefs}
+            currentTab={tab}
+            current={current}
+          />
+        </View>
+      </GestureRecognizer>
     );
   };
   useEffect(() => {
@@ -122,59 +130,51 @@ const FeedDetail = ({ route, current }: IProps): React.ReactElement => {
   }, [tab]);
   return (
     <SafeAreaView style={styles.container}>
-      <GestureRecognizer
-        onSwipeLeft={(state) => onSwipeLeft(state)}
-        onSwipeRight={(state) => onSwipeRight(state)}
-        style={{
-          flex: 1,
+      <FlatList
+        data={feeds}
+        renderItem={renderItem}
+        pagingEnabled={true}
+        keyExtractor={(item) => item._id}
+        decelerationRate={"fast"}
+        showsVerticalScrollIndicator={false}
+        onViewableItemsChanged={onViewableItemsChange.current}
+        windowSize={2}
+        initialNumToRender={0}
+        maxToRenderPerBatch={2}
+        removeClippedSubviews
+        snapToInterval={
+          Platform.OS === "ios"
+            ? deviceH - (insets.bottom + insets.top)
+            : deviceH - bottomNavBarH
+        }
+        viewabilityConfig={{
+          itemVisiblePercentThreshold: 100,
         }}
+        snapToAlignment={"start"}
+      />
+      <HeaderMenu />
+      <CustomHeader
+        header={{
+          title: "",
+          align: "center",
+          showAvatar: true,
+          avatar: perfomer?.avatar,
+        }}
+        headerStyle={{ color: "white", fontSize: 15 }}
       >
-        <FlatList
-          data={feeds}
-          renderItem={renderItem}
-          pagingEnabled={true}
-          keyExtractor={(item) => item._id}
-          decelerationRate={"fast"}
-          showsVerticalScrollIndicator={false}
-          onViewableItemsChanged={onViewableItemsChange.current}
-          windowSize={2}
-          initialNumToRender={0}
-          maxToRenderPerBatch={2}
-          removeClippedSubviews
-          snapToInterval={
-            Platform.OS === "ios"
-              ? deviceH - (insets.bottom + insets.top)
-              : deviceH - bottomNavBarH
-          }
-          viewabilityConfig={{
-            itemVisiblePercentThreshold: 100,
-          }}
-          snapToAlignment={"start"}
+        <FeedTab
+          onTabChange={handleTabChange}
+          tab={tab}
+          tabs={[
+            {
+              key: "video",
+              title: "Videos",
+            },
+            { key: "photo", title: "Photos" },
+          ]}
         />
-        <HeaderMenu />
-        <CustomHeader
-          header={{
-            title: "",
-            align: "center",
-            showAvatar: true,
-            avatar: perfomer?.avatar,
-          }}
-          headerStyle={{ color: "white", fontSize: 15 }}
-        >
-          <FeedTab
-            onTabChange={handleTabChange}
-            tab={tab}
-            tabs={[
-              {
-                key: "video",
-                title: "Videos",
-              },
-              { key: "photo", title: "Photos" },
-            ]}
-          />
-        </CustomHeader>
-        <BackButton />
-      </GestureRecognizer>
+      </CustomHeader>
+      <BackButton />
     </SafeAreaView>
   );
 };
