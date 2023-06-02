@@ -129,27 +129,35 @@ const Trending = ({ current }: IProps): React.ReactElement => {
       <BottomTabBarHeightContext.Consumer>
         {(tabBarHeight: any) => {
           return (
-            <View
-              style={[
-                {
-                  height:
-                    Platform.OS === "ios"
-                      ? deviceH - (tabBarHeight + getStatusBarHeight(true))
-                      : deviceH - (bottomNavBarH + tabBarHeight),
-                },
-                ,
-                index % 2 == 0
-                  ? { backgroundColor: "#000000" }
-                  : { backgroundColor: "#000000" },
-              ]}
+            <GestureRecognizer
+              onSwipeLeft={(state) => onSwipeLeft(state)}
+              onSwipeRight={(state) => onSwipeRight(state)}
+              style={{
+                flex: 1,
+              }}
             >
-              <FeedCard
-                feed={item}
-                mediaRefs={mediaRefs}
-                currentTab={tab}
-                current={current}
-              />
-            </View>
+              <View
+                style={[
+                  {
+                    height:
+                      Platform.OS === "ios"
+                        ? deviceH - (tabBarHeight + getStatusBarHeight(true))
+                        : deviceH - (bottomNavBarH + tabBarHeight),
+                  },
+                  ,
+                  index % 2 == 0
+                    ? { backgroundColor: "#000000" }
+                    : { backgroundColor: "#000000" },
+                ]}
+              >
+                <FeedCard
+                  feed={item}
+                  mediaRefs={mediaRefs}
+                  currentTab={tab}
+                  current={current}
+                />
+              </View>
+            </GestureRecognizer>
           );
         }}
       </BottomTabBarHeightContext.Consumer>
@@ -185,57 +193,49 @@ const Trending = ({ current }: IProps): React.ReactElement => {
     <BottomTabBarHeightContext.Consumer>
       {(tabBarHeight: any) => (
         <SafeAreaView style={styles.container}>
-          <GestureRecognizer
-            onSwipeLeft={(state) => onSwipeLeft(state)}
-            onSwipeRight={(state) => onSwipeRight(state)}
-            style={{
-              flex: 1,
+          <FlatList
+            data={feeds}
+            renderItem={renderItem}
+            pagingEnabled={true}
+            keyExtractor={(item) => item._id}
+            decelerationRate={"fast"}
+            showsVerticalScrollIndicator={false}
+            onViewableItemsChanged={onViewableItemsChange.current}
+            windowSize={4}
+            onEndReached={loadMoreFeeds}
+            initialNumToRender={0}
+            maxToRenderPerBatch={2}
+            removeClippedSubviews
+            snapToInterval={
+              Platform.OS === "ios"
+                ? deviceH - (tabBarHeight + getStatusBarHeight(true))
+                : deviceH - (bottomNavBarH + tabBarHeight)
+            }
+            viewabilityConfig={{
+              itemVisiblePercentThreshold: 100,
             }}
+            snapToAlignment={"start"}
+          />
+          <HeaderMenu />
+          <CustomHeader
+            header={{
+              title: "Trending",
+              align: "center",
+            }}
+            headerStyle={{ color: "white", fontSize: 15 }}
           >
-            <FlatList
-              data={feeds}
-              renderItem={renderItem}
-              pagingEnabled={true}
-              keyExtractor={(item) => item._id}
-              decelerationRate={"fast"}
-              showsVerticalScrollIndicator={false}
-              onViewableItemsChanged={onViewableItemsChange.current}
-              windowSize={4}
-              onEndReached={loadMoreFeeds}
-              initialNumToRender={0}
-              maxToRenderPerBatch={2}
-              removeClippedSubviews
-              snapToInterval={
-                Platform.OS === "ios"
-                  ? deviceH - (tabBarHeight + getStatusBarHeight(true))
-                  : deviceH - (bottomNavBarH + tabBarHeight)
-              }
-              viewabilityConfig={{
-                itemVisiblePercentThreshold: 100,
-              }}
-              snapToAlignment={"start"}
+            <FeedTab
+              onTabChange={handleTabChange}
+              tab={tab}
+              tabs={[
+                {
+                  key: "video",
+                  title: "Videos",
+                },
+                { key: "photo", title: "Photos" },
+              ]}
             />
-            <HeaderMenu />
-            <CustomHeader
-              header={{
-                title: "Trending",
-                align: "center",
-              }}
-              headerStyle={{ color: "white", fontSize: 15 }}
-            >
-              <FeedTab
-                onTabChange={handleTabChange}
-                tab={tab}
-                tabs={[
-                  {
-                    key: "video",
-                    title: "Videos",
-                  },
-                  { key: "photo", title: "Photos" },
-                ]}
-              />
-            </CustomHeader>
-          </GestureRecognizer>
+          </CustomHeader>
         </SafeAreaView>
       )}
     </BottomTabBarHeightContext.Consumer>
