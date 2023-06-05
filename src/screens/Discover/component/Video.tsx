@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, SafeAreaView, TouchableOpacity, Alert } from "react-native";
-import { Box, Image, ScrollView, Text } from "native-base";
+import { Box, FlatList, Image, ScrollView, Text } from "native-base";
 import { IPerformer } from "interfaces/performer";
 import styles from "../style";
 import { feedService } from "services/feed.service";
@@ -16,7 +16,7 @@ import {
   resetFeeds,
 } from "services/redux/feed/actions";
 import { colors } from "utils/theme";
-import { useIsFocused } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { IFeed } from "src/interfaces";
 
 interface IProps {
@@ -43,6 +43,7 @@ const Video = ({
 }: IProps): React.ReactElement => {
   const [loading, setLoading] = useState(true);
   const [moreable, setMoreable] = useState(true);
+  const [trendingMoreable, setTrendingMoreable] = useState(true);
   const [feeds, setfeeds] = useState([] as Array<IFeed>);
   const [feedTrending, setfeedTrending] = useState([] as Array<IFeed>);
   const [page, setPage] = useState(0);
@@ -51,10 +52,11 @@ const Video = ({
   const [feedPage, setFeedPage] = useState(0);
   const [hashTagPage, setHashTagPage] = useState(0);
   const [trendingPage, setTrendingPage] = useState(0);
+  const [moreTrending, setMoreTrending] = useState(false);
   const [totalSlideMostView, setTotalSlideMostView] = useState(5);
   const [totalSlideTrending, setTotalSlideTrending] = useState(5);
-  const [mostViewIndex, setMostViewIndex] = useState(0);
-  const [trendingViewIndex, setTrendingViewIndex] = useState(0);
+  const [viewIndex, setViewIndex] = useState(0);
+  const [trendingIndex, setTrendingIndex] = useState(0);
   const [hashTagIndex, setHashTagIndex] = useState({} as any);
   const [hashTagTrendingPost, setHashTagTrendingPost] = useState([] as any);
   const [orientation] = useState("");
@@ -63,7 +65,8 @@ const Video = ({
   const [feedFilter] = useState({
     sortBy: "currentMonthViews",
   });
-  const isFocused = useIsFocused();
+  const navigation = useNavigation() as any;
+
   const loadFeed = async (more = false, refresh = false) => {
     if (more && !moreable) return;
     setLoading(true);
@@ -107,6 +110,30 @@ const Video = ({
     setfeedTrending(refresh ? data.data : feedTrending.concat(data.data));
   };
 
+  const loadMoreTrendingData = async (more = false, refresh = false) => {
+    if (more && !trendingMoreable) return;
+    setLoading(true);
+    const newPage = more && moreTrending ? trendingPage + 1 : trendingPage;
+    setTrendingPage(refresh ? 0 : newPage);
+    const { data } = await feedService.userSearch({
+      limit: itemPerPage,
+      offset: newPage * itemPerPage,
+      type: "photo",
+      sortBy: "mostViewInCurrentDay",
+      sort: "desc",
+      excludeIds: feedTrending.map((item) => item._id).join(","),
+    });
+    !moreTrending && setMoreTrending(true);
+    if (!refresh && data.length < itemPerPage) {
+      setTrendingMoreable(false);
+    }
+    if (refresh && !trendingMoreable) {
+      setTrendingMoreable(true);
+    }
+    setLoading(false);
+    setfeedTrending(refresh ? data.data : feedTrending.concat(data.data));
+  };
+
   const loadHashtag = async () => {
     try {
       setLoading(true);
@@ -119,7 +146,6 @@ const Video = ({
           const results = await lp;
           const respPost = await feedService.userSearch({
             q: item.hashTag,
-            orientation,
             limit: itemPerPage,
             offset: itemPerPage * feedPage,
             type: "video",
@@ -154,7 +180,6 @@ const Video = ({
           const results = await lp;
           const respPost = await feedService.userSearch({
             q: item.hashTag,
-            orientation,
             limit: itemPerPage,
             offset: itemPerPage * feedPage,
             type: "video",
@@ -176,10 +201,7 @@ const Video = ({
 
   useEffect(() => {
     const fetchData = async () => {
-      setTotalSlideTrending(5);
-      setTotalSlideMostView(5);
-      setMostViewIndex(0);
-      setTrendingViewIndex(0);
+      setViewIndex(0);
       setFeedPage(0);
       setTrendingPage(0);
       setHashTagPage(0);
@@ -191,9 +213,7 @@ const Video = ({
     return () => {
       handleResetFeeds();
     };
-  }, [isFocused]);
-
-  console.log("VOO Video");
+  }, []);
 
   const _renderItem = ({ item, index }) => {
     return (
@@ -213,6 +233,58 @@ const Video = ({
       </TouchableOpacity>
     );
   };
+
+  const _renderHashTagItem = ({ item, index }) => {
+    return (
+      <TouchableOpacity>
+        <View style={styles.carouselItem} key={item._id}>
+          <Image
+            alt={"item-carousel"}
+            key={item._id}
+            fallbackSource={require("../../../assets/no-image.jpg")}
+            style={styles.carouselImage}
+            source={
+              item?.files[0]
+                ? { uri: item?.files[0].thumbnails[0] }
+                : require("../../../assets/avatar-default.png")
+            }
+          />
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  const _renderHashTagList = ({ item, index }) => {
+    console.log("HashTag:", item?.hashtag);
+    return (
+      <View>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("Hashtag", {
+              query: item?.hashtag,
+              currentTab: "video",
+            });
+          }}
+        >
+          <View style={styles.rangeHastag}>
+            <Text style={{ color: "white", fontSize: 20 }}>
+              {`#${item?.hashtag}`}{" "}
+            </Text>
+          </View>
+        </TouchableOpacity>
+        <>
+          <Carousel
+            loop={false}
+            layout={"default"}
+            data={item.data}
+            sliderWidth={width}
+            itemWidth={150}
+            renderItem={_renderHashTagItem}
+          />
+        </>
+      </View>
+    );
+  };
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Box flex={1} mx="auto" w="100%">
@@ -225,42 +297,50 @@ const Video = ({
                 </Text>
               </View>
               <Carousel
+                loop={false}
                 layout={"default"}
                 data={feeds}
                 sliderWidth={width}
-                itemWidth={200}
+                itemWidth={150}
                 renderItem={_renderItem}
-                onSnapToItem={(index) => setActiveIndex(index)}
+                onSnapToItem={(index) => setViewIndex(index)}
+                onEndReached={() => loadFeed(true, false)}
               />
             </>
           )}
           {feedTrending.length > 0 && (
             <>
-              <View style={styles.range}>
-                <Text style={{ fontSize: 20 }} color={colors.lightText}>
-                  Trending
-                </Text>
-              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("Trending");
+                }}
+              >
+                <View style={styles.rangeHastag}>
+                  <Text style={{ fontSize: 20 }} color={colors.lightText}>
+                    Trending
+                  </Text>
+                </View>
+              </TouchableOpacity>
               <Carousel
+                loop={false}
                 layout={"default"}
                 data={feedTrending}
                 sliderWidth={width}
                 itemWidth={150}
                 renderItem={_renderItem}
-                onSnapToItem={(index) => setActiveIndex(index)}
+                onSnapToItem={(index) => setTrendingIndex(index)}
+                onEndReached={() => loadMoreTrendingData(true, false)}
               />
             </>
           )}
-          {/* <>
-            <Carousel
-              layout={"default"}
-              data={performers}
-              sliderWidth={width}
-              itemWidth={100}
-              renderItem={_renderItem}
-              onSnapToItem={(index) => setActiveIndex(index)}
+          {hashTagTrendingPost?.length > 0 && (
+            <FlatList
+              data={hashTagTrendingPost}
+              renderItem={_renderHashTagList}
+              onEndReachedThreshold={0.5}
+              onEndReached={() => loadMoreHashtag()}
             />
-          </> */}
+          )}
         </ScrollView>
       </Box>
     </SafeAreaView>

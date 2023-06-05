@@ -86,6 +86,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginVertical: 30,
   },
+  rangeHastag: {
+    alignSelf: "flex-start",
+    height: 40,
+    alignItems: "flex-start",
+    marginVertical: 30,
+  },
 
   btnLoadMore: {
     marginTop: 20,

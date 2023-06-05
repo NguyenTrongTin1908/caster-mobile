@@ -25,10 +25,10 @@ import Top from "screens/top/Top";
 import Hashtag from "screens/hashtag/Hashtag";
 import ListFollow from "screens/follow/listFollow";
 import Trending from "screens/trending/Trending";
+import FollowPost from "screens/followPost/FollowPost";
 import ModelProfile from "screens/model/profile/ModelProfile";
 import Bookmarks from "screens/model/bookmarks/Bookmarks";
 import Profile from "screens/profile/Profile";
-import FollowPost from "screens/followPost/FollowPost";
 import PushNotificationSetting from "screens/notification-setting/PushNotificationSetting";
 import NotificationPage from "screens/notification/Notification";
 import Wallet from "screens/wallet/Wallet";
@@ -60,11 +60,11 @@ export type RootStackParamList = {
   ModelProfile: undefined;
   EditProfile: undefined;
   FollowPost: undefined;
+  Trending: undefined;
   PushNotificationSetting: undefined;
   NotificationPage: undefined;
   ListFollow: { tab: string; performerId: IPerformer };
   Hashtag: { query: string; currentTab: string };
-  Trending: undefined;
   Wallet: undefined;
   Help: undefined;
   Detail: { slugCategory: string; slugTitle: string };
@@ -206,7 +206,6 @@ function RootNavigator({ loggedIn }): React.ReactElement {
           name="PushNotificationSetting"
           component={PushNotificationSetting}
         />
-
         <Stack.Screen
           options={{
             headerShown: false,
@@ -215,7 +214,11 @@ function RootNavigator({ loggedIn }): React.ReactElement {
           name="FollowPost"
           component={FollowPost}
         />
-
+        <Stack.Screen
+          options={{ headerShown: false, gestureEnabled: false }}
+          name="Trending"
+          component={Trending}
+        />
         <Stack.Screen
           options={{
             headerShown: false,
@@ -323,11 +326,6 @@ function RootNavigator({ loggedIn }): React.ReactElement {
           options={{ headerShown: false, gestureEnabled: false }}
           name="Hashtag"
           component={Hashtag}
-        />
-        <Stack.Screen
-          options={{ headerShown: false, gestureEnabled: false }}
-          name="Trending"
-          component={Trending}
         />
         <Stack.Screen
           options={{ headerShown: false, gestureEnabled: false }}

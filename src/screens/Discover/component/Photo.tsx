@@ -7,14 +7,14 @@ import {
   moreTrendingFeeds,
   resetFeeds,
 } from "services/redux/feed/actions";
-import { Box, Image, ScrollView, Text } from "native-base";
+import { Box, FlatList, Image, ScrollView, Text } from "native-base";
 import { IPerformer } from "interfaces/performer";
 import styles from "../style";
 import Carousel from "react-native-snap-carousel";
 import { Dimensions } from "react-native";
 import { connect } from "react-redux";
 import { colors } from "utils/theme";
-import { useIsFocused } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { IFeed } from "src/interfaces";
 const { width } = Dimensions.get("window");
 import { feedService } from "services/feed.service";
@@ -55,6 +55,7 @@ const Photo = ({
   const [trendingIndex, setTrendingIndex] = useState(0);
   const [hashTagTrendingPost, setHashTagTrendingPost] = useState([] as any);
   const [moreTrending, setMoreTrending] = useState(false);
+  const navigation = useNavigation() as any;
 
   const [keyword] = useState("");
   const [feedFilter] = useState({
@@ -100,7 +101,6 @@ const Photo = ({
     setLoading(true);
     const newPage = more && moreTrending ? trendingPage + 1 : trendingPage;
     setTrendingPage(refresh ? 0 : newPage);
-    console.log("Data : ", newPage);
     const { data } = await feedService.userSearch({
       limit: itemPerPage,
       offset: newPage * itemPerPage,
@@ -150,57 +150,56 @@ const Photo = ({
     }
   };
 
-  // const handleFeedChange = async (index, type) => {
-  //   const { items: feeds = [], requesting: loadingFeed } = feedState;
-  //   const { items: feedTrending = [], requesting: loadingTrendingFeed } =
-  //     feedTrendingState;
-  //   switch (type) {
-  //     case "mostView": {
-  //       setMostViewIndex(index);
-  //       if (totalSlideMostView + index >= feeds.length && !loadingFeed) {
-  //         loadMoreFeed();
-  //         setTotalSlideMostView(totalSlideMostView + index);
-  //       }
-  //       break;
-  //     }
-  //     case "Trending": {
-  //       setTrendingViewIndex(index);
-  //       if (
-  //         totalSlideTrending + index >= feedTrending.length &&
-  //         !loadingTrendingFeed
-  //       ) {
-  //         getMoreTrendingData();
-  //         setTotalSlideTrending(totalSlideTrending + index);
-  //       }
-  //       break;
-  //     }
-  //     default:
-  //       break;
-  //   }
-  // };
+  const loadMoreHashtag = async () => {
+    try {
+      if (loading) {
+        return;
+      }
+      setLoading(true);
+      setHashTagPage(hashTagPage + 1);
+      const resp = await feedService.getTrendingHashtag("photo", {
+        limit: hashtagPerPage,
+        offset: (hashTagPage + 1) * hashtagPerPage,
+      });
+      if (resp.data.length) {
+        const hashTag = await resp.data.reduce(async (lp, item) => {
+          const results = await lp;
+          const respPost = await feedService.userSearch({
+            q: item.hashTag,
+            limit: itemPerPage,
+            offset: itemPerPage * feedPage,
+            type: "photo",
+            sortBy: "mostViewInCurrentDay",
+            sort: "desc",
+          });
+          results.push({ hashtag: item.hashTag, data: respPost.data.data });
+          return results;
+        }, []);
+        hashTagTrendingPost.length > 0 &&
+          setHashTagTrendingPost(hashTagTrendingPost.concat(hashTag));
+      }
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      Alert.alert("Error occured, please try again later");
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       setFeedPage(0);
       setTrendingPage(0);
-      setTrendingIndex(0);
       setViewIndex(0);
       setHashTagPage(0);
       loadFeed();
       loadTrendingFeed();
-      loadHashtag();
+      await loadHashtag();
     };
     fetchData();
-    console.log("FOCUS");
     return () => {
       handleResetFeeds();
     };
-  }, [isFocused]);
-
-  // const { items: feeds = [] } = feedState;
-  // const { items: feedTrending = [] } = feedTrendingState;
-  console.log("VOO PHOTO :", trendingIndex);
-  console.log("feedState :", feedTrending.length);
+  }, []);
 
   const _renderItem = ({ item, index }) => {
     return (
@@ -221,6 +220,57 @@ const Photo = ({
       </TouchableOpacity>
     );
   };
+
+  const _renderHashTagItem = ({ item, index }) => {
+    return (
+      <TouchableOpacity>
+        <View style={styles.carouselItem} key={item._id}>
+          <Image
+            alt={"item-carousel"}
+            key={item._id}
+            fallbackSource={require("../../../assets/no-image.jpg")}
+            style={styles.carouselImage}
+            source={
+              item?.files[0]
+                ? { uri: item?.files[0].url }
+                : require("../../../assets/avatar-default.png")
+            }
+          />
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  const _renderHashTagList = ({ item, index }) => {
+    return (
+      <View>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("Hashtag", {
+              query: item?.hashtag,
+              currentTab: "photo",
+            });
+          }}
+        >
+          <View style={styles.rangeHastag}>
+            <Text style={{ color: "white", fontSize: 20 }}>
+              {`#${item?.hashtag}`}{" "}
+            </Text>
+          </View>
+        </TouchableOpacity>
+        <>
+          <Carousel
+            loop={false}
+            layout={"default"}
+            data={item.data}
+            sliderWidth={width}
+            itemWidth={150}
+            renderItem={_renderHashTagItem}
+          />
+        </>
+      </View>
+    );
+  };
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Box flex={1} mx="auto" w="100%">
@@ -237,7 +287,7 @@ const Photo = ({
                 layout={"default"}
                 data={feeds}
                 sliderWidth={width}
-                itemWidth={200}
+                itemWidth={150}
                 renderItem={_renderItem}
                 onSnapToItem={(index) => setViewIndex(index)}
                 onEndReached={() => loadFeed(true, false)}
@@ -246,11 +296,17 @@ const Photo = ({
           )}
           {feedTrending.length > 0 && (
             <>
-              <View style={styles.range}>
-                <Text style={{ fontSize: 20 }} color={colors.lightText}>
-                  Trending
-                </Text>
-              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("Trending");
+                }}
+              >
+                <View style={styles.rangeHastag}>
+                  <Text style={{ fontSize: 20 }} color={colors.lightText}>
+                    Trending
+                  </Text>
+                </View>
+              </TouchableOpacity>
               <Carousel
                 loop={false}
                 layout={"default"}
@@ -263,16 +319,14 @@ const Photo = ({
               />
             </>
           )}
-          {/* <>
-            <Carousel
-              layout={"default"}
-              data={performers}
-              sliderWidth={width}
-              itemWidth={100}
-              renderItem={_renderItem}
-              onSnapToItem={(index) => setActiveIndex(index)}
+          {hashTagTrendingPost?.length > 0 && (
+            <FlatList
+              data={hashTagTrendingPost}
+              renderItem={_renderHashTagList}
+              onEndReachedThreshold={0.5}
+              onEndReached={() => loadMoreHashtag()}
             />
-          </> */}
+          )}
         </ScrollView>
       </Box>
     </SafeAreaView>

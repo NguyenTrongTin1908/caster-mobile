@@ -1,7 +1,7 @@
 import * as Animatable from "react-native-animatable";
 import React, { useRef, useEffect, useContext } from "react";
 import { connect } from "react-redux";
-import {Linking, Alert, StyleSheet, TouchableOpacity } from "react-native";
+import { Linking, Alert, StyleSheet, TouchableOpacity } from "react-native";
 import {
   Box,
   FlatList,
@@ -27,7 +27,6 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import socketHolder from "lib/socketHolder";
 import { updateBalance } from "services/redux/user/actions";
 import { notificationService } from "../services/notification.service";
-
 import {
   addPrivateRequest,
   accessPrivateRequest,
@@ -296,6 +295,17 @@ export const MainDrawer = ({
       onPress: () => {
         //todo - update navigation
         navigationRef.current?.navigate("FollowPost");
+        handleHide();
+      },
+    },
+    {
+      id: "trending",
+      label: "Trending",
+      icon: (
+        <Feather name={"trending-up"} size={17} color={colors.appBgColor} />
+      ),
+      onPress: () => {
+        navigationRef.current?.navigate("Trending");
         handleHide();
       },
     },

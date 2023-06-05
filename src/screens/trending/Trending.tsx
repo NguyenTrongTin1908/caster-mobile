@@ -26,6 +26,7 @@ import { connect } from "react-redux";
 import { IPerformer } from "src/interfaces";
 import CustomHeader from "components/uis/CustomHeader";
 import GestureRecognizer from "react-native-swipe-gestures";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 let deviceH = Dimensions.get("screen").height;
 let bottomNavBarH = deviceH - height;
@@ -44,6 +45,7 @@ const Trending = ({ current }: IProps): React.ReactElement => {
   const [feeds, setFeeds] = useState([] as Array<IFeed>);
   const [trendingFeeds, setTrendingfeeds] = useState([] as Array<IFeed>);
   const [lastViewableItem, setLastViewableItem] = useState(null) as any;
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
@@ -141,8 +143,8 @@ const Trending = ({ current }: IProps): React.ReactElement => {
                   {
                     height:
                       Platform.OS === "ios"
-                        ? deviceH - (tabBarHeight + getStatusBarHeight(true))
-                        : deviceH - (bottomNavBarH + tabBarHeight),
+                        ? deviceH - getStatusBarHeight(true)
+                        : deviceH - bottomNavBarH,
                   },
                   ,
                   index % 2 == 0
@@ -190,55 +192,51 @@ const Trending = ({ current }: IProps): React.ReactElement => {
   );
 
   return (
-    <BottomTabBarHeightContext.Consumer>
-      {(tabBarHeight: any) => (
-        <SafeAreaView style={styles.container}>
-          <FlatList
-            data={feeds}
-            renderItem={renderItem}
-            pagingEnabled={true}
-            keyExtractor={(item) => item._id}
-            decelerationRate={"fast"}
-            showsVerticalScrollIndicator={false}
-            onViewableItemsChanged={onViewableItemsChange.current}
-            windowSize={4}
-            onEndReached={loadMoreFeeds}
-            initialNumToRender={0}
-            maxToRenderPerBatch={2}
-            removeClippedSubviews
-            snapToInterval={
-              Platform.OS === "ios"
-                ? deviceH - (tabBarHeight + getStatusBarHeight(true))
-                : deviceH - (bottomNavBarH + tabBarHeight)
-            }
-            viewabilityConfig={{
-              itemVisiblePercentThreshold: 100,
-            }}
-            snapToAlignment={"start"}
-          />
-          <HeaderMenu />
-          <CustomHeader
-            header={{
-              title: "Trending",
-              align: "center",
-            }}
-            headerStyle={{ color: "white", fontSize: 15 }}
-          >
-            <FeedTab
-              onTabChange={handleTabChange}
-              tab={tab}
-              tabs={[
-                {
-                  key: "video",
-                  title: "Videos",
-                },
-                { key: "photo", title: "Photos" },
-              ]}
-            />
-          </CustomHeader>
-        </SafeAreaView>
-      )}
-    </BottomTabBarHeightContext.Consumer>
+    <SafeAreaView style={styles.container}>
+      <FlatList
+        data={feeds}
+        renderItem={renderItem}
+        pagingEnabled={true}
+        keyExtractor={(item) => item._id}
+        decelerationRate={"fast"}
+        showsVerticalScrollIndicator={false}
+        onViewableItemsChanged={onViewableItemsChange.current}
+        windowSize={2}
+        initialNumToRender={0}
+        maxToRenderPerBatch={2}
+        onEndReached={loadMoreFeeds}
+        removeClippedSubviews
+        snapToInterval={
+          Platform.OS === "ios"
+            ? deviceH - (insets.bottom + insets.top)
+            : deviceH - bottomNavBarH
+        }
+        viewabilityConfig={{
+          itemVisiblePercentThreshold: 100,
+        }}
+        snapToAlignment={"start"}
+      />
+      <HeaderMenu />
+      <CustomHeader
+        header={{
+          title: "Trending",
+          align: "center",
+        }}
+        headerStyle={{ color: "white", fontSize: 15 }}
+      >
+        <FeedTab
+          onTabChange={handleTabChange}
+          tab={tab}
+          tabs={[
+            {
+              key: "video",
+              title: "Videos",
+            },
+            { key: "photo", title: "Photos" },
+          ]}
+        />
+      </CustomHeader>
+    </SafeAreaView>
   );
 };
 const mapStateToProp = (state: any): any => ({

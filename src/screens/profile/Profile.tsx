@@ -63,7 +63,6 @@ const Profile = ({
     if (!password) {
       return toast.show({
         title: "Warning",
-        status: "warning",
         description: "Please enter new password!",
         placement: "bottom",
       });
@@ -75,7 +74,6 @@ const Profile = ({
       .then(() => {
         toast.show({
           title: "Success",
-          status: "success",
           description: "Update password successfully!",
           placement: "bottom",
         });
@@ -86,7 +84,6 @@ const Profile = ({
         const error = await Promise.resolve(e);
         toast.show({
           title: "Error",
-          status: "error",
           description: "An error occurred, please try again!",
           placement: "bottom",
         });

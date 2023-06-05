@@ -37,18 +37,17 @@ const Hashtag = ({
 }: IProps): React.ReactElement => {
   const navigation = useNavigation() as any;
   const [tab, setTab] = useState(route.params.currentTab);
-  const [itemPerPage, setitemPerPage] = useState(12);
+  const [itemPerPage] = useState(12);
   const [feedPage, setfeedPage] = useState(0);
   const [keyword, setKeyword] = useState("");
   const mediaRefs = useRef([]) as any;
   const [feeds, setfeeds] = useState([] as Array<IFeed>);
-  const [trendingfeeds, settrendingfeeds] = useState([] as Array<IFeed>);
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
     loadfeeds();
-  }, []);
+  }, [tab]);
   const loadfeeds = async () => {
     const { data } = await feedService.userSearch({
       q: route.params.query ? route.params.query : keyword,
@@ -92,7 +91,6 @@ const Hashtag = ({
   }) as any;
   const handleTabChange = async (tab) => {
     setTab(tab);
-    setfeeds([]);
     setfeedPage(0);
   };
   const renderItem = ({ item, index }: { item: IFeed; index: number }) => {

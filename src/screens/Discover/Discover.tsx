@@ -31,14 +31,14 @@ const Discover = (): React.ReactElement => {
           swipeEnabled={false}
           scenes={[
             {
-              key: "discoverPhoto",
-              title: "Photo",
-              sence: Photo,
-            },
-            {
               key: "discoverVideo",
               title: "Video",
               sence: Video,
+            },
+            {
+              key: "discoverPhoto",
+              title: "Photo",
+              sence: Photo,
             },
           ]}
         />
