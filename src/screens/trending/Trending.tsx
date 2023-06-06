@@ -39,7 +39,6 @@ const Trending = ({ current }: IProps): React.ReactElement => {
   const [tab, setTab] = useState("video");
   const [itemPerPage, setItemPerPage] = useState(12);
   const [feedPage, setFeedPage] = useState(0);
-  const [orientation, setOrientation] = useState("");
   const [keyword, setKeyword] = useState("");
   const mediaRefs = useRef([]) as any;
   const [feeds, setFeeds] = useState([] as Array<IFeed>);
@@ -55,7 +54,6 @@ const Trending = ({ current }: IProps): React.ReactElement => {
   const loadFeeds = async () => {
     const { data } = await feedService.trendingSearch({
       q: keyword,
-      orientation,
       limit: itemPerPage,
       offset: itemPerPage * feedPage,
       isHome: true,
@@ -70,7 +68,6 @@ const Trending = ({ current }: IProps): React.ReactElement => {
     setFeedPage(feedPage + 1);
     const { data } = await feedService.userSearch({
       q: keyword,
-      orientation,
       limit: itemPerPage,
       offset: itemPerPage * feedPage,
       isHome: false,
@@ -87,7 +84,6 @@ const Trending = ({ current }: IProps): React.ReactElement => {
     setFeedPage(feedPage + 1);
     const { data } = await feedService.userSearch({
       q: keyword,
-      orientation,
       limit: itemPerPage,
       offset: 0,
       isHome: false,

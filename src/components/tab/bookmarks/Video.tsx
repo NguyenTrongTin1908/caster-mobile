@@ -2,14 +2,11 @@ import React, { useEffect, useState } from "react";
 import { View, Image, TouchableOpacity } from "react-native";
 import { IFeed } from "interfaces/feed";
 import BadgeText from "components/uis/BadgeText";
-import LoadingSpinner from "components/uis/LoadingSpinner";
 import { feedService } from "services/feed.service";
-import { Sizes } from "../../../constants/styles";
 import styles from "./style";
-import { ScrollView } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/core";
 import { FlatList, Text } from "native-base";
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused } from "@react-navigation/native";
 
 interface IProps {
   route: {
@@ -27,7 +24,7 @@ const Video = ({ route }: IProps) => {
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    loadBookmarkPosts(false, true)
+    loadBookmarkPosts(false, true);
   }, [isFocused]);
   const loadBookmarkPosts = async (more = false, refresh = false) => {
     if (more && !moreable) return;
@@ -49,7 +46,7 @@ const Video = ({ route }: IProps) => {
       }
 
       let videoData = data.data.filter(
-        (item) => item?.objectInfo?.type !== "photo"
+        (item) => item?.objectInfo?.type === "video"
       );
 
       setfeeds(refresh ? videoData : feeds.concat(videoData));
@@ -95,18 +92,17 @@ const Video = ({ route }: IProps) => {
   };
 
   return (
-        <FlatList
-          data={feeds}
-          renderItem={renderItem}
-          numColumns={3}
-          keyExtractor={(item, index) => item._id + "_" + index}
-          onEndReachedThreshold={0.1}
-          onEndReached={() => loadBookmarkPosts(true, false)}
-          onRefresh={() => loadBookmarkPosts(false, true)}
-          ListEmptyComponent={renderEmpty()}
-          refreshing={feedLoading}
-        />
-
+    <FlatList
+      data={feeds}
+      renderItem={renderItem}
+      numColumns={3}
+      keyExtractor={(item, index) => item._id + "_" + index}
+      onEndReachedThreshold={0.1}
+      onEndReached={() => loadBookmarkPosts(true, false)}
+      onRefresh={() => loadBookmarkPosts(false, true)}
+      ListEmptyComponent={renderEmpty()}
+      refreshing={feedLoading}
+    />
   );
 };
 export default Video;

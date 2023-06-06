@@ -2,12 +2,10 @@ import React, { useEffect, useState } from "react";
 import { View, Image, TouchableOpacity } from "react-native";
 import { IFeed } from "interfaces/feed";
 import BadgeText from "components/uis/BadgeText";
-import LoadingSpinner from "components/uis/LoadingSpinner";
-import { FlatList, ScrollView } from "native-base";
+import { FlatList } from "native-base";
 import { feedService } from "services/feed.service";
-import { Sizes } from "utils/theme";
 import styles from "./style";
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/core";
 interface IProps {
   route: {
@@ -24,28 +22,34 @@ const Photo = ({ route }: IProps) => {
   const isFocused = useIsFocused();
   const navigation = useNavigation() as any;
   useEffect(() => {
-    loadBookmarkPosts(false, true)
+    loadBookmarkPosts(false, true);
   }, [isFocused]);
   const loadBookmarkPosts = async (more = false, refresh = false) => {
     if (more && !moreable) return;
-    setfeedLoading(true);
-    const newPage = more ? page + 1 : page;
-    setPage(refresh ? 0 : newPage);
-    const { data } = await feedService.getBookmark({
-      offset: refresh ? 0 : newPage * 100,
-      limit: 100,
-    });
-    if (!refresh && data.length < 100) {
-      setMoreable(false);
+    try {
+      setfeedLoading(true);
+      const newPage = more ? page + 1 : page;
+      setPage(refresh ? 0 : newPage);
+      const { data } = await feedService.getBookmark({
+        offset: refresh ? 0 : newPage * 100,
+        limit: 100,
+      });
+      setfeedLoading(false);
+      if (!refresh && data.length < 100) {
+        setMoreable(false);
+      }
+      if (refresh && !moreable) {
+        setMoreable(true);
+      }
+      let photoData = data.data.filter(
+        (item) => item?.objectInfo?.type === "photo"
+      );
+      console.log("data: " , photoData[3].objectInfo.type)
+      setfeeds(refresh ? photoData : feeds.concat(photoData));
+    } catch (err) {
+      const error = await Promise.resolve(err);
+      return null;
     }
-    if (refresh && !moreable) {
-      setMoreable(true);
-    }
-    let photoData = data.data.filter(
-      (item) => item?.objectInfo?.type !== "video"
-    );
-    setfeedLoading(false);
-    setfeeds(refresh ? photoData : feeds.concat(photoData));
   };
   const handleRedirect = (Id) => {
     navigation.navigate("FeedDetail", {
@@ -83,17 +87,17 @@ const Photo = ({ route }: IProps) => {
     </View>
   );
   return (
-        <FlatList
-          data={feeds}
-          renderItem={renderItem}
-          numColumns={3}
-          keyExtractor={(item, index) => item._id + "_" + index}
-          onEndReachedThreshold={0.1}
-          onEndReached={() => loadBookmarkPosts(true, false)}
-          onRefresh={() => loadBookmarkPosts(false, true)}
-          ListEmptyComponent={renderEmpty()}
-          refreshing={feedLoading}
-        />
+    <FlatList
+      data={feeds}
+      renderItem={renderItem}
+      numColumns={3}
+      keyExtractor={(item, index) => item._id + "_" + index}
+      onEndReachedThreshold={0.1}
+      onEndReached={() => loadBookmarkPosts(true, false)}
+      onRefresh={() => loadBookmarkPosts(false, true)}
+      ListEmptyComponent={renderEmpty()}
+      refreshing={feedLoading}
+    />
   );
 };
 export default Photo;

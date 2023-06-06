@@ -18,6 +18,7 @@ import {
 import { colors } from "utils/theme";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { IFeed } from "src/interfaces";
+import { secondsToHms } from "lib/duration";
 
 interface IProps {
   performer: IPerformer;
@@ -222,6 +223,7 @@ const Video = ({
           <Image
             alt={"thumbnail-video"}
             key={item._id}
+            fallbackSource={require("../../../assets/no-image.jpg")}
             style={styles.carouselImage}
             source={
               item?.files[0]
@@ -229,6 +231,19 @@ const Video = ({
                 : require("../../../assets/avatar-default.png")
             }
           />
+          <View style={styles.itemCarouselDuration}>
+            <View>
+              <Text style={styles.textCarouselDuration}>
+                {`${item.stats.currentMonthViews}`}
+              </Text>
+            </View>
+            <View>
+              <Text style={styles.textCarouselDuration}>
+                {secondsToHms(item?.files[0].duration)}
+              </Text>
+            </View>
+          </View>
+          <Text style={styles.itemCarouselName}>{item?.performer.name}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -249,13 +264,25 @@ const Video = ({
                 : require("../../../assets/avatar-default.png")
             }
           />
+          <View style={styles.itemCarouselDuration}>
+            <View>
+              <Text style={styles.textCarouselDuration}>
+                {`${item.stats.currentMonthViews}`}
+              </Text>
+            </View>
+            <View>
+              <Text style={styles.textCarouselDuration}>
+                {secondsToHms(item?.files[0].duration)}
+              </Text>
+            </View>
+          </View>
+          <Text style={styles.itemCarouselName}>{item?.performer.name}</Text>
         </View>
       </TouchableOpacity>
     );
   };
 
   const _renderHashTagList = ({ item, index }) => {
-    console.log("HashTag:", item?.hashtag);
     return (
       <View>
         <TouchableOpacity

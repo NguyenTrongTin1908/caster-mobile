@@ -37,17 +37,18 @@ const Hashtag = ({
 }: IProps): React.ReactElement => {
   const navigation = useNavigation() as any;
   const [tab, setTab] = useState(route.params.currentTab);
-  const [itemPerPage] = useState(12);
+  const [itemPerPage, setitemPerPage] = useState(12);
   const [feedPage, setfeedPage] = useState(0);
   const [keyword, setKeyword] = useState("");
   const mediaRefs = useRef([]) as any;
   const [feeds, setfeeds] = useState([] as Array<IFeed>);
+  const [trendingfeeds, settrendingfeeds] = useState([] as Array<IFeed>);
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
     loadfeeds();
-  }, [tab]);
+  }, []);
   const loadfeeds = async () => {
     const { data } = await feedService.userSearch({
       q: route.params.query ? route.params.query : keyword,
@@ -91,6 +92,7 @@ const Hashtag = ({
   }) as any;
   const handleTabChange = async (tab) => {
     setTab(tab);
+    setfeeds([]);
     setfeedPage(0);
   };
   const renderItem = ({ item, index }: { item: IFeed; index: number }) => {
@@ -98,35 +100,27 @@ const Hashtag = ({
       <BottomTabBarHeightContext.Consumer>
         {(tabBarHeight: any) => {
           return (
-            <GestureRecognizer
-              onSwipeLeft={(state) => onSwipeLeft(state)}
-              onSwipeRight={(state) => onSwipeRight(state)}
-              style={{
-                flex: 1,
-              }}
+            <View
+              style={[
+                {
+                  height:
+                    Platform.OS === "ios"
+                      ? deviceH - getStatusBarHeight(true)
+                      : deviceH - bottomNavBarH,
+                },
+                ,
+                index % 2 == 0
+                  ? { backgroundColor: "#000000" }
+                  : { backgroundColor: "#000000" },
+              ]}
             >
-              <View
-                style={[
-                  {
-                    height:
-                      Platform.OS === "ios"
-                        ? deviceH - getStatusBarHeight(true)
-                        : deviceH - bottomNavBarH,
-                  },
-                  ,
-                  index % 2 == 0
-                    ? { backgroundColor: "#000000" }
-                    : { backgroundColor: "#000000" },
-                ]}
-              >
-                <FeedCard
-                  feed={item}
-                  mediaRefs={mediaRefs}
-                  currentTab={tab}
-                  current={current}
-                />
-              </View>
-            </GestureRecognizer>
+              <FeedCard
+                feed={item}
+                mediaRefs={mediaRefs}
+                currentTab={tab}
+                current={current}
+              />
+            </View>
           );
         }}
       </BottomTabBarHeightContext.Consumer>
@@ -138,49 +132,57 @@ const Hashtag = ({
   }, [tab]);
   return (
     <SafeAreaView style={styles.container}>
-      <FlatList
-        data={feeds}
-        renderItem={renderItem}
-        pagingEnabled={true}
-        keyExtractor={(item) => item._id}
-        decelerationRate={"fast"}
-        showsVerticalScrollIndicator={false}
-        onViewableItemsChanged={onViewableItemsChange.current}
-        windowSize={2}
-        initialNumToRender={0}
-        maxToRenderPerBatch={2}
-        onEndReached={loadmoreFeeds}
-        removeClippedSubviews
-        snapToInterval={
-          Platform.OS === "ios"
-            ? deviceH - (insets.bottom + insets.top)
-            : deviceH - bottomNavBarH
-        }
-        viewabilityConfig={{
-          itemVisiblePercentThreshold: 100,
+      <GestureRecognizer
+        onSwipeLeft={(state) => onSwipeLeft(state)}
+        onSwipeRight={(state) => onSwipeRight(state)}
+        style={{
+          flex: 1,
         }}
-        snapToAlignment={"start"}
-      />
-      <HeaderMenu />
-      <CustomHeader
-        header={{
-          title: "Hashtag",
-          align: "center",
-        }}
-        headerStyle={{ color: "white", fontSize: 15 }}
       >
-        <FeedTab
-          onTabChange={handleTabChange}
-          tab={tab}
-          tabs={[
-            {
-              key: "video",
-              title: "Videos",
-            },
-            { key: "photo", title: "Photos" },
-          ]}
+        <FlatList
+          data={feeds}
+          renderItem={renderItem}
+          pagingEnabled={true}
+          keyExtractor={(item) => item._id}
+          decelerationRate={"fast"}
+          showsVerticalScrollIndicator={false}
+          onViewableItemsChanged={onViewableItemsChange.current}
+          windowSize={2}
+          initialNumToRender={0}
+          maxToRenderPerBatch={2}
+          onEndReached={loadmoreFeeds}
+          removeClippedSubviews
+          snapToInterval={
+            Platform.OS === "ios"
+              ? deviceH - (insets.bottom + insets.top)
+              : deviceH - bottomNavBarH
+          }
+          viewabilityConfig={{
+            itemVisiblePercentThreshold: 100,
+          }}
+          snapToAlignment={"start"}
         />
-      </CustomHeader>
+        <HeaderMenu />
+        <CustomHeader
+          header={{
+            title: "Hashtag",
+            align: "center",
+          }}
+          headerStyle={{ color: "white", fontSize: 15 }}
+        >
+          <FeedTab
+            onTabChange={handleTabChange}
+            tab={tab}
+            tabs={[
+              {
+                key: "video",
+                title: "Videos",
+              },
+              { key: "photo", title: "Photos" },
+            ]}
+          />
+        </CustomHeader>
+      </GestureRecognizer>
     </SafeAreaView>
   );
 };

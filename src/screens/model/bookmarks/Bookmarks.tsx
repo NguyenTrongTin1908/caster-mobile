@@ -46,15 +46,15 @@ const Bookmarks = ({ handleLogout, current }: Props): React.ReactElement => {
           <TabView
             scenes={[
               {
-                key: "videoList",
-                title: "Videos",
-                sence: Video,
-                params: { performerId: current._id },
-              },
-              {
                 key: "photoList",
                 title: "Photos",
                 sence: Photo,
+                params: { performerId: current._id },
+              },
+              {
+                key: "videoList",
+                title: "Videos",
+                sence: Video,
                 params: { performerId: current._id },
               },
             ]}

@@ -216,6 +216,12 @@ const Photo = ({
                 : require("../../../assets/avatar-default.png")
             }
           />
+          <View style={styles.itemCarouselDuration}>
+            <Text
+              style={styles.textCarouselDuration}
+            >{`${item.stats.currentMonthViews}`}</Text>
+          </View>
+          <Text style={styles.itemCarouselName}>{item?.performer.name}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -236,6 +242,12 @@ const Photo = ({
                 : require("../../../assets/avatar-default.png")
             }
           />
+          <View style={styles.itemCarouselDuration}>
+            <Text
+              style={styles.textCarouselDuration}
+            >{`${item.stats.currentMonthViews}`}</Text>
+          </View>
+          <Text style={styles.itemCarouselName}>{item?.performer.name}</Text>
         </View>
       </TouchableOpacity>
     );

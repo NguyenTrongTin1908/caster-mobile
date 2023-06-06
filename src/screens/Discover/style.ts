@@ -106,5 +106,26 @@ const styles = StyleSheet.create({
   rangeNumber: {
     alignItems: "center",
   },
+
+  itemCarouselName: {
+    textAlign: "center",
+    alignItems: "center",
+    fontSize: 16,
+    color: "white",
+  },
+
+  itemCarouselDuration: {
+    flexDirection: "row",
+    position: "absolute",
+    bottom: "15%",
+    justifyContent: "space-between",
+    fontSize: 16,
+    width: "100%",
+  },
+
+  textCarouselDuration: {
+    color: "white",
+    backgroundColor: "black",
+  },
 });
 export default styles;
