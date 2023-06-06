@@ -31,6 +31,7 @@ export const colors = {
   tabView: "rgb(255,255,0)",
   tabViewBackground: "rgb(100,77,0)",
   messageText: "rgb(146,70,243)",
+  backgroundText: "E7E7E7",
 
   //text
   lightText: "#fff",

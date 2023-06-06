@@ -155,7 +155,7 @@ const Model = ({ user }: IProps): React.ReactElement => {
     setRadioValue(val);
   };
 
-  const _renderItem = ({ item, index }) => {
+  const _renderItem = ({ item, index, smallSize = false }) => {
     return (
       <TouchableOpacity>
         <View style={styles.rangeNumber}>
@@ -174,6 +174,48 @@ const Model = ({ user }: IProps): React.ReactElement => {
                 : require("../../../assets/avatar-default.png")
             }
           />
+        </View>
+        <View style={styles.itemTopName}>
+          <Text
+            numberOfLines={1}
+            style={smallSize ? styles.textTopNameSmall : styles.textTopName}
+          >
+            {item.name}
+          </Text>
+          <Text
+            style={smallSize ? styles.textTopNameSmall : styles.textTopName}
+          >
+            {" "}
+            {item.stats.totalFollower || 0} Fans
+          </Text>
+        </View>
+        <View style={styles.btnFollow}>
+          <ButtonFollow
+            isHideOnClick
+            targetId={item._id}
+            sourceId={user._id}
+            isFollow={item.isFollowed}
+            getPerformerList={() => {}}
+          />
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  const _renderMoreItem = ({ item, index }) => {
+    return (
+      <TouchableOpacity>
+        <View style={styles.rangeNumber}>
+          <Text color={colors.lightText}>
+            {item?.ranking ? item?.ranking[ranking] : ""}
+          </Text>
+        </View>
+        <View style={styles.itemTopName}>
+          <Text style={styles.textTopName}>{item.name}</Text>
+          <Text style={styles.textTopName}>
+            {" "}
+            {item.stats.totalFollower || 0} Fans
+          </Text>
         </View>
         <View style={styles.btnFollow}>
           <ButtonFollow
@@ -235,7 +277,7 @@ const Model = ({ user }: IProps): React.ReactElement => {
                 data={top10Performers}
                 sliderWidth={width}
                 itemWidth={200}
-                renderItem={_renderItem}
+                renderItem={(data) => _renderItem(data)}
                 onSnapToItem={(index) => setActiveIndex(index)}
               />
             </>
@@ -250,7 +292,7 @@ const Model = ({ user }: IProps): React.ReactElement => {
                 data={top25Performers}
                 sliderWidth={width}
                 itemWidth={150}
-                renderItem={_renderItem}
+                renderItem={(data) => _renderItem(data)}
                 onSnapToItem={(index) => setActiveIndex(index)}
               />
             </>
@@ -265,7 +307,7 @@ const Model = ({ user }: IProps): React.ReactElement => {
                 data={top100Performers}
                 sliderWidth={width}
                 itemWidth={120}
-                renderItem={_renderItem}
+                renderItem={(data) => _renderItem({ ...data, smallSize: true })}
                 onSnapToItem={(index) => setActiveIndex(index)}
               />
             </>
@@ -280,7 +322,7 @@ const Model = ({ user }: IProps): React.ReactElement => {
                 data={performers}
                 sliderWidth={width}
                 itemWidth={100}
-                renderItem={_renderItem}
+                renderItem={_renderMoreItem}
                 onSnapToItem={(index) => setActiveIndex(index)}
               />
             </>

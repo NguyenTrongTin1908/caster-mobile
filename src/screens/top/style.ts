@@ -103,5 +103,24 @@ const styles = StyleSheet.create({
   rangeNumber: {
     alignItems: "center",
   },
+  itemTopName: {
+    backgroundColor: colors.btnPrimaryColor,
+  },
+  textTopName: {
+    textAlign: "center",
+    alignItems: "center",
+    overflow: "hidden",
+    flexShrink: 1,
+    fontSize: 16,
+    color: "white",
+  },
+  textTopNameSmall: {
+    textAlign: "center",
+    alignItems: "center",
+    overflow: "hidden",
+    flexShrink: 1,
+    fontSize: 12,
+    color: "white",
+  },
 });
 export default styles;
