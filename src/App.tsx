@@ -1,14 +1,13 @@
-import SplashScreen from 'react-native-splash-screen';
-import { initApp } from './utils/bootstrap';
-import React, { useEffect, useState } from 'react';
-import RootNavigator from 'navigations/RootStackNavigator';
-import RootProvider from 'providers/index';
-import { Socket } from './socket';
-import Welcome from 'components/welcome/welcome';
-import { StatusBar } from 'native-base';
-import MainDrawer from './navigations/MainDrawer';
-import PushController  from "./PushController";
-
+import SplashScreen from "react-native-splash-screen";
+import { initApp } from "./utils/bootstrap";
+import React, { useEffect, useState } from "react";
+import RootNavigator from "navigations/RootStackNavigator";
+import RootProvider from "providers/index";
+import { Socket } from "./socket";
+import Welcome from "components/welcome/welcome";
+import { StatusBar } from "native-base";
+import MainDrawer from "./navigations/MainDrawer";
+import PushController from "./PushController";
 
 function App(): React.ReactElement {
   const [appIsReady, setAppIsReady] = useState(false);
@@ -20,11 +19,10 @@ function App(): React.ReactElement {
       // if (isAndroid()) await SplashScreen.show();
       // bootstrap
       await initApp();
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
+      await new Promise((resolve) => setTimeout(resolve, 2000));
     } catch (e) {
       // TODO - show alert and other info here
-      console.log('err', e);
+      console.log("err", e);
     } finally {
       await SplashScreen.hide();
       setAppIsReady(true);
@@ -32,13 +30,12 @@ function App(): React.ReactElement {
   };
 
   useEffect(() => {
-
     prepare();
   }, []);
 
   return (
     <>
-      <StatusBar hidden={false} />
+      <StatusBar hidden={false} backgroundColor={"black"} />
       {!appIsReady ? <Welcome /> : <RootNavigator />}
     </>
   );
@@ -49,7 +46,7 @@ function ProviderWrapper(): React.ReactElement {
     <RootProvider>
       <Socket>
         <>
-        <PushController />
+          <PushController />
           <MainDrawer />
           <App />
         </>
