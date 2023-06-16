@@ -139,10 +139,9 @@ const Trending = ({ current }: IProps): React.ReactElement => {
                   {
                     height:
                       Platform.OS === "ios"
-                        ? deviceH - getStatusBarHeight(true)
-                        : deviceH - bottomNavBarH,
+                        ? deviceH - (tabBarHeight + getStatusBarHeight(true))
+                        : deviceH - (bottomNavBarH + tabBarHeight),
                   },
-                  ,
                   index % 2 == 0
                     ? { backgroundColor: "#000000" }
                     : { backgroundColor: "#000000" },
@@ -188,51 +187,57 @@ const Trending = ({ current }: IProps): React.ReactElement => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <FlatList
-        data={feeds}
-        renderItem={renderItem}
-        pagingEnabled={true}
-        keyExtractor={(item) => item._id}
-        decelerationRate={"fast"}
-        showsVerticalScrollIndicator={false}
-        onViewableItemsChanged={onViewableItemsChange.current}
-        windowSize={2}
-        initialNumToRender={0}
-        maxToRenderPerBatch={2}
-        onEndReached={loadMoreFeeds}
-        removeClippedSubviews
-        snapToInterval={
-          Platform.OS === "ios"
-            ? deviceH - (insets.bottom + insets.top)
-            : deviceH - bottomNavBarH
-        }
-        viewabilityConfig={{
-          itemVisiblePercentThreshold: 100,
-        }}
-        snapToAlignment={"start"}
-      />
-      <HeaderMenu />
-      <CustomHeader
-        header={{
-          title: "Trending",
-          align: "center",
-        }}
-        headerStyle={{ color: "white", fontSize: 15 }}
-      >
-        <FeedTab
-          onTabChange={handleTabChange}
-          tab={tab}
-          tabs={[
-            {
-              key: "video",
-              title: "Videos",
-            },
-            { key: "photo", title: "Photos" },
-          ]}
-        />
-      </CustomHeader>
-    </SafeAreaView>
+    <BottomTabBarHeightContext.Consumer>
+      {(tabBarHeight: any) => {
+        return (
+          <SafeAreaView style={styles.container}>
+            <FlatList
+              data={feeds}
+              renderItem={renderItem}
+              pagingEnabled={true}
+              keyExtractor={(item) => item._id}
+              decelerationRate={"fast"}
+              showsVerticalScrollIndicator={false}
+              onViewableItemsChanged={onViewableItemsChange.current}
+              windowSize={2}
+              initialNumToRender={0}
+              maxToRenderPerBatch={2}
+              onEndReached={loadMoreFeeds}
+              removeClippedSubviews
+              snapToInterval={
+                Platform.OS === "ios"
+                  ? deviceH - (tabBarHeight + getStatusBarHeight(true))
+                  : deviceH - (bottomNavBarH + tabBarHeight)
+              }
+              viewabilityConfig={{
+                itemVisiblePercentThreshold: 100,
+              }}
+              snapToAlignment={"start"}
+            />
+            <HeaderMenu />
+            <CustomHeader
+              header={{
+                title: "Trending",
+                align: "center",
+              }}
+              headerStyle={{ color: "white", fontSize: 15 }}
+            >
+              <FeedTab
+                onTabChange={handleTabChange}
+                tab={tab}
+                tabs={[
+                  {
+                    key: "video",
+                    title: "Videos",
+                  },
+                  { key: "photo", title: "Photos" },
+                ]}
+              />
+            </CustomHeader>
+          </SafeAreaView>
+        );
+      }}
+    </BottomTabBarHeightContext.Consumer>
   );
 };
 const mapStateToProp = (state: any): any => ({

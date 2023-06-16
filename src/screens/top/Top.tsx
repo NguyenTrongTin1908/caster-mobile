@@ -15,7 +15,7 @@ interface IProps {
   countries: ICountry[];
   bodyInfo: IBody;
 }
-const Top = ({}: IProps): React.ReactElement => {
+const Top = (): React.ReactElement => {
   const navigation = useNavigation() as any;
   useEffect(() => {
     navigation.setOptions({

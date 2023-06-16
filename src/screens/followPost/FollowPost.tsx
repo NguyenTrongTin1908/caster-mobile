@@ -149,8 +149,8 @@ const FollowPost = ({
                   {
                     height:
                       Platform.OS === "ios"
-                        ? deviceH - getStatusBarHeight(true)
-                        : deviceH - bottomNavBarH,
+                        ? deviceH - (tabBarHeight + getStatusBarHeight(true))
+                        : deviceH - (bottomNavBarH + tabBarHeight),
                   },
                   ,
                   index % 2 == 0
@@ -172,52 +172,56 @@ const FollowPost = ({
     );
   };
   return (
-    <SafeAreaView style={styles.container}>
-      <FlatList
-        data={feedState.items}
-        renderItem={renderItem}
-        pagingEnabled={true}
-        keyExtractor={(item) => item._id}
-        decelerationRate={"fast"}
-        showsVerticalScrollIndicator={false}
-        onViewableItemsChanged={onViewableItemsChange.current}
-        windowSize={2}
-        initialNumToRender={0}
-        maxToRenderPerBatch={2}
-        onEndReached={loadmoreFeeds}
-        removeClippedSubviews
-        snapToInterval={
-          Platform.OS === "ios"
-            ? deviceH - (insets.bottom + insets.top)
-            : deviceH - bottomNavBarH
-        }
-        viewabilityConfig={{
-          itemVisiblePercentThreshold: 100,
-        }}
-        snapToAlignment={"start"}
-      />
-      <HeaderMenu />
-      <CustomHeader
-        header={{
-          title: "Following",
-          align: "center",
-        }}
-        headerStyle={{ color: "white", fontSize: 15 }}
-      >
-        <FeedTab
-          onTabChange={handleTabChange}
-          tab={tab}
-          tabs={[
-            {
-              key: "video",
-              title: "Videos",
-            },
-            { key: "photo", title: "Photos" },
-          ]}
-        />
-      </CustomHeader>
-      <BackButton />
-    </SafeAreaView>
+    <BottomTabBarHeightContext.Consumer>
+      {(tabBarHeight: any) => (
+        <SafeAreaView style={styles.container}>
+          <FlatList
+            data={feedState.items}
+            renderItem={renderItem}
+            pagingEnabled={true}
+            keyExtractor={(item) => item._id}
+            decelerationRate={"fast"}
+            showsVerticalScrollIndicator={false}
+            onViewableItemsChanged={onViewableItemsChange.current}
+            windowSize={2}
+            initialNumToRender={0}
+            onEndReachedThreshold={0.5}
+            maxToRenderPerBatch={2}
+            onEndReached={loadmoreFeeds}
+            removeClippedSubviews
+            snapToInterval={
+              Platform.OS === "ios"
+                ? deviceH - (tabBarHeight + getStatusBarHeight(true))
+                : deviceH - (bottomNavBarH + tabBarHeight)
+            }
+            viewabilityConfig={{
+              itemVisiblePercentThreshold: 100,
+            }}
+            snapToAlignment={"start"}
+          />
+          <HeaderMenu />
+          <CustomHeader
+            header={{
+              title: "Following",
+              align: "center",
+            }}
+            headerStyle={{ color: "white", fontSize: 15 }}
+          >
+            <FeedTab
+              onTabChange={handleTabChange}
+              tab={tab}
+              tabs={[
+                {
+                  key: "video",
+                  title: "Videos",
+                },
+                { key: "photo", title: "Photos" },
+              ]}
+            />
+          </CustomHeader>
+        </SafeAreaView>
+      )}
+    </BottomTabBarHeightContext.Consumer>
   );
 };
 const mapStateToProp = (state: any): any => ({

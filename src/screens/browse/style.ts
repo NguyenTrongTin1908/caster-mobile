@@ -27,10 +27,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     paddingBottom: Sizes.fixPadding * 3.0,
   },
-  songRow: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
   rightContainer: {
     alignSelf: "flex-end",
     height: 320,

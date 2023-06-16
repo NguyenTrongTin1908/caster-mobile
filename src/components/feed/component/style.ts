@@ -2,6 +2,8 @@ import { Platform, StyleSheet } from "react-native";
 import { colors, Fonts, Sizes } from "utils/theme";
 import { Dimensions, StatusBar } from "react-native";
 import { unset } from "lodash";
+import { background } from "native-base/lib/typescript/theme/styled-system";
+import { Center } from "native-base";
 
 const { width, height } = Dimensions.get("window");
 let deviceH = Dimensions.get("screen").height;
@@ -26,11 +28,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "flex-end",
     paddingBottom: Sizes.fixPadding * 2.5,
-  },
-  songRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: Sizes.fixPadding * 2.0,
   },
   rightContainer: {
     position: "absolute",

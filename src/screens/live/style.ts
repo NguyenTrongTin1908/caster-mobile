@@ -46,11 +46,6 @@ const styles = StyleSheet.create({
   iconStream: {
     marginTop: Sizes.fixPadding + 100.0,
   },
-
-  songRow: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
   rightContainer: {
     alignSelf: "flex-end",
     height: 320,
@@ -133,8 +128,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.secondary,
     marginTop: Sizes.fixPadding + 80.0,
   },
-
-
 });
 
 export default styles;

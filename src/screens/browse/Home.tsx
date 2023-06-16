@@ -53,14 +53,12 @@ interface IProps {
   };
 }
 const Home = ({
-  fcmToken,
   feedState,
   handleGetMore,
   current,
   feedRecommendState,
   handleGetRecommendFeeds,
   handleGetMoreRecommendFeeds,
-  handleGetTrendingFeeds,
 }: IProps): React.ReactElement => {
   const navigation = useNavigation() as any;
   const [tab, setTab] = useState("video");
@@ -211,9 +209,6 @@ const Home = ({
                         ? deviceH - (tabBarHeight + getStatusBarHeight(true))
                         : deviceH - (bottomNavBarH + tabBarHeight),
                   },
-                  index % 2 == 0
-                    ? { backgroundColor: "#000000" }
-                    : { backgroundColor: "#000000" },
                 ]}
               >
                 <FeedCard
