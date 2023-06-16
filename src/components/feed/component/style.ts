@@ -10,7 +10,10 @@ let deviceH = Dimensions.get("screen").height;
 const STATUS_BAR_HEIGHT = StatusBar.currentHeight || 24;
 let bottomNavBarH = deviceH - height + STATUS_BAR_HEIGHT;
 const styles = StyleSheet.create({
-  container: { flex: 1 },
+  container: {
+    flex: 1,
+    resizeMode: 'contain',
+  },
   uiContainer: {
     position: "absolute",
     bottom: 0,

@@ -20,6 +20,6 @@ export const ImageCard = forwardRef(({ resizeMode, feed: { files, thumbnail, _id
   const setStatus = isViewable => {
     setIsViewable(isViewable);
   };
-  return files && files.length > 0 && <Image source={{ uri: files[0]?.url }} style={styles.container} />;
+  return files && files.length > 0 && <Image  source={{ uri: files[0]?.url }} style={styles.container} />;
 });
 export default ImageCard;
