@@ -11,7 +11,6 @@ import Video from "components/tab/profile/Video";
 import styles from "./style";
 import ButtonFollow from "components/uis/ButtonFollow";
 import { IPerformer } from "src/interfaces";
-import BackButton from "components/uis/BackButton";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import HeaderMenu from "components/tab/HeaderMenu";
 
@@ -149,7 +148,6 @@ const ModelProfile = ({
           />
         </View>
         <HeaderMenu />
-        <BackButton />
       </View>
     </SafeAreaView>
   );

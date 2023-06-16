@@ -9,7 +9,6 @@ import {
   FormControl,
 } from "native-base";
 import { useNavigation } from "@react-navigation/core";
-import BackButton from "components/uis/BackButton";
 import { colors } from "utils/theme";
 import { IBody, ICountry } from "interfaces/utils";
 import AntDesign from "react-native-vector-icons/AntDesign";
@@ -60,7 +59,6 @@ const AdvancedFilter = ({
       headerShown: false,
       headerTitleAlign: "center",
       title: "Top Caster",
-      headerLeft: () => <BackButton />,
       headerRight: null,
     });
   }, [useContext]);

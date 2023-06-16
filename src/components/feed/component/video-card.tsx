@@ -9,7 +9,6 @@ import Video from "react-native-video";
 import { IFeed } from "interfaces/feed";
 import styles from "./style";
 import { feedService } from "services/feed.service";
-import { ImageBackground } from "react-native";
 interface IProps {
   resizeMode?: string;
   feed: IFeed;

@@ -4,7 +4,6 @@ import OrderTableList from "components/order/table-list";
 import { connect } from "react-redux";
 import { IPerformer } from "interfaces/performer";
 import React, { useEffect, useState } from "react";
-import BackButton from "components/uis/BackButton";
 import { Alert, View, Heading, Box } from "native-base";
 import { SafeAreaView } from "react-native";
 import HeaderMenu from "components/tab/HeaderMenu";
@@ -88,7 +87,6 @@ const ModelOrderPage = ({ user }: IProps) => {
           />
         </View>
       </Box>
-      <BackButton />
     </SafeAreaView>
   );
 };

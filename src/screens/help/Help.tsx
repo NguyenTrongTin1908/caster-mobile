@@ -3,7 +3,6 @@ import { SafeAreaView, TouchableOpacity } from "react-native";
 import { Box, Heading, Text, FlatList, Modal, View } from "native-base";
 import { useNavigation } from "@react-navigation/core";
 import { IPerformer } from "interfaces/performer";
-import BackButton from "components/uis/BackButton";
 import { colors } from "utils/theme";
 import HeaderMenu from "components/tab/HeaderMenu";
 import { connect } from "react-redux";
@@ -224,7 +223,10 @@ const Help = ({ user }: IProps): React.ReactElement => {
         />
         <Modal
           isOpen={modalVisible}
-          onClose={() => {setTopicPage(0); setModalVisible(false)}}
+          onClose={() => {
+            setTopicPage(0);
+            setModalVisible(false);
+          }}
           avoidKeyboard
           justifyContent="center"
           size="full"
@@ -253,15 +255,13 @@ const Help = ({ user }: IProps): React.ReactElement => {
                 ListEmptyComponent={renderEmpty(firstTopic)}
                 onEndReached={() => loadMoreTopic(true, false)}
               />
-        {loading && <LoadingSpinner />}
-
+              {loading && <LoadingSpinner />}
             </Modal.Body>
             <Modal.Footer></Modal.Footer>
           </Modal.Content>
         </Modal>
       </Box>
       <HeaderMenu />
-      <BackButton />
     </SafeAreaView>
   );
 };

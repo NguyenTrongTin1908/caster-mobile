@@ -1,10 +1,4 @@
-import {
-  Alert,
-  Heading,
-  View,
-  Text,
-  Box,
-} from "native-base";
+import { Alert, Heading, View, Text, Box } from "native-base";
 import React, { useEffect, useState } from "react";
 import { IOrder } from "src/interfaces";
 import { orderService } from "services/order.service";
@@ -13,7 +7,6 @@ import { SafeAreaView } from "react-native";
 import HeaderMenu from "components/tab/HeaderMenu";
 import { colors } from "utils/theme";
 import styles from "./style";
-import BackButton from "components/uis/BackButton";
 interface IProps {
   route: {
     params: {
@@ -23,7 +16,6 @@ interface IProps {
 }
 
 const OrderDetailPage = ({ route }: IProps): React.ReactElement => {
-
   const [submitting, setSubmitting] = useState(false);
   const [order, setOrder] = useState(null) as any;
   const [shippingCode, setShippingCode] = useState("");
@@ -116,7 +108,6 @@ const OrderDetailPage = ({ route }: IProps): React.ReactElement => {
           </View>
         </View>
       </Box>
-      <BackButton />
     </SafeAreaView>
   );
 };

@@ -1,13 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Box, Heading } from 'native-base';
-import BackButton from "components/uis/BackButton";
+import React, { useContext, useEffect, useState } from "react";
+import { Box, Heading } from "native-base";
 import HeaderMenu from "components/tab/HeaderMenu";
-import { colors } from 'utils/theme';
-
-
+import { colors } from "utils/theme";
 
 const Blank = (): React.ReactElement => {
-
   return (
     <Box safeAreaX={4} safeAreaTop={8} flex={1}>
       <Heading
@@ -15,12 +11,11 @@ const Blank = (): React.ReactElement => {
         fontSize={40}
         letterSpacing={-1}
         color={colors.lightText}
-        bold>
+        bold
+      >
         We're Coming Very Soon
       </Heading>
       <HeaderMenu />
-      <BackButton />
-
     </Box>
   );
 };

@@ -35,7 +35,6 @@ import { mediaService } from "services/media.service";
 import { IPerformer } from "interfaces/performer";
 import { useNavigation } from "@react-navigation/core";
 import { IFeed } from "interfaces/feed";
-import BackButton from "components/uis/BackButton";
 import styles from "./styles";
 const isVideoOnLoadEvent = (
   event: OnLoadData | NativeSyntheticEvent<ImageLoadEventData>
@@ -410,7 +409,6 @@ const Upload = ({ current, feed, route }: IProps) => {
             <Text color={colors.lightText}>Post {Capitalize(type)}</Text>
           </TouchableOpacity>
         </View>
-        <BackButton />
       </SafeAreaView>
     </KeyboardDismiss>
   );

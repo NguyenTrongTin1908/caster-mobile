@@ -1,4 +1,9 @@
-import { Alert, ImageBackground, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  Alert,
+  ImageBackground,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import {
   Flex,
   Box,
@@ -13,39 +18,37 @@ import {
   Spinner,
   HStack,
   Image,
-  Link
-} from 'native-base';
-import { Controller, useForm } from 'react-hook-form';
-import LinearGradient from 'react-native-linear-gradient';
-import { Fonts, padding, Sizes } from 'utils/theme';
+  Link,
+} from "native-base";
+import { Controller, useForm } from "react-hook-form";
+import LinearGradient from "react-native-linear-gradient";
+import { padding, Sizes } from "utils/theme";
+import KeyboardDismiss from "components/uis/KeyboardDismiss";
+import React, { useContext, useEffect, useState } from "react";
+import { authService } from "services/auth.service";
+import BackButton from "components/uis/BackButton";
+import { colors } from "utils/theme";
+import ErrorMessage from "components/uis/ErrorMessage";
+import { useNavigation } from "@react-navigation/core";
+import { IForgotPassword } from "src/interfaces";
 
-import KeyboardDismiss from 'components/uis/KeyboardDismiss';
-import React, { useContext, useEffect, useState } from 'react';
-import { authService } from 'services/auth.service';
-import BackButton from 'components/uis/BackButton';
-import { colors } from 'utils/theme';
-import Button from 'components/uis/Button';
-import ErrorMessage from 'components/uis/ErrorMessage';
-import { useNavigation } from '@react-navigation/core';
-import { IForgotPassword } from 'src/interfaces';
-
-const defaultValues = { email: '' };
+const defaultValues = { email: "" };
 
 const ForgotPassword = (): React.ReactElement => {
   const navigation = useNavigation() as any;
   useEffect(() => {
     navigation.setOptions({
       headerShown: false,
-      title: '',
+      title: "",
       headerLeft: () => <BackButton />,
-      headerRight: () => null
+      headerRight: () => null,
     });
   }, [useContext]);
 
   const {
     control,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
   } = useForm({ defaultValues });
   const [submitting, setSubmitting] = useState(false);
   const toast = useToast();
@@ -53,20 +56,19 @@ const ForgotPassword = (): React.ReactElement => {
   const onSubmit = async ({ email }: IForgotPassword): Promise<void> => {
     setSubmitting(true);
     await authService
-      .forgotPassword({ email, type: 'user' })
+      .forgotPassword({ email, type: "user" })
       .then(() => {
         setSubmitting(false);
         toast.show({
-          title: 'Send request success',
-          status: 'success',
-          description: 'New password have been sent to your email!'
+          title: "Send request success",
+          description: "New password have been sent to your email!",
         });
-        return navigation.navigate('IntroNav/Login');
+        return navigation.navigate("IntroNav/Login");
       })
-      .catch(async e => {
+      .catch(async (e) => {
         // const error = await Promise.resolve(e);
         setSubmitting(false);
-        Alert.alert('An error occurred, please try again!');
+        Alert.alert("An error occurred, please try again!");
       });
   };
 
@@ -75,27 +77,40 @@ const ForgotPassword = (): React.ReactElement => {
       <VStack flex={1} w="100%" mx="auto" justifyContent="space-between">
         <KeyboardAvoidingView>
           <ImageBackground
-            style={{ width: '100%', height: '100%' }}
-            source={require('assets/bg.jpg')}
-            resizeMode="cover">
+            style={{ width: "100%", height: "100%" }}
+            source={require("assets/bg.jpg")}
+            resizeMode="cover"
+          >
             <LinearGradient
               start={{ x: 0, y: 1 }}
               end={{ x: 0, y: 0 }}
-              colors={['black', 'rgba(0,0.10,0,0.77)', 'rgba(0,0,0,0.1)']}
-              style={{ flex: 1, paddingHorizontal: Sizes.fixPadding * 2.0 }}>
+              colors={["black", "rgba(0,0.10,0,0.77)", "rgba(0,0,0,0.1)"]}
+              style={{ flex: 1, paddingHorizontal: Sizes.fixPadding * 2.0 }}
+            >
               <Box px={padding.p5} py={20}>
                 <HStack space={2} alignSelf="center" mb={20}>
-                  <Heading alignSelf="center" fontSize={30} color={colors.lightText} bold letterSpacing={-1}>
+                  <Heading
+                    alignSelf="center"
+                    fontSize={30}
+                    color={colors.lightText}
+                    bold
+                    letterSpacing={-1}
+                  >
                     Forgot Password
                   </Heading>
                   <Image
-                    source={require('assets/heart-purple.png')}
+                    source={require("assets/heart-purple.png")}
                     alt="heart-purple"
                     size="58px"
                     resizeMode="contain"
                   />
                 </HStack>
-                <Text my={5} fontSize={14} color={colors.lightText} letterSpacing={0.2}>
+                <Text
+                  my={5}
+                  fontSize={14}
+                  color={colors.lightText}
+                  letterSpacing={0.2}
+                >
                   A confirmation link will be sent to your email
                 </Text>
 
@@ -134,7 +149,7 @@ const ForgotPassword = (): React.ReactElement => {
                       <Input
                         p={4}
                         borderColor={colors.inpBorderColor}
-                        onChangeText={val => onChange(val)}
+                        onChangeText={(val) => onChange(val)}
                         value={value}
                         autoCapitalize="none"
                         fontSize={15}
@@ -147,31 +162,47 @@ const ForgotPassword = (): React.ReactElement => {
                       />
                     )}
                     name="email"
-                    rules={{ required: 'Email is required.' }}
+                    rules={{ required: "Email is required." }}
                     defaultValue=""
                   />
-                  {errors.email && <ErrorMessage message={errors.email?.message || 'Email is required.'} />}
+                  {errors.email && (
+                    <ErrorMessage
+                      message={errors.email?.message || "Email is required."}
+                    />
+                  )}
                 </FormControl>
 
-                <Flex alignSelf="center" width={'100%'}>
+                <Flex alignSelf="center" width={"100%"}>
                   <TouchableOpacity
                     activeOpacity={0.9}
                     // disabled={authLogin.requesting}
-                    onPress={handleSubmit(onSubmit)}>
+                    onPress={handleSubmit(onSubmit)}
+                  >
                     <LinearGradient
                       start={{ x: 1, y: 0 }}
                       end={{ x: 0, y: 0 }}
-                      colors={['rgba(244, 67, 54, 0.9)', 'rgba(244, 67, 54, 0.6)', 'rgba(244, 67, 54, 0.3)']}
-                      style={styles.loginButtonStyle}>
-                      <Text style={{ fontWeight: 'bold', color: colors.lightText }}>Send link</Text>
+                      colors={[
+                        "rgba(244, 67, 54, 0.9)",
+                        "rgba(244, 67, 54, 0.6)",
+                        "rgba(244, 67, 54, 0.3)",
+                      ]}
+                      style={styles.loginButtonStyle}
+                    >
+                      <Text
+                        style={{ fontWeight: "bold", color: colors.lightText }}
+                      >
+                        Send link
+                      </Text>
                     </LinearGradient>
                   </TouchableOpacity>
                 </Flex>
                 <HStack style={{ ...styles.loginRedirect }}>
                   <Text fontSize={12} color={colors.primary}>
-                    ARE YOU MEMBER?{' '}
+                    ARE YOU MEMBER?{" "}
                   </Text>
-                  <Link onPress={(): void => navigation.navigate('IntroNav/Login')}>
+                  <Link
+                    onPress={(): void => navigation.navigate("IntroNav/Login")}
+                  >
                     <Text fontSize={12} color={colors.secondary}>
                       LOGIN
                     </Text>
@@ -188,29 +219,29 @@ const ForgotPassword = (): React.ReactElement => {
 
 const styles = StyleSheet.create({
   textFieldContentStyle: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     height: 50.0,
     paddingHorizontal: Sizes.fixPadding * 2.0,
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    backgroundColor: "rgba(255, 255, 255, 0.3)",
     borderRadius: Sizes.fixPadding * 2.5,
-    fontWeight: 'bold',
-    color: colors.lightText
+    fontWeight: "bold",
+    color: colors.lightText,
   },
   loginButtonStyle: {
     borderRadius: Sizes.fixPadding * 2.5,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: Sizes.fixPadding + 10.0,
     height: 50.0,
     marginBottom: Sizes.fixPadding * 2.0,
     backgroundColor: colors.btnPrimaryColor,
-    width: '100%'
+    width: "100%",
   },
   loginRedirect: {
-    alignSelf: 'center',
-    marginTop: Sizes.fixPadding + 10.0
-  }
+    alignSelf: "center",
+    marginTop: Sizes.fixPadding + 10.0,
+  },
 });
 
 export default ForgotPassword;

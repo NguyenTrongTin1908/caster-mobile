@@ -20,7 +20,6 @@ import { connect } from "react-redux";
 import { IPerformer } from "src/interfaces";
 import HeaderMenu from "components/tab/HeaderMenu";
 import CustomHeader from "components/uis/CustomHeader";
-import BackButton from "components/uis/BackButton";
 import GestureRecognizer from "react-native-swipe-gestures";
 import { BottomTabBarHeightContext } from "@react-navigation/bottom-tabs";
 import { getStatusBarHeight } from "react-native-status-bar-height";

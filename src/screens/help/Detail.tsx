@@ -10,7 +10,6 @@ import WebView from "react-native-webview";
 import { Box, Heading, View, Text, ScrollView, Modal } from "native-base";
 import { useNavigation } from "@react-navigation/core";
 import { IPerformer } from "interfaces/performer";
-import BackButton from "components/uis/BackButton";
 import { colors } from "utils/theme";
 import HeaderMenu from "components/tab/HeaderMenu";
 import { connect } from "react-redux";
@@ -215,7 +214,6 @@ const Detail = ({ user, route }: IProps): React.ReactElement => {
         {loading && <LoadingSpinner />}
       </Box>
       <HeaderMenu />
-      <BackButton />
     </SafeAreaView>
   );
 };

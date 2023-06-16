@@ -24,7 +24,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { IPerformer } from "src/interfaces";
 import HeaderMenu from "components/tab/HeaderMenu";
 import CustomHeader from "components/uis/CustomHeader";
-import BackButton from "components/uis/BackButton";
 import GestureRecognizer from "react-native-swipe-gestures";
 let deviceH = Dimensions.get("screen").height;
 let bottomNavBarH = deviceH - height;

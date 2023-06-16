@@ -1,12 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Box, Heading } from "native-base";
 import { useNavigation } from "@react-navigation/core";
-import { colors } from "utils/theme";
 import Follower from "./component/Follower";
 import Following from "./component/Following";
 import TabView from "components/uis/TabView";
 import HeaderMenu from "components/tab/HeaderMenu";
-import BackButton from "components/uis/BackButton";
 import { performerService } from "../../services";
 
 interface IProps {
@@ -60,7 +58,6 @@ const ListFollow = ({ route }: IProps): React.ReactElement => {
         />
       )}
       <HeaderMenu />
-      <BackButton />
     </Box>
   );
 };

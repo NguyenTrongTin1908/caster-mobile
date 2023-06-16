@@ -21,7 +21,6 @@ import { isAndroid } from "utils/common";
 import { Publisher } from "components/antmedia/Publisher";
 import ChatBox from "components/streamChat/chat-box";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import BackButton from "components/uis/BackButton"; // import EmojiSelector from "react-native-emoji-selector";
 import styles from "./style";
 import { ObservableQueue } from "../../hooks/observable-queue";
 import { of, delay, Subscription } from "rxjs";
@@ -250,7 +249,6 @@ const PublicStream = ({
       >
         Live Broadcaster
       </Heading>
-      <BackButton />
       {sessionId && (
         <View style={styles.rightBarStream}>
           <MaterialIcons name="visibility" color={"red"} size={28} />

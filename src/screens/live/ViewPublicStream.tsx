@@ -33,7 +33,6 @@ import ButtonFollow from "components/uis/ButtonFollow";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FavoriteGift from "components/gift/favorite";
 import SendTip from "components/message/SendTip";
-import BackButton from "components/uis/BackButton";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import styles from "./style";
 const { width, height } = Dimensions.get("window");
@@ -424,7 +423,6 @@ const ViewPublicStream = ({
           <HeaderMenu />
         </>
       </KeyboardDismiss>
-      <BackButton />
     </SafeAreaView>
   );
 };

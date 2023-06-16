@@ -2,7 +2,6 @@ import React, { useEffect, useContext } from "react";
 import { SafeAreaView } from "react-native";
 import { Box, Heading } from "native-base";
 import { useNavigation } from "@react-navigation/core";
-import BackButton from "components/uis/BackButton";
 import { colors } from "utils/theme";
 import HeaderMenu from "components/tab/HeaderMenu";
 import TabView from "components/uis/TabView";
@@ -16,7 +15,6 @@ const Discover = (): React.ReactElement => {
       headerShown: false,
       headerTitleAlign: "center",
       title: "Discover",
-      headerLeft: () => <BackButton />,
       headerRight: null,
     });
   }, [useContext]);
