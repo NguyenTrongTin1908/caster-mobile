@@ -2,7 +2,6 @@ import React from "react";
 import { View } from "native-base";
 import { connect } from "react-redux";
 import { IUser } from "src/interfaces";
-import { messageService } from "../../services";
 import {
   getStreamConversation,
   resetStreamMessage,

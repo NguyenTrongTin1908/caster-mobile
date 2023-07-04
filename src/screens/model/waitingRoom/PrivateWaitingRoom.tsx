@@ -1,12 +1,4 @@
-import {
-  Button,
-  Checkbox,
-  Switch,
-  Select,
-  Heading,
-  View,
-  Text,
-} from "native-base";
+import { Button, Checkbox, Switch, Heading, View, Text } from "native-base";
 import { TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
@@ -18,12 +10,13 @@ import { useToast } from "native-base";
 import { updateUser, updatePerformer } from "services/redux/user/actions";
 import { streamService } from "services/stream.service";
 import { PrivateRequest } from "components/stream/private-request";
-import { IPerformer } from "src/interfaces";
+import { IPerformer, ISettings } from "src/interfaces";
 import { SafeAreaView } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import BackButton from "components/uis/BackButton";
-
+import { performerService } from "services/index";
+import { ROLE_PERMISSIONS } from "../../../constants";
 
 interface IProps {
   error: any;
@@ -31,6 +24,7 @@ interface IProps {
   privateRequests: any[];
   updateUser: Function;
   updatePerformer: Function;
+  system: any;
 }
 
 const PrivateChatWaitingRoom = ({
@@ -39,17 +33,29 @@ const PrivateChatWaitingRoom = ({
   updatePerformer: handleUpdatePerformer,
   updateUser: handleUpdateUser,
   privateRequests,
+  system,
 }: IProps) => {
   const toast = useToast();
   const [isAvailable, setIsAvailable] = useState(0);
   const [privateChatPrice, setPrivateChatPrice] = useState(0);
   const [isAccept, setIsAccept] = useState(false);
   const [isReset, setIsReset] = useState(true);
+  const [hasRole, setRole] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null) as any;
+  const [loading, setLoading] = useState(false);
   const navigation = useNavigation() as any;
 
   useEffect(() => {
+    const checkRole = async () => {
+      setLoading(true);
+      const resp = await performerService.checkRole({
+        roles: [ROLE_PERMISSIONS.ROLE_HOST_PRIVATE],
+      });
+      setRole(resp?.data);
+      setLoading(false);
+    };
     if (currentUser) {
+      checkRole();
       setIsAvailable(currentUser.privateChat);
       setPrivateChatPrice(privateChatPrice);
     }
@@ -66,20 +72,6 @@ const PrivateChatWaitingRoom = ({
         selectedRequest: selectedRequest,
       });
     }
-  };
-
-  const setPrice = () => {
-    if (privateChatPrice <= 0) {
-      return toast.show({
-        description: "The price cannot be set lower than 0",
-      });
-    }
-    handleUpdatePerformer({
-      ...currentUser,
-      ...{ privateChatPrice },
-    });
-    // Call the API to set the price
-    return toast.show({ description: "Set the price successfully" });
   };
 
   const togglePrivateChatStatus = async () => {
@@ -120,92 +112,113 @@ const PrivateChatWaitingRoom = ({
             size={25}
           ></AntDesign>
         </View>
-        <View style={styles.statusPrivateBox}>
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={styles.statusPrivateButton}
-            onPress={() => handleRedirect()}
-            disabled={!isAccept}
-          >
-            <Text style={styles.subText}>
-              {isAvailable
-                ? "Available for Private Chat"
-                : "Not Available for Private Chat"}
-            </Text>
-          </TouchableOpacity>
-          <View style={styles.privatePriceChatSwitch}>
-            <Text style={styles.subText}>
-              {isAvailable ? "Available" : "Not Available"}
-            </Text>
-            <Switch
-              isChecked={!!isAvailable}
-              style={{ alignSelf: "center", marginTop: 20 }}
-              onToggle={togglePrivateChatStatus}
-            ></Switch>
+        {!hasRole ? (
+          <View style={styles.textPermissions}>
+            {!loading && (
+              <Text color={colors.lightText} style={{ fontSize: 18 }}>
+                Come back to this page when you have over{" "}
+                {system.data.totalFollowerForPrivateChat} followers
+              </Text>
+            )}
           </View>
-        </View>
-
-        {privateRequests && privateRequests.length > 0 && (
+        ) : (
           <>
-            <View style={styles.notifySection}>
-              <Text>Waiting for you to join</Text>
-              {privateRequests.map((privateRequest) => (
-                <PrivateRequest
-                  privateRequest={privateRequest}
-                  key={privateRequest.conversationId}
-                  aria-label={privateRequest.conversationId}
-                  onSelect={() => {
-                    setSelectedRequest(privateRequest);
-                    setIsReset(true);
-                  }}
-                  selected={
-                    selectedRequest &&
-                    privateRequest.conversationId ===
-                      selectedRequest.conversationId
-                  }
-                  istimeDeline={!isReset}
-                  isChecked={
-                    selectedRequest &&
-                    privateRequest.conversationId ===
-                      selectedRequest.conversationId
-                  }
-                />
-              ))}
-              <View>
-                <Button disabled={!isReset} onPress={() => setIsReset(false)}>
-                  On My Way
-                </Button>
-                <Text style={styles.textCenter}>Extend timer 2 minutes</Text>
-              </View>
-            </View>
-            <View style={{ flex: 1 }}></View>
-
-            <View style={styles.footerGolive}>
+            <View style={styles.statusPrivateBox}>
               <TouchableOpacity
                 activeOpacity={0.7}
-                style={[
-                  styles.goliveButton,
-                  {
-                    opacity: isAccept ? 1 : 0.5,
-                    backgroundColor: !isAccept ? colors.gray : colors.secondary,
-                  },
-                ]}
+                style={styles.statusPrivateButton}
                 onPress={() => handleRedirect()}
                 disabled={!isAccept}
               >
-                <Text style={styles.btnText}>Start Private Live Chat Now</Text>
+                <Text style={styles.subText}>
+                  {isAvailable
+                    ? "Available for Private Chat"
+                    : "Not Available for Private Chat"}
+                </Text>
               </TouchableOpacity>
-              <View style={styles.termBox}>
-                <Text style={styles.subText}>Term & Conditions</Text>
-                <Checkbox
-                  value="golive"
-                  isChecked={isAccept}
-                  onChange={() => setIsAccept(!isAccept)}
-                >
-                  <Text style={styles.subText}>Accept</Text>
-                </Checkbox>
+              <View style={styles.privatePriceChatSwitch}>
+                <Text style={styles.subText}>
+                  {isAvailable ? "Available" : "Not Available"}
+                </Text>
+                <Switch
+                  isChecked={!!isAvailable}
+                  style={{ alignSelf: "center", marginTop: 20 }}
+                  onToggle={togglePrivateChatStatus}
+                ></Switch>
               </View>
             </View>
+
+            {privateRequests && privateRequests.length > 0 && (
+              <>
+                <View style={styles.notifySection}>
+                  <Text>Waiting for you to join</Text>
+                  {privateRequests.map((privateRequest) => (
+                    <PrivateRequest
+                      privateRequest={privateRequest}
+                      key={privateRequest.conversationId}
+                      aria-label={privateRequest.conversationId}
+                      onSelect={() => {
+                        setSelectedRequest(privateRequest);
+                        setIsReset(true);
+                      }}
+                      selected={
+                        selectedRequest &&
+                        privateRequest.conversationId ===
+                          selectedRequest.conversationId
+                      }
+                      istimeDeline={!isReset}
+                      isChecked={
+                        selectedRequest &&
+                        privateRequest.conversationId ===
+                          selectedRequest.conversationId
+                      }
+                    />
+                  ))}
+                  <View>
+                    <Button
+                      disabled={!isReset}
+                      onPress={() => setIsReset(false)}
+                    >
+                      On My Way
+                    </Button>
+                    <Text style={styles.textCenter}>
+                      Extend timer 2 minutes
+                    </Text>
+                  </View>
+                </View>
+                <View style={{ flex: 1 }}></View>
+                <View style={styles.footerGolive}>
+                  <TouchableOpacity
+                    activeOpacity={0.7}
+                    style={[
+                      styles.goliveButton,
+                      {
+                        opacity: isAccept ? 1 : 0.5,
+                        backgroundColor: !isAccept
+                          ? colors.gray
+                          : colors.secondary,
+                      },
+                    ]}
+                    onPress={() => handleRedirect()}
+                    disabled={!isAccept}
+                  >
+                    <Text style={styles.btnText}>
+                      Start Private Live Chat Now
+                    </Text>
+                  </TouchableOpacity>
+                  <View style={styles.termBox}>
+                    <Text style={styles.subText}>Term & Conditions</Text>
+                    <Checkbox
+                      value="golive"
+                      isChecked={isAccept}
+                      onChange={() => setIsAccept(!isAccept)}
+                    >
+                      <Text style={styles.subText}>Accept</Text>
+                    </Checkbox>
+                  </View>
+                </View>
+              </>
+            )}
           </>
         )}
       </View>
@@ -219,6 +232,7 @@ const mapStates = (state: any) => ({
   ui: { ...state.ui },
   currentUser: { ...state.user.current },
   privateRequests: state.streaming.privateRequests,
+  system: { ...state.system },
 });
 const mapDispatch = { updateUser, updatePerformer };
 

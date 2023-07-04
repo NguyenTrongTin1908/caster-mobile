@@ -61,6 +61,10 @@ export class PerformerService extends APIRequest {
   findOne(id: string, headers?: { [key: string]: string }) {
     return this.get(`/performers/${id}`, headers);
   }
+
+  checkRole(payload:any) {
+    return this.get(this.buildUrl('/performers/check-role', payload));
+  }
 }
 
 export const performerService = new PerformerService();

@@ -27,11 +27,21 @@ const styles = StyleSheet.create({
     borderColor: colors.lightText,
     padding: 5,
   },
+  switchText: {
+    fontSize : 21,
+    fontWeight: "bold",
+    color : colors.lightText
+  },
   moderatorBox: {
     flex: 1,
     marginTop: 30,
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  moderatorText: {
+    fontSize : 18,
+    fontWeight: "bold",
+    color : colors.lightText
   },
   footerGolive: {
     flexDirection: "column",
@@ -115,6 +125,12 @@ const styles = StyleSheet.create({
     height: 40.0,
     margin: 2.0,
   },
+
+  textPermissions: {
+    alignItems: "center",
+    margin: Sizes.fixPadding + 40,
+  }
+
 });
 
 export default styles;

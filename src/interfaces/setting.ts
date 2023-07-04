@@ -23,4 +23,6 @@ export interface ISettings {
   metaKeywords: string;
   metaDescription: string;
   agoraEnable: boolean;
+  totalFollowerForLive:boolean;
+  totalFollowerForPrivateChat:boolean;
 }

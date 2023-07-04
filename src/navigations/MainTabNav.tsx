@@ -227,11 +227,6 @@ const Screen = (): JSX.Element => (
       name="PrivateChat"
       component={PrivateChat}
     />
-    <SettingsStack.Screen
-      options={{ headerShown: false }}
-      name="IntroNav"
-      component={IntroNav}
-    />
   </>
 );
 

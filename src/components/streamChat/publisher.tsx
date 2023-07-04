@@ -34,26 +34,6 @@ interface IProps extends WebRTCAdaptorProps {
 }
 
 const LivePublisher = ({settings,configs,setStreamRef,current}:IProps) => {
-  // private publisher: videojs.Player;
-
-  // constructor(props: IProps) {
-  //   super(props);
-  // }
-
-  // componentDidMount() {
-  //   const { setStreamRef = null } = this.props;
-
-  //   if (setStreamRef) {
-  //     setStreamRef({
-  //       start: this.start.bind(this),
-  //       publish: this.publish.bind(this)
-  //     });
-  //   }
-
-  //   // videojs.registerPlugin('webRTCMicControlsPlugin', MicControlsPlugin);
-  //   // Router.events.on('routeChangeStart', this.onbeforeunload);
-  //   // window.addEventListener('beforeunload', this.onbeforeunload);
-  // }
 
   const [permissionGranted, setPermissionGranted] = useState(false);
   const [localStreamId, setLocalStreamId] = useState(null as any);
@@ -68,24 +48,10 @@ const LivePublisher = ({settings,configs,setStreamRef,current}:IProps) => {
     if (setStreamRef) {
       setStreamRef({
         start: start(),
-        // publish: publish()
       });
     }
-
-
   },[])
 
-  // componentWillUnmount() {
-    // Router.events.off('routeChangeStart', this.onbeforeunload);
-    // window.removeEventListener('beforeunload', this.onbeforeunload);
-  // }
-
-  // onbeforeunload = () => {
-  //   if (this.publisher) {
-  //     this.publisher.dispose();
-  //     this.publisher = undefined;
-  //   }
-  // };
 
   const startPublishing= async(idOfStream: string) => {
     // const { webRTCAdaptor, leaveSession, settings } = this.props;
@@ -119,37 +85,6 @@ const LivePublisher = ({settings,configs,setStreamRef,current}:IProps) => {
     // initWebRTCAdaptor(this.handelWebRTCAdaptorCallback.bind(this));
   }
 
-  // handelWebRTCAdaptorCallback(info: WEBRTC_ADAPTOR_INFORMATIONS) {
-  //   if (info === WEBRTC_ADAPTOR_INFORMATIONS.INITIALIZED) {
-  //     // if (!isMobile) {
-  //       const { configs, muteLocalMic, unmuteLocalMic } = this.props;
-  //       const player = videojs(configs.localVideoId, {
-  //         liveui: true,
-  //         controls: true,
-  //         muted: true,
-  //         bigPlayButton: false,
-  //         controlBar: {
-  //           playToggle: false,
-  //           currentTimeDisplay: false,
-  //           volumePanel: false,
-  //           pictureInPictureToggle: false
-  //         }
-  //       });
-  //       player.on('error', () => {
-  //         player.error(null);
-  //       });
-  //       player.one('play', () => {
-  //         // eslint-disable-next-line dot-notation
-  //         player['webRTCMicControlsPlugin']({
-  //           muteLocalMic,
-  //           unmuteLocalMic,
-  //           isMicMuted: false
-  //         });
-  //         this.publisher = player;
-  //       });
-  //     // }
-  //   }
-  // }
  const renderLocalVideo= () =>  {
     if (!localStreamId) return null;
 
@@ -162,23 +97,6 @@ const LivePublisher = ({settings,configs,setStreamRef,current}:IProps) => {
 
     return (
       <>
-        {/* <div>
-          <LocalStream
-            id={localVideoId}
-            hidden={!initialized}
-            className={classNames}
-          />
-        </div>
-        {publish_started && (
-          <div className="text-center">
-            <span className="publishing">Publishing</span>
-          </div>
-        )}
-        {!publish_started && initialized && (
-          <div className="text-center">
-            <span className="publishing">Initialized</span>
-          </div>
-        )} */}
        <Container is-playing>
       <Image
         source={current?.avatar ?{ uri: current?.avatar } : require('../../assets/default-avatar.png')}
@@ -210,9 +128,7 @@ const LivePublisher = ({settings,configs,setStreamRef,current}:IProps) => {
           >
           </Text>
         </View>
-
       </View>
-
       <View
         flexDirection="row"
         justifyContent="center"
@@ -231,19 +147,8 @@ const LivePublisher = ({settings,configs,setStreamRef,current}:IProps) => {
             color="#ffffff"
           />
         </TouchableOpacity>
-        {/* {!privateRequest?.conversation &&
-          <TouchableOpacity
-            style={[styles.button, styles.bg1]}
-            onPress={requestPrivateCall}
-          >
-            <Feather name="phone" size={24} color="#ffffff" />
-          </TouchableOpacity>
-        } */}
       </View>
-
       {renderLocalVideo()}
-
-      {/* {renderPerformerVideo()} */}
     </Container>
       </>
     );

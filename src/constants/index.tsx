@@ -64,6 +64,19 @@ export const SETTING_KEYS = {
   AGORA_ENABLE: 'agoraEnable'
 };
 
+export const ROLE_PERMISSIONS = {
+  ROLE_PUBLIC: 'role-public',
+  ROLE_FAN_FREE: 'role-fan-free',
+  ROLE_FAN_PAYING: 'role-paying',
+  ROLE_FAN_VERIFIED: 'role-fan-verified',
+  ROLE_HOST_PRIVATE: 'role-host-private',
+  ROLE_HOST_LIVE: 'role-host-live',
+  ROLE_HOST_VERIFIED: 'role-host-verified',
+  ROLE_CHANGE_PAYMENT_SETTINGS: 'role-change-payment-settings',
+  ROLE_MILESTONES: 'role-milestones',
+  ROLE_ALL_RISING_MODEL: 'role-all-rising-models'
+};
+
 export const MENU_SECTION = {
   MAIN: 'main',
   HEADER: 'header',
