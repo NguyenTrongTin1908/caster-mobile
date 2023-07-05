@@ -52,7 +52,7 @@ const TokenPackage = ({ user, system }: IProps): React.ReactElement => {
     const { data } = await tokenPackageService.search({
       sortBy: "ordering",
       sort: "asc",
-      limit: "200"
+      limit: "200",
     });
 
     setPackages(data);
@@ -129,7 +129,6 @@ const TokenPackage = ({ user, system }: IProps): React.ReactElement => {
         >
           Buy tokens
         </Heading>
-
         <ScrollView>
           <Box safeAreaX={4} safeAreaY={8} flex={1}>
             {packageLoading && <ContentLoader active avatar pRows={4} />}
@@ -139,7 +138,13 @@ const TokenPackage = ({ user, system }: IProps): React.ReactElement => {
                 <TokenPackageCard
                   key={item._id}
                   item={item}
-                  onOpenModal={() => {setOpenPurchaseModal(true), setSelectedPackage(item),setCouponCode(''),setCoupon(null),setisApliedCode(false)}}
+                  onOpenModal={() => {
+                    setOpenPurchaseModal(true),
+                      setSelectedPackage(item),
+                      setCouponCode(""),
+                      setCoupon(null),
+                      setisApliedCode(false);
+                  }}
                 />
               ))}
           </Box>
@@ -161,18 +166,16 @@ const TokenPackage = ({ user, system }: IProps): React.ReactElement => {
               >
                 Purchase Token Package
               </Text>
-              <Text bold
+              <Text
+                bold
                 textAlign={"center"}
                 fontSize={16}
-                color={colors.primary}>
-                  {selectedPackage?.name}
-
+                color={colors.primary}
+              >
+                {selectedPackage?.name}
               </Text>
             </Modal.Header>
-            <Modal.CloseButton/>
-
-
-
+            <Modal.CloseButton />
             <Modal.Body>
               <TouchableOpacity disabled={true}>
                 <VStack flex={1} space={1} alignItems={"center"}>
@@ -190,7 +193,6 @@ const TokenPackage = ({ user, system }: IProps): React.ReactElement => {
                     ></Image>
                     <Text>{user?.name || user?.username || "N/A"}</Text>
                   </View>
-
                   <View marginTop={5}>
                     <View>
                       {system.data.stripeEnable && (
@@ -212,28 +214,53 @@ const TokenPackage = ({ user, system }: IProps): React.ReactElement => {
                       placeholder="Enter coupon code here"
                       onChange={(e) => setCouponCode(e.target.toString())}
                     ></TextInput>
-                    {!isApliedCode ? <Button disabled={!couponCode} onPress={applyCoupon.bind(this)}>Apply!</Button>
-                      : <Button onPress={() => {setisApliedCode(false) , setCouponCode(""),setCoupon(null)}} >Use Later!</Button>}
+                    {!isApliedCode ? (
+                      <Button
+                        disabled={!couponCode}
+                        onPress={applyCoupon.bind(this)}
+                      >
+                        Apply!
+                      </Button>
+                    ) : (
+                      <Button
+                        onPress={() => {
+                          setisApliedCode(false),
+                            setCouponCode(""),
+                            setCoupon(null);
+                        }}
+                      >
+                        Use Later!
+                      </Button>
+                    )}
                   </View>
                 </VStack>
                 <View marginTop={5}>
-
-                {paymentGateway === 'stripe' && !user?.stripeCardIds?.length ? (
-                <Button >
-                  Please add a payment card
-                </Button>
-              ) : (
-                <Button  disabled={submiting}  onPress={() => purchaseTokenPackage()}>
-                  Confirm purchase $
-                  {coupon ? (selectedPackage?.price - coupon.value * selectedPackage?.price).toFixed(2) : selectedPackage?.price.toFixed(2)}
-                  {' '}
-                  /
-                  <img alt="token" src="/static/coin-ico.png" height="15px" style={{ margin: '0 3px' }} />
-                  {selectedPackage?.tokens}
-                </Button>
-              )}
+                  {paymentGateway === "stripe" &&
+                  !user?.stripeCardIds?.length ? (
+                    <Button>Please add a payment card</Button>
+                  ) : (
+                    <Button
+                      disabled={submiting}
+                      onPress={() => purchaseTokenPackage()}
+                    >
+                      Confirm purchase $
+                      {coupon
+                        ? (
+                            selectedPackage?.price -
+                            coupon.value * selectedPackage?.price
+                          ).toFixed(2)
+                        : selectedPackage?.price.toFixed(2)}{" "}
+                      /
+                      <img
+                        alt="token"
+                        src="/static/coin-ico.png"
+                        height="15px"
+                        style={{ margin: "0 3px" }}
+                      />
+                      {selectedPackage?.tokens}
+                    </Button>
+                  )}
                 </View>
-
               </TouchableOpacity>
             </Modal.Body>
           </Modal.Content>

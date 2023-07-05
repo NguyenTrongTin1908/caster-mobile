@@ -23,6 +23,8 @@ import { earningService } from "services/earning.service";
 import OrderSearchFilter from "components/order/search-filter";
 import LoadingSpinner from "components/uis/LoadingSpinner";
 import { DataTable, Card } from "react-native-paper";
+import { ROLE_PERMISSIONS } from "../../constants";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 interface IProps {
   countries: ICountry[];
@@ -119,6 +121,11 @@ const Wallet = ({ user }: IProps): React.ReactElement => {
             <Text color={colors.lightText} marginY={2} fontSize={20}>
               {user.rubyBalance > 0 ? shortenLargeNumber(user.rubyBalance) : 0}
             </Text>
+            {/* <TouchableOpacity onPress={() => navigation.navigate("Blank")}>
+              <Text color={colors.btnSecondaryColor} marginY={2} fontSize={20}>
+                Purchase History
+              </Text>
+            </TouchableOpacity> */}
           </View>
           <Button
             maxH={20}
@@ -180,9 +187,38 @@ const Wallet = ({ user }: IProps): React.ReactElement => {
               </Text>
             )}
           </View>
-          <Button maxH={20} alignSelf="center" colorScheme="secondary">
-            Cash Out
-          </Button>
+          {user.balance < 10000 && (
+            <Button
+              maxH={20}
+              alignSelf="center"
+              colorScheme="secondary"
+              onPress={() => navigation.navigate("Blank")}
+            >
+              Cash Out
+            </Button>
+          )}
+          {!user.roles.includes(ROLE_PERMISSIONS.ROLE_FAN_VERIFIED) &&
+            user.balance >= 10000 && (
+              <Button
+                maxH={20}
+                alignSelf="center"
+                colorScheme="secondary"
+                onPress={() => navigation.navigate("Blank")}
+              >
+                Cash Out
+              </Button>
+            )}
+          {user.roles.includes(ROLE_PERMISSIONS.ROLE_FAN_VERIFIED) &&
+            user.balance >= 10000 && (
+              <Button
+                maxH={20}
+                alignSelf="center"
+                colorScheme="secondary"
+                onPress={() => navigation.navigate("Blank")}
+              >
+                Cash Out
+              </Button>
+            )}
         </View>
         <View marginY={5}>
           <OrderSearchFilter onSubmit={handleFilter} />

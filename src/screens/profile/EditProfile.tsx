@@ -1,18 +1,9 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Heading,
-  useToast,
-  KeyboardAvoidingView,
-} from "native-base";
+import { View, Heading, useToast, KeyboardAvoidingView } from "native-base";
 import { useForm } from "react-hook-form";
 import { colors, Sizes } from "utils/theme";
 import { useNavigation } from "@react-navigation/core";
-import {
-  Alert,
-  Platform,
-  SafeAreaView,
-} from "react-native";
+import { Alert, Platform, SafeAreaView } from "react-native";
 import { connect } from "react-redux";
 import { IPerformer, ICountry } from "src/interfaces";
 import { utilsService } from "services/utils.service";
@@ -30,6 +21,7 @@ import UpdateProfileForm from "./component/UpdateProfileForm";
 import SettingFeeForm from "./component/SettingFeeForm";
 import KeyboardDismiss from "components/uis/KeyboardDismiss";
 import BackButton from "components/uis/BackButton";
+import { ROLE_PERMISSIONS } from "../../constants";
 interface IProps {
   current: IPerformer;
   updatePerformer: Function;
@@ -126,11 +118,17 @@ const EditProfile = ({
                     title: "ID Documents",
                     sence: VerificationForm,
                   },
-                  {
-                    key: "feeSettings",
-                    title: "Settings",
-                    sence: SettingFeeForm,
-                  },
+                  current.roles.includes(ROLE_PERMISSIONS.ROLE_HOST_PRIVATE)
+                    ? {
+                        key: "feeSettings",
+                        title: "Settings",
+                        sence: SettingFeeForm,
+                      }
+                    : {
+                        key: "",
+                        title: "",
+                        sence: SettingFeeForm,
+                      },
                 ]}
               />
             </View>

@@ -11,8 +11,14 @@ import { useNavigation } from "@react-navigation/core";
 import TabView from "components/uis/TabView";
 import BackButton from "components/uis/BackButton";
 
-const NotificationPage = (): React.ReactElement => {
+interface IProps {
+  route: any;
+}
+
+const NotificationPage = ({ route }: IProps): React.ReactElement => {
   const navigation = useNavigation() as any;
+  const { tab } = route.params;
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Box flex={1} mx="auto" w="100%">
@@ -40,6 +46,7 @@ const NotificationPage = (): React.ReactElement => {
         </View>
         <View style={{ flex: 1, marginTop: 0 }}>
           <TabView
+            defaultIndex={tab === "Message" ? 1 : 0}
             swipeEnabled={false}
             scenes={[
               {

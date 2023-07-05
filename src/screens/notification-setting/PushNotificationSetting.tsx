@@ -19,7 +19,7 @@ import { Table, Row, Cell, TableWrapper } from "react-native-table-component";
 import { performerService } from "services/perfomer.service";
 import { setCurrentUser } from "services/redux/user/actions";
 import BackButton from "components/uis/BackButton";
-
+import { ROLE_PERMISSIONS } from "../../constants";
 import styles from "./style";
 import HeaderMenu from "components/tab/HeaderMenu";
 import { Controller, useForm } from "react-hook-form";
@@ -124,7 +124,6 @@ const PushNotificationSetting = ({
     //   name: "Sposorship",
     //   key: "sposorship",
     // },
-
     {
       name: "Private Chat Request",
       key: "privateChatRequest",
@@ -182,6 +181,12 @@ const PushNotificationSetting = ({
     const array = [] as any;
     if (hostSource && hostSource.length > 0) {
       for (const item of hostSource) {
+        if (
+          item.key === "privateChatRequest" &&
+          !current?.roles?.includes(ROLE_PERMISSIONS.ROLE_HOST_PRIVATE)
+        ) {
+          continue;
+        }
         const arrayData = dataTable.map((key: any) => {
           return item[key];
         });
@@ -270,182 +275,95 @@ const PushNotificationSetting = ({
             </View>
           </View>
           <ScrollView>
-            <Table
-              borderStyle={{ borderColor: colors.darkText, borderWidth: 1 }}
-            >
-              <Row
-                data={tableHeadGeneral}
-                style={styles.head}
-                textStyle={styles.textNoti}
-              />
-              {generalData.map((rowData, index) => (
-                <TableWrapper key={index} style={styles.row}>
-                  {rowData.map((cellData: any, cellIndex) => (
-                    <Cell
-                      key={cellIndex}
-                      textStyle={{ color: "#000" }}
-                      data={renderTableData(cellData, cellIndex)}
-                    />
-                  ))}
-                </TableWrapper>
-              ))}
-            </Table>
-            <Table
-              borderStyle={{ borderColor: colors.darkText, borderWidth: 1 }}
-            >
-              <Row
-                data={tableHeadTime}
-                style={styles.head}
-                textStyle={styles.textNoti}
-              />
-              {timeData.map((rowData, index) => (
-                <TableWrapper key={index} style={styles.row}>
-                  {rowData.map((cellData: any, cellIndex) => (
-                    <Cell
-                      key={cellIndex}
-                      textStyle={{ color: "#000" }}
-                      data={renderTableData(cellData, cellIndex)}
-                    />
-                  ))}
-                </TableWrapper>
-              ))}
-            </Table>
-            <Table
-              borderStyle={{ borderColor: colors.darkText, borderWidth: 1 }}
-            >
-              <Row
-                data={tableHeadHost}
-                style={styles.head}
-                textStyle={styles.textNoti}
-              />
-              {hostData.map((rowData, index) => (
-                <TableWrapper key={index} style={styles.row}>
-                  {rowData.map((cellData: any, cellIndex) => (
-                    <Cell
-                      key={cellIndex}
-                      textStyle={{ color: "#000" }}
-                      data={renderTableData(cellData, cellIndex)}
-                    />
-                  ))}
-                </TableWrapper>
-              ))}
-            </Table>
-            <Table
-              borderStyle={{ borderColor: colors.darkText, borderWidth: 1 }}
-            >
-              <Row
-                data={tableHeadSystem}
-                style={styles.head}
-                textStyle={styles.textNoti}
-              />
-              {systemData.map((rowData, index) => (
-                <TableWrapper key={index} style={styles.row}>
-                  {rowData.map((cellData: any, cellIndex) => (
-                    <Cell
-                      key={cellIndex}
-                      textStyle={{ color: "#000" }}
-                      data={renderTableData(cellData, cellIndex)}
-                    />
-                  ))}
-                </TableWrapper>
-              ))}
-            </Table>
-            {/* <Table
-              borderStyle={{ borderColor: colors.darkText, borderWidth: 1 }}
-            >
-              <Row
-                data={tableHeadTime}
-                style={styles.head}
-                textStyle={styles.textNoti}
-              />
-              {timeData.map((rowData, index) => (
-                <TableWrapper key={index} style={styles.row}>
-                  {rowData.map((cellData: any, cellIndex) => (
-                    <Cell
-                      key={cellIndex}
-                      textStyle={{ color: "#000" }}
-                      data={cellData}
-                    />
-                  ))}
-                </TableWrapper>
-              ))}
-            </Table>
-            <Table
-              borderStyle={{ borderColor: colors.darkText, borderWidth: 1 }}
-            >
-              <Row
-                data={tableHeadHost}
-                style={styles.head}
-                textStyle={styles.textNoti}
-              />
-              {hostData.map((rowData, index) => (
-                <TableWrapper key={index} style={styles.row}>
-                  {rowData.map((cellData: any, cellIndex) => (
-                    <Cell
-                      key={cellIndex}
-                      textStyle={{ color: "#000" }}
-                      data={
-                        cellIndex === 1 ? (
-                          <View alignSelf={"center"}>
-                            <Checkbox
-                              key={cellIndex}
-                              value={cellData.key}
-                              isChecked={cellData.status}
-                              onChange={(val) =>
-                                handleCheckBox(cellData.key, val)
-                              }
-                              aria-label={cellData.key}
-                            ></Checkbox>
-                          </View>
-                        ) : (
-                          <View alignSelf={"center"}>
-                            <Text>{cellData.name}</Text>
-                          </View>
-                        )
-                      }
-                    />
-                  ))}
-                </TableWrapper>
-              ))}
-            </Table>
-            <Table
-              borderStyle={{ borderColor: colors.darkText, borderWidth: 1 }}
-            >
-              <Row
-                data={tableHeadSystem}
-                style={styles.head}
-                textStyle={styles.textNoti}
-              />
-              {systemData.map((rowData, index) => (
-                <TableWrapper key={index} style={styles.row}>
-                  {rowData.map((cellData: any, cellIndex) => (
-                    <Cell
-                      key={cellIndex}
-                      textStyle={{ color: "#000" }}
-                      data={
-                        cellIndex === 1 ? (
-                          <View alignSelf={"center"}>
-                            <Checkbox
-                              key={cellIndex}
-                              value={cellData.key}
-                              isChecked={cellData.status}
-                              onChange={(val) =>
-                                handleCheckBox(cellData.key, val)
-                              }
-                              aria-label={cellData.key}
-                            ></Checkbox>
-                          </View>
-                        ) : (
-                          <View alignSelf={"center"}>
-                            <Text>{cellData.name}</Text>
-                          </View>
-                        )
-                      }
-                    />
-                  ))}
-                </TableWrapper>
-              ))}
-            </Table> */}
+            {generalData && generalData.length > 0 && (
+              <Table
+                borderStyle={{ borderColor: colors.darkText, borderWidth: 1 }}
+              >
+                <Row
+                  data={tableHeadGeneral}
+                  style={styles.head}
+                  textStyle={styles.textNoti}
+                />
+                {generalData.map((rowData, index) => (
+                  <TableWrapper key={index} style={styles.row}>
+                    {rowData.map((cellData: any, cellIndex) => (
+                      <Cell
+                        key={cellIndex}
+                        textStyle={{ color: "#000" }}
+                        data={renderTableData(cellData, cellIndex)}
+                      />
+                    ))}
+                  </TableWrapper>
+                ))}
+              </Table>
+            )}
+            {timeData && timeData.length > 0 && (
+              <Table
+                borderStyle={{ borderColor: colors.darkText, borderWidth: 1 }}
+              >
+                <Row
+                  data={tableHeadTime}
+                  style={styles.head}
+                  textStyle={styles.textNoti}
+                />
+                {timeData.map((rowData, index) => (
+                  <TableWrapper key={index} style={styles.row}>
+                    {rowData.map((cellData: any, cellIndex) => (
+                      <Cell
+                        key={cellIndex}
+                        textStyle={{ color: "#000" }}
+                        data={renderTableData(cellData, cellIndex)}
+                      />
+                    ))}
+                  </TableWrapper>
+                ))}
+              </Table>
+            )}
+            {hostData && hostData.length > 0 && (
+              <Table
+                borderStyle={{ borderColor: colors.darkText, borderWidth: 1 }}
+              >
+                <Row
+                  data={tableHeadHost}
+                  style={styles.head}
+                  textStyle={styles.textNoti}
+                />
+                {hostData.map((rowData, index) => (
+                  <TableWrapper key={index} style={styles.row}>
+                    {rowData.map((cellData: any, cellIndex) => (
+                      <Cell
+                        key={cellIndex}
+                        textStyle={{ color: "#000" }}
+                        data={renderTableData(cellData, cellIndex)}
+                      />
+                    ))}
+                  </TableWrapper>
+                ))}
+              </Table>
+            )}
+
+            {systemData && systemData.length > 0 && (
+              <Table
+                borderStyle={{ borderColor: colors.darkText, borderWidth: 1 }}
+              >
+                <Row
+                  data={tableHeadSystem}
+                  style={styles.head}
+                  textStyle={styles.textNoti}
+                />
+                {systemData.map((rowData, index) => (
+                  <TableWrapper key={index} style={styles.row}>
+                    {rowData.map((cellData: any, cellIndex) => (
+                      <Cell
+                        key={cellIndex}
+                        textStyle={{ color: "#000" }}
+                        data={renderTableData(cellData, cellIndex)}
+                      />
+                    ))}
+                  </TableWrapper>
+                ))}
+              </Table>
+            )}
           </ScrollView>
         </View>
         <Box alignSelf="center" my={5}>

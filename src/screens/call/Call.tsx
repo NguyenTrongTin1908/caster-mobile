@@ -280,22 +280,22 @@ const Call = ({ route, settings, currentUser, activeConversation }: IProps) => {
           <Viewer streamId={remoteStreamRefId} onJoined={chargeInterval} />
         )
       : !!remoteStreamRefId && (
-        <>
-          <HLSViewer
-            streamId={remoteStreamRefId}
-            ref={(viewRef) => setStreamRef(viewRef)}
-            settings={settings}
-            onJoined={chargeInterval}
-          />
-          {imgUrl && (
-            <Image
-              alt={"avatar"}
-              source={{
-                uri: imgUrl || "",
-              }}
-              style={styles.backgroundVideo}
+          <>
+            <HLSViewer
+              streamId={remoteStreamRefId}
+              ref={(viewRef) => setStreamRef(viewRef)}
+              settings={settings}
+              onJoined={chargeInterval}
             />
-          )}
+            {imgUrl && (
+              <Image
+                alt={"avatar"}
+                source={{
+                  uri: imgUrl || "",
+                }}
+                style={styles.backgroundVideo}
+              />
+            )}
           </>
         );
   };
@@ -342,7 +342,6 @@ const Call = ({ route, settings, currentUser, activeConversation }: IProps) => {
       <View flex={1} flexDirection={"column"} position={"relative"}>
         {renderLocalVideo()}
         {renderPerformerVideo()}
-
         <ChatBox canSendMessage />
         {loading && (
           <SendTip

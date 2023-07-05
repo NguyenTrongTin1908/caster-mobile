@@ -38,6 +38,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { BottomSheet, Colors } from "react-native-elements";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { performerService, authService } from "../../../services";
+import { ROLE_PERMISSIONS } from "../../../constants";
 
 interface IProps {
   current: IPerformer;
@@ -116,6 +117,16 @@ const UpdateProfileForm = ({
       const [day, month, year] = data.dateOfBirth.split("-");
       const datePick = new Date(+year, month - 1, +day);
       data.dateOfBirth = datePick.toISOString();
+    }
+    if (
+      (data.name !== current.name ||
+        data.username !== current.username ||
+        data.email !== current.email) &&
+      (current.roles.includes(ROLE_PERMISSIONS.ROLE_HOST_VERIFIED) ||
+        current.roles.includes(ROLE_PERMISSIONS.ROLE_FAN_VERIFIED))
+    ) {
+      Alert.alert("Verified Account cant change name, username and email !");
+      return;
     }
     try {
       handleUpdatePerformer({
@@ -692,6 +703,9 @@ const UpdateProfileForm = ({
               control={control}
               render={({ field: { onChange, value } }) => (
                 <Input
+                  isDisabled={current.roles.includes(
+                    ROLE_PERMISSIONS.ROLE_MANAGED_ACCOUNT
+                  )}
                   InputLeftElement={
                     <View>
                       <Text color={colors.lightText}>Email</Text>

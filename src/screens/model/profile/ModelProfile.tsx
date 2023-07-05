@@ -13,6 +13,7 @@ import ButtonFollow from "components/uis/ButtonFollow";
 import { IPerformer } from "src/interfaces";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import HeaderMenu from "components/tab/HeaderMenu";
+import { ROLE_PERMISSIONS } from "../../../constants";
 
 interface Props {
   isLoggedIn: boolean;
@@ -91,44 +92,53 @@ const ModelProfile = ({
           </TouchableOpacity>
         </View>
         <View style={styles.avContainer}>
-          <View style={styles.avBlueRound}>
-            <Image
-              source={
-                performer?.avatar
-                  ? { uri: performer?.avatar }
-                  : require("../../../assets/avatar-default.png")
-              }
-              alt={"avatar"}
-              size={100}
-              borderRadius={80}
-              resizeMode="cover"
-            />
-            {performer?.isOnline ? (
-              <View style={styles.activeNowTick}></View>
-            ) : null}
+          <View>
+            <View style={styles.avBlueRound}>
+              <Image
+                source={
+                  performer?.avatar
+                    ? { uri: performer?.avatar }
+                    : require("../../../assets/avatar-default.png")
+                }
+                alt={"avatar"}
+                size={100}
+                borderRadius={80}
+                resizeMode="cover"
+              />
+              {performer?.isOnline ? (
+                <View style={styles.activeNowTick}></View>
+              ) : null}
+            </View>
+            <Text style={styles.textName}>
+              {performer && performer?.name != " "
+                ? `${performer?.name}`
+                : `${performer?.username}`}
+            </Text>
+            <View style={styles.btnFollow}>
+              <ButtonFollow
+                isHideOnClick={false}
+                targetId={performer._id}
+                sourceId={current._id}
+                isFollow={performer.isFollowed}
+                getPerformerList={() => {}}
+              />
+            </View>
+          </View>
+          <View style={styles.profileInfo}>
+            <Text style={styles.textName}>
+              {performer && performer?.name != " "
+                ? `${performer?.name}`
+                : `${performer?.username}`}
+            </Text>
+            {performer?.verifiedAccount && (
+              <AntDesign
+                name="checkcircleo"
+                size={25}
+                color={colors.btnSecondaryColor}
+              ></AntDesign>
+            )}
           </View>
         </View>
-        <Text style={styles.textName}>
-          {performer && performer?.name != " "
-            ? `${performer?.name}`
-            : `${performer?.username}`}
-        </Text>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            marginTop: 2,
-          }}
-        >
-          <ButtonFollow
-            isHideOnClick={false}
-            targetId={performer._id}
-            sourceId={current._id}
-            isFollow={performer.isFollowed}
-            getPerformerList={() => {}}
-          />
-        </View>
-
         <View style={{ flex: 1 }}>
           <TabView
             scenes={[

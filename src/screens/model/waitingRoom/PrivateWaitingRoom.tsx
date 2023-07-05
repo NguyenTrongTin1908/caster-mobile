@@ -99,7 +99,6 @@ const PrivateChatWaitingRoom = ({
           <Text style={styles.privateChatText} color={colors.lightText}>
             {currentUser.privateChatPrice}
           </Text>
-
           <Ionicons name="heart" color={colors.ruby} size={25}></Ionicons>
           <Text style={styles.privateChatText} color={colors.lightText}>
             {" "}
@@ -147,7 +146,6 @@ const PrivateChatWaitingRoom = ({
                 ></Switch>
               </View>
             </View>
-
             {privateRequests && privateRequests.length > 0 && (
               <>
                 <View style={styles.notifySection}>

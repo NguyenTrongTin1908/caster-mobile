@@ -157,7 +157,14 @@ const Model = ({ user }: IProps): React.ReactElement => {
 
   const _renderItem = ({ item, index, smallSize = false }) => {
     return (
-      <TouchableOpacity>
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate("ModelProfile", {
+            screen: "ModelProfile",
+            performer: item,
+          })
+        }
+      >
         <View style={styles.rangeNumber}>
           <Text color={colors.lightText}>
             {item?.ranking ? item?.ranking[ranking] : ""}
@@ -204,7 +211,14 @@ const Model = ({ user }: IProps): React.ReactElement => {
 
   const _renderMoreItem = ({ item, index }) => {
     return (
-      <TouchableOpacity>
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate("ModelProfile", {
+            screen: "ModelProfile",
+            performer: item,
+          })
+        }
+      >
         <View style={styles.rangeNumber}>
           <Text color={colors.lightText}>
             {item?.ranking ? item?.ranking[ranking] : ""}

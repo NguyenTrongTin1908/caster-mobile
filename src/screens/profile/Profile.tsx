@@ -12,11 +12,11 @@ import { colors, Fonts, Sizes } from "utils/theme";
 import Photo from "components/tab/profile/Photo";
 import Video from "components/tab/profile/Video";
 import styles from "./style";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { Menu } from "react-native-material-menu";
-import { color } from "native-base/lib/typescript/theme/styled-system";
+import AntDesign from "react-native-vector-icons/AntDesign";
+
 import HeaderMenu from "components/tab/HeaderMenu";
 import BackButton from "components/uis/BackButton";
+import { ROLE_PERMISSIONS } from "../../constants";
 interface Props {
   current: IPerformer;
   isLoggedIn: boolean;
@@ -127,6 +127,21 @@ const Profile = ({
           style={styles.converPhoto}
           alt="cover"
         />
+        <View style={{ position: "absolute", top: 120, right: 30 }}>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate("NotificationPage", {
+                tab: "Message",
+              })
+            }
+          >
+            <AntDesign
+              name="message1"
+              size={30}
+              color={colors.lightText}
+            ></AntDesign>
+          </TouchableOpacity>
+        </View>
         <View style={styles.avContainer}>
           <View style={styles.avBlueRound}>
             <Image
@@ -142,25 +157,23 @@ const Profile = ({
             />
             <View style={styles.activeNowTick}></View>
           </View>
+          <View style={styles.profileInfo}>
+            <Text style={styles.textName}>
+              {current && current?.name != " "
+                ? `${current?.name}`
+                : `${current?.username}`}
+            </Text>
+            {current?.roles.includes(ROLE_PERMISSIONS.ROLE_FAN_VERIFIED) && (
+              <AntDesign
+                name="checkcircleo"
+                size={25}
+                color={colors.btnSecondaryColor}
+              ></AntDesign>
+            )}
+          </View>
         </View>
-        <Text style={styles.textName}>
-          {current && current?.name != " "
-            ? `${current?.name}`
-            : `${current?.username}`}
-        </Text>
-        <View
-          style={{ flexDirection: "row", alignSelf: "center", marginTop: 5 }}
-        >
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={styles.editButtonStyle}
-            onPress={() => navigation.navigate("EditProfile")}
-          >
-            <Text style={styles.subText}>Edit Profile</Text>
-          </TouchableOpacity>
-        </View>
+
         <View style={{ flex: 1 }}>
-          {/* <View style={styles.listFeeds}> */}
           <TabView
             scenes={[
               {

@@ -118,6 +118,7 @@ export interface IPerformer {
   password?: string;
   relationship: string;
   showYearProfile: boolean;
+  roles: string[];
 }
 
 export interface IBanking {
@@ -133,7 +134,6 @@ export interface IBanking {
   state: string;
   country: string;
   performerId: string;
-
 }
 
 export interface IPerformerStats {

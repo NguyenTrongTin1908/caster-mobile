@@ -1,5 +1,5 @@
 import * as Animatable from "react-native-animatable";
-import React, { useRef, useEffect, useContext } from "react";
+import React, { useRef, useEffect, useContext, useState } from "react";
 import { connect } from "react-redux";
 import { Linking, Alert, StyleSheet, TouchableOpacity } from "react-native";
 import {
@@ -12,7 +12,6 @@ import {
   View,
   Image,
   Divider,
-  ScrollView,
 } from "native-base";
 import { showDrawer as showDrawerHandler } from "services/redux/app-nav/actions";
 import Feather from "react-native-vector-icons/Feather";
@@ -20,7 +19,7 @@ import Entypo from "react-native-vector-icons/Entypo";
 import { logout } from "services/redux/auth/actions";
 import storeHolder from "lib/storeHolder";
 import { navigationRef } from "./RootStackNavigator";
-import { colors } from "utils/theme";
+import { colors, padding } from "utils/theme";
 import { IPerformer } from "src/interfaces";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -32,9 +31,9 @@ import {
   accessPrivateRequest,
   cancelPrivateRequest,
 } from "services/redux/streaming/actions";
-
 import { SocketContext } from "../socket";
 import { shortenLargeNumber } from "../lib/number";
+import { ROLE_PERMISSIONS } from "../constants";
 interface DrawerProps {
   user: IPerformer;
   loggedIn: boolean;
@@ -194,18 +193,8 @@ export const MainDrawer = ({
           </TouchableOpacity>
         </View>
         <Divider />
-        <View
-          flexDirection={"row"}
-          justifyContent="center"
-          marginTop={5}
-          px={4}
-        >
-          <View
-            width={"50%"}
-            borderRightColor={"black"}
-            borderRightWidth={"1"}
-            alignItems={"center"}
-          >
+        <View style={styles.followBox}>
+          <View style={styles.followBoxItems}>
             <TouchableOpacity
               onPress={() => {
                 navigationRef.current?.navigate("ListFollow", {
@@ -221,24 +210,26 @@ export const MainDrawer = ({
               </Text>
             </TouchableOpacity>
           </View>
-
-          <View width={"50%"} alignItems={"center"}>
-            <TouchableOpacity
-              onPress={() => {
-                navigationRef.current?.navigate("ListFollow", {
-                  tab: "Fans",
-                  performerId: user._id,
-                });
-                handleHide();
-              }}
-            >
-              <Text color={colors.darkText}>Fans</Text>
-              <Text alignSelf={"center"} color={colors.darkText}>
-                {user?.stats.totalFollower}
-              </Text>
-            </TouchableOpacity>
-          </View>
+          {user?.roles?.includes(ROLE_PERMISSIONS.ROLE_HOST_PRIVATE) && (
+            <View style={{ ...styles.followBoxItems, borderLeftWidth: 1 }}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigationRef.current?.navigate("ListFollow", {
+                    tab: "Fans",
+                    performerId: user._id,
+                  });
+                  handleHide();
+                }}
+              >
+                <Text color={colors.darkText}>Fans</Text>
+                <Text alignSelf={"center"} color={colors.darkText}>
+                  {user?.stats.totalFollower}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
+        <Divider />
       </Box>
     );
   };
@@ -310,8 +301,8 @@ export const MainDrawer = ({
       },
     },
     {
-      id: "manageProfile",
-      label: "Manage Profile",
+      id: "manageAccount",
+      label: "Manage Account",
       icon: <FontAwesome name={"user"} size={17} color={colors.appBgColor} />,
       onPress: () => {
         navigationRef.current?.navigate("EditProfile");
@@ -353,16 +344,6 @@ export const MainDrawer = ({
         handleHide();
       },
     },
-    // {
-    //   id: "payoutRequests",
-    //   label: "Payout requests",
-    //   icon: (
-    //     <FontAwesome name={"cc-paypal"} size={17} color={colors.appBgColor} />
-    //   ),
-    //   onPress: () => {
-    //     handleHide();
-    //   },
-    // },
     {
       id: "help",
       label: "Help",
@@ -381,8 +362,8 @@ export const MainDrawer = ({
     },
 
     {
-      id: "logout",
-      label: "Logout",
+      id: "signout",
+      label: "Sign Out",
       icon: (
         <FontAwesome name={"sign-out"} size={17} color={colors.appBgColor} />
       ),
@@ -392,6 +373,7 @@ export const MainDrawer = ({
       },
     },
   ];
+
   const renderMenuItem = ({ item }: any) => {
     return (
       <Box mt={1} marginTop={3}>
@@ -408,35 +390,22 @@ export const MainDrawer = ({
       </Box>
     );
   };
+
+  const [menuCheckPermissions, setMenuCheckPermissions] = useState(
+    menuLoggedInItems
+  ) as any;
+
   useEffect(() => {
     hasTouchedDrawer && handleShow();
   }, [showDrawer]);
 
   const handlePrivateChat = (data: any) => {
-    // Alert(
-    //   `${
-    //     data?.user?.name || data?.user?.username
-    //   }'ve sent you a private call request`
-    // );
     addPrivateRequest({ ...data });
-    // this.setState({ openCallRequest: true });
   };
 
   const handleUpdateBalance = (event) => {
     updateBalance({ token: event.token, type: "diamond-balance" });
   };
-
-  // const handleMessage = async (event) => {
-  // };
-  // const handlePaymentStatusCallback = ({ redirectUrl }) => {
-  //   if (redirectUrl) {
-  //     navigation.navigator(redirectUrl);
-  //   }
-  // }
-
-  // const handleCountNotificationMessage = async() {
-  //   const data = await (await messageService.countTotalNotRead()).data;
-  // }
 
   const handleCancelPrivateChat = (data: {
     conversationId: string;
@@ -461,12 +430,7 @@ export const MainDrawer = ({
       socket.on("update_balance", (data) => {
         handleUpdateBalance(data);
       });
-      // socket.on("nofify_read_messages_in_conversation", (data) => {
-      //   handleMessage(data);
-      // });
-      // socket.on("payment_status_callback", (data) => {
-      //   handlePaymentStatusCallback(data);
-      // });
+
       socket.on("private-chat-cancel", (data) => {
         handleCancelPrivateChat(data);
       });
@@ -479,6 +443,10 @@ export const MainDrawer = ({
     socket.off("private-chat-request");
   };
 
+  function removeObjectWithId(arr, id) {
+    return arr.filter((obj) => obj.id !== id);
+  }
+
   useEffect(() => {
     if (!socketContextStatus) return;
     setTimeout(() => {
@@ -489,6 +457,21 @@ export const MainDrawer = ({
       handleDisconnect();
     };
   }, [socketContextStatus]);
+
+  useEffect(() => {
+    if (
+      user?.roles &&
+      !user?.roles.includes(ROLE_PERMISSIONS.ROLE_FAN_PAYING)
+    ) {
+      const arrFilter = removeObjectWithId(
+        menuLoggedInItems,
+        "purchaseHistory"
+      );
+      setMenuCheckPermissions(arrFilter);
+    } else {
+      setMenuCheckPermissions(menuLoggedInItems);
+    }
+  }, [user]);
 
   return (
     <Animatable.View
@@ -503,7 +486,7 @@ export const MainDrawer = ({
     >
       <View style={styles.drawerContainer}>
         <FlatList
-          data={loggedIn ? menuLoggedInItems : menuGuest}
+          data={loggedIn ? menuCheckPermissions : menuGuest}
           ListHeaderComponent={renderProfile}
           renderItem={renderMenuItem}
           keyExtractor={(item) => item.id}
@@ -555,6 +538,20 @@ const styles = StyleSheet.create({
     height: 40,
     flex: 1,
     flexDirection: "row",
+  },
+  followBox: {
+    flexDirection: "row",
+    justifyContent: "center",
+    width: "100%",
+    alignItems: "center",
+    marginVertical: 5,
+    paddingHorizontal: 4,
+  },
+  followBoxItems: {
+    width: "50%",
+    alignItems: "center",
+    justifyContent: "center",
+    textAlign: "center",
   },
 });
 const mapStateToProp = (state: any) => ({

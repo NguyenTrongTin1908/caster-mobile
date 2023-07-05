@@ -52,21 +52,12 @@ const TokenPackageCard = ({ item, onOpenModal }: IProps): JSX.Element => {
             decimalSeparator={"."}
           />
           <HStack mt={3} w="100%">
-            <Text
-              textTransform="uppercase"
-              fontSize={11}
-              letterSpacing={0.06}
-              bold
-              color={colors.primary}
-            >
-              best deal
-            </Text>
             <Button
               ml="auto"
               colorScheme="primary"
               size="sm"
               label="Buy Now"
-              onPress={()=>onOpenModal()}
+              onPress={() => onOpenModal()}
             />
           </HStack>
         </VStack>

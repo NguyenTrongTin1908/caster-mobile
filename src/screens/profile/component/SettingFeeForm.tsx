@@ -8,12 +8,7 @@ import {
   HStack,
   ScrollView,
 } from "native-base";
-import {
-  Table,
-  Row,
-  Cell,
-  TableWrapper,
-} from "react-native-table-component";
+import { Table, Row, Cell, TableWrapper } from "react-native-table-component";
 import { Controller, useForm } from "react-hook-form";
 import { colors } from "utils/theme";
 import Button from "components/uis/Button";
@@ -26,6 +21,7 @@ import { useNavigation } from "@react-navigation/core";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { messageService } from "services/message.service";
 import { formatDate } from "lib/date";
+import { ROLE_PERMISSIONS } from "../../../constants";
 interface IProps {
   formErrors: any;
   submitting: boolean;
@@ -52,7 +48,6 @@ const SettingFeeForm = ({
   const tableHead = ["User", "Username", "Date Added", "Delete"];
   const dataTable = ["userInfo", "userInfo", "createdAt", "_id"];
   const dataSetting = ["user", "username", "createdAt", "_id"];
-
 
   const defaultValues = {
     ...current,
@@ -112,33 +107,30 @@ const SettingFeeForm = ({
   };
 
   const rederId = (data, index) => {
-
-    const nameIndex = dataSetting.findIndex(
-      (item) => item === "user"
-    );
+    const nameIndex = dataSetting.findIndex((item) => item === "user");
     if (nameIndex === index) {
       return (
-          <View>
-            <Text style={styles.textRow}>{data.name || "N/A"}</Text>
-          </View>
+        <View>
+          <Text style={styles.textRow}>{data.name || "N/A"}</Text>
+        </View>
       );
     }
 
-    const userNameIndex = dataSetting.findIndex(
-      (item) => item === "username"
-    );
+    const userNameIndex = dataSetting.findIndex((item) => item === "username");
     if (userNameIndex === index) {
       return (
-          <View>
-            <Text style={styles.textRow}>{data.username || "N/A"}</Text>
-          </View>
+        <View>
+          <Text style={styles.textRow}>{data.username || "N/A"}</Text>
+        </View>
       );
     }
     const dateIndex = dataTable.findIndex((item) => item === "createdAt");
     if (dateIndex === index) {
       return (
         <View>
-          <Text style={styles.textRow} fontSize={13}>{formatDate(data)}</Text>
+          <Text style={styles.textRow} fontSize={13}>
+            {formatDate(data)}
+          </Text>
         </View>
       );
     }
@@ -146,16 +138,13 @@ const SettingFeeForm = ({
     if (IdIndex === index) {
       return (
         <View>
-          <TouchableOpacity
-            onPress={() => onDelete(data)}
-          >
+          <TouchableOpacity onPress={() => onDelete(data)}>
             <Text style={styles.deleteText}>Delete</Text>
           </TouchableOpacity>
         </View>
       );
     }
   };
-
 
   useEffect(() => {
     const array = [] as any;
@@ -220,64 +209,68 @@ const SettingFeeForm = ({
             </Text>
           </View>
         </HStack>
-        <HStack space={5} style={styles.settingFeeStack}>
-          <View flex={2}>
-            <Divider borderColor={colors.divider} />
-            <FormControl>
-              <Controller
-                control={control}
-                render={({ field: { onChange, value } }) => (
-                  <TextInput
-                    value={value}
-                    placeholder=""
-                    keyboardType="numeric"
-                    variant="unstyled"
-                    onChangeText={(val) => onChange(val)}
-                    borderColor={colors.lightText}
-                    borderWidth={1}
-                    autoCapitalize="none"
-                    color={colors.lightText}
-                    fontSize={15}
-                    flex={1}
-                    textAlign="center"
-                  />
-                )}
-                name="mailPrice"
-              />
-            </FormControl>
-            <Divider borderColor={colors.divider} />
-          </View>
-          <View flex={2}>
-            <Ionicons name="heart" color={colors.ruby} size={20}></Ionicons>
-            <Text color={colors.lightText} fontSize={10}>
-              {" "}
-              / per 50 characters
-            </Text>
-          </View>
-          <View flex={3}>
-            <Text color={colors.lightText} fontSize={18}>
-              Mail Me Fee
-            </Text>
-          </View>
-        </HStack>
-        <Table borderStyle={{ borderWidth: 2, borderColor: "#c8e1ff" }}>
-          <Row
-            data={tableHead}
-            style={styles.head}
-            textStyle={styles.textNoti}
-          />
-          {data.map((rowData, index) => (
-            <TableWrapper key={index} style={styles.row}>
-               {rowData.map((cellData, cellIndex) => (
-                <Cell
-                  key={cellIndex}
-                  data={rederId(cellData, cellIndex)}
-                  textStyle={{ color: "#000" }}
+        {current.roles.includes(ROLE_PERMISSIONS.ROLE_G_F_2500) && (
+          <HStack space={5} style={styles.settingFeeStack}>
+            <View flex={2}>
+              <Divider borderColor={colors.divider} />
+              <FormControl>
+                <Controller
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <TextInput
+                      value={value}
+                      placeholder=""
+                      keyboardType="numeric"
+                      variant="unstyled"
+                      onChangeText={(val) => onChange(val)}
+                      borderColor={colors.lightText}
+                      borderWidth={1}
+                      autoCapitalize="none"
+                      color={colors.lightText}
+                      fontSize={15}
+                      flex={1}
+                      textAlign="center"
+                    />
+                  )}
+                  name="mailPrice"
                 />
-              ))}
-            </TableWrapper>
-          ))}
-        </Table>
+              </FormControl>
+              <Divider borderColor={colors.divider} />
+            </View>
+            <View flex={2}>
+              <Ionicons name="heart" color={colors.ruby} size={20}></Ionicons>
+              <Text color={colors.lightText} fontSize={10}>
+                {" "}
+                / per 50 characters
+              </Text>
+            </View>
+            <View flex={3}>
+              <Text color={colors.lightText} fontSize={18}>
+                Mail Me Fee
+              </Text>
+            </View>
+          </HStack>
+        )}
+        {current.roles.includes(ROLE_PERMISSIONS.ROLE_HOST_LIVE) && (
+          <Table borderStyle={{ borderWidth: 2, borderColor: "#c8e1ff" }}>
+            <Row
+              data={tableHead}
+              style={styles.head}
+              textStyle={styles.textNoti}
+            />
+            {data.map((rowData, index) => (
+              <TableWrapper key={index} style={styles.row}>
+                {rowData.map((cellData, cellIndex) => (
+                  <Cell
+                    key={cellIndex}
+                    data={rederId(cellData, cellIndex)}
+                    textStyle={{ color: "#000" }}
+                  />
+                ))}
+              </TableWrapper>
+            ))}
+          </Table>
+        )}
       </ScrollView>
       <Box alignSelf="center" my={5}>
         <Button

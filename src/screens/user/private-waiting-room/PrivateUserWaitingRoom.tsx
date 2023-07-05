@@ -3,7 +3,7 @@ import { TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { useNavigation } from "@react-navigation/core";
-import { colors, Sizes, Fonts } from "utils/theme";
+import { colors } from "utils/theme";
 import styles from "./style";
 import { useToast } from "native-base";
 import { updateUser, updatePerformer } from "services/redux/user/actions";
@@ -16,8 +16,8 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import ButtonFollow from "components/uis/ButtonFollow";
 import BackButton from "components/uis/BackButton";
 import HeaderMenu from "components/tab/HeaderMenu";
+import { ROLE_PERMISSIONS } from "../../../constants";
 
-const Option = Select;
 enum EVENT {
   JOINED_THE_ROOM = "JOINED_THE_ROOM",
   JOIN_ROOM = "JOIN_ROOM",
@@ -61,7 +61,6 @@ const PrivateUserWaitingRoom = ({
 
   const joinPrivateConversation = (conversationId) => {
     const socket = socketHolder.getSocket() as any;
-
     // emit this event to receive info of JOINED_THE_ROOM below
     socket.emit(EVENT.JOIN_ROOM, {
       conversationId,
@@ -72,6 +71,21 @@ const PrivateUserWaitingRoom = ({
     if (!performer) return;
     const { _id: performerId } = performer as any;
     try {
+      if (!currentUser.roles.includes(ROLE_PERMISSIONS.ROLE_FAN_PAYING)) {
+        toast.show({
+          description:
+            "You dont have permission to send request. Please have a first ruby purchase",
+        });
+        navigation.navigate("TokenPackage");
+        return false;
+      }
+      if (currentUser.rubyBalance < performer.privateChatPrice * 5) {
+        toast.show({
+          description: "You have an insufficient ruby balance. Please top up.",
+        });
+        navigation.navigate("TokenPackage");
+        return false;
+      }
       if (isAvailable) {
         streamService
           .requestPrivateChat(performerId)
@@ -94,20 +108,6 @@ const PrivateUserWaitingRoom = ({
     } catch (e: any) {}
   };
 
-  // const setPrice = () => {
-  //   if (privateChatPrice <= 0) {
-  //     return toast.show({
-  //       description: "The price cannot be set lower than 0",
-  //     });
-  //   }
-  //   handleUpdatePerformer({
-  //     ...currentUser,
-  //     ...{ privateChatPrice },
-  //   });
-  //   // Call the API to set the price
-  //   return toast.show({ description: "Set the price successfully" });
-  // };
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Heading
@@ -120,7 +120,6 @@ const PrivateUserWaitingRoom = ({
       >
         Waiting Room
       </Heading>
-
       <View style={styles.container}>
         <View
           style={{
@@ -175,38 +174,37 @@ const PrivateUserWaitingRoom = ({
           This private Room Fee will be automatically deducted from your account
           at the beginning of each minute.
         </Text>
-      </View>
-      <View style={styles.privateChatFee}>
-        <Text color={colors.lightText}>Room Fee</Text>
-        <View style={styles.privateChatPrice}>
-          <Text color={colors.lightText}>{currentUser.privateChatPrice}</Text>
-
-          <Ionicons name="heart" color={colors.ruby} size={25}></Ionicons>
-          <Text color={colors.lightText}> / per minute</Text>
+        <View style={styles.privateChatFee}>
+          <Text color={colors.lightText}>Room Fee</Text>
+          <View style={styles.privateChatPrice}>
+            <Text color={colors.lightText}>{currentUser.privateChatPrice}</Text>
+            <Ionicons name="heart" color={colors.ruby} size={25}></Ionicons>
+            <Text color={colors.lightText}> / per minute</Text>
+          </View>
+          <Text color={colors.lightText}>5 Minute Min</Text>
         </View>
-        <Text color={colors.lightText}>5 Minute Min</Text>
-      </View>
-
-      <View style={styles.footerGolive}>
-        <TouchableOpacity
-          activeOpacity={0.7}
-          style={[styles.goliveButton, { opacity: isAccept ? 1 : 0.5 }]}
-          onPress={() => requestPrivateCall()}
-          disabled={!isAccept}
-        >
-          <Text style={styles.btnText}>Accept</Text>
-        </TouchableOpacity>
-        <View style={styles.termBox}>
-          <Text style={styles.subText}>Term & Conditions</Text>
-          <Checkbox
-            value="acceptWaitingRoom"
-            isChecked={isAccept}
-            onChange={() => setIsAccept(!isAccept)}
+        <View style={styles.footerGolive}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={[styles.goliveButton, { opacity: isAccept ? 1 : 0.5 }]}
+            onPress={() => requestPrivateCall()}
+            disabled={!isAccept}
           >
-            <Text style={styles.subText}>Accept</Text>
-          </Checkbox>
+            <Text style={styles.btnText}>Accept</Text>
+          </TouchableOpacity>
+          <View style={styles.termBox}>
+            <Text style={styles.subText}>Term & Conditions</Text>
+            <Checkbox
+              value="acceptWaitingRoom"
+              isChecked={isAccept}
+              onChange={() => setIsAccept(!isAccept)}
+            >
+              <Text style={styles.subText}>Accept</Text>
+            </Checkbox>
+          </View>
         </View>
       </View>
+
       <HeaderMenu />
       <BackButton />
     </SafeAreaView>
