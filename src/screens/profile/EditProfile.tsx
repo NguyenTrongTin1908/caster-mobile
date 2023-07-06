@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { View, Heading, useToast, KeyboardAvoidingView } from "native-base";
-import { useForm } from "react-hook-form";
-import { colors, Sizes } from "utils/theme";
+import { colors } from "utils/theme";
 import { useNavigation } from "@react-navigation/core";
 import { Alert, Platform, SafeAreaView } from "react-native";
 import { connect } from "react-redux";
-import { IPerformer, ICountry } from "src/interfaces";
-import { utilsService } from "services/utils.service";
+import { IPerformer } from "src/interfaces";
 import TabView from "components/uis/TabView";
 import {
   updatePerformer,
@@ -14,7 +12,6 @@ import {
   updateCurrentUserCover,
 } from "services/redux/user/actions";
 import styles from "../model/profile/style";
-import moment from "moment";
 import HeaderMenu from "components/tab/HeaderMenu";
 import VerificationForm from "./component/VerificationForm";
 import UpdateProfileForm from "./component/UpdateProfileForm";
@@ -22,6 +19,8 @@ import SettingFeeForm from "./component/SettingFeeForm";
 import KeyboardDismiss from "components/uis/KeyboardDismiss";
 import BackButton from "components/uis/BackButton";
 import { ROLE_PERMISSIONS } from "../../constants";
+import { earningService } from "../../services";
+
 interface IProps {
   current: IPerformer;
   updatePerformer: Function;
@@ -32,26 +31,36 @@ interface IProps {
 const EditProfile = ({
   current,
   updatePerformer: handleUpdatePerformer,
-  updateCurrentUserAvatar: handleUpdateAvt,
-  updateCurrentUserCover: handleUpdateCover,
 }: IProps): React.ReactElement => {
+  const scenes = [
+    {
+      key: "profileSettings",
+      title: "Profile Settings",
+      sence: UpdateProfileForm,
+    },
+    {
+      key: "idDocuments",
+      title: "ID Documents",
+      sence: VerificationForm,
+    },
+    {
+      key: "feeSettings",
+      title: "Settings",
+      sence: SettingFeeForm,
+    },
+  ];
+
   const toast = useToast();
-  const [countries, setCountries] = useState([] as Array<ICountry>);
-  const [bodyInfo, setBodyInfo] = useState([] as any);
-  const defaultValues = {
-    ...current,
-    dateOfBirth: (current.dateOfBirth && moment(current.dateOfBirth)) || "",
-  };
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({ defaultValues });
-  const [submitting, setSubmitting] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [sceneAuthentication, setSceneAuthentication] = useState(scenes) as any;
   const navigation = useNavigation() as any;
   const onSubmit = async (data: any): Promise<void> => {
     submit(data);
   };
+
+  function removeObjectWithKey(arr, key) {
+    return arr.filter((obj) => obj.key !== key);
+  }
 
   const submit = async (data) => {
     if (typeof data.dateOfBirth === "string") {
@@ -75,12 +84,22 @@ const EditProfile = ({
 
   useEffect(() => {
     async function loadData() {
-      const [countries, bodyInfo] = await Promise.all([
-        utilsService.countriesList(),
-        utilsService.bodyInfo(),
-      ]);
-      setCountries(countries?.data);
-      setBodyInfo(bodyInfo?.data);
+      setLoading(true);
+      let arrTemp = scenes;
+      if (
+        current?.roles &&
+        !current?.roles.includes(ROLE_PERMISSIONS.ROLE_HOST_PRIVATE)
+      ) {
+        arrTemp = removeObjectWithKey(arrTemp, "feeSettings");
+      }
+      const resp = await earningService.performerSearch();
+      if (resp?.data) {
+        if (!resp.data.total) {
+          arrTemp = removeObjectWithKey(arrTemp, "idDocuments");
+        }
+      }
+      setSceneAuthentication(arrTemp);
+      setLoading(false);
     }
     loadData();
   }, []);
@@ -105,33 +124,11 @@ const EditProfile = ({
             >
               Edit Profile
             </Heading>
-            <View style={{ flex: 1 }}>
-              <TabView
-                scenes={[
-                  {
-                    key: "profileSettings",
-                    title: "Profile Settings",
-                    sence: UpdateProfileForm,
-                  },
-                  {
-                    key: "idDocuments",
-                    title: "ID Documents",
-                    sence: VerificationForm,
-                  },
-                  current.roles.includes(ROLE_PERMISSIONS.ROLE_HOST_PRIVATE)
-                    ? {
-                        key: "feeSettings",
-                        title: "Settings",
-                        sence: SettingFeeForm,
-                      }
-                    : {
-                        key: "",
-                        title: "",
-                        sence: SettingFeeForm,
-                      },
-                ]}
-              />
-            </View>
+            {!loading && (
+              <View style={{ flex: 1 }}>
+                <TabView scenes={sceneAuthentication} />
+              </View>
+            )}
           </View>
         </KeyboardDismiss>
       </KeyboardAvoidingView>

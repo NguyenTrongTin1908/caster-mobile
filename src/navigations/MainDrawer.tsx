@@ -34,6 +34,7 @@ import {
 import { SocketContext } from "../socket";
 import { shortenLargeNumber } from "../lib/number";
 import { ROLE_PERMISSIONS } from "../constants";
+import { EarningService, earningService } from "../services/earning.service";
 interface DrawerProps {
   user: IPerformer;
   loggedIn: boolean;
@@ -62,6 +63,7 @@ export const MainDrawer = ({
 }: DrawerProps): JSX.Element => {
   const viewRef = useRef(null) as any;
   const { status: socketContextStatus } = useContext(SocketContext) as any;
+  const [totalEarning, setTotalEarning] = useState(0);
 
   useEffect(() => {
     if (loggedOut) {
@@ -173,24 +175,28 @@ export const MainDrawer = ({
               </Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              navigationRef.current?.navigate("Wallet");
-              handleHide();
-            }}
-          >
-            <View flexDirection={"row"}>
-              <Image
-                source={require("assets/diamond.png")}
-                alt={"avatar"}
-                size={22}
-                resizeMode="contain"
-              />
-              <Text color={colors.darkText} marginX={2}>
-                {shortenLargeNumber((user?.balance || 0).toFixed(2))}
-              </Text>
-            </View>
-          </TouchableOpacity>
+          {totalEarning ? (
+            <TouchableOpacity
+              onPress={() => {
+                navigationRef.current?.navigate("Wallet");
+                handleHide();
+              }}
+            >
+              <View flexDirection={"row"}>
+                <Image
+                  source={require("assets/diamond.png")}
+                  alt={"avatar"}
+                  size={22}
+                  resizeMode="contain"
+                />
+                <Text color={colors.darkText} marginX={2}>
+                  {shortenLargeNumber((user?.balance || 0).toFixed(2))}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          ) : (
+            <></>
+          )}
         </View>
         <Divider />
         <View style={styles.followBox}>
@@ -248,7 +254,7 @@ export const MainDrawer = ({
   ];
   const menuLoggedInItems = [
     {
-      id: "golive",
+      id: "goLive",
       label: "Go Live Now",
       icon: (
         <FontAwesome
@@ -362,7 +368,7 @@ export const MainDrawer = ({
     },
 
     {
-      id: "signout",
+      id: "signOut",
       label: "Sign Out",
       icon: (
         <FontAwesome name={"sign-out"} size={17} color={colors.appBgColor} />
@@ -391,7 +397,7 @@ export const MainDrawer = ({
     );
   };
 
-  const [menuCheckPermissions, setMenuCheckPermissions] = useState(
+  const [menuAuthentication, setMenuAuthentication] = useState(
     menuLoggedInItems
   ) as any;
 
@@ -459,18 +465,31 @@ export const MainDrawer = ({
   }, [socketContextStatus]);
 
   useEffect(() => {
+    let arrFilter = menuLoggedInItems;
     if (
       user?.roles &&
       !user?.roles.includes(ROLE_PERMISSIONS.ROLE_FAN_PAYING)
     ) {
-      const arrFilter = removeObjectWithId(
-        menuLoggedInItems,
-        "purchaseHistory"
-      );
-      setMenuCheckPermissions(arrFilter);
-    } else {
-      setMenuCheckPermissions(menuLoggedInItems);
+      arrFilter = removeObjectWithId(arrFilter, "purchaseHistory");
     }
+    if (user?.roles && !user?.roles.includes(ROLE_PERMISSIONS.ROLE_HOST_LIVE)) {
+      arrFilter = removeObjectWithId(arrFilter, "goLive");
+    }
+    if (
+      user?.roles &&
+      !user?.roles.includes(ROLE_PERMISSIONS.ROLE_HOST_PRIVATE)
+    ) {
+      arrFilter = removeObjectWithId(arrFilter, "goPrivate");
+    }
+    setMenuAuthentication(arrFilter);
+
+    const getEarning = async () => {
+      const resp = await earningService.performerSearch();
+      if (resp?.data) {
+        setTotalEarning(resp.data.total);
+      }
+    };
+    getEarning();
   }, [user]);
 
   return (
@@ -486,7 +505,7 @@ export const MainDrawer = ({
     >
       <View style={styles.drawerContainer}>
         <FlatList
-          data={loggedIn ? menuCheckPermissions : menuGuest}
+          data={loggedIn ? menuAuthentication : menuGuest}
           ListHeaderComponent={renderProfile}
           renderItem={renderMenuItem}
           keyExtractor={(item) => item.id}
