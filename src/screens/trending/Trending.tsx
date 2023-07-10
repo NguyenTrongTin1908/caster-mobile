@@ -20,7 +20,6 @@ import FeedCard from "components/feed/feed-card";
 import { IFeed } from "interfaces/feed";
 import { BottomTabBarHeightContext } from "@react-navigation/bottom-tabs";
 import { getStatusBarHeight } from "react-native-status-bar-height";
-import FeedTab from "components/tab/FeedTab";
 import HeaderMenu from "components/tab/HeaderMenu";
 import { connect } from "react-redux";
 import { IPerformer } from "src/interfaces";
@@ -220,20 +219,17 @@ const Trending = ({ current }: IProps): React.ReactElement => {
                 title: "Trending",
                 align: "center",
               }}
-              headerStyle={{ color: "white", fontSize: 15 }}
-            >
-              <FeedTab
-                onTabChange={handleTabChange}
-                tab={tab}
-                tabs={[
-                  {
-                    key: "video",
-                    title: "Videos",
-                  },
-                  { key: "photo", title: "Photos" },
-                ]}
-              />
-            </CustomHeader>
+              headerStyle={{ color: "white", fontSize: 18 }}
+              onTabChange={handleTabChange}
+              tab={tab}
+              tabs={[
+                {
+                  key: "video",
+                  title: "Videos",
+                },
+                { key: "photo", title: "Photos" },
+              ]}
+            ></CustomHeader>
           </SafeAreaView>
         );
       }}

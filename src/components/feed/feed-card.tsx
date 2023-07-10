@@ -51,7 +51,6 @@ export const FeedCard = ({ feed, mediaRefs, currentTab, current }: IProps) => {
       )}
       <FeedStats item={feed} currentTab={currentTab}></FeedStats>
       <LeftStats item={feed} currentTab={currentTab}></LeftStats>
-
       <Actionsheet isOpen={isOpen} onClose={onClose} padding={0}>
         <Actionsheet.Content height={120}>
           <MenuPopup feed={feed} />

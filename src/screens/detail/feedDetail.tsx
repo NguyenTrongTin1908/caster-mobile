@@ -15,7 +15,6 @@ import FeedCard from "components/feed/feed-card";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 let deviceH = Dimensions.get("screen").height;
 let bottomNavBarH = deviceH - height;
-import FeedTab from "components/tab/FeedTab";
 import { connect } from "react-redux";
 import { IPerformer } from "src/interfaces";
 import HeaderMenu from "components/tab/HeaderMenu";
@@ -169,20 +168,17 @@ const FeedDetail = ({ route, current }: IProps): React.ReactElement => {
               showAvatar: true,
               avatar: perfomer?.avatar,
             }}
-            headerStyle={{ color: "white", fontSize: 15 }}
-          >
-            <FeedTab
-              onTabChange={handleTabChange}
-              tab={tab}
-              tabs={[
-                {
-                  key: "video",
-                  title: "Videos",
-                },
-                { key: "photo", title: "Photos" },
-              ]}
-            />
-          </CustomHeader>
+            headerStyle={{ color: "white", fontSize: 18 }}
+            onTabChange={handleTabChange}
+            tab={tab}
+            tabs={[
+              {
+                key: "video",
+                title: "Videos",
+              },
+              { key: "photo", title: "Photos" },
+            ]}
+          ></CustomHeader>
         </SafeAreaView>
       )}
     </BottomTabBarHeightContext.Consumer>

@@ -12,6 +12,8 @@ let bottomNavBarH = deviceH - height + STATUS_BAR_HEIGHT;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+
+    resizeMode: "contain",
   },
   uiContainer: {
     position: "absolute",
@@ -29,7 +31,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-end",
-    paddingBottom: Sizes.fixPadding * 2.5,
+    paddingBottom: 6,
   },
   rightContainer: {
     position: "absolute",

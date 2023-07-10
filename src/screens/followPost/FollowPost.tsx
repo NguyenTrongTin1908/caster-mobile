@@ -16,7 +16,6 @@ import {
 const { height } = Dimensions.get("window");
 import styles from "./style";
 import FeedCard from "components/feed/feed-card";
-import FeedTab from "components/tab/FeedTab";
 import { IFeed } from "interfaces/feed";
 import { BottomTabBarHeightContext } from "@react-navigation/bottom-tabs";
 import { getStatusBarHeight } from "react-native-status-bar-height";
@@ -204,20 +203,17 @@ const FollowPost = ({
               title: "Following",
               align: "center",
             }}
-            headerStyle={{ color: "white", fontSize: 15 }}
-          >
-            <FeedTab
-              onTabChange={handleTabChange}
-              tab={tab}
-              tabs={[
-                {
-                  key: "video",
-                  title: "Videos",
-                },
-                { key: "photo", title: "Photos" },
-              ]}
-            />
-          </CustomHeader>
+            headerStyle={{ color: "white", fontSize: 18 }}
+            onTabChange={handleTabChange}
+            tab={tab}
+            tabs={[
+              {
+                key: "video",
+                title: "Videos",
+              },
+              { key: "photo", title: "Photos" },
+            ]}
+          ></CustomHeader>
         </SafeAreaView>
       )}
     </BottomTabBarHeightContext.Consumer>

@@ -14,7 +14,6 @@ import FeedCard from "components/feed/feed-card";
 import { IFeed } from "interfaces/feed";
 import { BottomTabBarHeightContext } from "@react-navigation/bottom-tabs";
 import { getStatusBarHeight } from "react-native-status-bar-height";
-import FeedTab from "components/tab/FeedTab";
 import { IPerformer } from "src/interfaces";
 import HeaderMenu from "components/tab/HeaderMenu";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -36,7 +35,8 @@ const Hashtag = ({
   route,
 }: IProps): React.ReactElement => {
   const navigation = useNavigation() as any;
-  const [tab, setTab] = useState(route.params.currentTab);
+  const [tab, setTab] = useState(route.params?.currentTab || "video");
+  const [title, setTitle] = useState(route.params?.query || "Hashtag");
   const [itemPerPage, setitemPerPage] = useState(12);
   const [feedPage, setfeedPage] = useState(0);
   const [keyword, setKeyword] = useState("");
@@ -167,23 +167,20 @@ const Hashtag = ({
             <HeaderMenu />
             <CustomHeader
               header={{
-                title: "Hashtag",
+                title: `#${title}`,
                 align: "center",
               }}
-              headerStyle={{ color: "white", fontSize: 15 }}
-            >
-              <FeedTab
-                onTabChange={handleTabChange}
-                tab={tab}
-                tabs={[
-                  {
-                    key: "video",
-                    title: "Videos",
-                  },
-                  { key: "photo", title: "Photos" },
-                ]}
-              />
-            </CustomHeader>
+              headerStyle={{ color: "white", fontSize: 18 }}
+              onTabChange={handleTabChange}
+              tab={tab}
+              tabs={[
+                {
+                  key: "video",
+                  title: "Videos",
+                },
+                { key: "photo", title: "Photos" },
+              ]}
+            ></CustomHeader>
           </GestureRecognizer>
         </SafeAreaView>
       )}

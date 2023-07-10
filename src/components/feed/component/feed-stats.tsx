@@ -162,7 +162,11 @@ const FeedStats = ({
             key={item?._id}
             mentionHashtagPress={mentionHashtagClick}
             mentionHashtagColor={colors.hashtag}
-            style={{ marginTop: Sizes.fixPadding, color: colors.lightText }}
+            style={{
+              marginTop: Sizes.fixPadding,
+              color: colors.lightText,
+              fontSize: 17,
+            }}
           >
             {item?.text}
           </MentionHashtagTextView>

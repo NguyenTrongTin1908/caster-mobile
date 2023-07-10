@@ -155,7 +155,7 @@ export const MainDrawer = ({
           flexDirection={"row"}
           justifyContent="space-between"
           marginTop={5}
-          px={4}
+          px={2}
         >
           <TouchableOpacity
             onPress={() => {
@@ -284,6 +284,17 @@ export const MainDrawer = ({
       },
     },
     {
+      id: "trending",
+      label: "Trending",
+      icon: (
+        <Feather name={"trending-up"} size={17} color={colors.appBgColor} />
+      ),
+      onPress: () => {
+        navigationRef.current?.navigate("Trending");
+        handleHide();
+      },
+    },
+    {
       id: "folowPost",
       label: "Following",
       icon: (
@@ -296,19 +307,8 @@ export const MainDrawer = ({
       },
     },
     {
-      id: "trending",
-      label: "Trending",
-      icon: (
-        <Feather name={"trending-up"} size={17} color={colors.appBgColor} />
-      ),
-      onPress: () => {
-        navigationRef.current?.navigate("Trending");
-        handleHide();
-      },
-    },
-    {
-      id: "manageAccount",
-      label: "Manage Account",
+      id: "manageProfile",
+      label: "Manage Profile",
       icon: <FontAwesome name={"user"} size={17} color={colors.appBgColor} />,
       onPress: () => {
         navigationRef.current?.navigate("EditProfile");
@@ -322,6 +322,16 @@ export const MainDrawer = ({
       onPress: () => {
         //todo - update navigation
         navigationRef.current?.navigate("Bookmarks");
+        handleHide();
+      },
+    },
+    {
+      id: "notificationPage",
+      label: "Notifications And Mail",
+      icon: <Entypo name={"bell"} size={17} color={colors.appBgColor} />,
+      onPress: () => {
+        //todo - update navigation
+        navigationRef.current?.navigate("NotificationPage");
         handleHide();
       },
     },
@@ -340,16 +350,7 @@ export const MainDrawer = ({
         handleHide();
       },
     },
-    {
-      id: "notificationPage",
-      label: "Notifications And Mail",
-      icon: <Entypo name={"bell"} size={17} color={colors.appBgColor} />,
-      onPress: () => {
-        //todo - update navigation
-        navigationRef.current?.navigate("NotificationPage");
-        handleHide();
-      },
-    },
+
     {
       id: "help",
       label: "Help",
@@ -393,6 +394,7 @@ export const MainDrawer = ({
             </Box>
           </HStack>
         </TouchableOpacity>
+        {(["folowPost" , "help" , "notificationPage"].includes(item.id)) ? <Divider/> : <></> }
       </Box>
     );
   };
@@ -509,7 +511,7 @@ export const MainDrawer = ({
           ListHeaderComponent={renderProfile}
           renderItem={renderMenuItem}
           keyExtractor={(item) => item.id}
-          px={18}
+          px={2}
           py={14}
         />
       </View>

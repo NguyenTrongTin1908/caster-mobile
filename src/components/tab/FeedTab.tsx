@@ -3,6 +3,7 @@ import { View, Text, Box } from "native-base";
 import { TouchableOpacity } from "react-native";
 import { colors, Sizes } from "utils/theme";
 import styles from "./style";
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 interface IProps {
   onTabChange: Function;
@@ -30,25 +31,26 @@ const FeedTab = ({
             key={index}
           >
             <TouchableOpacity onPress={() => onTabChange(item.key)}>
-              <Text
+              <AntDesign
+                name={item.key === "video" ? "videocamera" : "camera"}
                 style={{
                   color: tab === item.key ? colors.tabView : "#979797",
-                  fontSize: 20,
+                  fontSize: 35,
                 }}
-              >
-                {item.title}
-              </Text>
+              />
             </TouchableOpacity>
             {index % 2 == 0 ? (
               <View
                 key={`${index}-text`}
                 style={{
-                  marginHorizontal: Sizes.fixPadding + 5.0,
+                  paddingHorizontal: Sizes.fixPadding + 5.0,
                   height: 18.0,
-                  width: 2.0,
-                  backgroundColor: colors.lightText,
                 }}
-              />
+              >
+                <Text textAlign={"center"} color={colors.lightText} size={24}>
+                  Following
+                </Text>
+              </View>
             ) : null}
           </Box>
         );

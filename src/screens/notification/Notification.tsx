@@ -17,7 +17,7 @@ interface IProps {
 
 const NotificationPage = ({ route }: IProps): React.ReactElement => {
   const navigation = useNavigation() as any;
-  const { tab } = route.params;
+  const tab  = route.params?.tab || "Notification";
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
