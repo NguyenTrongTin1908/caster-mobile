@@ -196,7 +196,7 @@ const MessageList = ({
     }
 
     return (
-      <View flex={1} maxH={100} minH={100}>
+      <View flex={1} maxH={190} minH={190}>
         <FlatList
           data={tempMessages}
           ref={flatListRef}

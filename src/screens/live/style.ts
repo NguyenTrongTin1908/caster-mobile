@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   },
 
   iconStream: {
-    marginTop: Sizes.fixPadding + 100.0,
+    marginTop: Sizes.fixPadding + 40.0,
   },
   rightContainer: {
     alignSelf: "flex-end",
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
   btnEndStream: {
     color: colors.darkText,
     backgroundColor: colors.secondary,
-    marginTop: Sizes.fixPadding + 80.0,
+    marginTop: Sizes.fixPadding + 40.0,
   },
 });
 

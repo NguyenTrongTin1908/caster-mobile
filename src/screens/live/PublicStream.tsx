@@ -46,6 +46,7 @@ const PublicStream = ({
   const [permissionGranted, setPermissionGranted] = useState(false);
   const [localStreamId, setLocalStreamId] = useState(null as any);
   const [isMuteAudio, setMuteAudio] = useState(false);
+  const [totalEarning, setTotalEarning] = useState(0);
   const [imgUrl, setImgUrl] = useState(null) as any;
   const living = useRef() as any;
   useEffect(() => {
@@ -59,6 +60,7 @@ const PublicStream = ({
         onReceiveGift(data, "created");
       });
       socket.on("public-room-changed", handler);
+      socket.on("update_total_stream_earning", updateTotalEarning);
     }
     return () => {
       if (socket && activeConversation.data) {
@@ -223,6 +225,10 @@ const PublicStream = ({
       setLoading(false);
     }
   };
+
+  const updateTotalEarning = ({ token }) => {
+    setTotalEarning(token);
+  };
   const handler = ({ total, members }) => {
     setTotal(total);
   };
@@ -253,6 +259,13 @@ const PublicStream = ({
         <View style={styles.rightBarStream}>
           <MaterialIcons name="visibility" color={"red"} size={28} />
           <Text style={styles.textName}>{total}</Text>
+          <Image
+            source={require("assets/diamond.png")}
+            alt={"avatar"}
+            size={28}
+            resizeMode="contain"
+          />
+          <Text style={styles.textName}>{totalEarning}</Text>
           <TouchableWithoutFeedback onPress={() => setMuteAudio(!isMuteAudio)}>
             {isMuteAudio ? (
               <MaterialIcons
@@ -289,10 +302,8 @@ const PublicStream = ({
         {sessionId && <ChatBox canSendMessage={false} />}
       </View>
       <View>
-        {!initialized ? (
+        {!initialized && (
           <Button onPress={() => start()}>Start Streaming</Button>
-        ) : (
-          <Button onPress={() => stop()}>Stop Streaming</Button>
         )}
       </View>
     </SafeAreaView>
